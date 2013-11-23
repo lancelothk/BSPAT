@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css" />
+<script type="text/javascript">
+		<!--
+		function getWindowHeight() {
+			var windowHeight = 0;
+			if (typeof(window.innerHeight) == 'number') {
+				windowHeight = window.innerHeight;
+			}
+			else {
+				if (document.documentElement && document.documentElement.clientHeight) {
+					windowHeight = document.documentElement.clientHeight;
+				}
+				else {
+					if (document.body && document.body.clientHeight) {
+						windowHeight = document.body.clientHeight;
+					}
+				}
+			}
+			return windowHeight;
+		}
+		function setFooter() {
+			if (document.getElementById) {
+				var windowHeight = getWindowHeight();
+				if (windowHeight > 0) {
+					var headerHeight = document.getElementById('header').offsetHeight;
+					var menuHeight = document.getElementById('menu').offsetHeight;
+					var contentHeight = document.getElementById('content').offsetHeight;
+					var footerElement = document.getElementById('footer');
+					var footerHeight  = footerElement.offsetHeight;
+					if (windowHeight - (headerHeight + menuHeight + contentHeight + footerHeight) >= 0) {
+						footerElement.style.position = 'absolute';
+						footerElement.style.top = (windowHeight - footerHeight - 10) + 'px';
+					}
+					else {
+						footerElement.style.position = 'absolute';
+ 						footerElement.style.top = (headerHeight + menuHeight + contentHeight + 10) + 'px';
+					}
+				}
+			}
+		}
+		window.onload = function() {
+			setFooter();
+		}
+		window.onresize = function() {
+			setFooter();
+		}
+		//-->
+		</script>
+</head>
+<body>
+	<div id="footer">
+		<h3>Copyright 2012 &copy Computational Biology lab @ Case Western Reserve University</h3>
+	</div>
+</body>
+</html>
