@@ -6,11 +6,20 @@ public class Coordinate {
 	private long starthg19;
 	private long endhg19;
 	private String chr;
+	private String strand;
 	public Coordinate(long start, long end, String chr) {
 		super();
 		this.start = start;
 		this.end = end;
 		this.chr = chr;
+	}
+	
+	public Coordinate(long start, long end, String chr, String strand) {
+		super();
+		this.start = start;
+		this.end = end;
+		this.chr = chr;
+		this.strand = strand;
 	}
 	public long getStart() {
 		return start;
@@ -39,5 +48,8 @@ public class Coordinate {
 	}
 	public long getEndhg19() {
 		return endhg19;
+	}
+	public String getStrand() {
+		return strand;
 	}
 }

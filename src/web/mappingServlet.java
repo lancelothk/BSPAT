@@ -127,6 +127,7 @@ public class mappingServlet extends HttpServlet {
 			return;
 		}
 		// set other parameters
+		constant.refVersion = request.getParameter("refVersion"); // set reference genome version
 		constant.qualsType = request.getParameter("qualsType"); // set quality score type parameter
 		constant.maxmis = Integer.valueOf(request.getParameter("maxmis")); // set maximum permitted mismatches
 		constant.experiments = experiments;
@@ -139,10 +140,14 @@ public class mappingServlet extends HttpServlet {
 			Utilities.showAlertWindow(response, "error in modifying reference");
 			e.printStackTrace();
 		}
-		// initialze executeMappingThread
+		// initialize executeMappingThread
 		ExecuteMapping executeMapping = new ExecuteMapping(constant.runID);
 		Thread executeMappingThread = new Thread(executeMapping);
 		executeMappingThread.start();
+		// initialize executeBlatQueryThread
+		ExecuteBlatQuery executeBlatQuery = new ExecuteBlatQuery(constant);
+		Thread executeBlatQueryThread = new Thread(executeBlatQuery);
+		executeBlatQueryThread.start();
 		// display progress.html
 		FileReader progressHTMLFileReader = new FileReader(constant.diskRootPath + "/progress.html");
 		BufferedReader progressHTMLBufferedReader = new BufferedReader(progressHTMLFileReader);
@@ -153,7 +158,7 @@ public class mappingServlet extends HttpServlet {
 		progressHTMLBufferedReader.close();
 		response.getWriter().flush();
 		// wait for executeMappingThread finish
-		while (executeMappingThread.isAlive()) {
+		while (executeMappingThread.isAlive() || executeBlatQueryThread.isAlive()) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -185,12 +190,19 @@ public class mappingServlet extends HttpServlet {
 		constant.randomDir = Files.createTempDirectory(Paths.get(constant.diskRootPath), "Run").toString();
 		constant.runID = constant.randomDir.split("Run")[1];
 		constant.mappingResultPath = constant.randomDir + "/bismark_result/";
+		Utilities.createFolder(constant.mappingResultPath);
 		constant.patternResultPath = constant.randomDir + "/pattern_result/";
+		Utilities.createFolder(constant.patternResultPath);
 		constant.coorFilePath = constant.randomDir + "/coor/";
+		Utilities.createFolder(constant.coorFilePath);
 		constant.originalRefPath = constant.randomDir + "/origianlRef/";
+		Utilities.createFolder(constant.originalRefPath);
 		constant.modifiedRefPath = constant.randomDir + "/modifiedRef/";
+		Utilities.createFolder(constant.modifiedRefPath);
 		constant.seqsPath = constant.randomDir + "/seqs/";
+		Utilities.createFolder(constant.seqsPath);
 		constant.toolsPath = constant.diskRootPath + "/tools/";
+		Utilities.createFolder(constant.toolsPath);
 		URL domain = new URL(request.getRequestURL().toString());
 		constant.host = domain.getHost() + ":" + domain.getPort();
 		return constant;

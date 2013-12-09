@@ -29,12 +29,19 @@
 								<td><input type="file" name="ref" multiple="multiple" /></td>
 							</tr>
 							<tr>
+								<td>Reference Genome Version</td>
+								<td><select name="refVersion">
+									<option value="hg19">hg19</option>
+									<option value="hg18">hg18</option>
+								</select></td>
+							</tr>
+							<tr>
 								<td>Quality Score type:</td>
 								<td><select name="qualsType">
-										<option value="phred33">phred33</option>
-										<option value="phred64">phred64</option>
-										<option value="solexa">solexa</option>
-										<option value="solexa-1.3">solexa-1.3</option>
+									<option value="phred33">phred33</option>
+									<option value="phred64">phred64</option>
+									<option value="solexa">solexa</option>
+									<option value="solexa-1.3">solexa-1.3</option>
 								</select></td>
 							</tr>
 							<tr>

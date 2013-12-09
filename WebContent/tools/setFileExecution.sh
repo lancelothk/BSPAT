@@ -1,7 +1,9 @@
 #!/bin/bash  
 cd ./bismark
-chmod +x bismark bismark_genome_preparation methylation_extractor 
+chmod u+x bismark bismark_genome_preparation methylation_extractor 
 cd ../bowtie
-chmod +x bowtie bowtie-debug bowtie-build bowtie-build-debug bowtie-inspect bowtie-inspect-debug 
+chmod u+x bowtie bowtie-debug bowtie-build bowtie-build-debug bowtie-inspect bowtie-inspect-debug 
 cd ../liftover
-chmod +x liftOver
+chmod u+x liftOver
+cd ../BlatQuery
+chmod u+x *

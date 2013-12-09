@@ -2,10 +2,12 @@ package BSPAT;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,18 +37,54 @@ import DataType.Coordinate;
 import DataType.ExtensionFilter;
 
 public class Utilities {
-	
+
+	public static void createFolder(String path) {
+		File folder = new File(path);
+		if (!folder.isDirectory()) {
+			folder.mkdir();
+		}
+	}
+
+	public static void convertPSLtoCoorPair(String path) throws IOException {
+		File folder = new File(path);
+		String[] files = folder.list(new ExtensionFilter(".psl"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(path + "coordinates"));
+		HashMap<String, Coordinate> coorHashMap = new HashMap<>();
+		for (String name : files) {
+			BufferedReader reader = new BufferedReader(new FileReader(path + name));
+			for (int i = 0; i < 3; i++) {
+				reader.readLine();
+			}
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				String[] items = line.split("\\s+");
+				// items[0] -- query id, items[1] -- score, items[4] -- qsize,
+				// items[6] -- chrom, items[7] -- strand, items[8] -- start,
+				// items[9] -- end
+				if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
+					// first query match, score equals query size
+					coorHashMap.put(items[0], new Coordinate(Long.valueOf(items[8]), Long.valueOf(items[9]), items[6], items[7]));
+				}
+			}
+			reader.close();
+		}
+		for (String key : coorHashMap.keySet()) {
+			Coordinate coor = coorHashMap.get(key);
+			writer.write(String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(), coor.getEnd()));
+		}
+		writer.close();
+	}
 
 	public static boolean saveFileToDisk(Part part, String path, String fileName) throws IOException {
 		if (fileName != null && !fileName.isEmpty()) {
 			part.write(path + "/" + fileName);
 			return true;
-		}else {
+		} else {
 			return false;
 		}
-		
+
 	}
-	
+
 	/**
 	 * get field content start with given parameter 'field'
 	 * 
@@ -82,11 +120,9 @@ public class Utilities {
 		String progOutput = null;
 		final Process process = Runtime.getRuntime().exec(cmd, null, directory);
 
-		BufferedReader stdInput = new BufferedReader(
-				new InputStreamReader(process.getInputStream()));
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-		BufferedReader stdError = new BufferedReader(
-				new InputStreamReader(process.getErrorStream()));
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
 		// read the error from the command
 		while ((progOutput = stdError.readLine()) != null) {
@@ -111,13 +147,12 @@ public class Utilities {
 		zo.close();
 	}
 
-	private static void zip(String path, File basePath, ZipOutputStream zo, boolean isRecursive,
-			boolean isOutBlankDir) throws IOException {
+	private static void zip(String path, File basePath, ZipOutputStream zo, boolean isRecursive, boolean isOutBlankDir) throws IOException {
 
 		File inFile = new File(path);
 
 		File[] files = new File[0];
-		if (inFile.isDirectory()) { 
+		if (inFile.isDirectory()) {
 			files = inFile.listFiles();
 		} else if (inFile.isFile()) {
 			files = new File[1];
@@ -140,7 +175,7 @@ public class Utilities {
 			System.out.println(pathName);
 			if (files[i].isDirectory()) {
 				if (isOutBlankDir && basePath != null) {
-					zo.putNextEntry(new ZipEntry(pathName + "/")); 
+					zo.putNextEntry(new ZipEntry(pathName + "/"));
 				}
 				if (isRecursive) {
 					zip(files[i].getPath(), basePath, zo, isRecursive, isOutBlankDir);
@@ -205,9 +240,8 @@ public class Utilities {
 			if (file.isDirectory()) {
 				list.addAll(visitFiles(file));
 			} else {
-				if (file.getName().endsWith(".txt") || file.getName().endsWith(".fq")
-						|| file.getName().endsWith(".fastq") || file.getName().endsWith(".fa")
-						|| file.getName().endsWith(".fasta")) {
+				if (file.getName().endsWith(".txt") || file.getName().endsWith(".fq") || file.getName().endsWith(".fastq")
+						|| file.getName().endsWith(".fa") || file.getName().endsWith(".fasta")) {
 					list.add(file);
 				}
 			}
@@ -216,12 +250,10 @@ public class Utilities {
 	}
 
 	// read coordinates
-	public static HashMap<String, Coordinate> readCoordinates(String coorPath, String coorFileName)
-			throws IOException {
+	public static HashMap<String, Coordinate> readCoordinates(String coorPath, String coorFileName) throws IOException {
 		HashMap<String, Coordinate> coordinateHash = new HashMap<String, Coordinate>();
 		File coorFolder = new File(coorPath);
-		FileReader coordinatesReader = new FileReader(coorFolder.getAbsolutePath() + "/"
-				+ coorFileName);
+		FileReader coordinatesReader = new FileReader(coorFolder.getAbsolutePath() + "/" + coorFileName);
 		BufferedReader coordinatesBuffReader = new BufferedReader(coordinatesReader);
 		String line = coordinatesBuffReader.readLine();
 		String[] items;
@@ -229,9 +261,7 @@ public class Utilities {
 
 			items = line.split("\t");
 			String[] lines = items[1].split("-");
-			coordinateHash.put(items[0],
-					new Coordinate(Long.valueOf(lines[0].split(":")[1]), Long.valueOf(lines[1]),
-							lines[0].split(":")[0]));
+			coordinateHash.put(items[0], new Coordinate(Long.valueOf(lines[0].split(":")[1]), Long.valueOf(lines[1]), lines[0].split(":")[0]));
 			line = coordinatesBuffReader.readLine();
 		}
 		coordinatesBuffReader.close();
@@ -254,8 +284,7 @@ public class Utilities {
 			props.put("mail.smtp.host", smtpServer);
 			props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.port", "587");
-			Session session = Session.getDefaultInstance(props, new SmtpAuthenticator(username,
-					password));
+			Session session = Session.getDefaultInstance(props, new SmtpAuthenticator(username, password));
 			/** *************************************************** */
 			MimeMessage mimeMessage = new MimeMessage(session);
 			mimeMessage.setFrom(new InternetAddress(fromMailAddress));

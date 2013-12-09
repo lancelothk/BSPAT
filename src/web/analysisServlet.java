@@ -69,7 +69,6 @@ public class analysisServlet extends HttpServlet {
 				}
 			}
 		}
-//		constant.refVersion = request.getParameter("refVersion"); // set reference genome version
 		constant.figureFormat = request.getParameter("figureFormat"); // set figure format
 		
 		constant.coorReady = coorReady;
