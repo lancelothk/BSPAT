@@ -13,6 +13,8 @@ public class Constant implements Serializable {
 	private static Constant constant = null;
 	public static final String PNG = "png";
 	public static final String EPS = "eps";
+	public static final String HG16 = "hg16";
+	public static final String HG17 = "hg17";
 	public static final String HG18 = "hg18";
 	public static final String HG19 = "hg19";
 	
@@ -22,8 +24,10 @@ public class Constant implements Serializable {
 	public String host;
 	public String mappingResultPath;
 	public String patternResultPath;
+	public boolean coorReady = false;
 	public String coorFilePath;
 	public String coorFileName;
+	public String refVersion;
 	public String modifiedRefPath;
 	public String originalRefPath;
 	public String seqsPath;
@@ -37,10 +41,8 @@ public class Constant implements Serializable {
 	public ArrayList<Experiment> experiments;
 	public static String WEBAPPFOLDER = null;
 	public String email;
-	public boolean coorReady;
 	public String qualsType;
 	public int maxmis;
-	public String refVersion;
 	public String figureFormat;
 	
 	private Constant(){

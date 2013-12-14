@@ -30,7 +30,8 @@ public class ExecuteBlatQuery implements Runnable {
 			}
 		}
 		try {
-			Utilities.convertPSLtoCoorPair(constant.coorFilePath);
+			Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
+			constant.coorReady = true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

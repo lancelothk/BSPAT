@@ -38,17 +38,10 @@ import DataType.ExtensionFilter;
 
 public class Utilities {
 
-	public static void createFolder(String path) {
-		File folder = new File(path);
-		if (!folder.isDirectory()) {
-			folder.mkdir();
-		}
-	}
-
-	public static void convertPSLtoCoorPair(String path) throws IOException {
+	public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {
 		File folder = new File(path);
 		String[] files = folder.list(new ExtensionFilter(".psl"));
-		BufferedWriter writer = new BufferedWriter(new FileWriter(path + "coordinates"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(path + outFileName));
 		HashMap<String, Coordinate> coorHashMap = new HashMap<>();
 		for (String name : files) {
 			BufferedReader reader = new BufferedReader(new FileReader(path + name));
@@ -63,7 +56,7 @@ public class Utilities {
 				// items[9] -- end
 				if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
 					// first query match, score equals query size
-					coorHashMap.put(items[0], new Coordinate(Long.valueOf(items[8]), Long.valueOf(items[9]), items[6], items[7]));
+					coorHashMap.put(items[0], new Coordinate(items[0],items[6], items[7], Long.valueOf(items[8]), Long.valueOf(items[9])));
 				}
 			}
 			reader.close();
@@ -73,16 +66,6 @@ public class Utilities {
 			writer.write(String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(), coor.getEnd()));
 		}
 		writer.close();
-	}
-
-	public static boolean saveFileToDisk(Part part, String path, String fileName) throws IOException {
-		if (fileName != null && !fileName.isEmpty()) {
-			part.write(path + "/" + fileName);
-			return true;
-		} else {
-			return false;
-		}
-
 	}
 
 	/**
@@ -230,42 +213,6 @@ public class Utilities {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	// only add allowed files.
-	public static ArrayList<File> visitFiles(File f) {
-		ArrayList<File> list = new ArrayList<File>();
-		File[] files = f.listFiles();
-		for (File file : files) {
-			if (file.isDirectory()) {
-				list.addAll(visitFiles(file));
-			} else {
-				if (file.getName().endsWith(".txt") || file.getName().endsWith(".fq") || file.getName().endsWith(".fastq")
-						|| file.getName().endsWith(".fa") || file.getName().endsWith(".fasta")) {
-					list.add(file);
-				}
-			}
-		}
-		return list;
-	}
-
-	// read coordinates
-	public static HashMap<String, Coordinate> readCoordinates(String coorPath, String coorFileName) throws IOException {
-		HashMap<String, Coordinate> coordinateHash = new HashMap<String, Coordinate>();
-		File coorFolder = new File(coorPath);
-		FileReader coordinatesReader = new FileReader(coorFolder.getAbsolutePath() + "/" + coorFileName);
-		BufferedReader coordinatesBuffReader = new BufferedReader(coordinatesReader);
-		String line = coordinatesBuffReader.readLine();
-		String[] items;
-		while (line != null) {
-
-			items = line.split("\t");
-			String[] lines = items[1].split("-");
-			coordinateHash.put(items[0], new Coordinate(Long.valueOf(lines[0].split(":")[1]), Long.valueOf(lines[1]), lines[0].split(":")[0]));
-			line = coordinatesBuffReader.readLine();
-		}
-		coordinatesBuffReader.close();
-		return coordinateHash;
 	}
 
 	public static void sendEmail(String toAddress, String runID, String text) {

@@ -85,7 +85,7 @@ public class CallBismark {
 					}
 				}
 				// recursive refresh file list
-				fileList = Utilities.visitFiles(seqfolder);
+				fileList = IO.visitFiles(seqfolder);
 				//fileNames = folder.list(new ExtensionFilter(new String[] { ".txt", ".fq", "fastq", "fasta", "fa" }));
 				if (fileList.size() == 0) {
 					System.err.println("no sequencing data files in " + inputFile);

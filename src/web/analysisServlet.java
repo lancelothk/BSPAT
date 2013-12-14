@@ -52,26 +52,7 @@ public class analysisServlet extends HttpServlet {
 		String runID = request.getParameter("runID");
 		constant = Constant.readConstant(runID);
 		
-		Collection<Part> parts = request.getParts();
-		boolean coorReady = false;
-		for (Part part : parts) {
-			String fieldName = Utilities.getField(part, "name");
-			String fileName = Utilities.getField(part, "filename");
-			if (fieldName.equals("coor")) {// deal with uploaded coordinates file
-				File coorFolder = new File(constant.coorFilePath);
-				if (!coorFolder.isDirectory()) {// if coordinates directory do not exist, make one
-					coorFolder.mkdirs();
-				}
-				// save coordinates file in coordinates folder
-				if (Utilities.saveFileToDisk(part, coorFolder.getAbsolutePath(), fileName)) {
-					coorReady = true;
-					constant.coorFileName = fileName;
-				}
-			}
-		}
 		constant.figureFormat = request.getParameter("figureFormat"); // set figure format
-		
-		constant.coorReady = coorReady;
 		if (request.getParameter("minp0text") != null) {
 			constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
 			constant.minMethylThreshold = -1;

@@ -105,11 +105,10 @@ public class ExecuteMapping implements Runnable {
 		try {
 			jspBufferedWriter.write("<form action=\"../analysis\" enctype=\"multipart/form-data\" method=\"post\">\n");
 			jspBufferedWriter.write("<input type=\"hidden\" name=\"runID\" value=\"" + constant.runID + "\">\n");
-			jspBufferedWriter.write("<table id=\"coor\">\n");
-			jspBufferedWriter
-					.write("<tr><td>Corresponding Coordinates File(Optional):</td><td><input type=\"file\" name=\"coor\" multiple=\"multiple\" /></td></tr>\n");
+//			jspBufferedWriter.write("<table id=\"coor\">\n");
+//			jspBufferedWriter
+//					.write("<tr><td>Corresponding Coordinates File(Optional):</td><td><input type=\"file\" name=\"coor\" multiple=\"multiple\" /></td></tr>\n");
 //			jspBufferedWriter.write("<td>Reference Genome Version</td><td><select name=\"refVersion\"><option value=\"hg19\">phred33</option><option value=\"hg18\">phred64</option></select></td>");
-			jspBufferedWriter.write("<td>Figure Format</td><td><select name=\"figureFormat\"><option value=\"png\">PNG</option><option value=\"eps\">EPS</option></select></td>");
 			jspBufferedWriter.write("<p class=\"dottedline\"></p>\n");
 			jspBufferedWriter.write("<table id=\"parameters\">\n");
 			jspBufferedWriter.write("<tr><td>Analysis Parameters: </td><td>Values must be in (0,1)</td></tr>\n");
@@ -123,7 +122,7 @@ public class ExecuteMapping implements Runnable {
 					.write("<tr><td><input type=\"radio\" name=\"par\" id=\"minmethyl\" value=\"minmethyl\" onclick=\"check()\"  />Methylation pattern threshold</td><td><input type=\"text\" id=\"minmethyltext\" name=\"minmethyltext\" value=0.1 disabled=\"true\" /></td></tr>\n");
 			jspBufferedWriter
 					.write("<tr><td>Mutation pattern threshold</td><td><input type=\"text\" name=\"mutationpatternThreshold\" value=0.3 /></td></tr>\n");
-
+			jspBufferedWriter.write("<td>Figure Format</td><td><select name=\"figureFormat\"><option value=\"png\">PNG</option><option value=\"eps\">EPS</option></select></td>");
 			jspBufferedWriter.write("</table><p class=\"dottedline\"></p></br>\n");
 			jspBufferedWriter.write("<p id=\"submitParagraph\"><input type=\"submit\" value=\"Submit\" id=\"submitButton\" /></p>\n");
 			jspBufferedWriter.write("</form>\n");

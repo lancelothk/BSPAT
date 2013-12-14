@@ -23,6 +23,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.FileUtils;
 
+import BSPAT.IO;
 import BSPAT.Utilities;
 import DataType.Constant;
 import DataType.Experiment;
@@ -88,7 +89,7 @@ public class mappingServlet extends HttpServlet {
 					refFolder.mkdirs();
 				}
 				// save ref file in ref folder
-				if (Utilities.saveFileToDisk(part, refFolder.getAbsolutePath(), fileName)) {
+				if (IO.saveFileToDisk(part, refFolder.getAbsolutePath(), fileName)) {
 					refReady = true;
 				}else {
 					Utilities.showAlertWindow(response, "reference file is blank!");
@@ -103,7 +104,7 @@ public class mappingServlet extends HttpServlet {
 						if (!seqFolder.isDirectory()) { // if sequence directory do not exist, make one
 							seqFolder.mkdirs();
 						}
-						if (Utilities.saveFileToDisk(part, seqFolder.getAbsolutePath(), fileName)) {
+						if (IO.saveFileToDisk(part, seqFolder.getAbsolutePath(), fileName)) {
 							experiment.setSeqReady(true);
 						}else {
 							Utilities.showAlertWindow(response, "seq file is blank!");
@@ -128,6 +129,7 @@ public class mappingServlet extends HttpServlet {
 		}
 		// set other parameters
 		constant.refVersion = request.getParameter("refVersion"); // set reference genome version
+		constant.coorFileName = "coordinates";
 		constant.qualsType = request.getParameter("qualsType"); // set quality score type parameter
 		constant.maxmis = Integer.valueOf(request.getParameter("maxmis")); // set maximum permitted mismatches
 		constant.experiments = experiments;
@@ -187,22 +189,23 @@ public class mappingServlet extends HttpServlet {
 		constant.webRootPath = request.getContextPath();
 		Constant.WEBAPPFOLDER = constant.diskRootPath;
 		// randomDir is absolute disk path.
+		
 		constant.randomDir = Files.createTempDirectory(Paths.get(constant.diskRootPath), "Run").toString();
 		constant.runID = constant.randomDir.split("Run")[1];
 		constant.mappingResultPath = constant.randomDir + "/bismark_result/";
-		Utilities.createFolder(constant.mappingResultPath);
+		IO.createFolder(constant.mappingResultPath);
 		constant.patternResultPath = constant.randomDir + "/pattern_result/";
-		Utilities.createFolder(constant.patternResultPath);
+		IO.createFolder(constant.patternResultPath);
 		constant.coorFilePath = constant.randomDir + "/coor/";
-		Utilities.createFolder(constant.coorFilePath);
+		IO.createFolder(constant.coorFilePath);
 		constant.originalRefPath = constant.randomDir + "/origianlRef/";
-		Utilities.createFolder(constant.originalRefPath);
+		IO.createFolder(constant.originalRefPath);
 		constant.modifiedRefPath = constant.randomDir + "/modifiedRef/";
-		Utilities.createFolder(constant.modifiedRefPath);
+		IO.createFolder(constant.modifiedRefPath);
 		constant.seqsPath = constant.randomDir + "/seqs/";
-		Utilities.createFolder(constant.seqsPath);
+		IO.createFolder(constant.seqsPath);
 		constant.toolsPath = constant.diskRootPath + "/tools/";
-		Utilities.createFolder(constant.toolsPath);
+		IO.createFolder(constant.toolsPath);
 		URL domain = new URL(request.getRequestURL().toString());
 		constant.host = domain.getHost() + ":" + domain.getPort();
 		return constant;
