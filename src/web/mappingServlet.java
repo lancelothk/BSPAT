@@ -59,9 +59,12 @@ public class mappingServlet extends HttpServlet {
 	 *      response)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		long start = System.currentTimeMillis();
 		response.setContentType("text/html");
-		initializeConstant(request); // initialize constant, which is a singleton
-		System.out.println("diskpath:\t" + this.getServletContext().getRealPath("")); // print disk path to console
+		initializeConstant(request); // initialize constant, which is a
+										// singleton
+		// print disk path to console
+		System.out.println("diskpath:\t" + this.getServletContext().getRealPath("")); 
 		cleanRootFolder(); // release root folder space
 		Collection<Part> parts = request.getParts(); // get submitted data
 		ArrayList<Experiment> experiments = new ArrayList<Experiment>();
@@ -85,28 +88,34 @@ public class mappingServlet extends HttpServlet {
 			String fileName = Utilities.getField(part, "filename");
 			if (fieldName.equals("ref")) { // deal with uploaded ref file
 				File refFolder = new File(constant.originalRefPath);
-				if (!refFolder.isDirectory()) { // if ref directory do not exist, make one
+				if (!refFolder.isDirectory()) { // if ref directory do not
+												// exist, make one
 					refFolder.mkdirs();
 				}
 				// save ref file in ref folder
 				if (IO.saveFileToDisk(part, refFolder.getAbsolutePath(), fileName)) {
 					refReady = true;
-				}else {
+				} else {
 					Utilities.showAlertWindow(response, "reference file is blank!");
 					return;
 				}
-			} else if (fieldName.startsWith("seqFile")) { // deal with uploaded seq file
+			} else if (fieldName.startsWith("seqFile")) { // deal with uploaded
+															// seq file
 				int seqFileIndex = Integer.valueOf(part.getName().replace("seqFile", ""));
-				for (Experiment experiment : experiments) { // match file index and seq file index
+				for (Experiment experiment : experiments) { // match file index
+															// and seq file
+															// index
 					if (experiment.getIndex() == seqFileIndex) {
 						experiment.setSeqFile(fileName);
 						File seqFolder = new File(constant.seqsPath + experiment.getName());
-						if (!seqFolder.isDirectory()) { // if sequence directory do not exist, make one
+						if (!seqFolder.isDirectory()) { // if sequence directory
+														// do not exist, make
+														// one
 							seqFolder.mkdirs();
 						}
 						if (IO.saveFileToDisk(part, seqFolder.getAbsolutePath(), fileName)) {
 							experiment.setSeqReady(true);
-						}else {
+						} else {
 							Utilities.showAlertWindow(response, "seq file is blank!");
 							return;
 						}
@@ -128,13 +137,12 @@ public class mappingServlet extends HttpServlet {
 			return;
 		}
 		// set other parameters
-		constant.refVersion = request.getParameter("refVersion"); // set reference genome version
+		constant.refVersion = request.getParameter("refVersion"); 
 		constant.coorFileName = "coordinates";
-		constant.qualsType = request.getParameter("qualsType"); // set quality score type parameter
-		constant.maxmis = Integer.valueOf(request.getParameter("maxmis")); // set maximum permitted mismatches
+		constant.qualsType = request.getParameter("qualsType"); 
+		constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
 		constant.experiments = experiments;
-		constant.email = request.getParameter("email");// set email address
-		Constant.writeConstant(constant.runID, constant); // save constant object in file
+		constant.email = request.getParameter("email");
 		// append xx to both end of reference
 		try {
 			modifyRef(constant.originalRefPath, constant.modifiedRefPath);
@@ -143,22 +151,13 @@ public class mappingServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		// initialize executeMappingThread
-		ExecuteMapping executeMapping = new ExecuteMapping(constant.runID);
+		ExecuteMapping executeMapping = new ExecuteMapping(constant);
 		Thread executeMappingThread = new Thread(executeMapping);
 		executeMappingThread.start();
 		// initialize executeBlatQueryThread
 		ExecuteBlatQuery executeBlatQuery = new ExecuteBlatQuery(constant);
 		Thread executeBlatQueryThread = new Thread(executeBlatQuery);
 		executeBlatQueryThread.start();
-		// display progress.html
-		FileReader progressHTMLFileReader = new FileReader(constant.diskRootPath + "/progress.html");
-		BufferedReader progressHTMLBufferedReader = new BufferedReader(progressHTMLFileReader);
-		String line;
-		while ((line = progressHTMLBufferedReader.readLine()) != null) {
-			response.getWriter().write(line);
-		}
-		progressHTMLBufferedReader.close();
-		response.getWriter().flush();
 		// wait for executeMappingThread finish
 		while (executeMappingThread.isAlive() || executeBlatQueryThread.isAlive()) {
 			try {
@@ -169,11 +168,22 @@ public class mappingServlet extends HttpServlet {
 				return;
 			}
 		}
-		// write response page into disk
-		response.getWriter().write(
-				"<script type=\"text/javascript\"> document.location=\""
-						+ constant.randomDir.toString().replace(constant.diskRootPath.toString(), constant.webRootPath)
-						+ "/mappingResult.jsp" + "\";</script> ");
+		
+		// compress result folder
+		String zipFileName = constant.randomDir + "/mappingResult.zip";
+		Utilities.zipFolder(constant.mappingResultPath, zipFileName);
+		// send email to inform user
+		Utilities.sendEmail(constant.email, constant.runID, "Mapping has finished.\n" + "Your runID is " + constant.runID
+				+ "\nPlease go to cbc.case.edu/BS-PAT/result.jsp to retrieve your result.");
+		
+		// passing JSTL parameters
+		constant.mappingTime = (System.currentTimeMillis() - start)/ 1000;
+		constant.mappingResultLink = zipFileName.replace(constant.diskRootPath, constant.webRootPath);
+		constant.finishedMapping = true;
+		// save constant object to file
+		Constant.writeConstant(); 
+		request.setAttribute("constant", constant);
+		request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
 	}
 
 	/**
@@ -189,7 +199,7 @@ public class mappingServlet extends HttpServlet {
 		constant.webRootPath = request.getContextPath();
 		Constant.WEBAPPFOLDER = constant.diskRootPath;
 		// randomDir is absolute disk path.
-		
+
 		constant.randomDir = Files.createTempDirectory(Paths.get(constant.diskRootPath), "Run").toString();
 		constant.runID = constant.randomDir.split("Run")[1];
 		constant.mappingResultPath = constant.randomDir + "/bismark_result/";
@@ -221,7 +231,8 @@ public class mappingServlet extends HttpServlet {
 	 */
 	private void modifyRef(String originalRefPath, String modifiedRefPath) throws IOException {
 		File refFolder = new File(modifiedRefPath);
-		if (!refFolder.isDirectory()) {// if ref directory do not exist, make one
+		if (!refFolder.isDirectory()) {// if ref directory do not exist, make
+										// one
 			refFolder.mkdirs();
 		}
 		File originalRefPathFile = new File(originalRefPath);
@@ -233,18 +244,20 @@ public class mappingServlet extends HttpServlet {
 			String line = null;
 			StringBuilder ref = new StringBuilder();
 			while ((line = reader.readLine()) != null) {
-				if (line.startsWith(">")){
-					if (ref.length() > 0){
-						writer.write("XX" + ref.toString() + "XX\n");// append XX to both end of reference
+				if (line.startsWith(">")) {
+					if (ref.length() > 0) {
+						// append XX to both end of reference
+						writer.write("XX" + ref.toString() + "XX\n");
 						ref = new StringBuilder();
 					}
 					writer.write(line + "\n");
-				}else{
+				} else {
 					ref.append(line);
 				}
 			}
-			if (ref.length() > 0){
-				writer.write("XX" + ref.toString() + "XX\n");// append XX to both end of reference
+			if (ref.length() > 0) {
+				// append XX to both end of reference
+				writer.write("XX" + ref.toString() + "XX\n");
 			}
 			reader.close();
 			writer.close();
@@ -253,20 +266,21 @@ public class mappingServlet extends HttpServlet {
 
 	/**
 	 * clean old data to release space in server
+	 * 
 	 * @param rootDirectory
 	 * @param excess
 	 * @throws IOException
 	 */
 	private void cleanRootFolder() throws IOException {
 		File rootDirectory = new File(constant.diskRootPath);
-		long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024; // size in bytes. need divided by 1024*1024 to convert to MB
+		long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024; 
 		long excess = rootFolderSize - SPACETHRESHOLD;
 		System.out.println("root folder space occupation:\t" + rootFolderSize);
 		if (rootFolderSize >= SPACETHRESHOLD) { // if exceed threshold, clean
 			File[] subFolders = rootDirectory.listFiles();
-			Arrays.sort(subFolders, new FileDateComparator()); // sort by date. 
+			Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
 			for (File folder : subFolders) {
-				if (folder.getName().startsWith("Run") && folder.isDirectory() && folder != subFolders[subFolders.length-1]) {
+				if (folder.getName().startsWith("Run") && folder.isDirectory() && folder != subFolders[subFolders.length - 1]) {
 					if (excess >= 0) { // only clean exceed part
 						long length = FileUtils.sizeOfDirectory(folder) / 1024 / 1024;
 						FileUtils.deleteDirectory(folder);

@@ -16,6 +16,7 @@
 			<div id="content_main">
 				<h2>Step 1: Mapping:</h2>
 				<p class="dottedline"></p>
+				<img id="loader" src="images/progress.gif" alt="progress" style="display: none;"  />
 				<form action="mapping" enctype="multipart/form-data" method="post">
 					<div id="tables">
 						<table id="refcoor">
@@ -69,7 +70,7 @@
 									onclick="addExperiment()" /></td>
 								<td><input name="delete" type="button"
 									value="delete experiment" onclick="deleteExperiment()" /></td>
-								<td><input type="submit" value="Execute" /></td>
+								<td><input type="submit" value="Execute" onclick="document.getElementById('loader').style.display = 'block';document.getElementById('tables').style.display = 'none';setFooter();" /></td>
 							</tr>
 						</table>
 					</div>

@@ -11,6 +11,7 @@ import DataType.CpGSite;
 import DataType.CpGStatComparator;
 import DataType.CpGStatistics;
 import DataType.PatternResult;
+import DataType.PatternLink;
 
 public class ReadAnalysisResult {
 	private ArrayList<PatternResult> patternResultLists = new ArrayList<PatternResult>();
@@ -22,12 +23,15 @@ public class ReadAnalysisResult {
 	private String beginCoor;
 	private String endCoor;
 	private String FRState;
+	private String patternType;
 	private String cellLine;
 
-	public ReadAnalysisResult(String inputFolder,String cellLine, String ID,String FRState, Coordinate coordinate) throws IOException {
+	public ReadAnalysisResult(String inputFolder, String patternType,String cellLine, String ID, String FRState, Coordinate coordinate)
+			throws IOException {
 		this.inputFolder = inputFolder;
 		this.coordinate = coordinate;
 		this.FRState = FRState;
+		this.patternType = patternType;
 		this.cellLine = cellLine;
 		System.out.println("readStatFile");
 		readStatFile(ID);
@@ -38,8 +42,7 @@ public class ReadAnalysisResult {
 	}
 
 	private void readStatFile(String ID) throws IOException {
-		FileReader statReader = new FileReader(inputFolder + ID + FRState
-				+ "_bismark.analysis_statistics.txt");
+		FileReader statReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_statistics.txt");
 		BufferedReader statBuffReader = new BufferedReader(statReader);
 
 		String line;
@@ -70,8 +73,7 @@ public class ReadAnalysisResult {
 	}
 
 	private void readPatternFile(String ID) throws IOException {
-		FileReader patternReader = new FileReader(inputFolder + ID + FRState
-				+ "_bismark.analysis_MutationWithMethylation.txt");
+		FileReader patternReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_" + this.patternType + ".txt");
 		BufferedReader patternBuffReader = new BufferedReader(patternReader);
 		// skip software version line.
 		patternBuffReader.readLine();
@@ -92,8 +94,8 @@ public class ReadAnalysisResult {
 					// because each CpG consists of two nucleotide, i++
 					cpg = new CpGSite(i++, true);
 					patternResult.addCpG(cpg);
-				} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' || items[0].charAt(i) == 'T'){
-					patternResult.addAlleleLocus(i);
+				} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' || items[0].charAt(i) == 'T') {
+					patternResult.addAllele(i);
 				}
 			}
 			patternResultLists.add(patternResult);
@@ -107,7 +109,7 @@ public class ReadAnalysisResult {
 	private void setCoordinate() {
 		beginCoor = coordinate.getChr() + ":" + coordinate.getStart();
 		endCoor = String.valueOf(coordinate.getStart() + refLength);
-		if ((coordinate.getStart() + refLength) != coordinate.getEnd()){
+		if ((coordinate.getStart() + refLength) != coordinate.getEnd()) {
 			System.out.println(coordinate.getChr() + "\tEnd:" + coordinate.getEnd() + "\tNewEnd:" + (coordinate.getStart() + refLength));
 		}
 	}
@@ -135,8 +137,9 @@ public class ReadAnalysisResult {
 	public ArrayList<CpGStatistics> getStatList() {
 		return statList;
 	}
-	
+
 	public String getCellLine() {
 		return cellLine;
 	}
+	
 }

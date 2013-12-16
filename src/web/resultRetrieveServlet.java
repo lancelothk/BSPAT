@@ -1,8 +1,5 @@
 package web;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -49,60 +46,24 @@ public class resultRetrieveServlet extends HttpServlet {
 		Constant.WEBAPPFOLDER = rootPath;
 		String runID = request.getParameter("runID");
 		constant = Constant.readConstant(runID);
-		if (constant == null){
-			Utilities.showAlertWindow(response, "Can not read result");
+		if (constant != null){
+			String mPage = request.getParameter("mPage");
+			String aPage = request.getParameter("aPage");
+			if (mPage != null){
+				request.setAttribute("constant", constant);
+				request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
+				return;
+			}
+			if (aPage != null){
+				request.setAttribute("constant", constant);
+				request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
+				return;
+			}
+			Utilities.showAlertWindow(response, "can not read data");
 			return;
-		}
-		boolean found = false;
-		if (!runID.equals("")) {
-			File rootFolder = new File(rootPath);
-			String[] folders = rootFolder.list();
-			for (String folder : folders) {
-				if (folder.endsWith(runID)) {
-					FileWriter jspWriter = new FileWriter(constant.randomDir + "/resultRetrieve.jsp");
-					BufferedWriter jspBufferedWriter = new BufferedWriter(jspWriter);
-					File mappingResult = new File(rootPath + "/" + folder + "/mappingResult.jsp");
-					File analysisResult = new File(rootPath + "/" + folder + "/analysisResult.jsp");
-					
-					jspBufferedWriter.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\">");
-					jspBufferedWriter.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style.css\" />");
-					jspBufferedWriter.write("<div id=\"container\">");
-					jspBufferedWriter.write("<%@ include file=\"../menu.html\"%>");
-					jspBufferedWriter
-							.write("<div id=\"content\"><div id=\"content_top\"></div><div id=\"content_main\">");
-
-					// result retrieve option
-					jspBufferedWriter
-							.write("<form action=\"../resultRetrieve\" enctype=\"multipart/form-data\" method=\"post\">");
-					jspBufferedWriter.write("Run ID: <input type=\"text\" name=\"runID\" value=\"" + runID
-							+ "\" /> <input type=\"submit\" value=\"Submit\" /></form></br>");
-
-					if (mappingResult.exists()) {
-						// write mapping result link
-						String mappingRelativePath = mappingResult.getAbsolutePath().replace(
-								constant.diskRootPath.toString(), constant.webRootPath);
-						jspBufferedWriter.write("<a href=\"" + mappingRelativePath + "\" >Mapping Result</a></br>");
-					}
-					if (analysisResult.exists()) {
-						String analysisRelativePath = analysisResult.getAbsolutePath().replace(
-								constant.diskRootPath.toString(), constant.webRootPath);
-						jspBufferedWriter.write("<a href=\"" + analysisRelativePath + "\" >Analysis Result</a></br>");
-					}
-					jspBufferedWriter
-							.write("</div><div id=\"content_bottom\"></div></div><%@ include file=\"../footer.html\"%></div>");
-					jspBufferedWriter.close();
-					response.sendRedirect(constant.randomDir.replace(constant.diskRootPath.toString(),
-							constant.webRootPath) + "/resultRetrieve.jsp");
-					found = true;
-				} else {
-					continue;
-				}
-			}
-			if (found == false){
-				Utilities.showAlertWindow(response, "ID does not exist!");
-			}
 		}else {
-			Utilities.showAlertWindow(response, "ID is empty!");
+			Utilities.showAlertWindow(response, "can not read data");
+			return;
 		}
 	}
 
