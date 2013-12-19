@@ -42,7 +42,7 @@ public class Constant implements Serializable {
 	public double minMethylThreshold;
 	public double conversionRateThreshold;
 	public double sequenceIdentityThreshold;
-	public ArrayList<Experiment> experiments;
+	public Queue<Experiment> experiments;
 	public String email;
 	public String qualsType;
 	public int maxmis;
@@ -53,7 +53,6 @@ public class Constant implements Serializable {
 	public boolean finishedAnalysis;
 	public long analysisTime;
 	public String analysisResultLink;
-	public Queue<ReportSummary> reportSummaries;
 
 	private Constant() {
 	}
@@ -184,7 +183,7 @@ public class Constant implements Serializable {
 		return sequenceIdentityThreshold;
 	}
 
-	public ArrayList<Experiment> getExperiments() {
+	public Queue<Experiment> getExperiments() {
 		return experiments;
 	}
 
@@ -222,10 +221,6 @@ public class Constant implements Serializable {
 
 	public String getAnalysisResultLink() {
 		return analysisResultLink;
-	}
-
-	public Queue<ReportSummary> getReportSummaries() {
-		return reportSummaries;
 	}
 
 	public boolean isFinishedMapping() {

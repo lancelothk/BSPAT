@@ -220,10 +220,10 @@ public class Utilities {
 			return;
 		}
 		String smtpServer = "IMAP.gmail.com";
-		String username = "lancelothk";
-		String password = "~~Q1w2e3r4";
+		String username = "bspatnotice";
+		String password = "bspatcwru";
 		String toMailAddress = toAddress;
-		String fromMailAddress = "lancelothk@gmail.com";
+		String fromMailAddress = "bspatnotice@gmail.com";
 
 		try {
 			Properties props = new Properties();

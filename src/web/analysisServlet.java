@@ -1,13 +1,7 @@
 package web;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,9 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import BSPAT.ReportSummary;
 import BSPAT.Utilities;
 import DataType.Constant;
 
@@ -96,7 +88,6 @@ public class analysisServlet extends HttpServlet {
 		}
 
 		// save constant object in request
-		constant.reportSummaries = new PriorityQueue<>();
 		ExecuteAnalysis executeAnalysis = new ExecuteAnalysis(constant);
 		// start analysis thread
 		Thread executeAnalysisThread = new Thread(executeAnalysis);

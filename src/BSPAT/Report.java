@@ -98,7 +98,7 @@ public class Report {
 		
 		ArrayList<CpGStatistics> statList = new ArrayList<CpGStatistics>(cpgStatHashtable.values());
 		Collections.sort(statList, new CpGStatComparator());
-		bufferedWriter.write("reference seq length:\t" + referenceSeqs.get(region).length());
+		bufferedWriter.write("reference seq length:\t" + referenceSeqs.get(region).length() + "\n");
 		bufferedWriter.write("methylation rate for each CpG site:\n");
 		bufferedWriter.write("pos\trate" + "\n");
 
