@@ -12,8 +12,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -69,7 +67,7 @@ public class mappingServlet extends HttpServlet {
 		System.out.println("diskpath:\t" + this.getServletContext().getRealPath("")); 
 		cleanRootFolder(); // release root folder space
 		Collection<Part> parts = request.getParts(); // get submitted data
-		Queue<Experiment> experiments = new PriorityQueue<>();
+		ArrayList<Experiment> experiments = new ArrayList<Experiment>();
 		// add each experiment in list
 		String experimentName;
 		int index = 1;

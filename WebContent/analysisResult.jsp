@@ -40,7 +40,7 @@
 					<p class="dottedline"></p>
 					<c:forEach items="${constant.experiments}" var="experiment">
 						<table id="analysisResult"><tr><td>Experiment:</td><td><c:out value="${experiment.getName()}" /></td></tr>
-						<c:forEach items="${experiment.getReportSummaries()}" var="reportSummary">
+						<c:forEach items="${constant.reportSummaries}" var="reportSummary">
 							<tr><td><c:out value="${reportSummary.getId()}" />-<c:out value="${reportSummary.getFRState()}" />  </td></tr>
 								<c:forEach items="${reportSummary.getPatternLinks()}" var="patternLink">
 									<tr>

@@ -2,10 +2,6 @@ package DataType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
-import BSPAT.ReportSummary;
 
 public class Experiment implements Serializable {
 	/**
@@ -17,14 +13,12 @@ public class Experiment implements Serializable {
 	private String seqFile;
 	private boolean seqReady;
 	private String inputType;
-	public Queue<ReportSummary> reportSummaries;
 
 	public Experiment(int index, String name) {
 		super();
 		this.index = index;
 		this.name = name;
 		this.seqReady = false;
-		this.reportSummaries = new PriorityQueue<>();
 	}
 	
 	public void setInputType(String inputType) {
@@ -65,9 +59,5 @@ public class Experiment implements Serializable {
 
 	public void setSeqFile(String seqFile) {
 		this.seqFile = seqFile;
-	}
-	
-	public Queue<ReportSummary> getReportSummaries() {
-		return reportSummaries;
 	}
 }
