@@ -17,37 +17,21 @@
 				<h2>Manual</h2>
 				<table>
 					<tr>
-						<td>This manual is divided into three phases:
+						<td>This manual is divided into four parts:</td>
 					</tr>
-					</td>
 					<tr>
-						<td>1. <a href="manualMapping.jsp">Mapping phase</a>;
+						<td>1. <a href="quickGuide.jsp">Quick Guide</a>;</td>
 					</tr>
-					</td>
 					<tr>
-						<td>2. <a href="manualAnalysis.jsp">Analysis phase</a>;
+						<td>2. <a href="manualMapping.jsp">Mapping phase</a>;</td>
 					</tr>
-					</td>
 					<tr>
-						<td>3. <a href="manualResult.jsp">Result phase</a>;
+						<td>3. <a href="manualAnalysis.jsp">Analysis phase</a>;</td>
 					</tr>
-					</td>
+					<tr>
+						<td>4. <a href="manualResult.jsp">Result phase</a>;</td>
+					</tr>
 				</table>
-				<!-- 				<p class="phead">Sample data</p> -->
-				<!-- 				<p class=""ptext""> -->
-				<!-- 				<table> -->
-				<!-- 				<tr> -->
-				<!-- 				<td>Reference file</td><td></td> -->
-				<!-- 				</tr> -->
-				<!-- 				<tr> -->
-				<!-- 				<td>Coordinates file</td><td></td> -->
-				<!-- 				</tr> -->
-				<!-- 				<tr> -->
-				<!-- 				<td>Sequence file</td><td></td> -->
-				<!-- 				</tr> -->
-				<!-- 				</table> -->
-				<!-- 				</p> -->
-				</br>
 			</div>
 			<div id="content_bottom"></div>
 		</div>

@@ -69,7 +69,7 @@
 								</c:choose>
 							</tr>
 							<tr>
-								<td>Stat</td>
+								<td>Other Info</td>
 								<td><a href=<c:out value="${reportSummary.getStatTextLink()}"/>>Text</a></td>
 							</tr>
 						</c:forEach>

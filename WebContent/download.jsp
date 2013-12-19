@@ -16,11 +16,11 @@
 			<div id="content_main">
 			<h2>Preprocessing scripts:</h2>
 			<table id="downloads">
-			<tr><td>Extract samples from multiplex file. </td></tr>
+			<tr><td>1. Extract samples from multiplex file </td></tr>
 			<tr><td>Usage: perl BarcodesExtractor.pl &lt;barcode file&gt; &lt;multiplex file&gt; &lt;output path&gt;</td></tr>
 			<tr><td><a href="BarcodesExtractor.pl"> BarcodesExtractor.pl </a></td></tr>
 			
-			<tr><td>Example input data </td></tr>
+			<tr><td>2. Example input data </td></tr>
 			<tr><td>Including reference file and several sequence files</td></tr>
 			<tr><td><a href="example.zip"> example.zip </a></td></tr>
 			</table>

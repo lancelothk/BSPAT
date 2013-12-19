@@ -95,10 +95,12 @@ public class Report {
 				}
 			}
 		}
-		bufferedWriter.write("methylation rate for each CpG site:\n");
+		
 		ArrayList<CpGStatistics> statList = new ArrayList<CpGStatistics>(cpgStatHashtable.values());
 		Collections.sort(statList, new CpGStatComparator());
-		bufferedWriter.write("pos\trate\t" + referenceSeqs.get(region).length() + "\n");
+		bufferedWriter.write("reference seq length:\t" + referenceSeqs.get(region).length());
+		bufferedWriter.write("methylation rate for each CpG site:\n");
+		bufferedWriter.write("pos\trate" + "\n");
 
 		for (CpGStatistics cpgStat : statList) {
 			cpgStat.calcMethylRate();

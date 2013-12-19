@@ -26,7 +26,7 @@ public class ReadAnalysisResult {
 	private String patternType;
 	private String cellLine;
 
-	public ReadAnalysisResult(String inputFolder, String patternType,String cellLine, String ID, String FRState, Coordinate coordinate)
+	public ReadAnalysisResult(String inputFolder, String patternType, String cellLine, String ID, String FRState, Coordinate coordinate)
 			throws IOException {
 		this.inputFolder = inputFolder;
 		this.coordinate = coordinate;
@@ -47,12 +47,14 @@ public class ReadAnalysisResult {
 
 		String line;
 		String[] items;
-		// skip first line.
+		// read ref length
+		line = statBuffReader.readLine();
+		items = line.split("\t");
+		refLength = Integer.valueOf(items[1]);
+		// skip second line.
 		statBuffReader.readLine();
 		// get start position
 		line = statBuffReader.readLine();
-		items = line.split("\t");
-		refLength = Integer.valueOf(items[2]);
 		line = statBuffReader.readLine();
 		while (line != null) {
 			items = line.split("\t");
@@ -141,5 +143,5 @@ public class ReadAnalysisResult {
 	public String getCellLine() {
 		return cellLine;
 	}
-	
+
 }
