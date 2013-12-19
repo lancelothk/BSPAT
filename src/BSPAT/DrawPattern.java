@@ -2,7 +2,6 @@ package BSPAT;
 
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceStub;
-import graph.ReadAnalysisResult;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

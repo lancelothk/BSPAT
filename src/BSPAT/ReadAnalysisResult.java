@@ -1,4 +1,4 @@
-package graph;
+package BSPAT;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
