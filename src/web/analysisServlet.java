@@ -1,7 +1,11 @@
 package web;
 
 import java.io.IOException;
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -10,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import BSPAT.ReportSummary;
 import BSPAT.Utilities;
 import DataType.Constant;
 
@@ -87,19 +92,22 @@ public class analysisServlet extends HttpServlet {
 			return;
 		}
 
-		// save constant object in request
-		ExecuteAnalysis executeAnalysis = new ExecuteAnalysis(constant);
-		// start analysis thread
-		Thread executeAnalysisThread = new Thread(executeAnalysis);
-		executeAnalysisThread.start();
-
-		while (executeAnalysisThread.isAlive()) {
+		ExecutorService executor = Executors.newCachedThreadPool();
+		ArrayList<Future<ArrayList<ReportSummary>>> futureList = new ArrayList<>();
+		for (int i=0;i<constant.experiments.size();i++) {
+			Future<ArrayList<ReportSummary>> future = executor.submit(new ExecuteAnalysis(constant.experiments.get(i).getName(), constant));
+			futureList.add(future);
+		}
+        
+		for (int i=0;i<constant.experiments.size();i++) {
 			try {
-				Thread.sleep(100);
+				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
 			} catch (InterruptedException e) {
-				Utilities.showAlertWindow(response, "executeAnalysisThread sleep interrupted");
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return;
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 

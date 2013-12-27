@@ -1,26 +1,26 @@
 package web;
 
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+
 import BSPAT.BSSeqAnalysis;
+import BSPAT.ReportSummary;
 import DataType.Constant;
-import DataType.Experiment;
 
-public class ExecuteAnalysis implements Runnable {
+public class ExecuteAnalysis implements Callable<ArrayList<ReportSummary>> {
 	private Constant constant;
+	private String experimentName;
 
-	public ExecuteAnalysis(Constant constant) {
+	public ExecuteAnalysis(String experimentName, Constant constant) {
 		super();
 		this.constant = constant;
+		this.experimentName = experimentName;
 	}
 
-	public synchronized void run() {
-		try {
-			System.out.println("Pattern analysi begin:");
-			for (Experiment experiment : constant.experiments) {
-				BSSeqAnalysis bsSeqAnalysis = new BSSeqAnalysis();
-				experiment.reportSummaries = bsSeqAnalysis.execute(experiment.getName(), constant);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	@Override
+	public ArrayList<ReportSummary> call() throws Exception {
+		System.out.println("Pattern analysi begin:");
+		BSSeqAnalysis bsSeqAnalysis = new BSSeqAnalysis();
+		return bsSeqAnalysis.execute(experimentName, constant);
 	}
 }

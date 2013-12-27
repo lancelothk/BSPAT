@@ -7,9 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Queue;
-
-import BSPAT.ReportSummary;
 
 public class Constant implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -42,7 +39,7 @@ public class Constant implements Serializable {
 	public double minMethylThreshold;
 	public double conversionRateThreshold;
 	public double sequenceIdentityThreshold;
-	public Queue<Experiment> experiments;
+	public ArrayList<Experiment> experiments;
 	public String email;
 	public String qualsType;
 	public int maxmis;
@@ -183,7 +180,7 @@ public class Constant implements Serializable {
 		return sequenceIdentityThreshold;
 	}
 
-	public Queue<Experiment> getExperiments() {
+	public ArrayList<Experiment> getExperiments() {
 		return experiments;
 	}
 

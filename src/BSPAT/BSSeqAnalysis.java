@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 import DataType.Constant;
 import DataType.Coordinate;
 import DataType.CpGSite;
-import DataType.Experiment;
 import DataType.Pattern;
 import DataType.PatternLink;
 import DataType.Sequence;
@@ -35,8 +32,8 @@ public class BSSeqAnalysis {
 	private Constant constant;
 	private HashMap<String, Coordinate> coordinates;
 
-	public Queue<ReportSummary> execute(String experimentName, Constant constant) throws Exception {
-		Queue<ReportSummary> reportSummaries = new PriorityQueue<>();
+	public ArrayList<ReportSummary> execute(String experimentName, Constant constant) throws Exception {
+		ArrayList<ReportSummary> reportSummaries = new ArrayList<>();
 		this.constant = constant;
 		String inputFolder = constant.mappingResultPath + experimentName + "/";
 		String outputFolder = constant.patternResultPath + experimentName + "/";
