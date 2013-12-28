@@ -15,6 +15,11 @@ html,body {
 	text-align: left;
 }
 
+textarea { 
+	width: 700px; 
+	text-align: left;
+}
+
 #title {
 	
 }

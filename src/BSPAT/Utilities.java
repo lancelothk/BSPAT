@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
@@ -183,6 +182,7 @@ public class Utilities {
 		ZipFile zipFile;
 		try {
 			zipFile = new ZipFile(zipfile);
+			@SuppressWarnings("rawtypes")
 			Enumeration enumeration = zipFile.getEntries();
 			org.apache.tools.zip.ZipEntry zipEntry = null;
 

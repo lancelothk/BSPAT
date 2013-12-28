@@ -11,7 +11,6 @@ import DataType.CpGSite;
 import DataType.CpGStatComparator;
 import DataType.CpGStatistics;
 import DataType.PatternResult;
-import DataType.PatternLink;
 
 public class ReadAnalysisResult {
 	private ArrayList<PatternResult> patternResultLists = new ArrayList<PatternResult>();

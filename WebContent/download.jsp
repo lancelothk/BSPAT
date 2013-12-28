@@ -14,15 +14,17 @@
 		<div id="content">
 			<div id="content_top"></div>
 			<div id="content_main">
-			<h2>Preprocessing scripts:</h2>
+			<h2>Downloads:</h2>
+			<p class="dottedline"></p>
 			<table id="downloads">
 			<tr><td>1. Extract samples from multiplex file </td></tr>
 			<tr><td>Usage: perl BarcodesExtractor.pl &lt;barcode file&gt; &lt;multiplex file&gt; &lt;output path&gt;</td></tr>
 			<tr><td><a href="BarcodesExtractor.pl"> BarcodesExtractor.pl </a></td></tr>
-			
+			<tr><td><p class="dottedline"></p></td></tr>
 			<tr><td>2. Example input data </td></tr>
 			<tr><td>Including reference file and several sequence files</td></tr>
 			<tr><td><a href="example.zip"> example.zip </a></td></tr>
+			<tr><td><p class="dottedline"></p></td></tr>
 			</table>
 			</div>
 			<div id="content_bottom"></div>

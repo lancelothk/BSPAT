@@ -32,6 +32,7 @@
 						}%>
 						<table>
 <%						if (constant.isFinishedMapping()){ %>
+							<tr><td>Run ID:</td><td><%=runID %></td></tr>
 							<tr><td>Mapping Result</td>
 							<td><form action="resultRetrieve" enctype="multipart/form-data" method="post">
 								<input type="hidden" name="runID" value="<%=runID %>" />

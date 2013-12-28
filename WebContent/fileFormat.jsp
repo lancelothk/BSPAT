@@ -14,22 +14,14 @@
 		<div id="content">
 			<div id="content_top"></div>
 			<div id="content_main">
-				<h2>Manual</h2>
+				<h2>File Format</h2>
 				<p class="dottedline"></p>
-				<table>
-					<tr>
-						<td>This manual is divided into three parts:</td>
-					</tr>
-					<tr>
-						<td>1. <a href="manualMapping.jsp">Mapping phase</a>;</td>
-					</tr>
-					<tr>
-						<td>2. <a href="manualAnalysis.jsp">Analysis phase</a>;</td>
-					</tr>
-					<tr>
-						<td>3. <a href="manualResult.jsp">Result phase</a>;</td>
-					</tr>
-				</table>
+				<div id='refFormat'>
+					<h3>Reference File Format</h3>
+					<p></p>
+					
+				</div>
+				<div id='seqFormat'></div>
 			</div>
 			<div id="content_bottom"></div>
 		</div>

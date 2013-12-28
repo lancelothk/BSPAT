@@ -191,9 +191,8 @@ public class Report {
 			double ph, p0;
 
 			NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-			double c1 = 0, c2 = 0;
+			double c2 = 0;
 			try {
-				c1 = nd.inverseCumulativeProbability(1 - 0.01 / totalCount);
 				c2 = nd.inverseCumulativeProbability(1 - 0.05 / totalCount);
 			} catch (MathException e) {
 				// TODO Auto-generated catch block
@@ -285,9 +284,7 @@ public class Report {
 				double totalCountMutation = mutationPattern.getCount();
 
 				if (constant.minP0Threshold == -1) {
-					double methylationPercentage;
 					for (Pattern childPattern : mutationPattern.getChildPatternsList()) {
-						methylationPercentage = childPattern.getCount() / totalCountMutation;
 						if (percentage >= constant.minMethylThreshold) {
 							bufferedWriterWithPatterns.write(childPattern.getPatternString() + "\t"
 									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation
@@ -302,9 +299,8 @@ public class Report {
 					double ph, p0;
 
 					NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-					double c1 = 0, c2 = 0;
+					double c2 = 0;
 					try {
-						c1 = nd.inverseCumulativeProbability(1 - 0.01 / totalCountMutation);
 						c2 = nd.inverseCumulativeProbability(1 - 0.05 / totalCountMutation);
 					} catch (MathException e) {
 						// TODO Auto-generated catch block
@@ -321,9 +317,7 @@ public class Report {
 						}
 					}
 					if (outputMethylationPattern.size() == 0) {
-						double methylationPercentage;
 						for (Pattern childPattern : mutationPattern.getChildPatternsList()) {
-							methylationPercentage = childPattern.getCount() / totalCountMutation;
 							if (percentage >= constant.minMethylThreshold) {
 								bufferedWriterWithPatterns.write(childPattern.getPatternString() + "\t"
 										+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation

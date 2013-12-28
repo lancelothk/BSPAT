@@ -21,15 +21,15 @@
 					<div id="tables">
 						<table id="refcoor">
 							<tr>
-								<td>Email address(Optional):</td>
+								<td>Email address(Optional):<sup><a href="manualMapping.jsp#email">?</a></sup></td>
 								<td><input type="text" name="email" /></td>
 							</tr>
 							<tr>
-								<td>Reference Sequence File:</td>
+								<td>Reference Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
 								<td><input type="file" name="ref" /></td>
 							</tr>
 							<tr>
-								<td>Reference Genome Version</td>
+								<td>Reference Genome Version:<sup><a href="manualMapping.jsp#refVersion">?</a></sup></td>
 								<td><select name="refVersion">
 									<option value="hg19">hg19</option>
 									<option value="hg18" selected="selected">hg18</option>
@@ -38,7 +38,7 @@
 								</select></td>
 							</tr>
 							<tr>
-								<td>Quality Score type:</td>
+								<td>Quality Score type:<sup><a href="manualMapping.jsp#quality">?</a></sup></td>
 								<td><select name="qualsType">
 									<option value="phred33" selected="selected">phred33</option>
 									<option value="phred64">phred64</option>
@@ -47,7 +47,7 @@
 								</select></td>
 							</tr>
 							<tr>
-								<td>Maximum Permitted Mismatches:</td>
+								<td>Maximum Permitted Mismatches:<sup><a href="manualMapping.jsp#maxMis">?</a></sup></td>
 								<td><select name="maxmis">
 										<option value="0">0</option>
 										<option value="1">1</option>
@@ -60,7 +60,7 @@
 						<table id="experiment">
 							<tr>
 								<td>Experiment</td>
-								<td>Reads File</td>
+								<td>Reads File<sup><a href="manualMapping.jsp#experiment">?</a></sup></td>
 							</tr>
 						</table>
 						<p class="dottedline"></p>
@@ -80,11 +80,9 @@
 		</div>
 		<%@ include file="footer.html"%>
 	</div>
-	
+</body>
 <script language="javascript">
 	var elementCount = 0;
-
-	addExperiment();
 
 	function addColumnSeq(TR) {
 		var index = document.createTextNode(elementCount + '  ');
@@ -143,6 +141,6 @@
 		}
 		setFooter();
 	}
+	window.onload = addExperiment;
 </script>
-</body>
 </html>

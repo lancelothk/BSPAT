@@ -107,7 +107,7 @@ public class DrawPattern {
 			graphWriter.clearRect(0, 0, imageWidth, imageHeight);
 			graphWriter.setPaint(Color.BLACK);
 			graphWriter.setFont(new Font(fontChoice, styleChoice, commonSize));
-			graphWriter.drawString(beginCoor, STARTX + WIDTH, height);
+			graphWriter.drawString("chr" + beginCoor, STARTX + WIDTH, height);
 			graphWriter.drawString(endCoor, STARTX + refLength * WIDTH - WIDTH, height);
 
 			// 2. add reference bar
@@ -324,7 +324,7 @@ public class DrawPattern {
 			// gImage.setBackground(Color.WHITE);
 			graphWriter.setPaint(Color.BLACK);
 			graphWriter.setFont(new Font(fontChoice, styleChoice, commonSize));
-			graphWriter.drawString(beginCoor, STARTX + WIDTH, height);
+			graphWriter.drawString("chr" + beginCoor, STARTX + WIDTH, height);
 			graphWriter.drawString(endCoor, STARTX + refLength * WIDTH - WIDTH, height);
 
 			// 2. add reference bar
@@ -354,7 +354,7 @@ public class DrawPattern {
 			addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternA", bedWriter, height);
 			// set snp info
 			if (patternWithAllele.hasAllele()) {
-				ArrayList<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg19")
+				ArrayList<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg19", patternResultPath)
 						+ patternWithAllele.getAlleleList().get(0), "1");
 				if (snpList != null && snpList.size() > 0) {
 					reportSummary.setASMsnp(snpList.get(0));
@@ -446,6 +446,7 @@ public class DrawPattern {
 	}
 
 	private ArrayList<SNP> retreiveSNP(String chr, long pos, String maxRet) {
+		ArrayList<SNP> snps = new ArrayList<SNP>();
 		String fetchIds = "";
 		// 1. search region
 		try {
@@ -464,6 +465,10 @@ public class DrawPattern {
 			System.out.println("Found ids: " + res.getCount());
 			System.out.print("First " + res.getRetMax() + " ids: ");
 
+			if (res.getCount().equals("0")){
+				return snps;
+			}
+			
 			int N = res.getIdList().getId().length;
 			for (int i = 0; i < N; i++) {
 				if (i > 0)
@@ -476,7 +481,6 @@ public class DrawPattern {
 		}
 
 		// 3. fetch SNP
-		ArrayList<SNP> snps = new ArrayList<SNP>();
 		try {
 			EFetchSnpServiceStub service = new EFetchSnpServiceStub();
 			// call NCBI EFetch utility
@@ -496,7 +500,7 @@ public class DrawPattern {
 		return snps;
 	}
 
-	private long convertCoordinates(String chr, long pos, String targetRefVersion) throws IOException, InterruptedException {
+	private long convertCoordinates(String chr, long pos, String targetRefVersion, String patternResultPath) throws IOException, InterruptedException {
 		if (refVersion.equals(targetRefVersion)) {
 			return pos;
 		}
@@ -505,7 +509,7 @@ public class DrawPattern {
 		String targetPosFileName = "tmpCoordinate." + targetRefVersion;
 		String chain = refVersion + "ToHg" + targetRefVersion.replace("hg", "") + ".over.chain.gz";
 		// write pos into file
-		BufferedWriter coorWriter = new BufferedWriter(new FileWriter(liftOverPath + originPosFileName));
+		BufferedWriter coorWriter = new BufferedWriter(new FileWriter(patternResultPath + originPosFileName));
 		coorWriter.write("chr" + chr + ":" + pos + "-" + pos + "\n");
 		coorWriter.close();
 
@@ -514,17 +518,17 @@ public class DrawPattern {
 		String callLiftOver = liftOverPathFile.getAbsolutePath() + "/liftOver -positions " + originPosFileName + " "
 				+ liftOverPathFile.getAbsolutePath() + "/" + chain + " " + targetPosFileName + " /dev/null";
 		System.out.println("Call liftOver:");
-		Utilities.callCMD(callLiftOver, liftOverPathFile);
+		Utilities.callCMD(callLiftOver, new File(patternResultPath));
 
 		// read result
-		BufferedReader coorReader = new BufferedReader(new FileReader(liftOverPath + targetPosFileName));
+		BufferedReader coorReader = new BufferedReader(new FileReader(patternResultPath + targetPosFileName));
 		String[] items = coorReader.readLine().split(":");
 		coorReader.close();
-		File originPosFile = new File(liftOverPath + originPosFileName);
+		File originPosFile = new File(patternResultPath + originPosFileName);
 		originPosFile.delete();
-		File targetPosFile = new File(liftOverPath + targetPosFileName);
+		File targetPosFile = new File(patternResultPath + targetPosFileName);
 		targetPosFile.delete();
-		IO.deleteFiles(liftOverPath, new String[] { ".bed", ".bedmapped", ".bedunmapped" });
+		IO.deleteFiles(patternResultPath, new String[] { ".bed", ".bedmapped", ".bedunmapped" });
 		return Long.valueOf(items[1].split("-")[0]);
 	}
 }

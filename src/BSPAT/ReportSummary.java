@@ -1,6 +1,7 @@
 package BSPAT;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -52,7 +53,24 @@ public class ReportSummary implements Serializable {
 	}
 	
 	public Collection<PatternLink> getPatternLinks(){
-		return patternHash.values();
+		PatternLink[] patternLinks = new PatternLink[4];
+		for (PatternLink patternLink : patternHash.values()) {
+			switch (patternLink.getPatternType()){
+			case PatternLink.METHYLATION:
+				patternLinks[0] = patternLink;
+				break;
+			case PatternLink.METHYLATIONWITHMUTATION:
+				patternLinks[1] = patternLink;
+				break;
+			case PatternLink.MUTATION:
+				patternLinks[2] = patternLink;
+				break;
+			case PatternLink.MUTATIONWITHMETHYLATION:
+				patternLinks[3] = patternLink;
+				break;
+			}
+		}
+		return Arrays.asList(patternLinks);
 	}
 	
 	public String getStatTextLink() {
