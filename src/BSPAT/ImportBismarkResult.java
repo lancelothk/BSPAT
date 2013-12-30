@@ -28,7 +28,6 @@ public class ImportBismarkResult {
 	public ImportBismarkResult(String refPath, String inputFolder) throws IOException {
 		this.inputFolder = inputFolder;
 		this.refPath = refPath;
-
 		readReference();
 		readBismarkAlignmentResult();
 		readBismarkCpGResult();

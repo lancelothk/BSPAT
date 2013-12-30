@@ -191,9 +191,9 @@ public class Report {
 			double ph, p0;
 
 			NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-			double c2 = 0;
+			double criticalZ = 0;
 			try {
-				c2 = nd.inverseCumulativeProbability(1 - 0.05 / totalCount);
+				criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalCount);
 			} catch (MathException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -204,7 +204,7 @@ public class Report {
 				ph = methylationPattern.getCount() / totalCount;
 				p0 = Math.max(constant.minP0Threshold, Math.pow(p, methylationPattern.getCGcount()));
 				z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalCount);
-				if (z > c2) {
+				if (z > criticalZ) {
 					outputMethylationPattern.add(methylationPattern);
 				}
 			}
@@ -299,9 +299,9 @@ public class Report {
 					double ph, p0;
 
 					NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-					double c2 = 0;
+					double criticalZ = 0;
 					try {
-						c2 = nd.inverseCumulativeProbability(1 - 0.05 / totalCountMutation);
+						criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalCountMutation);
 					} catch (MathException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -312,7 +312,7 @@ public class Report {
 						ph = childPattern.getCount() / totalCountMutation;
 						p0 = Math.max(constant.minP0Threshold, Math.pow(p, childPattern.getCGcount()));
 						z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalCountMutation);
-						if (z > c2) {
+						if (z > criticalZ) {
 							outputMethylationPattern.add(childPattern);
 						}
 					}

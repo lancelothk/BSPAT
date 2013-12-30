@@ -46,16 +46,18 @@
 							methylation status.</td>
 					</tr>
 					<tr>
-						<td><b>MethylationWithMutation pattern:</b> methylation
-							pattern splitted by mutation status.</td>
+						<td><b>MethylationWithMutation pattern:</b>For each
+							methylation pattern, child patterns can then be grouped again by
+							mutation patterns</td>
 					</tr>
 					<tr>
 						<td><b>Mutation Pattern:</b> grouped reads with same mutation
 							status.</td>
 					</tr>
 					<tr>
-						<td><b>MutationWithMethylation pattern:</b> mutation pattern
-							splitted by methylation status.</td>
+						<td><b>MutationWithMethylation pattern:</b>For each mutation
+							pattern, child patterns can be grouped again by methylation
+							patterns</td>
 					</tr>
 					<tr>
 						<td><b>ASM pattern:</b> If two methylation patterns have at
@@ -91,7 +93,9 @@
 								parent pattern. Last column is pattern ID or parent pattern ID.</p></td>
 					</tr>
 					<tr>
-						<td>Example:<br /><a href="images/text_example.png" target="_blank"><img src="images/text_example.png" border="1" width="620" /></a></td>
+						<td>Example:<br />
+						<a href="images/text_example.png" target="_blank"><img
+								src="images/text_example.png" border="1" width="620" /></a></td>
 					</tr>
 					<tr>
 						<td><h4>Figure:</h4></td>
@@ -105,11 +109,14 @@
 								methylation rate is calculated from all reads in this region.
 								The color scale is from Red(100%) to Green (0%). Mutation(SNP)
 								here is represented by a blue bar.</p>
-							<p class="ptext">For ASM pattern, there are only two colorful patterns.
-								Each of the pattern represent an allele methylation pattern.</p></td>
+							<p class="ptext">For ASM pattern, there are only two colorful
+								patterns. Each of the pattern represent an allele methylation
+								pattern.</p></td>
 					</tr>
 					<tr>
-						<td>Example:<br /><a href="images/figure_example.png" target="_blank"><img src="images/figure_example.png" border="1" width="620" /></a></td>
+						<td>Example:<br />
+						<a href="images/figure_example.png" target="_blank"><img
+								src="images/figure_example.png" border="1" width="620" /></a></td>
 					</tr>
 					<tr>
 						<td><h4>Genome Browser Link:</h4></td>
@@ -122,7 +129,9 @@
 								found in UCSC genome browser website.</p></td>
 					</tr>
 					<tr>
-						<td>Example:<br /><a href="images/gb_example.png" target="_blank"><img src="images/gb_example.png" border="1" width="620" /></a></td>
+						<td>Example:<br />
+						<a href="images/gb_example.png" target="_blank"><img
+								src="images/gb_example.png" border="1" width="620" /></a></td>
 					</tr>
 					<tr>
 						<td><h4>dbSNP link:</h4></td>

@@ -66,14 +66,14 @@
 					</tr>
 					<tr id="alphaThreshold">
 						<td>
-							<h4>&alpha; threshold</h4>
+							<h4>&alpha; threshold & Critical Value</h4>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<p class="ptext">It is a parameter used in significance calculation. The
-								formula is shown in figure below. This parameter is the default
-								pattern filter parameter, which is mutually exclusive with
+							<p class="ptext">These two parameters are used in significance calculation. The
+								formula is shown in figure below. They are default
+								pattern filter parameters, which are mutually exclusive with
 								Methylation pattern threshold. If there is no result to show
 								under user assigned parameter, the program will use methylation
 								pattern threshold instead to generate result.</p> <img

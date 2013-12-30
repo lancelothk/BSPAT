@@ -58,15 +58,22 @@ public class analysisServlet extends HttpServlet {
 																		// format
 		if (request.getParameter("minp0text") != null) {
 			constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
+			constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
 			constant.minMethylThreshold = -1;
 			// value check
 			if (constant.minP0Threshold < 0 || constant.minP0Threshold > 1) {
-				Utilities.showAlertWindow(response, "p0 threshold invalid!!");
+				Utilities.showAlertWindow(response, "alpha threshold invalid!!");
+				return;
+			}
+			// value check
+			if (constant.criticalValue < 0 || constant.criticalValue > 1) {
+				Utilities.showAlertWindow(response, "critical value invalid!!");
 				return;
 			}
 		} else if (request.getParameter("minmethyltext") != null) {
 			constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
 			constant.minP0Threshold = -1;
+			constant.criticalValue = -1;
 			// value check
 			if (constant.minMethylThreshold < 0 || constant.minMethylThreshold > 1) {
 				Utilities.showAlertWindow(response, "methylation pattern threshold invalid!!");
@@ -94,12 +101,12 @@ public class analysisServlet extends HttpServlet {
 
 		ExecutorService executor = Executors.newCachedThreadPool();
 		ArrayList<Future<ArrayList<ReportSummary>>> futureList = new ArrayList<>();
-		for (int i=0;i<constant.experiments.size();i++) {
+		for (int i = 0; i < constant.experiments.size(); i++) {
 			Future<ArrayList<ReportSummary>> future = executor.submit(new ExecuteAnalysis(constant.experiments.get(i).getName(), constant));
 			futureList.add(future);
 		}
-        
-		for (int i=0;i<constant.experiments.size();i++) {
+
+		for (int i = 0; i < constant.experiments.size(); i++) {
 			try {
 				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
 			} catch (InterruptedException e) {

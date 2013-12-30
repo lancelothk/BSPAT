@@ -36,6 +36,7 @@ public class Constant implements Serializable {
 	public String randomDir;
 	public double mutationPatternThreshold;
 	public double minP0Threshold;
+	public double criticalValue;
 	public double minMethylThreshold;
 	public double conversionRateThreshold;
 	public double sequenceIdentityThreshold;
