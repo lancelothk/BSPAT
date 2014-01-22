@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style.css" />
-<title>BS-PAT</title>
+<title>BSPAT</title>
 </head>
 
 <body>
@@ -23,9 +23,106 @@
 						<td><img src="images/resultSummarySection.png" border="1" /></td>
 					</tr>
 					<tr>
-						<td><p class="ptext">This section shows parameters used
-								in analysis, experiment number and name, result ID, analysis
-								running time.</p></td>
+						<td>
+							<h4>Experiment</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">List experiments which executed in the
+								mapping phase.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Result ID</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">An unique ID is used to track and retrieve
+								result.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Bisulfite Conversion rate</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">
+								<a href="manualAnalysis.jsp#conversionRate">Bisulfite
+									conversion rate</a> threshold used in current execution.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Sequence identity</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">
+								<a href="manualAnalysis.jsp#seqIdentity">Sequence identity</a>
+								threshold used in current execution.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Sequence number before filtering</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Number of all sequences mapped by Bisamrk.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Sequence number after filtering</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Number of sequences after filtering by
+								bisulfite conversion rate and sequence identity.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>&alpha; threshold and Mutation pattern threshold</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Thresholds used in current execution to
+								filter patterns.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Analysis phase running time</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Time cost of analysis in current execution.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Zipped analysis result</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Compressed analysis results, including all
+								results shown in result page, such as text pattern, figure and
+								GenomeBrowser bed file.</p>
+						</td>
 					</tr>
 				</table>
 				<p class="dottedline"></p>
@@ -93,9 +190,9 @@
 								parent pattern. Last column is pattern ID or parent pattern ID.</p></td>
 					</tr>
 					<tr>
-						<td>Example:<br />
-						<a href="images/text_example.png" target="_blank"><img
-								src="images/text_example.png" border="1" width="620" /></a></td>
+						<td>Example:<br /> <a href="images/text_example.png"
+							target="_blank"><img src="images/text_example.png" border="1"
+								width="620" /></a></td>
 					</tr>
 					<tr>
 						<td><h4>Figure:</h4></td>
@@ -114,9 +211,9 @@
 								pattern.</p></td>
 					</tr>
 					<tr>
-						<td>Example:<br />
-						<a href="images/figure_example.png" target="_blank"><img
-								src="images/figure_example.png" border="1" width="620" /></a></td>
+						<td>Example:<br /> <a href="images/figure_example.png"
+							target="_blank"><img src="images/figure_example.png"
+								border="1" width="620" /></a></td>
 					</tr>
 					<tr>
 						<td><h4>Genome Browser Link:</h4></td>
@@ -129,9 +226,9 @@
 								found in UCSC genome browser website.</p></td>
 					</tr>
 					<tr>
-						<td>Example:<br />
-						<a href="images/gb_example.png" target="_blank"><img
-								src="images/gb_example.png" border="1" width="620" /></a></td>
+						<td>Example:<br /> <a href="images/gb_example.png"
+							target="_blank"><img src="images/gb_example.png" border="1"
+								width="620" /></a></td>
 					</tr>
 					<tr>
 						<td><h4>dbSNP link:</h4></td>

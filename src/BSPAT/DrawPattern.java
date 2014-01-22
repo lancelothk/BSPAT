@@ -263,26 +263,48 @@ public class DrawPattern {
 		PatternResult patternWithAllele = new PatternResult(allelePatternResultsLists.get(0));
 		PatternResult patternWithoutAllele = new PatternResult(patternResultLists.get(0));
 		for (PatternResult patternResult : allelePatternResultsLists) {
-			for (int i = 0; i < patternResult.getCpGList().size(); i++) {
-				if (patternResult.getCpGList().get(i).getMethylLabel()) {
-					patternWithAllele.getCpGList().get(i).methylCountPlus(patternResult.getCount());
+			// match same allele ---- only keep most frequent allele
+			// has same number of alleles
+			if (patternWithAllele.getAlleleList().size() == patternResult.getAlleleList().size()){
+				boolean sameAlleleList = true;
+				for (int i = 0; i < patternWithAllele.getAlleleList().size(); i++) {
+					if (patternWithAllele.getAlleleList().get(i).intValue() != (patternResult.getAlleleList().get(i).intValue())){
+						sameAlleleList = false;
+						break;
+					}
 				}
-				patternWithAllele.getCpGList().get(i).totalCountPlus(patternResult.getCount());
+				if (sameAlleleList){
+					// match two cpgSite
+					for (CpGSite cpgSiteA : patternResult.getCpGList()) {
+						for (CpGSite cpgSiteB : patternWithAllele.getCpGList()) {
+							if (cpgSiteA.getPosition() == cpgSiteB.getPosition()) {
+								if (cpgSiteA.getMethylLabel()) {
+									cpgSiteB.methylCountPlus(patternResult.getCount());
+								}
+								cpgSiteB.totalCountPlus(patternResult.getCount());
+							}
+						}
+					}
+					patternWithAllele.countPlus(patternResult.getCount());
+				}
 			}
-			patternWithAllele.countPlus(patternResult.getCount());
 		}
-		
 
 		for (PatternResult patternResult : patternResultLists) {
-			for (int i = 0; i < patternResult.getCpGList().size(); i++) {
-				if (patternResult.getCpGList().get(i).getMethylLabel()) {
-					patternWithoutAllele.getCpGList().get(i).methylCountPlus(patternResult.getCount());
+			// match two cpgSite
+			for (CpGSite cpgSiteA : patternResult.getCpGList()) {
+				for (CpGSite cpgSiteB : patternWithoutAllele.getCpGList()) {
+					if (cpgSiteA.getPosition() == cpgSiteB.getPosition()) {
+						if (cpgSiteA.getMethylLabel()) {
+							cpgSiteB.methylCountPlus(patternResult.getCount());
+						}
+						cpgSiteB.totalCountPlus(patternResult.getCount());
+					}
 				}
-				patternWithoutAllele.getCpGList().get(i).totalCountPlus(patternResult.getCount());
 			}
 			patternWithoutAllele.countPlus(patternResult.getCount());
 		}
-		
+
 		int totalCount = patternWithAllele.getCount() + patternWithoutAllele.getCount();
 		patternWithAllele.setPercent(patternWithAllele.getCount() / (double) totalCount);
 		patternWithoutAllele.setPercent(patternWithoutAllele.getCount() / (double) totalCount);
@@ -305,7 +327,7 @@ public class DrawPattern {
 			} else if (figureFormat.equals(Constant.EPS)) {
 				epsImage = new FileOutputStream(fileName + ".eps");
 				graphWriter = new EpsGraphics("title", epsImage, 0, 0, imageWidth, imageHeight, ColorMode.COLOR_RGB); // eps
-																																			// writer
+																														// writer
 			}
 			reportSummary.setASMFigureLink(fileName);
 
@@ -437,6 +459,10 @@ public class DrawPattern {
 	private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
 		ArrayList<CpGSite> cglistWithAllele = patternWithAllele.getCpGList();
 		ArrayList<CpGSite> cglistWithoutAllele = patternWithoutAllele.getCpGList();
+//		// use 20% threshold to filter ASM pattern
+//		if (patternWithAllele.getCount() / (double)(patternWithAllele.getCount() + patternWithoutAllele.getCount()) < 0.2){
+//			return false;
+//		}
 		for (int i = 0; i < cglistWithAllele.size(); i++) {
 			if (cglistWithAllele.get(i).getMethylType() != cglistWithoutAllele.get(i).getMethylType()) {
 				return true;
@@ -465,10 +491,10 @@ public class DrawPattern {
 			System.out.println("Found ids: " + res.getCount());
 			System.out.print("First " + res.getRetMax() + " ids: ");
 
-			if (res.getCount().equals("0")){
+			if (res.getCount().equals("0")) {
 				return snps;
 			}
-			
+
 			int N = res.getIdList().getId().length;
 			for (int i = 0; i < N; i++) {
 				if (i > 0)

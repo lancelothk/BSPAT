@@ -30,6 +30,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.zip.ZipFile;
 
 import DataType.Coordinate;
@@ -65,6 +66,20 @@ public class Utilities {
 			writer.write(String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(), coor.getEnd()));
 		}
 		writer.close();
+	}
+	
+	// delete folder content recursively
+	public static void deleteFolderContent(String folder) throws IOException{
+		File folderFile = new File(folder);
+		File[] contents = folderFile.listFiles();
+		for (File file : contents) {
+			if (file.isFile()){
+				file.delete();
+			}else if (file.isDirectory()){
+				// delete directory recursively
+				FileUtils.deleteDirectory(file);
+			}
+		}
 	}
 
 	/**
@@ -148,7 +163,7 @@ public class Utilities {
 			if (basePath != null) {
 				if (basePath.isDirectory()) {
 					pathName = files[i].getPath().substring(basePath.getPath().length() + 1);
-				} else {// 文件
+				} else {// file
 					pathName = files[i].getPath().substring(basePath.getParent().length() + 1);
 				}
 			} else {
@@ -236,7 +251,7 @@ public class Utilities {
 			MimeMessage mimeMessage = new MimeMessage(session);
 			mimeMessage.setFrom(new InternetAddress(fromMailAddress));
 			mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(toMailAddress));
-			mimeMessage.setSubject("BS-PAT");
+			mimeMessage.setSubject("BSPAT");
 			mimeMessage.setText(text);
 			Transport.send(mimeMessage);
 			System.out.println("Sent message successfully....");

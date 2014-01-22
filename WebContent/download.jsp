@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style.css" />
-<title>BS-PAT</title>
+<title>BSPAT</title>
 </head>
 
 <body>
@@ -19,11 +19,11 @@
 			<table id="downloads">
 			<tr><td>1. Extract samples from multiplex file </td></tr>
 			<tr><td>Usage: perl BarcodesExtractor.pl &lt;barcode file&gt; &lt;multiplex file&gt; &lt;output path&gt;</td></tr>
-			<tr><td><a href="BarcodesExtractor.pl"> BarcodesExtractor.pl </a></td></tr>
+			<tr><td><a href="download/BarcodesExtractor.pl"> BarcodesExtractor.pl </a></td></tr>
 			<tr><td><p class="dottedline"></p></td></tr>
 			<tr><td>2. Example input data </td></tr>
 			<tr><td>Including reference file and several sequence files</td></tr>
-			<tr><td><a href="example.zip"> example.zip </a></td></tr>
+			<tr><td><a href="download/example.zip"> example.zip </a></td></tr>
 			<tr><td><p class="dottedline"></p></td></tr>
 			</table>
 			</div>

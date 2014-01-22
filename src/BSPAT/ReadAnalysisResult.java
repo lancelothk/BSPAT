@@ -41,7 +41,7 @@ public class ReadAnalysisResult {
 	}
 
 	private void readStatFile(String ID) throws IOException {
-		FileReader statReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_statistics.txt");
+		FileReader statReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_report.txt");
 		BufferedReader statBuffReader = new BufferedReader(statReader);
 
 		String line;
@@ -50,10 +50,11 @@ public class ReadAnalysisResult {
 		line = statBuffReader.readLine();
 		items = line.split("\t");
 		refLength = Integer.valueOf(items[1]);
-		// skip second line.
-		statBuffReader.readLine();
+		// skip 6 lines
+		for (int i=0;i<6;i++){
+			statBuffReader.readLine();
+		}
 		// get start position
-		line = statBuffReader.readLine();
 		line = statBuffReader.readLine();
 		while (line != null) {
 			items = line.split("\t");
@@ -76,8 +77,10 @@ public class ReadAnalysisResult {
 	private void readPatternFile(String ID) throws IOException {
 		FileReader patternReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_" + this.patternType + ".txt");
 		BufferedReader patternBuffReader = new BufferedReader(patternReader);
-		// skip software version line.
+		// skip column names and reference line
 		patternBuffReader.readLine();
+		patternBuffReader.readLine();
+		// start to read content
 		String line = patternBuffReader.readLine();
 		String[] items;
 		PatternResult patternResult;

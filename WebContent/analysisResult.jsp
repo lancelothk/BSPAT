@@ -17,7 +17,7 @@
 		}
 	}
 </script>
-<title>BS-PAT</title>
+<title>BSPAT</title>
 </head>
 
 <body>
@@ -50,6 +50,14 @@
 						<td>Sequence identity:</td>
 						<td><c:out value="${constant.sequenceIdentityThreshold}" /></td>
 					</tr>
+					<tr>
+						<td>Sequence number before filtering:</td>
+						<td><c:out value="${constant.analysisSummary.getSeqBeforeFilter()}" /></td>
+					</tr>
+					<tr>
+						<td>Sequence number after filtering:</td>
+						<td><c:out value="${constant.analysisSummary.getSeqAfterFilter()}" /></td>
+					</tr>
 					<c:choose>
 						<c:when test="${constant.minP0Threshold != -1}">
 							<tr>
@@ -73,6 +81,10 @@
 					<tr>
 						<td>Analysis running time:</td>
 						<td><c:out value="${constant.analysisTime}" />s</td>
+					</tr>
+					<tr>
+						<td>Zipped analysis result:</td>
+						<td><a href=<c:out value="${constant.analysisResultLink}" />>analysisResult.zip</a></td>
 					</tr>
 				</table>
 				<p class="dottedline"></p>
@@ -133,13 +145,6 @@
 						</c:forEach>
 					</table>
 				</c:forEach>
-				<p class="dottedline">
-				<table>
-					<tr>
-						<td>Zipped analysis result:</td>
-						<td><a href=<c:out value="${constant.analysisResultLink}" />>analysisResult.zip</a></td>
-					</tr>
-				</table>
 			</div>
 			<div id="content_bottom"></div>
 		</div><%@ include file="../footer.html"%>

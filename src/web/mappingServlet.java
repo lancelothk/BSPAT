@@ -29,6 +29,7 @@ import DataType.Constant;
 import DataType.Experiment;
 import DataType.ExtensionFilter;
 import DataType.FileDateComparator;
+import DataType.MappingSummary;
 
 /**
  * Servlet implementation class uploadServlet
@@ -64,7 +65,7 @@ public class mappingServlet extends HttpServlet {
 		initializeConstant(request); // initialize constant, which is a
 										// singleton
 		// print disk path to console
-		System.out.println("diskpath:\t" + this.getServletContext().getRealPath("")); 
+		System.out.println("diskpath:\t" + this.getServletContext().getRealPath(""));
 		cleanRootFolder(); // release root folder space
 		Collection<Part> parts = request.getParts(); // get submitted data
 		ArrayList<Experiment> experiments = new ArrayList<>();
@@ -137,9 +138,9 @@ public class mappingServlet extends HttpServlet {
 			return;
 		}
 		// set other parameters
-		constant.refVersion = request.getParameter("refVersion"); 
+		constant.refVersion = request.getParameter("refVersion");
 		constant.coorFileName = "coordinates";
-		constant.qualsType = request.getParameter("qualsType"); 
+		constant.qualsType = request.getParameter("qualsType");
 		constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
 		constant.experiments = experiments;
 		constant.email = request.getParameter("email");
@@ -169,19 +170,24 @@ public class mappingServlet extends HttpServlet {
 			}
 		}
 		
+		// read mapping summary report
+		MappingSummary mappingSummary = IO.readMappingSummary(constant.mappingResultPath);
+
 		// compress result folder
 		String zipFileName = constant.randomDir + "/mappingResult.zip";
 		Utilities.zipFolder(constant.mappingResultPath, zipFileName);
-		// send email to inform user
-		Utilities.sendEmail(constant.email, constant.runID, "Mapping has finished.\n" + "Your runID is " + constant.runID
-				+ "\nPlease go to cbc.case.edu/BS-PAT/result.jsp to retrieve your result.");
-		
+
 		// passing JSTL parameters
-		constant.mappingTime = (System.currentTimeMillis() - start)/ 1000;
+		constant.mappingSummary = mappingSummary;
+		constant.mappingTime = (System.currentTimeMillis() - start) / 1000;
 		constant.mappingResultLink = zipFileName.replace(constant.diskRootPath, constant.webRootPath);
 		constant.finishedMapping = true;
 		// save constant object to file
-		Constant.writeConstant(); 
+		Constant.writeConstant();
+		// send email to inform user
+		Utilities.sendEmail(constant.email, constant.runID, "Mapping has finished.\n" + "Your runID is " + constant.runID
+				+ "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+		//redirect page
 		request.setAttribute("constant", constant);
 		request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
 	}
@@ -273,7 +279,7 @@ public class mappingServlet extends HttpServlet {
 	 */
 	private void cleanRootFolder() throws IOException {
 		File rootDirectory = new File(constant.diskRootPath);
-		long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024; 
+		long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024;
 		long excess = rootFolderSize - SPACETHRESHOLD;
 		System.out.println("root folder space occupation:\t" + rootFolderSize);
 		if (rootFolderSize >= SPACETHRESHOLD) { // if exceed threshold, clean
@@ -283,6 +289,7 @@ public class mappingServlet extends HttpServlet {
 				if (folder.getName().startsWith("Run") && folder.isDirectory() && folder != subFolders[subFolders.length - 1]) {
 					if (excess >= 0) { // only clean exceed part
 						long length = FileUtils.sizeOfDirectory(folder) / 1024 / 1024;
+						// delete directory recursively
 						FileUtils.deleteDirectory(folder);
 						excess -= length;
 					} else {

@@ -51,6 +51,8 @@ public class Constant implements Serializable {
 	public boolean finishedAnalysis;
 	public long analysisTime;
 	public String analysisResultLink;
+	public MappingSummary mappingSummary;
+	public AnalysisSummary analysisSummary;
 
 	private Constant() {
 	}
@@ -227,5 +229,13 @@ public class Constant implements Serializable {
 
 	public boolean isFinishedAnalysis() {
 		return finishedAnalysis;
+	}
+
+	public MappingSummary getMappingSummary() {
+		return mappingSummary;
+	}
+
+	public AnalysisSummary getAnalysisSummary() {
+		return analysisSummary;
 	}
 }

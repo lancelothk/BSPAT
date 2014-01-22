@@ -1,5 +1,6 @@
 package web;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -14,8 +15,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import BSPAT.IO;
 import BSPAT.ReportSummary;
 import BSPAT.Utilities;
+import DataType.AnalysisSummary;
 import DataType.Constant;
 
 /**
@@ -52,7 +55,6 @@ public class analysisServlet extends HttpServlet {
 		response.setContentType("text/html");
 		String runID = request.getParameter("runID");
 		constant = Constant.readConstant(runID);
-
 		constant.figureFormat = request.getParameter("figureFormat"); // set
 																		// figure
 																		// format
@@ -98,6 +100,13 @@ public class analysisServlet extends HttpServlet {
 			Utilities.showAlertWindow(response, "sequence identity threshold invalid!!");
 			return;
 		}
+		
+		// clean up result directory and result zip file
+		Utilities.deleteFolderContent(constant.patternResultPath);
+		File resultZip = new File(constant.randomDir + "/" + "analysisResult.zip");
+		if (resultZip.exists()){
+			resultZip.delete();
+		}
 
 		ExecutorService executor = Executors.newCachedThreadPool();
 		ArrayList<Future<ArrayList<ReportSummary>>> futureList = new ArrayList<>();
@@ -118,14 +127,18 @@ public class analysisServlet extends HttpServlet {
 			}
 		}
 
+		// read analysis summary report
+		AnalysisSummary analysisSummary = IO.readAnalysisSummary(constant.patternResultPath);
+		
 		// compress result folder
 		String zipFileName = constant.randomDir + "/" + "analysisResult.zip";
 		Utilities.zipFolder(constant.patternResultPath, zipFileName);
 		// send email to inform user
 		Utilities.sendEmail(constant.email, constant.runID, "Analysis has finished.\n" + "Your runID is " + constant.runID
-				+ "\nPlease go to cbc.case.edu/BS-PAT/result.jsp to retrieve your result.");
+				+ "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
 
 		// passing JSTL parameters
+		constant.analysisSummary = analysisSummary;
 		constant.analysisTime = (System.currentTimeMillis() - start) / 1000;
 		constant.analysisResultLink = zipFileName.replace(constant.diskRootPath, constant.webRootPath);
 		constant.finishedAnalysis = true;

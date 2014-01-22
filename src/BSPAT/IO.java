@@ -9,8 +9,10 @@ import java.util.HashMap;
 
 import javax.servlet.http.Part;
 
+import DataType.AnalysisSummary;
 import DataType.Coordinate;
 import DataType.ExtensionFilter;
+import DataType.MappingSummary;
 
 public class IO {
 	/**
@@ -80,5 +82,102 @@ public class IO {
 			}
 		}
 		return list;
+	}
+	
+	/**
+	 * Read analysis report and generate analysis summary 
+	 * @param analysisResultPath
+	 * @return
+	 * @throws IOException
+	 */
+	public static AnalysisSummary readAnalysisSummary(String analysisResultPath) throws IOException{
+		AnalysisSummary analysisSummary = new AnalysisSummary();
+		File mappingResultPathFile = new File(analysisResultPath);
+		File[] folders = mappingResultPathFile.listFiles();
+		for (File folder : folders) {
+			// only check folders
+			if (folder.isDirectory()){
+				File[] files = folder.listFiles();
+				files = folder.listFiles(new ExtensionFilter(new String[] { "_report.txt" }));
+				for (File file : files) {
+					BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+					// ignore first 3 lines
+					for (int i=0;i<3;i++){
+						bufferedReader.readLine();
+					}
+					// read following 2 lines
+					for (int i=0;i<2;i++){
+						String line = bufferedReader.readLine();
+						String value = line.split(":\t")[1];
+						switch (i) {
+						case 0:
+							analysisSummary.addSeqBeforeFilter(Long.parseLong(value));
+							break;
+						case 1:
+							analysisSummary.addSeqAfterFilter(Long.parseLong(value));
+							break;
+						default:
+							break;
+						}
+					}
+					bufferedReader.close();
+				}
+			}
+		}
+		return analysisSummary;
+	}
+	
+	/**
+	 * Read mapping report and generate mapping summary 
+	 * @param mappingResultPath
+	 * @return
+	 * @throws IOException 
+	 */
+	public static MappingSummary readMappingSummary(String mappingResultPath) throws IOException {
+		MappingSummary mappingSummary = new MappingSummary();
+		File mappingResultPathFile = new File(mappingResultPath);
+		File[] folders = mappingResultPathFile.listFiles();
+		for (File folder : folders) {
+			// only check folder
+			if (folder.isDirectory()){
+				File[] files = folder.listFiles();
+				files = folder.listFiles(new ExtensionFilter(new String[] { "_report.txt" }));
+				for (File file : files) {
+					BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+					// ignore first 5 lines
+					for (int i=0;i<5;i++){
+						bufferedReader.readLine();
+					}
+					// read following 6 lines
+					for (int i=0;i<6;i++){
+						String line = bufferedReader.readLine();
+						String value = line.split(":\t")[1];
+						switch (i) {
+						case 0:
+							mappingSummary.addSeqAnalysed(Long.parseLong(value));
+							break;
+						case 1:
+							mappingSummary.addUniqueBestHit(Long.parseLong(value));
+							break;
+						case 2:
+							break;
+						case 3:
+							mappingSummary.addNoAlignment(Long.parseLong(value));
+							break;
+						case 4:
+							mappingSummary.addNotUnique(Long.parseLong(value));
+							break;
+						case 5:
+							mappingSummary.addNotExtracted(Long.parseLong(value));
+							break;
+						default:
+							break;
+						}
+					}
+					bufferedReader.close();
+				}
+			}
+		}
+		return mappingSummary;
 	}
 }

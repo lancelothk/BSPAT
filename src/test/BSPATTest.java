@@ -13,8 +13,11 @@ import java.lang.reflect.Method;
 import org.junit.Test;
 
 import BSPAT.DrawPattern;
+import BSPAT.IO;
 import BSPAT.Utilities;
+import DataType.AnalysisSummary;
 import DataType.Constant;
+import DataType.MappingSummary;
 
 public class BSPATTest {
 
@@ -58,13 +61,27 @@ public class BSPATTest {
 	
 	@Test
 	public void testObjRead() throws FileNotFoundException, IOException, ClassNotFoundException{
-		Constant.WEBAPPFOLDER = "/home/ke/";
-		Constant constant = Constant.getInstance();
-		constant = Constant.readConstant("12345");
-		System.out.println(constant.runID);
+//		Constant.WEBAPPFOLDER = "/home/ke/";
+//		Constant constant = Constant.getInstance();
+//		constant = Constant.readConstant("12345");
+//		System.out.println(constant.runID);
 		
 //		ObjectInputStream in = new ObjectInputStream(new FileInputStream("/home/ke/test.data"));
 //		String s = (String) in.readObject();
 //		System.out.println(s);
+	}
+	
+	@Test
+	public void testReadMappingSummary() throws IOException{
+//		String mappingResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run7538583663942149733/bismark_result";
+//		MappingSummary mappingSummary = IO.readMappingSummary(mappingResultPath);
+//		System.out.println(mappingSummary.toString());
+	}
+	
+	@Test
+	public void testReadAnalysisSummary() throws IOException{
+		String analysisResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run3780745787145715763/pattern_result";
+		AnalysisSummary analysisSummary = IO.readAnalysisSummary(analysisResultPath);
+		System.out.println(analysisSummary.toString());
 	}
 }

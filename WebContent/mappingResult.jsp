@@ -19,7 +19,7 @@
 		}
 	}
 </script>
-<title>BS-PAT</title>
+<title>BSPAT</title>
 </head>
 
 <body>
@@ -41,6 +41,10 @@
 									href="manualAnalysis.jsp#mappingSummary">?</a></sup></td>
 						</tr>
 						<tr>
+							<td>Result ID:</td>
+							<td><c:out value="${constant.runID}" /></td>
+						</tr>
+						<tr>
 							<td>Experiment(<c:out value="${constant.experiments.size()}" />):
 							</td>
 							<td><c:forEach items="${constant.experiments}"
@@ -49,12 +53,32 @@
 						</c:forEach></td>
 						</tr>
 						<tr>
-							<td>mapping part running time:</td>
-							<td><c:out value="${constant.mappingTime}" />s</td>
+							<td>Sequences analysed in total:</td>
+							<td><c:out value="${constant.mappingSummary.getSeqAnalysed()}" /></td>
 						</tr>
 						<tr>
-							<td>Result ID:</td>
-							<td><c:out value="${constant.runID}" /></td>
+							<td>Sequences with a unique best hit:</td>
+							<td><c:out value="${constant.mappingSummary.getUniqueBestHit()}" /></td>
+						</tr>
+						<tr>
+							<td>Sequences without any alignment:</td>
+							<td><c:out value="${constant.mappingSummary.getNoAlignment()}" /></td>
+						</tr>
+						<tr>
+							<td>Sequences did not map uniquely:</td>
+							<td><c:out value="${constant.mappingSummary.getNotUnique()}" /></td>
+						</tr>
+						<tr>
+							<td>Invalid sequences</td>
+							<td><c:out value="${constant.mappingSummary.getNotExtracted()}" /></td>
+						</tr>
+						<tr>
+							<td>Mapping efficiency:</td>
+							<td><c:out value="${constant.mappingSummary.getMappingEfficiencyString()}" /></td>
+						</tr>
+						<tr>
+							<td>Mapping phase running time:</td>
+							<td><c:out value="${constant.mappingTime}" />s</td>
 						</tr>
 						<tr>
 							<td>Mapping result:</td>

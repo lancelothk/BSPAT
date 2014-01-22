@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
 
@@ -57,9 +58,9 @@ public class Report {
 		FileWriter fileWriter = new FileWriter(outputFolder  + region + FRState
 				+ "_bismark.analysis.txt");
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		bufferedWriter.write("Reference Sequence:" + "\t" + referenceSeqs.get(region) + "\n");
 		bufferedWriter
 				.write("methylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
+		bufferedWriter.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		for (Sequence seq : sequencesList) {
 			bufferedWriter.write(seq.getMethylationStringWithMutations() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t"
 					+ seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" + seq.getSequenceIdentity()
@@ -69,9 +70,10 @@ public class Report {
 	}
 
 	public void writeStatistics() throws IOException {
-		FileWriter fileWriter = new FileWriter(outputFolder + region + FRState
-				+ "_bismark.analysis_statistics.txt");
-		reportSummary.setStatTextLink(outputFolder  + region + FRState + "_bismark.analysis_statistics.txt");
+		String reportFileName = outputFolder + region + FRState
+				+ "_bismark.analysis_report.txt";
+		FileWriter fileWriter = new FileWriter(reportFileName);
+		reportSummary.setStatTextLink(reportFileName);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		Hashtable<Integer, CpGStatistics> cpgStatHashtable = new Hashtable<Integer, CpGStatistics>();
 
@@ -99,6 +101,10 @@ public class Report {
 		ArrayList<CpGStatistics> statList = new ArrayList<CpGStatistics>(cpgStatHashtable.values());
 		Collections.sort(statList, new CpGStatComparator());
 		bufferedWriter.write("reference seq length:\t" + referenceSeqs.get(region).length() + "\n");
+		bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
+		bufferedWriter.write("Sequence identity threshold:\t" + constant.sequenceIdentityThreshold + "\n");
+		bufferedWriter.write("Sequences before filter:\t" + totalCount + "\n");
+		bufferedWriter.write("Sequences after filter:\t" + sequencesList.size() + "\n");
 		bufferedWriter.write("methylation rate for each CpG site:\n");
 		bufferedWriter.write("pos\trate" + "\n");
 
@@ -107,30 +113,25 @@ public class Report {
 			// bismark result is 1-based. Need change to 0-based
 			bufferedWriter.write(cpgStat.getPosition()-1 + "\t" + cpgStat.getMethylationRate() + "\n");
 		}
-
-		bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
-		bufferedWriter.write("Sequence identity threshold:\t" + constant.sequenceIdentityThreshold + "\n");
-		bufferedWriter.write("Reads before filter:\t" + totalCount + "\n");
-		bufferedWriter.write("Reads after filter:\t" + sequencesList.size() + "\n");
-		bufferedWriter.write("Mismatches count in each position:\n");
-
-		mutationStat = new int[referenceSeqs.get(region).length()];
-		// give mutationStat array zero value
-		for (int i : mutationStat) {
-			mutationStat[i] = 0;
-		}
-		for (Sequence seq : sequencesList) {
-			char[] mutationArray = seq.getMutationString().toCharArray();
-			for (int i = 0; i < mutationArray.length; i++) {
-				if (mutationArray[i] == 'A' || mutationArray[i] == 'C' || mutationArray[i] == 'G' || mutationArray[i] == 'T') {
-					mutationStat[i]++;
-				}
-			}
-		}
-		for (int i = 0; i < mutationStat.length; i++) {
-			// 1 based position
-			bufferedWriter.write((i + 1) + "\t" + mutationStat[i] + "\n");
-		}
+		
+//		bufferedWriter.write("Mismatches count in each position:\n");
+//		mutationStat = new int[referenceSeqs.get(region).length()];
+//		// give mutationStat array zero value
+//		for (int i : mutationStat) {
+//			mutationStat[i] = 0;
+//		}
+//		for (Sequence seq : sequencesList) {
+//			char[] mutationArray = seq.getMutationString().toCharArray();
+//			for (int i = 0; i < mutationArray.length; i++) {
+//				if (mutationArray[i] == 'A' || mutationArray[i] == 'C' || mutationArray[i] == 'G' || mutationArray[i] == 'T') {
+//					mutationStat[i]++;
+//				}
+//			}
+//		}
+//		for (int i = 0; i < mutationStat.length; i++) {
+//			// 1 based position
+//			bufferedWriter.write((i + 1) + "\t" + mutationStat[i] + "\n");
+//		}
 
 		bufferedWriter.close();
 	}
@@ -146,7 +147,9 @@ public class Report {
 		BufferedWriter bufferedWriterWithMutations = new BufferedWriter(fileWriterWithMutations);
 
 		bufferedWriter.write(String.format("%s\tcount\tpercentage\tID\n",PatternLink.METHYLATION));
+		bufferedWriter.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		bufferedWriterWithMutations.write(String.format("%s\tcount\tpercentage\tParentPatternID\n",PatternLink.METHYLATIONWITHMUTATION));
+		bufferedWriterWithMutations.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		// sort methylation pattern.
 		Collections.sort(methylationPatterns, new PatternComparator());
 
@@ -265,7 +268,9 @@ public class Report {
 		BufferedWriter bufferedWriterWithPatterns = new BufferedWriter(fileWriterWithPatterns);
 
 		bufferedWriter.write(String.format("%s\tcount\tpercentage\tID\n",PatternLink.MUTATION));
+		bufferedWriter.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		bufferedWriterWithPatterns.write(String.format("%s\tcount\tpercentage\tParentPatternID\n",PatternLink.MUTATIONWITHMETHYLATION));
+		bufferedWriterWithPatterns.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		Collections.sort(mutationPatterns, new PatternComparator());
 		// sort mutation pattern.
 
