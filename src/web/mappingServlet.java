@@ -12,6 +12,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -23,6 +26,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.FileUtils;
 
+import BSPAT.CallBismark;
 import BSPAT.IO;
 import BSPAT.Utilities;
 import DataType.Constant;
@@ -40,6 +44,7 @@ public class mappingServlet extends HttpServlet {
 	private static final long serialVersionUID = 6078331324800268609L;
 	private Constant constant = null;
 	private final long SPACETHRESHOLD = 4000;// maximum allow 4000MB space
+	private final int MAXEXECUTIONDAY = 10;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -151,23 +156,27 @@ public class mappingServlet extends HttpServlet {
 			Utilities.showAlertWindow(response, "error in modifying reference");
 			e.printStackTrace();
 		}
-		// initialize executeMappingThread
-		ExecuteMapping executeMapping = new ExecuteMapping(constant);
-		Thread executeMappingThread = new Thread(executeMapping);
-		executeMappingThread.start();
-		// initialize executeBlatQueryThread
-		ExecuteBlatQuery executeBlatQuery = new ExecuteBlatQuery(constant);
-		Thread executeBlatQueryThread = new Thread(executeBlatQuery);
-		executeBlatQueryThread.start();
-		// wait for executeMappingThread finish
-		while (executeMappingThread.isAlive() || executeBlatQueryThread.isAlive()) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				Utilities.showAlertWindow(response, "executeMappingThread sleep interrupted");
-				e.printStackTrace();
-				return;
-			}
+		// bismark indexing
+		CallBismark callBismark = null;
+		try {
+			callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType, constant.maxmis);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		// multiple threads to execute bismark mapping
+		ExecutorService executor = Executors.newCachedThreadPool();
+		for (Experiment experiment : constant.experiments) {
+			executor.execute(new ExecuteMapping(callBismark, experiment.getName(), constant));
+		}
+		executor.execute(new ExecuteBlatQuery(constant));
+		executor.shutdown();
+		// Wait until all threads are finish
+	    try {
+			executor.awaitTermination(MAXEXECUTIONDAY,TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		// read mapping summary report

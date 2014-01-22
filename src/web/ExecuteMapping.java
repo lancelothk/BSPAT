@@ -8,27 +8,26 @@ import DataType.Experiment;
 
 public class ExecuteMapping implements Runnable {
 	private Constant constant;
+	private String experimentName;
+	private CallBismark callBismark;
 
-	public ExecuteMapping(Constant constant) {
+	public ExecuteMapping(CallBismark callBismark, String experimentName, Constant constant) {
 		super();
 		this.constant = constant;
+		this.experimentName = experimentName;
+		this.callBismark = callBismark;
 	}
 
 	public synchronized void run() {
 		try {
-			// mapping
-			CallBismark callBismark = null;
-			callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType, constant.maxmis);
-			for (Experiment experiment : constant.experiments) {
-				System.out.println("Start mapping" + experiment.getName());
+				System.out.println("Start mapping" + experimentName);
 				// run bismark and extract result
 				try {
-					callBismark.execute(constant.seqsPath + experiment.getName(), constant.mappingResultPath + experiment.getName() + "/");
+					callBismark.execute(constant.seqsPath + experimentName, constant.mappingResultPath + experimentName + "/");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				System.out.println("Finished mapping" + experiment.getName());
-			}
+				System.out.println("Finished mapping" + experimentName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;

@@ -20,6 +20,7 @@ import BSPAT.ReportSummary;
 import BSPAT.Utilities;
 import DataType.AnalysisSummary;
 import DataType.Constant;
+import DataType.Experiment;
 
 /**
  * Servlet implementation class analysisServlet
@@ -110,8 +111,8 @@ public class analysisServlet extends HttpServlet {
 
 		ExecutorService executor = Executors.newCachedThreadPool();
 		ArrayList<Future<ArrayList<ReportSummary>>> futureList = new ArrayList<>();
-		for (int i = 0; i < constant.experiments.size(); i++) {
-			Future<ArrayList<ReportSummary>> future = executor.submit(new ExecuteAnalysis(constant.experiments.get(i).getName(), constant));
+		for (Experiment experiment : constant.experiments) {
+			Future<ArrayList<ReportSummary>> future = executor.submit(new ExecuteAnalysis(experiment.getName(), constant));
 			futureList.add(future);
 		}
 
