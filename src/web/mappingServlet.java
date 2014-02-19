@@ -65,7 +65,6 @@ public class mappingServlet extends HttpServlet {
 	 *      response)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		long start = System.currentTimeMillis();
 		response.setContentType("text/html");
 		initializeConstant(request); // initialize constant, which is a
 										// singleton
@@ -142,6 +141,7 @@ public class mappingServlet extends HttpServlet {
 			Utilities.showAlertWindow(response, "Reference file missing!");
 			return;
 		}
+		long start = System.currentTimeMillis();
 		// set other parameters
 		constant.refVersion = request.getParameter("refVersion");
 		constant.coorFileName = "coordinates";
