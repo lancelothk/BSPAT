@@ -18,7 +18,7 @@ public class Sequence {
 	private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
 	private String methylCall; // 14 methylation call string
 	private String readConvState; // 15 read conversion state for the alignment
-//	private String XGtag; // 16 genome conversion state for the alignment
+	//	private String XGtag; // 16 genome conversion state for the alignment
 	private ArrayList<CpGSite> CpGSites;
 	private String methylationString;
 	private String methylationStringWithMutations;
@@ -28,8 +28,8 @@ public class Sequence {
 	private double sequenceIdentity;
 	private String FRstate = "";
 
-	public Sequence(String id, String flag, String region, int startPos, String originalSeq,String qualityScore, String editDist, String mismatchString, 
-			 String methylCall,String readConvState) {
+	public Sequence(String id, String flag, String region, int startPos, String originalSeq, String qualityScore, String editDist, String mismatchString,
+	                String methylCall, String readConvState) {
 		this.id = id;
 		this.flag = flag;
 		this.region = region;
@@ -42,10 +42,10 @@ public class Sequence {
 		this.CpGSites = new ArrayList<CpGSite>();
 		this.readConvState = readConvState;
 	}
-	
+
 	/**
 	 * reverse and complement Sequence
-	 * 
+	 *
 	 * @param strBuff
 	 * @return
 	 */
@@ -68,15 +68,15 @@ public class Sequence {
 		}
 		return result;
 	}
-	
+
 	public void setFRstate(String fRstate) {
 		FRstate = fRstate;
 	}
-	
+
 	public String getFRstate() {
 		return FRstate;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -124,35 +124,35 @@ public class Sequence {
 	public void setMethylationStringWithMutations(String methylationStringWithMutations) {
 		this.methylationStringWithMutations = methylationStringWithMutations;
 	}
-	
+
 	public void setEditDist(String editDist) {
 		this.editDist = editDist;
 	}
-	
+
 	public void setMismatchString(String mismatchString) {
 		this.mismatchString = mismatchString;
 	}
-	
+
 	public void setReadConvState(String readConvState) {
 		this.readConvState = readConvState;
 	}
-	
+
 	public void setMutationString(String mutationString) {
 		this.mutationString = mutationString;
 	}
-	
+
 	public String getMutationString() {
 		return mutationString;
 	}
-	
+
 	public String getReadConvState() {
 		return readConvState;
 	}
-	
+
 	public String getEditDist() {
 		return editDist;
 	}
-	
+
 	public String getMismatchString() {
 		return mismatchString;
 	}
@@ -204,16 +204,16 @@ public class Sequence {
 	public void addCpG(CpGSite cpg) {
 		CpGSites.add(cpg);
 	}
-	
+
 	public ArrayList<CpGSite> getCpGSites() {
 		return CpGSites;
 	}
-	
+
 	public String getMethylationString() {
 		return methylationString;
 	}
 
-	public int length(){
+	public int length() {
 		return originalSeq.length();
 	}
 }

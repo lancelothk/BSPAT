@@ -1,16 +1,16 @@
 package web;
 
-import java.io.File;
-import java.io.IOException;
-
 import BSPAT.Utilities;
 import DataType.Constant;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ExecuteBlatQuery implements Runnable {
 	private Constant constant;
 
 	public ExecuteBlatQuery(Constant constant) {
-		 this.constant = constant;
+		this.constant = constant;
 	}
 
 	@Override

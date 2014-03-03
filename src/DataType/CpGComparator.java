@@ -9,7 +9,7 @@ public class CpGComparator implements Comparator<CpGSite> {
 		// TODO Auto-generated method stub
 		if (c1.getPosition() > c2.getPosition()) {
 			return 1;
-		} else if (c1.getPosition() < c2.getPosition()){
+		} else if (c1.getPosition() < c2.getPosition()) {
 			return -1;
 		} else {
 			return 0;

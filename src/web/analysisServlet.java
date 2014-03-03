@@ -1,5 +1,18 @@
 package web;
 
+import BSPAT.IO;
+import BSPAT.ReportSummary;
+import BSPAT.Utilities;
+import DataType.AnalysisSummary;
+import DataType.Constant;
+import DataType.Experiment;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,24 +21,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import BSPAT.IO;
-import BSPAT.ReportSummary;
-import BSPAT.Utilities;
-import DataType.AnalysisSummary;
-import DataType.Constant;
-import DataType.Experiment;
-
 /**
  * Servlet implementation class analysisServlet
  */
-@WebServlet(name = "/analysisServlet", urlPatterns = { "/analysis" })
+@WebServlet(name = "/analysisServlet", urlPatterns = {"/analysis"})
 @MultipartConfig
 public class analysisServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -41,7 +40,7 @@ public class analysisServlet extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -49,7 +48,7 @@ public class analysisServlet extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		long start = System.currentTimeMillis();
@@ -57,8 +56,8 @@ public class analysisServlet extends HttpServlet {
 		String runID = request.getParameter("runID");
 		constant = Constant.readConstant(runID);
 		constant.figureFormat = request.getParameter("figureFormat"); // set
-																		// figure
-																		// format
+		// figure
+		// format
 		if (request.getParameter("minp0text") != null) {
 			constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
 			constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
@@ -101,11 +100,11 @@ public class analysisServlet extends HttpServlet {
 			Utilities.showAlertWindow(response, "sequence identity threshold invalid!!");
 			return;
 		}
-		
+
 		// clean up result directory and result zip file
 		Utilities.deleteFolderContent(constant.patternResultPath);
 		File resultZip = new File(constant.randomDir + "/" + "analysisResult.zip");
-		if (resultZip.exists()){
+		if (resultZip.exists()) {
 			resultZip.delete();
 		}
 
@@ -130,7 +129,7 @@ public class analysisServlet extends HttpServlet {
 
 		// read analysis summary report
 		AnalysisSummary analysisSummary = IO.readAnalysisSummary(constant.patternResultPath);
-		
+
 		// compress result folder
 		String zipFileName = constant.randomDir + "/" + "analysisResult.zip";
 		Utilities.zipFolder(constant.patternResultPath, zipFileName);

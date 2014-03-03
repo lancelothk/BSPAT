@@ -1,16 +1,12 @@
 package BSPAT;
 
+import DataType.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import DataType.Coordinate;
-import DataType.CpGSite;
-import DataType.CpGStatComparator;
-import DataType.CpGStatistics;
-import DataType.PatternResult;
 
 public class ReadAnalysisResult {
 	private ArrayList<PatternResult> patternResultLists = new ArrayList<PatternResult>();
@@ -51,7 +47,7 @@ public class ReadAnalysisResult {
 		items = line.split("\t");
 		refLength = Integer.valueOf(items[1]);
 		// skip 6 lines
-		for (int i=0;i<6;i++){
+		for (int i = 0; i < 6; i++) {
 			statBuffReader.readLine();
 		}
 		// get start position

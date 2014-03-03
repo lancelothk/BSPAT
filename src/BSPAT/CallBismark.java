@@ -44,7 +44,7 @@ public class CallBismark {
 		} else if (qualsType.equals("solexa1.3")) {
 			this.qualsTypeParameter = "--solexa1.3-quals";
 		}
-		
+
 		// build index
 		/** 1. build index **/
 		// add "--yes_to_all" to always overwrite index folder, v0.7.4 don't contain this function, (v0.5.4 has)
@@ -127,7 +127,7 @@ public class CallBismark {
 
 			/** 3. extract information **/
 			String seqFile = null;
-			if (fileList  != null) {
+			if (fileList != null) {
 				seqFile = "";
 				for (File f : fileList) {
 					seqFile = seqFile + " " + outputFile.getAbsolutePath() + "/" + f.getName() + "_bismark.sam";

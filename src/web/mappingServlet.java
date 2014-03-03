@@ -1,11 +1,19 @@
 package web;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import BSPAT.CallBismark;
+import BSPAT.IO;
+import BSPAT.Utilities;
+import DataType.*;
+import org.apache.commons.io.FileUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,29 +24,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
-import org.apache.commons.io.FileUtils;
-
-import BSPAT.CallBismark;
-import BSPAT.IO;
-import BSPAT.Utilities;
-import DataType.Constant;
-import DataType.Experiment;
-import DataType.ExtensionFilter;
-import DataType.FileDateComparator;
-import DataType.MappingSummary;
-
 /**
  * Servlet implementation class uploadServlet
  */
-@WebServlet(name = "/uploadServlet", urlPatterns = { "/mapping" })
+@WebServlet(name = "/uploadServlet", urlPatterns = {"/mapping"})
 @MultipartConfig
 public class mappingServlet extends HttpServlet {
 	private static final long serialVersionUID = 6078331324800268609L;
@@ -55,19 +44,19 @@ public class mappingServlet extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * response)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		initializeConstant(request); // initialize constant, which is a
-										// singleton
+		// singleton
 		// print disk path to console
 		System.out.println("diskpath:\t" + this.getServletContext().getRealPath(""));
 		cleanRootFolder(); // release root folder space
@@ -94,7 +83,7 @@ public class mappingServlet extends HttpServlet {
 			if (fieldName.equals("ref")) { // deal with uploaded ref file
 				File refFolder = new File(constant.originalRefPath);
 				if (!refFolder.isDirectory()) { // if ref directory do not
-												// exist, make one
+					// exist, make one
 					refFolder.mkdirs();
 				}
 				// save ref file in ref folder
@@ -105,17 +94,17 @@ public class mappingServlet extends HttpServlet {
 					return;
 				}
 			} else if (fieldName.startsWith("seqFile")) { // deal with uploaded
-															// seq file
+				// seq file
 				int seqFileIndex = Integer.valueOf(part.getName().replace("seqFile", ""));
 				for (Experiment experiment : experiments) { // match file index
-															// and seq file
-															// index
+					// and seq file
+					// index
 					if (experiment.getIndex() == seqFileIndex) {
 						experiment.setSeqFile(fileName);
 						File seqFolder = new File(constant.seqsPath + experiment.getName());
 						if (!seqFolder.isDirectory()) { // if sequence directory
-														// do not exist, make
-														// one
+							// do not exist, make
+							// one
 							seqFolder.mkdirs();
 						}
 						if (IO.saveFileToDisk(part, seqFolder.getAbsolutePath(), fileName)) {
@@ -172,13 +161,13 @@ public class mappingServlet extends HttpServlet {
 		executor.execute(new ExecuteBlatQuery(constant));
 		executor.shutdown();
 		// Wait until all threads are finish
-	    try {
-			executor.awaitTermination(MAXEXECUTIONDAY,TimeUnit.DAYS);
+		try {
+			executor.awaitTermination(MAXEXECUTIONDAY, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// read mapping summary report
 		MappingSummary mappingSummary = IO.readMappingSummary(constant.mappingResultPath);
 
@@ -203,7 +192,7 @@ public class mappingServlet extends HttpServlet {
 
 	/**
 	 * initialize constant singleton
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 * @throws IOException
@@ -239,7 +228,7 @@ public class mappingServlet extends HttpServlet {
 	/**
 	 * append xx to both ends of original reference. Save result as modified
 	 * reference
-	 * 
+	 *
 	 * @param originalRefPath
 	 * @param modifiedRefPath
 	 * @throws IOException
@@ -247,12 +236,12 @@ public class mappingServlet extends HttpServlet {
 	private void modifyRef(String originalRefPath, String modifiedRefPath) throws IOException {
 		File refFolder = new File(modifiedRefPath);
 		if (!refFolder.isDirectory()) {// if ref directory do not exist, make
-										// one
+			// one
 			refFolder.mkdirs();
 		}
 		File originalRefPathFile = new File(originalRefPath);
 		String[] fileNames = null;
-		fileNames = originalRefPathFile.list(new ExtensionFilter(new String[] { ".txt", "fasta", "fa" }));
+		fileNames = originalRefPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa"}));
 		for (String str : fileNames) {
 			BufferedReader reader = new BufferedReader(new FileReader(originalRefPath + str));
 			BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + str));
@@ -281,7 +270,7 @@ public class mappingServlet extends HttpServlet {
 
 	/**
 	 * clean old data to release space in server
-	 * 
+	 *
 	 * @param rootDirectory
 	 * @param excess
 	 * @throws IOException

@@ -1,5 +1,11 @@
 package BSPAT;
 
+import DataType.AnalysisSummary;
+import DataType.Coordinate;
+import DataType.ExtensionFilter;
+import DataType.MappingSummary;
+
+import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,16 +13,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.servlet.http.Part;
-
-import DataType.AnalysisSummary;
-import DataType.Coordinate;
-import DataType.ExtensionFilter;
-import DataType.MappingSummary;
-
 public class IO {
 	/**
 	 * read coordinates file
+	 *
 	 * @param coorPath
 	 * @param coorFileName
 	 * @return coordinateHash
@@ -42,7 +42,7 @@ public class IO {
 		coordinatesBuffReader.close();
 		return coordinateHash;
 	}
-	
+
 	public static void createFolder(String path) {
 		File folder = new File(path);
 		if (!folder.isDirectory()) {
@@ -57,7 +57,7 @@ public class IO {
 			file.delete();
 		}
 	}
-	
+
 	public static boolean saveFileToDisk(Part part, String path, String fileName) throws IOException {
 		if (fileName != null && !fileName.isEmpty()) {
 			part.write(path + "/" + fileName);
@@ -66,7 +66,7 @@ public class IO {
 			return false;
 		}
 	}
-	
+
 	// only add allowed files.
 	public static ArrayList<File> visitFiles(File f) {
 		ArrayList<File> list = new ArrayList<File>();
@@ -83,41 +83,42 @@ public class IO {
 		}
 		return list;
 	}
-	
+
 	/**
-	 * Read analysis report and generate analysis summary 
+	 * Read analysis report and generate analysis summary
+	 *
 	 * @param analysisResultPath
 	 * @return
 	 * @throws IOException
 	 */
-	public static AnalysisSummary readAnalysisSummary(String analysisResultPath) throws IOException{
+	public static AnalysisSummary readAnalysisSummary(String analysisResultPath) throws IOException {
 		AnalysisSummary analysisSummary = new AnalysisSummary();
 		File mappingResultPathFile = new File(analysisResultPath);
 		File[] folders = mappingResultPathFile.listFiles();
 		for (File folder : folders) {
 			// only check folders
-			if (folder.isDirectory()){
+			if (folder.isDirectory()) {
 				File[] files = folder.listFiles();
-				files = folder.listFiles(new ExtensionFilter(new String[] { "_report.txt" }));
+				files = folder.listFiles(new ExtensionFilter(new String[]{"_report.txt"}));
 				for (File file : files) {
 					BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 					// ignore first 3 lines
-					for (int i=0;i<3;i++){
+					for (int i = 0; i < 3; i++) {
 						bufferedReader.readLine();
 					}
 					// read following 2 lines
-					for (int i=0;i<2;i++){
+					for (int i = 0; i < 2; i++) {
 						String line = bufferedReader.readLine();
 						String value = line.split(":\t")[1];
 						switch (i) {
-						case 0:
-							analysisSummary.addSeqBeforeFilter(Long.parseLong(value));
-							break;
-						case 1:
-							analysisSummary.addSeqAfterFilter(Long.parseLong(value));
-							break;
-						default:
-							break;
+							case 0:
+								analysisSummary.addSeqBeforeFilter(Long.parseLong(value));
+								break;
+							case 1:
+								analysisSummary.addSeqAfterFilter(Long.parseLong(value));
+								break;
+							default:
+								break;
 						}
 					}
 					bufferedReader.close();
@@ -126,12 +127,13 @@ public class IO {
 		}
 		return analysisSummary;
 	}
-	
+
 	/**
-	 * Read mapping report and generate mapping summary 
+	 * Read mapping report and generate mapping summary
+	 *
 	 * @param mappingResultPath
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static MappingSummary readMappingSummary(String mappingResultPath) throws IOException {
 		MappingSummary mappingSummary = new MappingSummary();
@@ -139,39 +141,39 @@ public class IO {
 		File[] folders = mappingResultPathFile.listFiles();
 		for (File folder : folders) {
 			// only check folder
-			if (folder.isDirectory()){
+			if (folder.isDirectory()) {
 				File[] files = folder.listFiles();
-				files = folder.listFiles(new ExtensionFilter(new String[] { "_report.txt" }));
+				files = folder.listFiles(new ExtensionFilter(new String[]{"_report.txt"}));
 				for (File file : files) {
 					BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 					// ignore first 5 lines
-					for (int i=0;i<5;i++){
+					for (int i = 0; i < 5; i++) {
 						bufferedReader.readLine();
 					}
 					// read following 6 lines
-					for (int i=0;i<6;i++){
+					for (int i = 0; i < 6; i++) {
 						String line = bufferedReader.readLine();
 						String value = line.split(":\t")[1];
 						switch (i) {
-						case 0:
-							mappingSummary.addSeqAnalysed(Long.parseLong(value));
-							break;
-						case 1:
-							mappingSummary.addUniqueBestHit(Long.parseLong(value));
-							break;
-						case 2:
-							break;
-						case 3:
-							mappingSummary.addNoAlignment(Long.parseLong(value));
-							break;
-						case 4:
-							mappingSummary.addNotUnique(Long.parseLong(value));
-							break;
-						case 5:
-							mappingSummary.addNotExtracted(Long.parseLong(value));
-							break;
-						default:
-							break;
+							case 0:
+								mappingSummary.addSeqAnalysed(Long.parseLong(value));
+								break;
+							case 1:
+								mappingSummary.addUniqueBestHit(Long.parseLong(value));
+								break;
+							case 2:
+								break;
+							case 3:
+								mappingSummary.addNoAlignment(Long.parseLong(value));
+								break;
+							case 4:
+								mappingSummary.addNotUnique(Long.parseLong(value));
+								break;
+							case 5:
+								mappingSummary.addNotExtracted(Long.parseLong(value));
+								break;
+							default:
+								break;
 						}
 					}
 					bufferedReader.close();

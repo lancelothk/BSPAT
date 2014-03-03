@@ -1,5 +1,9 @@
 package BSPAT;
 
+import DataType.CpGSite;
+import DataType.ExtensionFilter;
+import DataType.Sequence;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,15 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
-import DataType.CpGSite;
-import DataType.ExtensionFilter;
-import DataType.Sequence;
-
 /**
  * Import reference and Bismark result to specific data structure
- * 
+ *
  * @author Ke
- * 
  */
 public class ImportBismarkResult {
 
@@ -47,31 +46,31 @@ public class ImportBismarkResult {
 
 	/**
 	 * readReference
-	 * 
+	 *
 	 * @param refPath
 	 * @throws IOException
 	 */
 	private void readReference() throws IOException {
 		File refPathFile = new File(refPath);
 		String[] fileNames = null;
-		fileNames = refPathFile.list(new ExtensionFilter(new String[] { ".txt", "fasta", "fa" }));
+		fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa"}));
 		for (String str : fileNames) {
 			FileReader fileReader = new FileReader(refPathFile + "/" + str);
 			BufferedReader buffReader = new BufferedReader(fileReader);
-			String line, name=null;
+			String line, name = null;
 			StringBuilder ref = new StringBuilder();
 			while ((line = buffReader.readLine()) != null) {
-				if (line.startsWith(">")){
-					if (ref.length() > 0){
+				if (line.startsWith(">")) {
+					if (ref.length() > 0) {
 						referenceSeqs.put(name, ref.toString());
 						ref = new StringBuilder();
 					}
 					name = line.replace(">", "");
-				}else{
+				} else {
 					ref.append(line);
 				}
 			}
-			if (ref.length() > 0){
+			if (ref.length() > 0) {
 				referenceSeqs.put(name, ref.toString());
 				ref = new StringBuilder();
 			}
@@ -81,12 +80,12 @@ public class ImportBismarkResult {
 
 	/**
 	 * readBismarkAlignmentResult
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void readBismarkAlignmentResult() throws IOException {
 		File inputFile = new File(inputFolder);
-		String[] names = inputFile.list(new ExtensionFilter(new String[] { "_bismark.sam" }));
+		String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam"}));
 		Arrays.sort(names);
 
 		for (String name : names) {
@@ -115,7 +114,7 @@ public class ImportBismarkResult {
 
 	/**
 	 * extract value from TAG:TYPE:VALUE, e.g. "XR:Z:GA"
-	 * 
+	 *
 	 * @param raw
 	 * @return extracted value string
 	 */
@@ -125,13 +124,13 @@ public class ImportBismarkResult {
 
 	/**
 	 * readBismarkCpGResult
-	 * 
+	 *
 	 * @param strand
 	 * @throws IOException
 	 */
 	private void readBismarkCpGResult() throws IOException {
 		File inputFile = new File(inputFolder);
-		String[] names = inputFile.list(new ExtensionFilter(new String[] { "_bismark.sam.txt" }));
+		String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam.txt"}));
 		Arrays.sort(names);
 
 		for (String name : names) {

@@ -1,11 +1,11 @@
 package web;
 
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-
 import BSPAT.BSSeqAnalysis;
 import BSPAT.ReportSummary;
 import DataType.Constant;
+
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 public class ExecuteAnalysis implements Callable<ArrayList<ReportSummary>> {
 	private Constant constant;

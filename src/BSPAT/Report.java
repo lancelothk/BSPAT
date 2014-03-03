@@ -1,25 +1,16 @@
 package BSPAT;
 
+import DataType.*;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.NormalDistributionImpl;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
-
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.NormalDistributionImpl;
-
-import DataType.Constant;
-import DataType.CpGSite;
-import DataType.CpGStatComparator;
-import DataType.CpGStatistics;
-import DataType.Pattern;
-import DataType.PatternComparator;
-import DataType.PatternLink;
-import DataType.Sequence;
 
 public class Report {
 	private Hashtable<String, String> referenceSeqs = new Hashtable<String, String>();
@@ -35,8 +26,8 @@ public class Report {
 	private Constant constant;
 
 	public Report(String FRState, String region, String outputPath, ArrayList<Sequence> sequencesList,
-			ArrayList<Pattern> methylationPatterns, ArrayList<Pattern> mutationPatterns,
-			Hashtable<String, String> referenceSeqs, int totalCount, ReportSummary reportSummary, Constant constant) {
+	              ArrayList<Pattern> methylationPatterns, ArrayList<Pattern> mutationPatterns,
+	              Hashtable<String, String> referenceSeqs, int totalCount, ReportSummary reportSummary, Constant constant) {
 		this.constant = constant;
 		this.reportSummary = reportSummary;
 		this.FRState = FRState;
@@ -51,11 +42,11 @@ public class Report {
 		if (!outputFolder.exists()) {
 			outputFolder.mkdirs();
 		}
-		
+
 	}
-	
+
 	public void writeResult() throws IOException {
-		FileWriter fileWriter = new FileWriter(outputFolder  + region + FRState
+		FileWriter fileWriter = new FileWriter(outputFolder + region + FRState
 				+ "_bismark.analysis.txt");
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		bufferedWriter
@@ -97,7 +88,7 @@ public class Report {
 				}
 			}
 		}
-		
+
 		ArrayList<CpGStatistics> statList = new ArrayList<CpGStatistics>(cpgStatHashtable.values());
 		Collections.sort(statList, new CpGStatComparator());
 		bufferedWriter.write("reference seq length:\t" + referenceSeqs.get(region).length() + "\n");
@@ -111,9 +102,9 @@ public class Report {
 		for (CpGStatistics cpgStat : statList) {
 			cpgStat.calcMethylRate();
 			// bismark result is 1-based. Need change to 0-based
-			bufferedWriter.write(cpgStat.getPosition()-1 + "\t" + cpgStat.getMethylationRate() + "\n");
+			bufferedWriter.write(cpgStat.getPosition() - 1 + "\t" + cpgStat.getMethylationRate() + "\n");
 		}
-		
+
 //		bufferedWriter.write("Mismatches count in each position:\n");
 //		mutationStat = new int[referenceSeqs.get(region).length()];
 //		// give mutationStat array zero value
@@ -137,8 +128,8 @@ public class Report {
 	}
 
 	public void writeMethylationPatterns() throws IOException {
-		String methylationFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState,PatternLink.METHYLATION);
-		String methylationWithMutationFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState,PatternLink.METHYLATIONWITHMUTATION);
+		String methylationFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState, PatternLink.METHYLATION);
+		String methylationWithMutationFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState, PatternLink.METHYLATIONWITHMUTATION);
 		FileWriter fileWriter = new FileWriter(methylationFileName);
 		FileWriter fileWriterWithMutations = new FileWriter(methylationWithMutationFileName);
 		reportSummary.getPatternLink(PatternLink.METHYLATION).setTextResultLink(methylationFileName);
@@ -146,9 +137,9 @@ public class Report {
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		BufferedWriter bufferedWriterWithMutations = new BufferedWriter(fileWriterWithMutations);
 
-		bufferedWriter.write(String.format("%s\tcount\tpercentage\tID\n",PatternLink.METHYLATION));
+		bufferedWriter.write(String.format("%s\tcount\tpercentage\tID\n", PatternLink.METHYLATION));
 		bufferedWriter.write(String.format("%s\tref\n", referenceSeqs.get(region)));
-		bufferedWriterWithMutations.write(String.format("%s\tcount\tpercentage\tParentPatternID\n",PatternLink.METHYLATIONWITHMUTATION));
+		bufferedWriterWithMutations.write(String.format("%s\tcount\tpercentage\tParentPatternID\n", PatternLink.METHYLATIONWITHMUTATION));
 		bufferedWriterWithMutations.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		// sort methylation pattern.
 		Collections.sort(methylationPatterns, new PatternComparator());
@@ -258,8 +249,8 @@ public class Report {
 	}
 
 	public void writeMutationPatterns() throws IOException {
-		String mutationFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState,PatternLink.MUTATION);
-		String mutationWithPatternsFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState,PatternLink.MUTATIONWITHMETHYLATION);
+		String mutationFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState, PatternLink.MUTATION);
+		String mutationWithPatternsFileName = String.format("%s%s%s_bismark.analysis_%s.txt", outputFolder, region, FRState, PatternLink.MUTATIONWITHMETHYLATION);
 		FileWriter fileWriter = new FileWriter(mutationFileName);
 		FileWriter fileWriterWithPatterns = new FileWriter(mutationWithPatternsFileName);
 		reportSummary.getPatternLink(PatternLink.MUTATION).setTextResultLink(mutationFileName);
@@ -267,9 +258,9 @@ public class Report {
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		BufferedWriter bufferedWriterWithPatterns = new BufferedWriter(fileWriterWithPatterns);
 
-		bufferedWriter.write(String.format("%s\tcount\tpercentage\tID\n",PatternLink.MUTATION));
+		bufferedWriter.write(String.format("%s\tcount\tpercentage\tID\n", PatternLink.MUTATION));
 		bufferedWriter.write(String.format("%s\tref\n", referenceSeqs.get(region)));
-		bufferedWriterWithPatterns.write(String.format("%s\tcount\tpercentage\tParentPatternID\n",PatternLink.MUTATIONWITHMETHYLATION));
+		bufferedWriterWithPatterns.write(String.format("%s\tcount\tpercentage\tParentPatternID\n", PatternLink.MUTATIONWITHMETHYLATION));
 		bufferedWriterWithPatterns.write(String.format("%s\tref\n", referenceSeqs.get(region)));
 		Collections.sort(mutationPatterns, new PatternComparator());
 		// sort mutation pattern.

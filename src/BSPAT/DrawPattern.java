@@ -1,37 +1,20 @@
 package BSPAT;
 
+import DataType.*;
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceStub;
+import net.sf.epsgraphics.ColorMode;
+import net.sf.epsgraphics.EpsGraphics;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
-
-import net.sf.epsgraphics.ColorMode;
-import net.sf.epsgraphics.EpsGraphics;
-import DataType.Constant;
-import DataType.Coordinate;
-import DataType.CpGSite;
-import DataType.CpGStatistics;
-import DataType.PatternResult;
-import DataType.PatternLink;
-import DataType.SNP;
 
 public class DrawPattern {
 	private final int WIDTH = 20;
@@ -58,7 +41,7 @@ public class DrawPattern {
 	}
 
 	public void drawMethylPattern(String region, String patternResultPath, PatternLink patternLink, String sampleName, String frState,
-			ReportSummary reportSummary, HashMap<String, Coordinate> coordinates) throws IOException {
+	                              ReportSummary reportSummary, HashMap<String, Coordinate> coordinates) throws IOException {
 		int height = STARTY;
 		System.out.println("readCoordinates -- DrawSingleFigure");
 		ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, patternLink.getPatternType(), sampleName, region, frState,
@@ -98,7 +81,7 @@ public class DrawPattern {
 			} else if (figureFormat.equals(Constant.EPS)) {
 				epsImage = new FileOutputStream(fileName + ".eps");
 				graphWriter = new EpsGraphics("title", epsImage, 0, 0, imageWidth, imageHeight, ColorMode.COLOR_RGB); // eps
-																														// writer
+				// writer
 			}
 			patternLink.setFigureResultLink(fileName);
 
@@ -228,7 +211,7 @@ public class DrawPattern {
 	}
 
 	public void drawMethylPatternWithAllele(String region, String patternResultPath, PatternLink patternType, String sampleName, String frState,
-			ReportSummary reportSummary, HashMap<String, Coordinate> coordinates) throws IOException {
+	                                        ReportSummary reportSummary, HashMap<String, Coordinate> coordinates) throws IOException {
 		int height = STARTY;
 		System.out.println("readCoordinates -- DrawSingleFigure");
 		ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, patternType.getPatternType(), sampleName, region, frState,
@@ -265,15 +248,15 @@ public class DrawPattern {
 		for (PatternResult patternResult : allelePatternResultsLists) {
 			// match same allele ---- only keep most frequent allele
 			// has same number of alleles
-			if (patternWithAllele.getAlleleList().size() == patternResult.getAlleleList().size()){
+			if (patternWithAllele.getAlleleList().size() == patternResult.getAlleleList().size()) {
 				boolean sameAlleleList = true;
 				for (int i = 0; i < patternWithAllele.getAlleleList().size(); i++) {
-					if (patternWithAllele.getAlleleList().get(i).intValue() != (patternResult.getAlleleList().get(i).intValue())){
+					if (patternWithAllele.getAlleleList().get(i).intValue() != (patternResult.getAlleleList().get(i).intValue())) {
 						sameAlleleList = false;
 						break;
 					}
 				}
-				if (sameAlleleList){
+				if (sameAlleleList) {
 					// match two cpgSite
 					for (CpGSite cpgSiteA : patternResult.getCpGList()) {
 						for (CpGSite cpgSiteB : patternWithAllele.getCpGList()) {
@@ -327,7 +310,7 @@ public class DrawPattern {
 			} else if (figureFormat.equals(Constant.EPS)) {
 				epsImage = new FileOutputStream(fileName + ".eps");
 				graphWriter = new EpsGraphics("title", epsImage, 0, 0, imageWidth, imageHeight, ColorMode.COLOR_RGB); // eps
-																														// writer
+				// writer
 			}
 			reportSummary.setASMFigureLink(fileName);
 
@@ -414,7 +397,7 @@ public class DrawPattern {
 	}
 
 	private void addAverage(Graphics2D gImage, String fontChoice, PatternResult patternResult, String chr, String startPos, String patternName,
-			BufferedWriter bedWriter, int height) throws IOException {
+	                        BufferedWriter bedWriter, int height) throws IOException {
 		// 5. add average
 		DecimalFormat percentSmall = new DecimalFormat("##%");
 		height += HEIGHTINTERVAL;
@@ -554,7 +537,7 @@ public class DrawPattern {
 		originPosFile.delete();
 		File targetPosFile = new File(patternResultPath + targetPosFileName);
 		targetPosFile.delete();
-		IO.deleteFiles(patternResultPath, new String[] { ".bed", ".bedmapped", ".bedunmapped" });
+		IO.deleteFiles(patternResultPath, new String[]{".bed", ".bedmapped", ".bedunmapped"});
 		return Long.valueOf(items[1].split("-")[0]);
 	}
 }

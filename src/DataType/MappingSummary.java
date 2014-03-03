@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class MappingSummary implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4948258734655039540L;
 	private long seqAnalysed = 0;

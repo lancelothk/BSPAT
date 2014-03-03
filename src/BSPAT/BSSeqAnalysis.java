@@ -1,28 +1,17 @@
 package BSPAT;
 
+import DataType.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import DataType.Constant;
-import DataType.Coordinate;
-import DataType.CpGSite;
-import DataType.Pattern;
-import DataType.PatternLink;
-import DataType.Sequence;
-import DataType.SequenceComparatorMM;
-import DataType.SequenceComparatorMethylation;
-import DataType.SequenceComparatorMutations;
-import DataType.SequenceComparatorRegion;
-
 /**
  * Bisulfite sequences analysis. Include obtaining methylation string, mutation
  * string, methyl&mutation string. And group sequences by pattern.
- * 
- * 
+ *
  * @author Ke
- * 
  */
 public class BSSeqAnalysis {
 
@@ -222,7 +211,6 @@ public class BSSeqAnalysis {
 	/**
 	 * get methylation String & methylation string with mutations; calculate
 	 * conversion rate, methylation rate
-	 * 
 	 */
 
 	public void getMethylString(ArrayList<Sequence> seqList) {
@@ -243,8 +231,8 @@ public class BSSeqAnalysis {
 			countofCinRef = 0;// count C in non-CpG context.
 			for (int i = 0; i < referenceSeq.length(); i++) {
 				if (i != referenceSeq.length() - 1 && referenceSeq.charAt(i) == 'C' && referenceSeq.charAt(i + 1) != 'G') {// non
-																															// CpG
-																															// context
+					// CpG
+					// context
 					countofCinRef++;
 				}
 				if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {
@@ -275,13 +263,13 @@ public class BSSeqAnalysis {
 			for (int i = 0; i < originalSeq.length(); i++) {
 				if (originalSeq.charAt(i) != convertedReferenceSeq.charAt(i + seq.getStartPos() - 1)) {
 					if (i != originalSeq.length() - 1 && originalSeq.charAt(i) == 'C' && originalSeq.charAt(i + 1) != 'G') {// non
-																															// CpG
-																															// context
+						// CpG
+						// context
 						countofUnConvertedC++;
 					} else {
 						unequalNucleotide++;
 						methylationStringWithMutations[i + seq.getStartPos() - 1] = originalSeq.charAt(i); // with
-																											// mutations
+						// mutations
 						mutationString[i + seq.getStartPos() - 1] = originalSeq.charAt(i);
 					}
 				}

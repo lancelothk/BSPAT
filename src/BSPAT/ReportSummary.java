@@ -1,16 +1,16 @@
 package BSPAT;
 
+import DataType.PatternLink;
+import DataType.SNP;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import DataType.PatternLink;
-import DataType.SNP;
-
 public class ReportSummary implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private String statTextLink;
@@ -21,7 +21,7 @@ public class ReportSummary implements Serializable {
 	private SNP ASMsnp;
 	private String id;
 	private String FRState;
-	
+
 	public ReportSummary(String id, String FRState) {
 		this.id = id;
 		this.FRState = FRState;
@@ -48,31 +48,31 @@ public class ReportSummary implements Serializable {
 		}
 	}
 
-	public PatternLink getPatternLink(String patternType){
+	public PatternLink getPatternLink(String patternType) {
 		return this.patternHash.get(patternType);
 	}
-	
-	public Collection<PatternLink> getPatternLinks(){
+
+	public Collection<PatternLink> getPatternLinks() {
 		PatternLink[] patternLinks = new PatternLink[4];
 		for (PatternLink patternLink : patternHash.values()) {
-			switch (patternLink.getPatternType()){
-			case PatternLink.METHYLATION:
-				patternLinks[0] = patternLink;
-				break;
-			case PatternLink.METHYLATIONWITHMUTATION:
-				patternLinks[1] = patternLink;
-				break;
-			case PatternLink.MUTATION:
-				patternLinks[2] = patternLink;
-				break;
-			case PatternLink.MUTATIONWITHMETHYLATION:
-				patternLinks[3] = patternLink;
-				break;
+			switch (patternLink.getPatternType()) {
+				case PatternLink.METHYLATION:
+					patternLinks[0] = patternLink;
+					break;
+				case PatternLink.METHYLATIONWITHMUTATION:
+					patternLinks[1] = patternLink;
+					break;
+				case PatternLink.MUTATION:
+					patternLinks[2] = patternLink;
+					break;
+				case PatternLink.MUTATIONWITHMETHYLATION:
+					patternLinks[3] = patternLink;
+					break;
 			}
 		}
 		return Arrays.asList(patternLinks);
 	}
-	
+
 	public String getStatTextLink() {
 		return statTextLink;
 	}
@@ -120,5 +120,5 @@ public class ReportSummary implements Serializable {
 	public String getFRState() {
 		return FRState;
 	}
-	
+
 }

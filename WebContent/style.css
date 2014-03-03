@@ -1,208 +1,206 @@
 /* A Free Design by Bryant Smith (bryantsmith.com) */
-html,body {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	font: 12px Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	background-color:#1c478e;
-	background-image: url(images/background.png);
-	background-repeat: repeat-x;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font: 12px Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    background-color: #1c478e;
+    background-image: url(images/background.png);
+    background-repeat: repeat-x;
 }
 
 * {
-	margin: 0 auto 0 auto;
-	text-align: left;
+    margin: 0 auto 0 auto;
+    text-align: left;
 }
 
-textarea { 
-	width: 700px; 
-	text-align: left;
+textarea {
+    width: 700px;
+    text-align: left;
 }
 
 #title {
-	
+
 }
 
 #header {
-	width: 80%;
-	height: 85px;
+    width: 80%;
+    height: 85px;
 }
 
 #header h1 {
-	color: #FFFFFF;
-	font-size: 43px;
-	top: 18px;
+    color: #FFFFFF;
+    font-size: 43px;
+    top: 18px;
 }
 
 #header h2 {
-	font-size: 18px;
-	color: #A9D1FA;
+    font-size: 18px;
+    color: #A9D1FA;
 }
 
 .headA {
-	color: #67A0F5;
+    color: #67A0F5;
 }
 
 .headBS {
-	color: #836FFF;
+    color: #836FFF;
 }
 
 #mainpic {
-	background-image: url(images/main.jpg);
-	background-repeat: no-repeat;
-	height: 354px;
+    background-image: url(images/main.jpg);
+    background-repeat: no-repeat;
+    height: 354px;
 }
 
 .off1 {
-	color: #67A0F5;
+    color: #67A0F5;
 }
 
 #menu {
-	display: block;
-	height: 54px;
-	clear: both;
-	width: 82%;
+    display: block;
+    height: 54px;
+    clear: both;
+    width: 82%;
 }
 
 #container {
-	min-height: 100%;
-	position: relative;
-	float: center;
-	width: 960px;
+    min-height: 100%;
+    position: relative;
+    float: center;
+    width: 960px;
 }
 
 #content {
-	display: block;
-	float: center;
-	width: 790px;
-	height: auto;
-	padding-left: 10px;
-	padding-top: 15px;
-	padding-right: 10px;
-	padding-bottom: 5px;
+    display: block;
+    float: center;
+    width: 790px;
+    height: auto;
+    padding-left: 10px;
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-bottom: 5px;
 }
 
 #content_top {
-	background-image: url(images/main_top_790.png);
-	background-repeat: no-repeat;
-	width: 990px;
-	height: 25px;
+    background-image: url(images/main_top_790.png);
+    background-repeat: no-repeat;
+    width: 990px;
+    height: 25px;
 }
 
 #content_main {
-	background-image: url(images/main_back_790.png);
-	background-repeat: repeat-y;
-	width: 760px;
-	padding-left: 15px;
-	padding-right: 15px;
-	font-size: 18px;
+    background-image: url(images/main_back_790.png);
+    background-repeat: repeat-y;
+    width: 760px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 18px;
 }
 
 #prog_content_main {
-	background-image: url(images/main_back_790.png);
-	background-repeat: repeat-y;
-	width: 760px;
-	padding-left: 15px;
-	padding-right: 15px;
-	font-size: 18px;
-	text-align: center;
+    background-image: url(images/main_back_790.png);
+    background-repeat: repeat-y;
+    width: 760px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 18px;
+    text-align: center;
 }
 
 #content_bottom {
-	background-image: url(images/main_bottom_790.png);
-	background-repeat: no-repeat;
-	width: 990px;
-	height: 25px;
+    background-image: url(images/main_bottom_790.png);
+    background-repeat: no-repeat;
+    width: 990px;
+    height: 25px;
 }
 
 /* #experiment,#refcoor,#buttons,#experiments { */
 table {
-	padding-top: 20px;
-	margin-left: 0px;
+    padding-top: 20px;
+    margin-left: 0px;
 }
 
 td {
-	padding: 5px;
-	padding-right: 20px;
+    padding: 5px;
+    padding-right: 20px;
 }
 
 tr {
-	padding: 10px;;
+    padding: 10px;;
 }
 
 hr {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
-#submitButton
-{
-	height: 25px; width: 100px"
+#submitButton {
+    height: 25px;
+    width: 100px "
 }
 
-#submitParagraph
-{
-	text-align:center;
+#submitParagraph {
+    text-align: center;
 }
 
 #footer {
-	width: 100%;
-	text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 #footer h3 {
-	display: inline;
-	font-size: 14px;
-	text-decoration: none;
-	color: #7198E1;
+    display: inline;
+    font-size: 14px;
+    text-decoration: none;
+    color: #7198E1;
 }
 
 #menu ul {
-	list-style: none;
-	padding: 0px;
-	margin-left: auto;
-	width: 960px;
+    list-style: none;
+    padding: 0px;
+    margin-left: auto;
+    width: 960px;
 }
 
 #menu li {
-	list-style: none;
-	padding: 0px;
-	display: inline;
+    list-style: none;
+    padding: 0px;
+    display: inline;
 }
 
 #menu a {
-	float: left;
-	height: 36px;
-	display: block;
-	text-align: center;
-	text-decoration: none;
-	color: #ffffff;
-	font-weight: bold;
-	padding-top: 18px;
-	font-size: 15px;
-	padding-left: 13px;
-	padding-right: 13px;
+    float: left;
+    height: 36px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    padding-top: 18px;
+    font-size: 15px;
+    padding-left: 13px;
+    padding-right: 13px;
 }
 
 #menu a:hover {
-	color: #86AEF9;
-	background-image: url(images/linkbackground.jpg);
-	background-repeat: repeat-x;
+    color: #86AEF9;
+    background-image: url(images/linkbackground.jpg);
+    background-repeat: repeat-x;
 }
 
-p.phead
-{
-	font:bold 18px sans-serif;
-	line-height: 2;
+p.phead {
+    font: bold 18px sans-serif;
+    line-height: 2;
 }
-p.ptext
-{
-	font:16px sans-serif;
+
+p.ptext {
+    font: 16px sans-serif;
 }
 
 p.dottedline {
-	margin: 0px;
-	padding: 0px 0px 5px 0px;
-	border-bottom: #BFC9AE dashed 1px;
-	color: #232F01;
+    margin: 0px;
+    padding: 0px 0px 5px 0px;
+    border-bottom: #BFC9AE dashed 1px;
+    color: #232F01;
 }

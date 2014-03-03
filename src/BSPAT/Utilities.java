@@ -1,40 +1,21 @@
 package BSPAT;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import DataType.Coordinate;
+import DataType.ExtensionFilter;
+import org.apache.commons.io.FileUtils;
+import org.apache.tools.zip.ZipFile;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.tools.zip.ZipFile;
-
-import DataType.Coordinate;
-import DataType.ExtensionFilter;
 
 public class Utilities {
 
@@ -56,7 +37,7 @@ public class Utilities {
 				// items[9] -- end
 				if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
 					// first query match, score equals query size
-					coorHashMap.put(items[0], new Coordinate(items[0],items[6], items[7], Long.valueOf(items[8]), Long.valueOf(items[9])));
+					coorHashMap.put(items[0], new Coordinate(items[0], items[6], items[7], Long.valueOf(items[8]), Long.valueOf(items[9])));
 				}
 			}
 			reader.close();
@@ -67,15 +48,15 @@ public class Utilities {
 		}
 		writer.close();
 	}
-	
+
 	// delete folder content recursively
-	public static void deleteFolderContent(String folder) throws IOException{
+	public static void deleteFolderContent(String folder) throws IOException {
 		File folderFile = new File(folder);
 		File[] contents = folderFile.listFiles();
 		for (File file : contents) {
-			if (file.isFile()){
+			if (file.isFile()) {
 				file.delete();
-			}else if (file.isDirectory()){
+			} else if (file.isDirectory()) {
 				// delete directory recursively
 				FileUtils.deleteDirectory(file);
 			}
@@ -84,7 +65,7 @@ public class Utilities {
 
 	/**
 	 * get field content start with given parameter 'field'
-	 * 
+	 *
 	 * @param part
 	 * @param field
 	 * @return

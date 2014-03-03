@@ -1,13 +1,13 @@
 package DataType;
 
+import BSPAT.ReportSummary;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import BSPAT.ReportSummary;
-
 public class Experiment implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private int index;
@@ -23,23 +23,23 @@ public class Experiment implements Serializable {
 		this.name = name;
 		this.seqReady = false;
 	}
-	
+
 	public void setInputType(String inputType) {
 		this.inputType = inputType;
 	}
-	
+
 	public String getInputType() {
 		return inputType;
 	}
-	
+
 	public void setSeqReady(boolean seqReady) {
 		this.seqReady = seqReady;
 	}
-	
+
 	public boolean isSeqReady() {
 		return seqReady;
 	}
-	
+
 	public int getIndex() {
 		return index;
 	}
@@ -63,7 +63,7 @@ public class Experiment implements Serializable {
 	public void setSeqFile(String seqFile) {
 		this.seqFile = seqFile;
 	}
-	
+
 	public ArrayList<ReportSummary> getReportSummaries() {
 		return reportSummaries;
 	}

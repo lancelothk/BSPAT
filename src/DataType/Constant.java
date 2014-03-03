@@ -1,11 +1,6 @@
 package DataType;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Constant implements Serializable {
@@ -70,9 +65,7 @@ public class Constant implements Serializable {
 
 	/**
 	 * write constant object to disk
-	 * 
-	 * @param runID
-	 * @param constant
+	 *
 	 */
 	public static void writeConstant() {
 		try {
@@ -87,7 +80,7 @@ public class Constant implements Serializable {
 
 	/**
 	 * read constant object from disk
-	 * 
+	 *
 	 * @param runID
 	 * @return
 	 */

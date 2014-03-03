@@ -1,6 +1,7 @@
 package web;
 
-import java.io.IOException;
+import BSPAT.Utilities;
+import DataType.Constant;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -8,14 +9,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import BSPAT.Utilities;
-import DataType.Constant;
+import java.io.IOException;
 
 /**
  * Servlet implementation class resultRetrieveServlet
  */
-@WebServlet(name = "/resultRetrieve", urlPatterns = { "/resultRetrieve" })
+@WebServlet(name = "/resultRetrieve", urlPatterns = {"/resultRetrieve"})
 @MultipartConfig
 public class resultRetrieveServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -30,14 +29,14 @@ public class resultRetrieveServlet extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
@@ -46,22 +45,22 @@ public class resultRetrieveServlet extends HttpServlet {
 		Constant.WEBAPPFOLDER = rootPath;
 		String runID = request.getParameter("runID");
 		constant = Constant.readConstant(runID);
-		if (constant != null){
+		if (constant != null) {
 			String mPage = request.getParameter("mPage");
 			String aPage = request.getParameter("aPage");
-			if (mPage != null){
+			if (mPage != null) {
 				request.setAttribute("constant", constant);
 				request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
 				return;
 			}
-			if (aPage != null){
+			if (aPage != null) {
 				request.setAttribute("constant", constant);
 				request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
 				return;
 			}
 			Utilities.showAlertWindow(response, "can not read data");
 			return;
-		}else {
+		} else {
 			Utilities.showAlertWindow(response, "can not read data");
 			return;
 		}

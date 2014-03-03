@@ -1,16 +1,12 @@
 package DataType;
 
+import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.*;
+
 import java.io.Serializable;
 
-import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.Assembly_type0;
-import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.Frequency_type0;
-import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.MolType_type1;
-import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.Phenotype_type0;
-import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.SnpType_type0;
-
-public class SNP implements Serializable{
+public class SNP implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	// general info
@@ -22,7 +18,7 @@ public class SNP implements Serializable{
 	private Frequency_type0[] frequencies;
 
 	public SNP(int rsID, SnpType_type0 snpType, MolType_type1 molType, Phenotype_type0[] phenoTypes,
-			Assembly_type0[] assemblies, Frequency_type0[] frequencies) {
+	           Assembly_type0[] assemblies, Frequency_type0[] frequencies) {
 		super();
 		this.rsID = rsID;
 		this.snpType = snpType;
@@ -31,12 +27,12 @@ public class SNP implements Serializable{
 		this.assemblies = assemblies;
 		this.frequencies = frequencies;
 	}
-	
+
 	public int getrsID() {
 		return rsID;
 	}
 
-	public void print(){
+	public void print() {
 		System.out.println("rsID: " + rsID);
 		System.out.println("SNP type: " + snpType);
 		System.out.println("getMolType: " + molType);

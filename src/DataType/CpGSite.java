@@ -39,13 +39,13 @@ public class CpGSite {
 	public double getMethylLevel() {
 		return methylCount / (double) totalCount;
 	}
-	
-	public char getMethylType(){
-		if (getMethylLevel() >= 0.8){
+
+	public char getMethylType() {
+		if (getMethylLevel() >= 0.8) {
 			return 'H';
-		}else if (getMethylLevel() <= 0.2){
+		} else if (getMethylLevel() <= 0.2) {
 			return 'L';
-		}else{
+		} else {
 			return 'M';
 		}
 	}
