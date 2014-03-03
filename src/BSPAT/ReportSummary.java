@@ -1,102 +1,103 @@
 package BSPAT;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+
+import DataType.PatternLink;
 import DataType.SNP;
 
-public class ReportSummary {
-	private String stat;
-	private String methylation;
-	private String mutation;
-	private String methylationWithMutation;
-	private String mutationWithMethylation;
-	private String figure;
-	private String ASMFigure;
+public class ReportSummary implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String statTextLink;
+	private HashMap<String, PatternLink> patternHash = new HashMap<>();
+	private String ASMFigureLink;
 	private String ASMGBLink;
-	private String GBLink;
 	private boolean hasASM;
-	private SNP snp;
+	private SNP ASMsnp;
+	private String id;
+	private String FRState;
+	
+	public ReportSummary(String id, String FRState) {
+		this.id = id;
+		this.FRState = FRState;
+		patternHash.put(PatternLink.METHYLATION, new PatternLink(PatternLink.METHYLATION));
+		patternHash.put(PatternLink.MUTATION, new PatternLink(PatternLink.MUTATION));
+		patternHash.put(PatternLink.METHYLATIONWITHMUTATION, new PatternLink(PatternLink.METHYLATIONWITHMUTATION));
+		patternHash.put(PatternLink.MUTATIONWITHMETHYLATION, new PatternLink(PatternLink.MUTATIONWITHMETHYLATION));
+	}
 
-	public void replacePath(String outputPath, String replace, boolean hasFigure, String host) {
-		stat = stat.replace(outputPath, replace);
-		methylation = methylation.replace(outputPath, replace);
-		mutation = mutation.replace(outputPath, replace);
-		methylationWithMutation = methylationWithMutation.replace(outputPath, replace);
-		mutationWithMethylation = mutationWithMethylation.replace(outputPath, replace);
+	public void replacePath(String diskPath, String webPath, boolean hasFigure, String host) {
+		statTextLink = statTextLink.replace(diskPath, webPath);
+		for (PatternLink patternLink : patternHash.values()) {
+			patternLink.setTextResultLink(patternLink.getTextResultLink().replace(diskPath, webPath));
+		}
 		if (hasFigure == true) {
-			figure = figure.replace(outputPath, replace);
-			GBLink = GBLink.replace(outputPath, replace);
-			GBLink = host + GBLink;
+			for (PatternLink patternLink : patternHash.values()) {
+				patternLink.setFigureResultLink(patternLink.getFigureResultLink().replace(diskPath, webPath));
+				patternLink.setGBResultLink(host + patternLink.getGBResultLink().replace(diskPath, webPath));
+			}
 			if (hasASM == true) {
-				ASMFigure = ASMFigure.replace(outputPath, replace);
-				ASMGBLink = ASMGBLink.replace(outputPath, replace);
-				ASMGBLink = host + ASMGBLink;
+				ASMFigureLink = ASMFigureLink.replace(diskPath, webPath);
+				ASMGBLink = host + ASMGBLink.replace(diskPath, webPath);
 			}
 		}
 	}
 
-	public String generateHTML(String region, boolean coorReady, String frState) {
-		String html = "";
-		html += "<tr><td>" + region + frState + ": </td>" + "<td><p id=\"resultParagraph\">"
-				+ "<a href=" + methylation + ">Pattern</a>\n";
-		if (coorReady == true) {
-			html += "(<a href=" + figure + ".png" + ">PNG</a>)\n";
-			html += "(<a href=" + figure + ".eps" + ">EPS</a>)\n";
-			html += "(<a href=http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://"
-					+ GBLink + ">GenomeBroswer</a>)\n";
-		}
-		html += "<a href=" + methylationWithMutation + ">PatternWithMutation</a>\n" + "<a href="
-				+ mutation + ">Mutation</a>\n" + "<a href=" + mutationWithMethylation
-				+ ">MutationWithPattern</a>\n<a href=" + stat + ">Stat</a>\n</p>";
-		if (coorReady == true && hasASM) {
-			html += "(<a href=" + ASMFigure + ".png" + ">ASM_PNG</a>)\n";
-			if (this.snp != null) {
-				html += "<a href=http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs="
-						+ snp.getrsID() + ">SNP</a>\n";
-			}
-			html += "(<a href=http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://"
-					+ ASMGBLink + ">ASM_GenomeBroswer</a>)\n" + "</td></tr>";
-		} else {
-			html += "</td></tr>";
-		}
-		return html;
-	}
-
-	public void setStat(String stat) {
-		this.stat = stat;
-	}
-
-	public void setMethylation(String methylation) {
-		this.methylation = methylation;
-	}
-
-	public void setMethylationWithMutation(String methylationWithMutation) {
-		this.methylationWithMutation = methylationWithMutation;
-	}
-
-	public void setMutation(String mutation) {
-		this.mutation = mutation;
-	}
-
-	public void setMutationWithMethylation(String mutationWithMethylation) {
-		this.mutationWithMethylation = mutationWithMethylation;
-	}
-
-	public void setFigure(String figure) {
-		this.figure = figure;
-	}
-
-	public void setASMFigure(String figure) {
-		this.ASMFigure = figure;
-	}
-
-	public void setGBLink(String link) {
-		this.GBLink = link;
+	public PatternLink getPatternLink(String patternType){
+		return this.patternHash.get(patternType);
 	}
 	
-	public void setASMGBLink(String link) {
-		this.ASMGBLink = link;
+	public Collection<PatternLink> getPatternLinks(){
+		PatternLink[] patternLinks = new PatternLink[4];
+		for (PatternLink patternLink : patternHash.values()) {
+			switch (patternLink.getPatternType()){
+			case PatternLink.METHYLATION:
+				patternLinks[0] = patternLink;
+				break;
+			case PatternLink.METHYLATIONWITHMUTATION:
+				patternLinks[1] = patternLink;
+				break;
+			case PatternLink.MUTATION:
+				patternLinks[2] = patternLink;
+				break;
+			case PatternLink.MUTATIONWITHMETHYLATION:
+				patternLinks[3] = patternLink;
+				break;
+			}
+		}
+		return Arrays.asList(patternLinks);
+	}
+	
+	public String getStatTextLink() {
+		return statTextLink;
 	}
 
-	public boolean hasASM() {
+	public void setStatTextLink(String statTextLink) {
+		this.statTextLink = statTextLink;
+	}
+
+	public String getASMFigureLink() {
+		return ASMFigureLink;
+	}
+
+	public void setASMFigureLink(String ASMFigureLink) {
+		this.ASMFigureLink = ASMFigureLink;
+	}
+
+	public String getASMGBLink() {
+		return ASMGBLink;
+	}
+
+	public void setASMGBLink(String ASMGBLink) {
+		this.ASMGBLink = ASMGBLink;
+	}
+
+	public boolean isHasASM() {
 		return hasASM;
 	}
 
@@ -104,8 +105,20 @@ public class ReportSummary {
 		this.hasASM = hasASM;
 	}
 
-	public void setSNP(SNP snp) {
-		this.snp = snp;
+	public SNP getASMsnp() {
+		return ASMsnp;
 	}
 
+	public void setASMsnp(SNP aSMsnp) {
+		ASMsnp = aSMsnp;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getFRState() {
+		return FRState;
+	}
+	
 }

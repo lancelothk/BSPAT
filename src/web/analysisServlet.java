@@ -1,10 +1,12 @@
 package web;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -12,10 +14,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
+import BSPAT.IO;
+import BSPAT.ReportSummary;
 import BSPAT.Utilities;
+import DataType.AnalysisSummary;
 import DataType.Constant;
+import DataType.Experiment;
 
 /**
  * Servlet implementation class analysisServlet
@@ -46,42 +51,32 @@ public class analysisServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		long start = System.currentTimeMillis();
 		response.setContentType("text/html");
 		String runID = request.getParameter("runID");
 		constant = Constant.readConstant(runID);
-
-		Collection<Part> parts = request.getParts();
-		boolean coorReady = false;
-		for (Part part : parts) {
-			String fieldName = Utilities.getField(part, "name");
-			String fileName = Utilities.getField(part, "filename");
-			if (fieldName.equals("coor")) {// deal with uploaded coordinates file
-				File coorFolder = new File(constant.coorFilePath);
-				if (!coorFolder.isDirectory()) {// if coordinates directory do not exist, make one
-					coorFolder.mkdirs();
-				}
-				// save coordinates file in coordinates folder
-				if (Utilities.saveFileToDisk(part, coorFolder.getAbsolutePath(), fileName)) {
-					coorReady = true;
-					constant.coorFileName = fileName;
-				}
-			}
-		}
-		
-		constant.coorReady = coorReady;
+		constant.figureFormat = request.getParameter("figureFormat"); // set
+																		// figure
+																		// format
 		if (request.getParameter("minp0text") != null) {
 			constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
+			constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
 			constant.minMethylThreshold = -1;
 			// value check
 			if (constant.minP0Threshold < 0 || constant.minP0Threshold > 1) {
-				Utilities.showAlertWindow(response, "p0 threshold invalid!!");
+				Utilities.showAlertWindow(response, "alpha threshold invalid!!");
+				return;
+			}
+			// value check
+			if (constant.criticalValue < 0 || constant.criticalValue > 1) {
+				Utilities.showAlertWindow(response, "critical value invalid!!");
 				return;
 			}
 		} else if (request.getParameter("minmethyltext") != null) {
 			constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
 			constant.minP0Threshold = -1;
+			constant.criticalValue = -1;
 			// value check
 			if (constant.minMethylThreshold < 0 || constant.minMethylThreshold > 1) {
 				Utilities.showAlertWindow(response, "methylation pattern threshold invalid!!");
@@ -106,38 +101,52 @@ public class analysisServlet extends HttpServlet {
 			Utilities.showAlertWindow(response, "sequence identity threshold invalid!!");
 			return;
 		}
-
-		//	update constant file on disk
-		Constant.writeConstant(constant.runID, constant);
-
-		// save constant object in request
-		ExecuteAnalysis executeAnalysis = new ExecuteAnalysis(constant.runID);
-		// start analysis thread
-		Thread executeAnalysisThread = new Thread(executeAnalysis);
-		executeAnalysisThread.start();
-		FileReader progressHTMLFileReader = new FileReader(constant.diskRootPath + "/progress.html");
-		BufferedReader progressHTMLBufferedReader = new BufferedReader(progressHTMLFileReader);
-		String line;
-		while ((line = progressHTMLBufferedReader.readLine()) != null) {
-			response.getWriter().write(line);
-		}
-		progressHTMLBufferedReader.close();
-		response.getWriter().flush();
 		
-		while (executeAnalysisThread.isAlive()) {
+		// clean up result directory and result zip file
+		Utilities.deleteFolderContent(constant.patternResultPath);
+		File resultZip = new File(constant.randomDir + "/" + "analysisResult.zip");
+		if (resultZip.exists()){
+			resultZip.delete();
+		}
+
+		ExecutorService executor = Executors.newCachedThreadPool();
+		ArrayList<Future<ArrayList<ReportSummary>>> futureList = new ArrayList<>();
+		for (Experiment experiment : constant.experiments) {
+			Future<ArrayList<ReportSummary>> future = executor.submit(new ExecuteAnalysis(experiment.getName(), constant));
+			futureList.add(future);
+		}
+
+		for (int i = 0; i < constant.experiments.size(); i++) {
 			try {
-				Thread.sleep(100);
+				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
 			} catch (InterruptedException e) {
-				Utilities.showAlertWindow(response, "executeAnalysisThread sleep interrupted");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		response.getWriter().write(
-				"<script type=\"text/javascript\"> document.location=\""
-						+ constant.randomDir.toString().replace(constant.diskRootPath.toString(), constant.webRootPath)
-						+ "/analysisResult.jsp" + "\";</script> ");
 
+		// read analysis summary report
+		AnalysisSummary analysisSummary = IO.readAnalysisSummary(constant.patternResultPath);
+		
+		// compress result folder
+		String zipFileName = constant.randomDir + "/" + "analysisResult.zip";
+		Utilities.zipFolder(constant.patternResultPath, zipFileName);
+		// send email to inform user
+		Utilities.sendEmail(constant.email, constant.runID, "Analysis has finished.\n" + "Your runID is " + constant.runID
+				+ "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+
+		// passing JSTL parameters
+		constant.analysisSummary = analysisSummary;
+		constant.analysisTime = (System.currentTimeMillis() - start) / 1000;
+		constant.analysisResultLink = zipFileName.replace(constant.diskRootPath, constant.webRootPath);
+		constant.finishedAnalysis = true;
+		// update constant file on disk
+		Constant.writeConstant();
+		request.setAttribute("constant", constant);
+		request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
 	}
 
-	
 }

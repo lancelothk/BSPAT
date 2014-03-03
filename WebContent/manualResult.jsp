@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style.css" />
-<title>BS-PAT</title>
+<title>BSPAT</title>
 </head>
 
 <body>
@@ -14,103 +14,236 @@
 		<div id="content">
 			<div id="content_top"></div>
 			<div id="content_main">
-				<p class="phead">
-					3. Result phase:</br>
-				</p>
-				</br>
+				<h2>Result</h2>
 				<p class="dottedline"></p>
-				</br>
-				<h4>Result summary section:</h4>
-				</br> <img src="images/resultSummary_sample.png" border="1" /></br> </br>
-				<p class="ptext">This section contains parameters used in this
-					analysis run and analysis running time.</p>
-				</br>
+				<br />
+				<h3 id="resultSummary">Result summary section:</h3>
+				<table>
+					<tr>
+						<td><img src="images/resultSummarySection.png" border="1" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Experiment</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">List experiments which executed in the
+								mapping phase.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Result ID</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">An unique ID is used to track and retrieve
+								result.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Bisulfite Conversion rate</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">
+								<a href="manualAnalysis.jsp#conversionRate">Bisulfite
+									conversion rate</a> threshold used in current execution.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Sequence identity</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">
+								<a href="manualAnalysis.jsp#seqIdentity">Sequence identity</a>
+								threshold used in current execution.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Sequence number before filtering</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Number of all sequences mapped by Bisamrk.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Sequence number after filtering</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Number of sequences after filtering by
+								bisulfite conversion rate and sequence identity.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>&alpha; threshold and Mutation pattern threshold</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Thresholds used in current execution to
+								filter patterns.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Analysis phase running time</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Time cost of analysis in current execution.</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Zipped analysis result</h4>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p class="ptext">Compressed analysis results, including all
+								results shown in result page, such as text pattern, figure and
+								GenomeBrowser bed file.</p>
+						</td>
+					</tr>
+				</table>
 				<p class="dottedline"></p>
-				</br>
-				<h4>Experiment result section:</h4>
-				</br> <img src="images/ResultExperiment_sample.png" border="1" /></br> </br>
-				<p class="ptext">
-					In this section, the result of each experiment is shown separately.
-					Each amplicon region occupy one row. It contains methylation
-					pattern, corresponding figure of methylation pattern, methylation
-					pattern with mutation information, mutation pattern, mutation
-					pattern with methylation information, and some other information in
-					Stat link.</br> In the text representation of pattern, "@@" means one
-					methylated CpG site, "**" means unmethylated CpG site. "-" means
-					non-CpG site nucleotide, "|" means mismatch comparing with
-					reference.
-				</p>
-				</br>
-				<h5>Methylation Pattern:</h5>
-				<p class="ptext">
-					Methylation Pattern is obtained by grouping reads with same
-					methylation status on all CpG sites. In the text result, each line
-					contains a methylation pattern. First column is text represented
-					pattern, second column is the number of reads which share this
-					pattern. Third column is the percentage of number of reads of this
-					pattern in the total number of reads. The last column is the ID of
-					this pattern, which can be used to find corresponding children
-					pattern with mutation information. (Click to see large figure) </br> <a
-						href="images/methylPattern_sample.png" target="_blank"> <img
-						src="images/methylPattern_sample.png" border="1" width="620" /></a></br>
+				<h3 id="experimentResult">Experiment result section:</h3>
+				<table>
+					<tr>
+						<td><img src="images/experimentResultSection.png" border="1" /></td>
+					</tr>
+					<tr>
+						<td><p class="ptext">The result of each experiment and
+								each region is listed one by one. Each region contains 6 types
+								of result. The result is also shown in different forms, such as
+								text, figure and genome browser link. A link to download all
+								result files is provided in the bottom of the page.</p></td>
+					</tr>
+					<tr>
+						<td><b>Methylation Pattern:</b>grouped reads with same
+							methylation status.</td>
+					</tr>
+					<tr>
+						<td><b>MethylationWithMutation pattern:</b>For each
+							methylation pattern, child patterns can then be grouped again by
+							mutation patterns</td>
+					</tr>
+					<tr>
+						<td><b>Mutation Pattern:</b> grouped reads with same mutation
+							status.</td>
+					</tr>
+					<tr>
+						<td><b>MutationWithMethylation pattern:</b>For each mutation
+							pattern, child patterns can be grouped again by methylation
+							patterns</td>
+					</tr>
+					<tr>
+						<td><b>ASM pattern:</b> If two methylation patterns have at
+							least one differential methylated CpG site, we call it potential
+							allele-specific methylation pattern.</td>
+					</tr>
+					<tr>
+						<td><b>Other information:</b> contains summary information
+							such as methylation rate in each CpG site, number of reads
+							filtered by threshold, mismatch count in each base-pair.</td>
+					</tr>
+				</table>
+				<p class="dottedline"></p>
 
-					Figure representation of methylation patterns is also provided
-					here. In the figure, it shows experiment name, corresponding genome
-					position, read number and percentage. The last line display average
-					methylation rate by color. </br> <a href="images/figure_sample.png"
-						target="_blank"> <img src="images/figure_sample.png"
-						border="1" width="620" /></a></br>
+				<table>
+					<tr>
+						<td><h3>Result types:</h3></td>
+					</tr>
+					<tr>
+						<td><h4>Text:</h4></td>
+					</tr>
+					<tr>
+						<td><p class="ptext">In the text representation of
+								pattern, "@@" means one methylated CpG site, "**" means
+								unmethylated CpG site. "-" means non-CpG site nucleotide,
+								Mismatch comparing to reference is represented by real character
+								of that position. Read count and percentage of each pattern is
+								shown at the end. Here the percentages for Methylation and
+								mutation pattern are calculated as read count of the pattern
+								divided by total count of reads. Percentages of
+								MethylationWithMutation and MutationWithMethylation are
+								calculated as the read count of pattern divided by read count of
+								parent pattern. Last column is pattern ID or parent pattern ID.</p></td>
+					</tr>
+					<tr>
+						<td>Example:<br /> <a href="images/text_example.png"
+							target="_blank"><img src="images/text_example.png" border="1"
+								width="620" /></a></td>
+					</tr>
+					<tr>
+						<td><h4>Figure:</h4></td>
+					</tr>
+					<tr>
+						<td><p class="ptext">Currently support PNG and EPS format
+								figure. For patterns, black circle refers to methylated CpG
+								site, white one refers to non-methylated CpG site. The meaning
+								of percentage of pattern is same to text result. The last
+								colorful row is average methylation status of each CpG site. The
+								methylation rate is calculated from all reads in this region.
+								The color scale is from Red(100%) to Green (0%). Mutation(SNP)
+								here is represented by a blue bar.</p>
+							<p class="ptext">For ASM pattern, there are only two colorful
+								patterns. Each of the pattern represent an allele methylation
+								pattern.</p></td>
+					</tr>
+					<tr>
+						<td>Example:<br /> <a href="images/figure_example.png"
+							target="_blank"><img src="images/figure_example.png"
+								border="1" width="620" /></a></td>
+					</tr>
+					<tr>
+						<td><h4>Genome Browser Link:</h4></td>
+					</tr>
+					<tr>
+						<td><p class="ptext">Those links point to UCSC genome
+								browser with loading custom track. Target region is covered with
+								black bar. The layout and color scale is same to figure result.
+								dbSNP track is loaded by default. More help information can be
+								found in UCSC genome browser website.</p></td>
+					</tr>
+					<tr>
+						<td>Example:<br /> <a href="images/gb_example.png"
+							target="_blank"><img src="images/gb_example.png" border="1"
+								width="620" /></a></td>
+					</tr>
+					<tr>
+						<td><h4>dbSNP link:</h4></td>
+					</tr>
+					<tr>
+						<td><p class="ptext">If the SNP associated with
+								allele-specific methylation pattern is contained in dbSNP
+								database, a link to dbSNP page of that SNP will be shown in the
+								result page.</p></td>
+					</tr>
+				</table>
+				<p class="dottedline"></p>
+				<p style="text-align: center">
+					<a href="manual.jsp">Back</a>
 				</p>
-				</br>
-				<h5>Methylation Pattern with mutation information:</h5>
-				<p class="ptext">
-					Methylation Pattern with mutation information is obtained from
-					corresponding methylation pattern. Each pattern is derived from
-					corresponding methylation pattern, with considering mutation
-					information. Last column is corresponding methylation pattern ID.
-					(Click to see large figure) </br> <a
-						href="images/methylPatternWithMutation_sample.png" target="_blank">
-						<img src="images/methylPatternWithMutation_sample.png" border="1"
-						width="620" />
-					</a></br>
-				</p>
-				</br>
-				<h5>Mutation Pattern:</h5>
-				<p class="ptext">
-					The difference between mutation pattern and methylation pattern
-					mentioned above is that methylation pattern consider only
-					methylation information to group reads, but mutation pattern use
-					mismatches to group reads. It may contains potential SNP
-					information. (Click to see large figure) </br> <a
-						href="images/methylPattern_sample.png" target="_blank"> <img
-						src="images/mutationPattern_sample.png" border="1" width="620" /></a></br>
-				</p>
-				</br>
-				<h5>Mutation Pattern with methylation information:</h5>
-				<p class="ptext">
-					Mutation pattern with metyhylation information consider mismatches
-					first. Then for each group, it group reads by methylation pattern.
-					(Click to see large figure) </br> <a
-						href="images/methylPatternWithMutation_sample.png" target="_blank">
-						<img src="images/mutationPatternWithMethyl_sample.png" border="1"
-						width="620" />
-					</a></br>
-				</p>
-
-				<h5>Other information:</h5>
-				<p class="ptext">
-					In the stat file, it first contains methylation rate for each CpG
-					site. First column is position in reference, then methylation rate.
-					Besides, bisulfite conversion rate threshold and sequence identity
-					threshold used in analysis process is listed. The read counts before and after filtering are shown below those thresholds. 
-					Mismatches count in each position is shown in the end of this file. (Click to see large
-					figure) </br> <a href="images/Stat_sample.png" target="_blank"> <img
-						src="images/Stat_sample.png" border="1" width="509" />
-					</a></br>
-				</p>
-				
-				</br><a href="manual.jsp">Back</a>
-
 			</div>
 			<div id="content_bottom"></div>
 		</div>

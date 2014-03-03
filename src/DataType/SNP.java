@@ -1,12 +1,18 @@
 package DataType;
 
+import java.io.Serializable;
+
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.Assembly_type0;
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.Frequency_type0;
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.MolType_type1;
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.Phenotype_type0;
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.SnpType_type0;
 
-public class SNP {
+public class SNP implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// general info
 	private int rsID;
 	private SnpType_type0 snpType;

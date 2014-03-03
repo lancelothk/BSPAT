@@ -3,6 +3,8 @@ package DataType;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import BSPAT.ReportSummary;
+
 public class Experiment implements Serializable {
 	/**
 	 * 
@@ -13,6 +15,7 @@ public class Experiment implements Serializable {
 	private String seqFile;
 	private boolean seqReady;
 	private String inputType;
+	public ArrayList<ReportSummary> reportSummaries;
 
 	public Experiment(int index, String name) {
 		super();
@@ -59,5 +62,9 @@ public class Experiment implements Serializable {
 
 	public void setSeqFile(String seqFile) {
 		this.seqFile = seqFile;
+	}
+	
+	public ArrayList<ReportSummary> getReportSummaries() {
+		return reportSummaries;
 	}
 }

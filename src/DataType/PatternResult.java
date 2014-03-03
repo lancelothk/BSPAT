@@ -6,21 +6,21 @@ public class PatternResult {
 	private ArrayList<CpGSite> CpGList;
 	private int count;
 	private double percent;
-	private int alleleLocus = -1;
 	private boolean hasAllele = false;
-	
+	private ArrayList<Integer> alleleList;
 	public PatternResult(PatternResult patternResult){
 		this.CpGList = new ArrayList<CpGSite>();
+		this.alleleList = new ArrayList<>(); 
 		for (CpGSite cpg : patternResult.getCpGList()) {
 			this.CpGList.add(new CpGSite(cpg.getPosition(), false));
 		}
-		this.count = 0;
 		this.hasAllele = patternResult.hasAllele;
-		this.alleleLocus = patternResult.getAlleleLocus();
+		this.alleleList = patternResult.getAlleleList();
 	}
 	
 	public PatternResult(){
 		CpGList = new ArrayList<CpGSite>();
+		this.alleleList = new ArrayList<>(); 
 	}
 	
 	public void addCpG(CpGSite cpg){
@@ -47,18 +47,20 @@ public class PatternResult {
 		return CpGList;
 	}
 	
-	public void addAlleleLocus(int locus){
-		this.alleleLocus = locus;
+	public void addAllele(int locus){
+		this.alleleList.add(locus);
 		this.hasAllele = true;
 	}
 	
-	public int getAlleleLocus() {
-		return alleleLocus;
+	public ArrayList<Integer> getAlleleList() {
+		return alleleList;
 	}
 
 	public boolean hasAllele() {
 		return hasAllele;
 	}
 	
-	
+	public void countPlus(int count){
+		this.count += count;
+	}
 }
