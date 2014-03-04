@@ -97,25 +97,25 @@
                         <td>Bisulfite conversion rate<sup><a
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
                         <td><input type="text" name="conversionRateThreshold"
-                                   value=0.95/></td>
+                                   value=0.95></td>
                     </tr>
                     <tr>
                         <td>Sequence identity<sup><a
                                 href="manualAnalysis.jsp#seqIdentity">?</a></sup></td>
                         <td><input type="text" name="sequenceIdentityThreshold"
-                                   value=0.9/></td>
+                                   value=0.9></td>
                     </tr>
                     <tr>
                         <td><input type="radio" name="par" id="minp0" value="minp0"
                                    checked="yes" onclick="check()"/>&alpha; threshold<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
                         <td><input type="text" id="minp0text" name="minp0text"
-                                   value=0.02/></td>
+                                   value=0.02></td>
                     </tr>
                     <tr>
                         <td>&nbsp;&nbsp;&nbsp;Critical Value<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
-                        <td><input type="text" id="criticalValue" name="criticalValue" value=0.05/></td>
+                        <td><input type="text" id="criticalValue" name="criticalValue" value=0.05></td>
                     </tr>
                     <tr>
                         <td><input type="radio" name="par" id="minmethyl"
@@ -129,7 +129,7 @@
                         <td>Mutation pattern threshold<sup><a
                                 href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
                         <td><input type="text" name="mutationpatternThreshold"
-                                   value=0.3/></td>
+                                   value=0.3></td>
                     </tr>
                     <tr>
                         <td>Figure Format<sup><a

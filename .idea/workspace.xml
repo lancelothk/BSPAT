@@ -7,9 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="Merge branch 'WithCoorQuery'&#10;&#10;Conflicts:&#10;&#9;.classpath&#10;&#9;WebContent/about.jsp&#10;&#9;WebContent/analysis.jsp&#10;&#9;WebContent/download.jsp&#10;&#9;WebContent/footer.html&#10;&#9;WebContent/images/mappingSummary_sample.png&#10;&#9;WebContent/index.jsp&#10;&#9;WebContent/manual.jsp&#10;&#9;WebContent/manualAnalysis.jsp&#10;&#9;WebContent/manualMapping.jsp&#10;&#9;WebContent/manualResult.jsp&#10;&#9;WebContent/menu.html&#10;&#9;WebContent/result.jsp&#10;&#9;WebContent/style.css&#10;&#9;WebContent/tools/setFileExecution.sh&#10;&#9;src/BSPAT/BSSeqAnalysis.java&#10;&#9;src/BSPAT/CallBismark.java&#10;&#9;src/BSPAT/DrawPattern.java&#10;&#9;src/BSPAT/ImportBismarkResult.java&#10;&#9;src/BSPAT/Report.java&#10;&#9;src/BSPAT/ReportSummary.java&#10;&#9;src/BSPAT/Utilities.java&#10;&#9;src/DataType/Constant.java&#10;&#9;src/DataType/Coordinate.java&#10;&#9;src/DataType/Experiment.java&#10;&#9;src/DataType/PatternResult.java&#10;&#9;src/DataType/SNP.java&#10;&#9;src/web/ExecuteAnalysis.java&#10;&#9;src/web/ExecuteMapping.java&#10;&#9;src/web/analysisServlet.java&#10;&#9;src/web/mappingServlet.java&#10;&#9;src/web/resultRetrieveServlet.java&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/Report.java" afterPath="$PROJECT_DIR$/src/BSPAT/Report.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/mappingResult.jsp" afterPath="$PROJECT_DIR$/WebContent/mappingResult.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/tools/setFileExecution.sh" afterPath="$PROJECT_DIR$/WebContent/tools/setFileExecution.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -158,7 +156,7 @@
       <file leaf-file-name="mappingResult.jsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="131" column="26" selection-start="6662" selection-end="6662" vertical-scroll-proportion="0.523614" vertical-offset="1710" max-vertical-offset="2400">
+            <state line="132" column="25" selection-start="6712" selection-end="6712" vertical-scroll-proportion="0.92402464" vertical-offset="1530" max-vertical-offset="2400">
               <folding />
             </state>
           </provider>
@@ -738,12 +736,17 @@
       <workItem from="1393821561561" duration="1094000" />
       <workItem from="1393822699021" duration="694000" />
       <workItem from="1393900256800" duration="5333000" />
-      <workItem from="1393909598345" duration="2237000" />
+      <workItem from="1393909598345" duration="2328000" />
     </task>
+    <task id="LOCAL-00001" summary="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug.">
+      <created>1393911932594</created>
+      <updated>1393911932594</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16147000" />
+    <option name="totallyTimeSpent" value="16238000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -812,7 +815,8 @@
       <TodoPanelSettings />
     </option>
     <MESSAGE value="Merge branch 'WithCoorQuery'&#10;Tune building and deployment in Intellij&#10;auto fix import.&#10;&#10;Conflicts:&#10;&#9;.classpath&#10;&#9;WebContent/about.jsp&#10;&#9;WebContent/analysis.jsp&#10;&#9;WebContent/download.jsp&#10;&#9;WebContent/footer.html&#10;&#9;WebContent/images/mappingSummary_sample.png&#10;&#9;WebContent/index.jsp&#10;&#9;WebContent/manual.jsp&#10;&#9;WebContent/manualAnalysis.jsp&#10;&#9;WebContent/manualMapping.jsp&#10;&#9;WebContent/manualResult.jsp&#10;&#9;WebContent/menu.html&#10;&#9;WebContent/result.jsp&#10;&#9;WebContent/style.css&#10;&#9;WebContent/tools/setFileExecution.sh&#10;&#9;src/BSPAT/BSSeqAnalysis.java&#10;&#9;src/BSPAT/CallBismark.java&#10;&#9;src/BSPAT/DrawPattern.java&#10;&#9;src/BSPAT/ImportBismarkResult.java&#10;&#9;src/BSPAT/Report.java&#10;&#9;src/BSPAT/ReportSummary.java&#10;&#9;src/BSPAT/Utilities.java&#10;&#9;src/DataType/Constant.java&#10;&#9;src/DataType/Coordinate.java&#10;&#9;src/DataType/Experiment.java&#10;&#9;src/DataType/PatternResult.java&#10;&#9;src/DataType/SNP.java&#10;&#9;src/web/ExecuteAnalysis.java&#10;&#9;src/web/ExecuteMapping.java&#10;&#9;src/web/analysisServlet.java&#10;&#9;src/web/mappingServlet.java&#10;&#9;src/web/resultRetrieveServlet.java&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'WithCoorQuery'&#10;Tune building and deployment in Intellij&#10;auto fix import.&#10;&#10;Conflicts:&#10;&#9;.classpath&#10;&#9;WebContent/about.jsp&#10;&#9;WebContent/analysis.jsp&#10;&#9;WebContent/download.jsp&#10;&#9;WebContent/footer.html&#10;&#9;WebContent/images/mappingSummary_sample.png&#10;&#9;WebContent/index.jsp&#10;&#9;WebContent/manual.jsp&#10;&#9;WebContent/manualAnalysis.jsp&#10;&#9;WebContent/manualMapping.jsp&#10;&#9;WebContent/manualResult.jsp&#10;&#9;WebContent/menu.html&#10;&#9;WebContent/result.jsp&#10;&#9;WebContent/style.css&#10;&#9;WebContent/tools/setFileExecution.sh&#10;&#9;src/BSPAT/BSSeqAnalysis.java&#10;&#9;src/BSPAT/CallBismark.java&#10;&#9;src/BSPAT/DrawPattern.java&#10;&#9;src/BSPAT/ImportBismarkResult.java&#10;&#9;src/BSPAT/Report.java&#10;&#9;src/BSPAT/ReportSummary.java&#10;&#9;src/BSPAT/Utilities.java&#10;&#9;src/DataType/Constant.java&#10;&#9;src/DataType/Coordinate.java&#10;&#9;src/DataType/Experiment.java&#10;&#9;src/DataType/PatternResult.java&#10;&#9;src/DataType/SNP.java&#10;&#9;src/web/ExecuteAnalysis.java&#10;&#9;src/web/ExecuteMapping.java&#10;&#9;src/web/analysisServlet.java&#10;&#9;src/web/mappingServlet.java&#10;&#9;src/web/resultRetrieveServlet.java&#10;" />
+    <MESSAGE value="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug." />
+    <option name="LAST_COMMIT_MESSAGE" value="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1160,7 +1164,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="131" column="26" selection-start="6662" selection-end="6662" vertical-scroll-proportion="0.523614" vertical-offset="1710" max-vertical-offset="2400">
+        <state line="132" column="25" selection-start="6712" selection-end="6712" vertical-scroll-proportion="0.92402464" vertical-offset="1530" max-vertical-offset="2400">
           <folding />
         </state>
       </provider>
