@@ -105,25 +105,6 @@ public class Report {
 			bufferedWriter.write(cpgStat.getPosition() - 1 + "\t" + cpgStat.getMethylationRate() + "\n");
 		}
 
-//		bufferedWriter.write("Mismatches count in each position:\n");
-//		mutationStat = new int[referenceSeqs.get(region).length()];
-//		// give mutationStat array zero value
-//		for (int i : mutationStat) {
-//			mutationStat[i] = 0;
-//		}
-//		for (Sequence seq : sequencesList) {
-//			char[] mutationArray = seq.getMutationString().toCharArray();
-//			for (int i = 0; i < mutationArray.length; i++) {
-//				if (mutationArray[i] == 'A' || mutationArray[i] == 'C' || mutationArray[i] == 'G' || mutationArray[i] == 'T') {
-//					mutationStat[i]++;
-//				}
-//			}
-//		}
-//		for (int i = 0; i < mutationStat.length; i++) {
-//			// 1 based position
-//			bufferedWriter.write((i + 1) + "\t" + mutationStat[i] + "\n");
-//		}
-
 		bufferedWriter.close();
 	}
 
@@ -144,10 +125,7 @@ public class Report {
 		// sort methylation pattern.
 		Collections.sort(methylationPatterns, new PatternComparator());
 
-		double totalCount = 0;
-		for (Pattern methylationPattern : methylationPatterns) {
-			totalCount += methylationPattern.getCount();
-		}
+		double totalCount = sequencesList.size();
 		if (totalCount == 0) {
 			System.err.println("no reads result. Maybe due to read length longer than reference");
 			bufferedWriter.close();
@@ -214,12 +192,11 @@ public class Report {
 
 						// sort child pattern.
 						Collections.sort(methylationPattern.getChildPatternsList(), new PatternComparator());
-						double totalCountMutation = methylationPattern.getCount();
 						for (Pattern childPattern : methylationPattern.getChildPatternsList()) {
-							double mutationPercentage = (double) childPattern.getCount() / totalCountMutation;
+							double mutationPercentage = (double) childPattern.getCount() / totalCount;
 							if (mutationPercentage >= constant.mutationPatternThreshold) {
 								bufferedWriterWithMutations.write(childPattern.getPatternString() + "\t"
-										+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation
+										+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCount
 										+ "\t" + childPattern.getParrentPatternID() + "\n");
 							}
 						}
@@ -232,12 +209,11 @@ public class Report {
 							+ methylationPattern.getParrentPatternID() + "\n");
 					// sort child pattern.
 					Collections.sort(methylationPattern.getChildPatternsList(), new PatternComparator());
-					double totalCountMutation = methylationPattern.getCount();
 					for (Pattern childPattern : methylationPattern.getChildPatternsList()) {
-						double mutationPercentage = (double) childPattern.getCount() / totalCountMutation;
+						double mutationPercentage = (double) childPattern.getCount() / totalCount;
 						if (mutationPercentage >= constant.mutationPatternThreshold) {
 							bufferedWriterWithMutations.write(childPattern.getPatternString() + "\t"
-									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation
+									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCount
 									+ "\t" + childPattern.getParrentPatternID() + "\n");
 						}
 					}
@@ -265,9 +241,12 @@ public class Report {
 		Collections.sort(mutationPatterns, new PatternComparator());
 		// sort mutation pattern.
 
-		double totalCount = 0;
-		for (Pattern mutationPattern : mutationPatterns) {
-			totalCount += mutationPattern.getCount();
+		double totalCount = sequencesList.size();
+		if (totalCount == 0) {
+			System.err.println("no reads result. Maybe due to read length longer than reference");
+			bufferedWriter.close();
+			bufferedWriterWithPatterns.close();
+			return;
 		}
 		for (Pattern mutationPattern : mutationPatterns) {
 			double percentage = (double) mutationPattern.getCount() / sequencesList.size();
@@ -277,13 +256,12 @@ public class Report {
 								+ mutationPattern.getCount() / totalCount + "\t"
 								+ mutationPattern.getParrentPatternID() + "\n");
 				Collections.sort(mutationPattern.getChildPatternsList(), new PatternComparator());
-				double totalCountMutation = mutationPattern.getCount();
 
 				if (constant.minP0Threshold == -1) {
 					for (Pattern childPattern : mutationPattern.getChildPatternsList()) {
 						if (percentage >= constant.minMethylThreshold) {
 							bufferedWriterWithPatterns.write(childPattern.getPatternString() + "\t"
-									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation
+									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCount
 									+ "\t" + childPattern.getParrentPatternID() + "\n");
 						}
 					}
@@ -297,7 +275,7 @@ public class Report {
 					NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
 					double criticalZ = 0;
 					try {
-						criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalCountMutation);
+						criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalCount);
 					} catch (MathException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -305,9 +283,9 @@ public class Report {
 					ArrayList<Pattern> outputMethylationPattern = new ArrayList<Pattern>();
 					// significant pattern selection
 					for (Pattern childPattern : mutationPattern.getChildPatternsList()) {
-						ph = childPattern.getCount() / totalCountMutation;
+						ph = childPattern.getCount() / totalCount;
 						p0 = Math.max(constant.minP0Threshold, Math.pow(p, childPattern.getCGcount()));
-						z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalCountMutation);
+						z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalCount);
 						if (z > criticalZ) {
 							outputMethylationPattern.add(childPattern);
 						}
@@ -316,14 +294,14 @@ public class Report {
 						for (Pattern childPattern : mutationPattern.getChildPatternsList()) {
 							if (percentage >= constant.minMethylThreshold) {
 								bufferedWriterWithPatterns.write(childPattern.getPatternString() + "\t"
-										+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation
+										+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCount
 										+ "\t" + childPattern.getParrentPatternID() + "\n");
 							}
 						}
 					} else {
 						for (Pattern childPattern : outputMethylationPattern) {
 							bufferedWriterWithPatterns.write(childPattern.getPatternString() + "\t"
-									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCountMutation
+									+ childPattern.getCount() + "\t" + childPattern.getCount() / totalCount
 									+ "\t" + childPattern.getParrentPatternID() + "\n");
 						}
 					}
