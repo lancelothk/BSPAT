@@ -101,7 +101,7 @@
                     </tr>
                     <tr>
                         <td>Sequence identity<sup><a
-                                href="manualAnalysis.jsp#seqIdentity">?</a></sup></td>
+                                href="manualAnzalysis.jsp#seqIdentity">?</a></sup></td>
                         <td><input type="text" name="sequenceIdentityThreshold"
                                    value=0.9></td>
                     </tr>
