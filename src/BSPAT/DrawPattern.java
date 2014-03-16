@@ -15,6 +15,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DrawPattern {
     private final int WIDTH = 20;
@@ -53,9 +54,9 @@ public class DrawPattern {
 
         // variable initialization
         String cellLine = data.getCellLine();
-        ArrayList<Integer> refCpGs = data.getRefCpGs();
-        ArrayList<PatternResult> patternResultLists = data.getPatternResultLists();
-        ArrayList<CpGStatistics> statList = data.getStatList();
+        List<Integer> refCpGs = data.getRefCpGs();
+        List<PatternResult> patternResultLists = data.getPatternResultLists();
+        List<CpGStatistics> statList = data.getStatList();
         int refLength = data.getRefLength();
         String beginCoor = data.getBeginCoor();
         String endCoor = data.getEndCoor();
@@ -116,7 +117,7 @@ public class DrawPattern {
             for (int i = 0; i < patternResultLists.size(); i++) {
                 PatternResult patternResult = patternResultLists.get(i);
                 if (patternResult.hasAllele() == true) {
-                    ArrayList<Integer> alleleList = patternResult.getAlleleList();
+                    List<Integer> alleleList = patternResult.getAlleleList();
                     graphWriter.setPaint(Color.BLUE);
                     for (int j = 0; j < alleleList.size(); j++) {
                         graphWriter.fill(new Rectangle2D.Double(STARTX + (alleleList.get(j) * WIDTH) - WIDTH / 2, height - HEIGHTINTERVAL / 2, RADIUS / 2, RADIUS * 2));
@@ -209,10 +210,10 @@ public class DrawPattern {
             folder.mkdirs();
         }
 
-        ArrayList<Integer> refCpGs = data.getRefCpGs();
+        List<Integer> refCpGs = data.getRefCpGs();
 
-        ArrayList<PatternResult> patternResultLists = data.getPatternResultLists();
-        ArrayList<PatternResult> allelePatternResultsLists = new ArrayList<PatternResult>();
+        List<PatternResult> patternResultLists = data.getPatternResultLists();
+        List<PatternResult> allelePatternResultsLists = new ArrayList<PatternResult>();
         for (int i = 0; i < patternResultLists.size(); i++) {
             if (patternResultLists.get(i).hasAllele()) {
                 allelePatternResultsLists.add(patternResultLists.get(i));
@@ -342,7 +343,7 @@ public class DrawPattern {
             addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternA", bedWriter, height);
             // set snp info
             if (patternWithAllele.hasAllele()) {
-                ArrayList<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg19", patternResultPath) + patternWithAllele.getAlleleList().get(0), "1");
+                List<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg19", patternResultPath) + patternWithAllele.getAlleleList().get(0), "1");
                 if (snpList != null && snpList.size() > 0) {
                     reportSummary.setASMsnp(snpList.get(0));
                 }
@@ -414,8 +415,8 @@ public class DrawPattern {
     }
 
     private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
-        ArrayList<CpGSite> cglistWithAllele = patternWithAllele.getCpGList();
-        ArrayList<CpGSite> cglistWithoutAllele = patternWithoutAllele.getCpGList();
+        List<CpGSite> cglistWithAllele = patternWithAllele.getCpGList();
+        List<CpGSite> cglistWithoutAllele = patternWithoutAllele.getCpGList();
 //		// use 20% threshold to filter ASM pattern
 //		if (patternWithAllele.getCount() / (double)(patternWithAllele.getCount() + patternWithoutAllele.getCount()) < 0.2){
 //			return false;
@@ -428,8 +429,8 @@ public class DrawPattern {
         return false;
     }
 
-    private ArrayList<SNP> retreiveSNP(String chr, long pos, String maxRet) {
-        ArrayList<SNP> snps = new ArrayList<SNP>();
+    private List<SNP> retreiveSNP(String chr, long pos, String maxRet) {
+        List<SNP> snps = new ArrayList<SNP>();
         String fetchIds = "";
         // 1. search region
         try {

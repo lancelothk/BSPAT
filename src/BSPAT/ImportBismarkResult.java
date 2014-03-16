@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Import reference and Bismark result to specific data structure
@@ -36,9 +37,9 @@ public class ImportBismarkResult {
 		return referenceSeqs;
 	}
 
-	public ArrayList<Sequence> getSequencesList() {
-		ArrayList<Sequence> sequencesList = new ArrayList<Sequence>();
-		for (Sequence seq : sequencesHashtable.values()) {
+    public List<Sequence> getSequencesList() {
+        List<Sequence> sequencesList = new ArrayList<Sequence>();
+        for (Sequence seq : sequencesHashtable.values()) {
 			sequencesList.add(seq);
 		}
 		return sequencesList;

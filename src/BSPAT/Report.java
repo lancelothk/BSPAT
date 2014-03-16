@@ -11,12 +11,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 
 public class Report {
     private Hashtable<String, String> referenceSeqs = new Hashtable<String, String>();
-    private ArrayList<Sequence> sequencesList = new ArrayList<Sequence>();
-    private ArrayList<Pattern> methylationPatterns = new ArrayList<Pattern>();
-    private ArrayList<Pattern> mutationPatterns = new ArrayList<Pattern>();
+    private List<Sequence> sequencesList = new ArrayList<Sequence>();
+    private List<Pattern> methylationPatterns = new ArrayList<Pattern>();
+    private List<Pattern> mutationPatterns = new ArrayList<Pattern>();
     private int[] mutationStat;
     private String outputFolder;
     private String region;
@@ -25,7 +26,7 @@ public class Report {
     private ReportSummary reportSummary;
     private Constant constant;
 
-    public Report(String FRState, String region, String outputPath, ArrayList<Sequence> sequencesList, ArrayList<Pattern> methylationPatterns, ArrayList<Pattern> mutationPatterns, Hashtable<String, String> referenceSeqs, int totalCount, ReportSummary reportSummary, Constant constant) {
+    public Report(String FRState, String region, String outputPath, List<Sequence> sequencesList, List<Pattern> methylationPatterns, List<Pattern> mutationPatterns, Hashtable<String, String> referenceSeqs, int totalCount, ReportSummary reportSummary, Constant constant) {
         this.constant = constant;
         this.reportSummary = reportSummary;
         this.FRState = FRState;
@@ -82,7 +83,7 @@ public class Report {
             }
         }
 
-        ArrayList<CpGStatistics> statList = new ArrayList<CpGStatistics>(cpgStatHashtable.values());
+        List<CpGStatistics> statList = new ArrayList<CpGStatistics>(cpgStatHashtable.values());
         Collections.sort(statList, new CpGStatComparator());
         bufferedWriter.write("reference seq length:\t" + referenceSeqs.get(region).length() + "\n");
         bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
@@ -158,7 +159,7 @@ public class Report {
             } catch (MathException e) {
                 e.printStackTrace();
             }
-            ArrayList<Pattern> outputMethylationPattern = new ArrayList<Pattern>();
+            List<Pattern> outputMethylationPattern = new ArrayList<Pattern>();
             // significant pattern selection
             for (Pattern methylationPattern : methylationPatterns) {
                 ph = methylationPattern.getCount() / totalCount;
@@ -254,7 +255,7 @@ public class Report {
                     } catch (MathException e) {
                         e.printStackTrace();
                     }
-                    ArrayList<Pattern> outputMethylationPattern = new ArrayList<Pattern>();
+                    List<Pattern> outputMethylationPattern = new ArrayList<Pattern>();
                     // significant pattern selection
                     for (Pattern childPattern : mutationPattern.getChildPatternsList()) {
                         ph = childPattern.getCount() / totalCount;

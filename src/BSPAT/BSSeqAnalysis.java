@@ -12,11 +12,9 @@ import java.util.*;
  */
 public class BSSeqAnalysis {
 
-    private Report report;
+
     private Hashtable<String, String> referenceSeqs = new Hashtable<>();
-    private List<Sequence> sequencesList = new ArrayList<>();
     private Constant constant;
-    private HashMap<String, Coordinate> coordinates;
 
     /**
      * Execute analysis.
@@ -28,27 +26,29 @@ public class BSSeqAnalysis {
      */
     public List<ReportSummary> execute(String experimentName, Constant constant) throws Exception {
         List<ReportSummary> reportSummaries = new ArrayList<>();
+        Report report;
         this.constant = constant;
         String inputFolder = constant.mappingResultPath + experimentName + "/";
         String outputFolder = constant.patternResultPath + experimentName + "/";
         ImportBismarkResult importBismarkResult = new ImportBismarkResult(constant.originalRefPath, inputFolder);
         referenceSeqs = importBismarkResult.getReferenceSeqs();
-        sequencesList = importBismarkResult.getSequencesList();
+        List<Sequence> sequencesList = importBismarkResult.getSequencesList();
         if (sequencesList.size() == 0) {
             throw new Exception("mapping result is empty, please double check input!");
         }
 
-        // 0. retreive SNP info
+        // 1. read coordinates
+        HashMap<String, Coordinate> coordinates;
         if (constant.coorReady) {
             coordinates = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
         } else {
             throw new Exception("coordinates file is not ready!");
         }
-        // first sort seqs by region
+        // 2. sort seqs by region
         Collections.sort(sequencesList, new SequenceComparatorRegion());
         String region = "";
-        ArrayList<ArrayList<Sequence>> sequenceGroups = new ArrayList<>();
-        ArrayList<Sequence> sequenceGroup = null;
+        List<List<Sequence>> sequenceGroups = new ArrayList<>();
+        List<Sequence> sequenceGroup = null;
         for (Sequence seq : sequencesList) {
             if (seq.getRegion().equals(region)) {
                 // add to same group
@@ -67,15 +67,15 @@ public class BSSeqAnalysis {
             sequenceGroups.add(sequenceGroup);
         }
 
-        // then generate report for each region
-        for (ArrayList<Sequence> seqGroup : sequenceGroups) {
+        // 3. generate report for each region
+        for (List<Sequence> seqGroup : sequenceGroups) {
             if (seqGroup.size() < 10) {
                 continue;
             }
             region = seqGroup.get(0).getRegion();
 
-            ArrayList<Sequence> Fgroup = new ArrayList<>();
-            ArrayList<Sequence> Rgroup = new ArrayList<>();
+            List<Sequence> Fgroup = new ArrayList<>();
+            List<Sequence> Rgroup = new ArrayList<>();
             for (Sequence sequence : seqGroup) {
                 if (sequence.getFRstate().equals("F")) {
                     Fgroup.add(sequence);
@@ -94,12 +94,12 @@ public class BSSeqAnalysis {
             }
             if ((Fseq != null) && (Rseq != null) && (Fseq.getStartPos() == Rseq.getStartPos()) && (Fseq.getOriginalSeq().length() == Rseq.getOriginalSeq().length())) {
                 // F R are totally overlapped combine F R group together
-                ArrayList<Sequence> FRgroup = new ArrayList<>();
+                List<Sequence> FRgroup = new ArrayList<>();
                 FRgroup.addAll(Fgroup);
                 FRgroup.addAll(Rgroup);
                 int totalCount = FRgroup.size();
-                ArrayList<Pattern> methylationPatterns = new ArrayList<>();
-                ArrayList<Pattern> mutationPatterns = new ArrayList<>();
+                List<Pattern> methylationPatterns = new ArrayList<>();
+                List<Pattern> mutationPatterns = new ArrayList<>();
 
                 getMethylString(FRgroup);
                 FRgroup = filterSequences(FRgroup);
@@ -125,15 +125,15 @@ public class BSSeqAnalysis {
                     drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION), experimentName, "FR", reportSummary, coordinates);
                 }
                 System.out.println("finished DrawSingleFigure");
-                reportSummary.replacePath(constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
+                reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
                 reportSummaries.add(reportSummary);
             } else {
                 // consider F and R seperately like two regions
                 // F
                 if (Fgroup != null) {
                     int totalCount = Fgroup.size();
-                    ArrayList<Pattern> methylationPatterns = new ArrayList<>();
-                    ArrayList<Pattern> mutationPatterns = new ArrayList<>();
+                    List<Pattern> methylationPatterns = new ArrayList<>();
+                    List<Pattern> mutationPatterns = new ArrayList<>();
 
                     getMethylString(Fgroup);
                     Fgroup = filterSequences(Fgroup);
@@ -156,14 +156,14 @@ public class BSSeqAnalysis {
                         drawFigureLocal.drawMethylPattern(region, outputFolder, reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION), experimentName, "F", reportSummary, coordinates);
                         drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION), experimentName, "F", reportSummary, coordinates);
                     }
-                    reportSummary.replacePath(constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
+                    reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
                     reportSummaries.add(reportSummary);
                 }
                 // R
                 if (Rgroup != null) {
                     int totalCount = Rgroup.size();
-                    ArrayList<Pattern> methylationPatterns = new ArrayList<>();
-                    ArrayList<Pattern> mutationPatterns = new ArrayList<>();
+                    List<Pattern> methylationPatterns = new ArrayList<>();
+                    List<Pattern> mutationPatterns = new ArrayList<>();
 
                     getMethylString(Rgroup);
                     Rgroup = filterSequences(Rgroup);
@@ -186,7 +186,7 @@ public class BSSeqAnalysis {
                         drawFigureLocal.drawMethylPattern(region, outputFolder, reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION), experimentName, "R", reportSummary, coordinates);
                         drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION), experimentName, "R", reportSummary, coordinates);
                     }
-                    reportSummary.replacePath(constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
+                    reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
                     reportSummaries.add(reportSummary);
                 }
             }
@@ -199,7 +199,7 @@ public class BSSeqAnalysis {
      * conversion rate, methylation rate
      */
 
-    public void getMethylString(ArrayList<Sequence> seqList) {
+    public void getMethylString(List<Sequence> seqList) {
         char[] methylationString;
         char[] methylationStringWithMutations;
         char[] mutationString;
@@ -297,9 +297,9 @@ public class BSSeqAnalysis {
         }
     }
 
-    private ArrayList<Sequence> filterSequences(ArrayList<Sequence> seqList) {
+    private List<Sequence> filterSequences(List<Sequence> seqList) {
         // fill sequence list filtered by threshold.
-        ArrayList<Sequence> tempSeqList = new ArrayList<>();
+        List<Sequence> tempSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
             // filter unqualified reads
             if (seq.getBisulConversionRate() >= constant.conversionRateThreshold && seq.getSequenceIdentity() >= constant.sequenceIdentityThreshold) {
@@ -312,7 +312,7 @@ public class BSSeqAnalysis {
     /**
      * get methylation pattern
      */
-    public void getMethylPattern(ArrayList<Sequence> seqList, ArrayList<Pattern> methylationPatterns) {
+    public void getMethylPattern(List<Sequence> seqList, List<Pattern> methylationPatterns) {
         // sort sequences by methylationString first. Character order.
         Collections.sort(seqList, new SequenceComparatorMethylation());
 
@@ -360,7 +360,7 @@ public class BSSeqAnalysis {
     /**
      * get mutation pattern
      */
-    public void getMutationPattern(ArrayList<Sequence> seqList, ArrayList<Pattern> mutationPatterns) {
+    public void getMutationPattern(List<Sequence> seqList, List<Pattern> mutationPatterns) {
         // sort sequences by methylationString first. Character order.
         Collections.sort(seqList, new SequenceComparatorMutations());
 
@@ -406,8 +406,8 @@ public class BSSeqAnalysis {
         }
     }
 
-    private ArrayList<Sequence> removeMisMap(ArrayList<Sequence> seqList) {
-        ArrayList<Sequence> newList = null;
+    private List<Sequence> removeMisMap(List<Sequence> seqList) {
+        List<Sequence> newList = null;
         if (seqList.size() != 0) {
             // count sequence with same start position
             HashMap<Integer, Integer> positionMap = new HashMap<>();

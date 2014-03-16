@@ -7,12 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ReadAnalysisResult {
-	private ArrayList<PatternResult> patternResultLists = new ArrayList<PatternResult>();
-	private ArrayList<Integer> refCpGs = new ArrayList<Integer>();
-	private ArrayList<CpGStatistics> statList = new ArrayList<CpGStatistics>();
-	private int refLength = 0;
+    private List<PatternResult> patternResultLists = new ArrayList<PatternResult>();
+    private List<Integer> refCpGs = new ArrayList<Integer>();
+    private List<CpGStatistics> statList = new ArrayList<CpGStatistics>();
+    private int refLength = 0;
 	private String inputFolder;
 	private Coordinate coordinate;
 	private String beginCoor;
@@ -122,20 +123,20 @@ public class ReadAnalysisResult {
 		return endCoor;
 	}
 
-	public ArrayList<PatternResult> getPatternResultLists() {
-		return patternResultLists;
+    public List<PatternResult> getPatternResultLists() {
+        return patternResultLists;
 	}
 
-	public ArrayList<Integer> getRefCpGs() {
-		return refCpGs;
+    public List<Integer> getRefCpGs() {
+        return refCpGs;
 	}
 
 	public int getRefLength() {
 		return refLength;
 	}
 
-	public ArrayList<CpGStatistics> getStatList() {
-		return statList;
+    public List<CpGStatistics> getStatList() {
+        return statList;
 	}
 
 	public String getCellLine() {

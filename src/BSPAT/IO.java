@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class IO {
 	/**
@@ -68,9 +69,9 @@ public class IO {
 	}
 
 	// only add allowed files.
-	public static ArrayList<File> visitFiles(File f) {
-		ArrayList<File> list = new ArrayList<File>();
-		File[] files = f.listFiles();
+    public static List<File> visitFiles(File f) {
+        List<File> list = new ArrayList<File>();
+        File[] files = f.listFiles();
 		for (File file : files) {
 			if (file.isDirectory()) {
 				list.addAll(visitFiles(file));

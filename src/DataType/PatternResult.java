@@ -1,15 +1,16 @@
 package DataType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PatternResult {
-	private ArrayList<CpGSite> CpGList;
-	private int count;
+    private List<CpGSite> CpGList;
+    private int count;
 	private double percent;
 	private boolean hasAllele = false;
-	private ArrayList<Integer> alleleList;
+    private List<Integer> alleleList;
 
-	public PatternResult(PatternResult patternResult) {
+    public PatternResult(PatternResult patternResult) {
 		this.CpGList = new ArrayList<CpGSite>();
 		this.alleleList = new ArrayList<>();
 		for (CpGSite cpg : patternResult.getCpGList()) {
@@ -44,8 +45,8 @@ public class PatternResult {
 		return percent;
 	}
 
-	public ArrayList<CpGSite> getCpGList() {
-		return CpGList;
+    public List<CpGSite> getCpGList() {
+        return CpGList;
 	}
 
 	public void addAllele(int locus) {
@@ -53,8 +54,8 @@ public class PatternResult {
 		this.hasAllele = true;
 	}
 
-	public ArrayList<Integer> getAlleleList() {
-		return alleleList;
+    public List<Integer> getAlleleList() {
+        return alleleList;
 	}
 
 	public boolean hasAllele() {

@@ -1,6 +1,7 @@
 package DataType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Sequence {
 	private String id; // 1
@@ -19,8 +20,8 @@ public class Sequence {
 	private String methylCall; // 14 methylation call string
 	private String readConvState; // 15 read conversion state for the alignment
 	//	private String XGtag; // 16 genome conversion state for the alignment
-	private ArrayList<CpGSite> CpGSites;
-	private String methylationString;
+    private List<CpGSite> CpGSites;
+    private String methylationString;
 	private String methylationStringWithMutations;
 	private String mutationString;
 	private double methylationRate;
@@ -205,8 +206,8 @@ public class Sequence {
 		CpGSites.add(cpg);
 	}
 
-	public ArrayList<CpGSite> getCpGSites() {
-		return CpGSites;
+    public List<CpGSite> getCpGSites() {
+        return CpGSites;
 	}
 
 	public String getMethylationString() {

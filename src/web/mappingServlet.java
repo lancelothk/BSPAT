@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -56,11 +57,9 @@ public class mappingServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         initializeConstant(request); // initialize constant, which is a singleton
-        // print disk path to console
-        System.out.println("diskpath:\t" + this.getServletContext().getRealPath(""));
         cleanRootFolder(); // release root folder space
         Collection<Part> parts = request.getParts(); // get submitted data
-        ArrayList<Experiment> experiments = new ArrayList<>();
+        List<Experiment> experiments = new ArrayList<>();
         // add each experiment in list
         String experimentName;
         int index = 1;

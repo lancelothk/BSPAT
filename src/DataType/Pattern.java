@@ -1,12 +1,13 @@
 package DataType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Pattern {
     private String patternString;
-    private ArrayList<Sequence> sequenceList;
+    private List<Sequence> sequenceList;
     private int parrentPatternID;
-    private ArrayList<Pattern> childPatternsList;
+    private List<Pattern> childPatternsList;
     private int CGcount;
 
     public Pattern(String patternString) {
@@ -35,7 +36,7 @@ public class Pattern {
         this.parrentPatternID = parrentPatternID;
     }
 
-    public ArrayList<Pattern> getChildPatternsList() {
+    public List<Pattern> getChildPatternsList() {
         return childPatternsList;
     }
 
@@ -51,7 +52,7 @@ public class Pattern {
         return patternString;
     }
 
-    public ArrayList<Sequence> sequenceList() {
+    public List<Sequence> sequenceList() {
         return sequenceList;
     }
 }

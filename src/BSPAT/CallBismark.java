@@ -2,7 +2,7 @@ package BSPAT;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class CallBismark {
 	private String bismarkPath;
@@ -59,9 +59,9 @@ public class CallBismark {
 		File inputFile = new File(inputPath);
 		File outputFile = new File(outputPath);
 		File tempDir = new File(outputPath + "tmp/");
-		ArrayList<File> fileList = null;
+        List<File> fileList = null;
 
-		// if the output path not exists, create it.  
+        // if the output path not exists, create it.
 		if (!outputFile.exists()) {
 			outputFile.mkdirs();
 		}
