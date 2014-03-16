@@ -3,68 +3,68 @@ package DataType;
 import BSPAT.ReportSummary;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Experiment implements Serializable {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	private int index;
-	private String name;
-	private String seqFile;
-	private boolean seqReady;
-	private String inputType;
-	public ArrayList<ReportSummary> reportSummaries;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private int index;
+    private String name;
+    private String seqFile;
+    private boolean seqReady;
+    private String inputType;
+    public List<ReportSummary> reportSummaries;
 
-	public Experiment(int index, String name) {
-		super();
-		this.index = index;
-		this.name = name;
-		this.seqReady = false;
-	}
+    public Experiment(int index, String name) {
+        super();
+        this.index = index;
+        this.name = name;
+        this.seqReady = false;
+    }
 
-	public void setInputType(String inputType) {
-		this.inputType = inputType;
-	}
+    public void setInputType(String inputType) {
+        this.inputType = inputType;
+    }
 
-	public String getInputType() {
-		return inputType;
-	}
+    public String getInputType() {
+        return inputType;
+    }
 
-	public void setSeqReady(boolean seqReady) {
-		this.seqReady = seqReady;
-	}
+    public void setSeqReady(boolean seqReady) {
+        this.seqReady = seqReady;
+    }
 
-	public boolean isSeqReady() {
-		return seqReady;
-	}
+    public boolean isSeqReady() {
+        return seqReady;
+    }
 
-	public int getIndex() {
-		return index;
-	}
+    public int getIndex() {
+        return index;
+    }
 
-	public void setIndex(int index) {
-		this.index = index;
-	}
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getSeqFile() {
-		return seqFile;
-	}
+    public String getSeqFile() {
+        return seqFile;
+    }
 
-	public void setSeqFile(String seqFile) {
-		this.seqFile = seqFile;
-	}
+    public void setSeqFile(String seqFile) {
+        this.seqFile = seqFile;
+    }
 
-	public ArrayList<ReportSummary> getReportSummaries() {
-		return reportSummaries;
-	}
+    public List<ReportSummary> getReportSummaries() {
+        return reportSummaries;
+    }
 }

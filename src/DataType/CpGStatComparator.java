@@ -5,16 +5,15 @@ import java.util.Comparator;
 
 public class CpGStatComparator implements Comparator<CpGStatistics> {
 
-	@Override
-	public int compare(CpGStatistics c1, CpGStatistics c2) {
-		// TODO Auto-generated method stub
-		if (c1.getPosition() > c2.getPosition()) {
-			return 1;
-		} else if (c1.getPosition() < c2.getPosition()) {
-			return -1;
-		} else {
-			return 0;
-		}
-	}
+    @Override
+    public int compare(CpGStatistics c1, CpGStatistics c2) {
+        if (c1.getPosition() > c2.getPosition()) {
+            return 1;
+        } else if (c1.getPosition() < c2.getPosition()) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
 }

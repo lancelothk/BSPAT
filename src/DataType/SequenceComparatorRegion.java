@@ -4,10 +4,9 @@ import java.util.Comparator;
 
 public class SequenceComparatorRegion implements Comparator<Sequence> {
 
-	@Override
-	public int compare(Sequence s1, Sequence s2) {
-		// TODO Auto-generated method stub
-		return s1.getRegion().compareTo(s2.getRegion());
+    @Override
+    public int compare(Sequence s1, Sequence s2) {
+        return s1.getRegion().compareTo(s2.getRegion());
 //		int sn1, sn2;
 //		char sc1=' ', sc2= ' ';
 //		if (s1.getRegion().contains("F")) {
@@ -41,6 +40,6 @@ public class SequenceComparatorRegion implements Comparator<Sequence> {
 //			}
 //			return 0;
 //		}
-	}
+    }
 
 }

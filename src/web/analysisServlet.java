@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +36,6 @@ public class analysisServlet extends HttpServlet {
 	 */
 	public analysisServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -43,7 +43,6 @@ public class analysisServlet extends HttpServlet {
 	 * response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -109,25 +108,21 @@ public class analysisServlet extends HttpServlet {
 		}
 
 		ExecutorService executor = Executors.newCachedThreadPool();
-		ArrayList<Future<ArrayList<ReportSummary>>> futureList = new ArrayList<>();
-		for (Experiment experiment : constant.experiments) {
-			Future<ArrayList<ReportSummary>> future = executor.submit(new ExecuteAnalysis(experiment.getName(), constant));
-			futureList.add(future);
+        List<Future<List<ReportSummary>>> futureList = new ArrayList<>();
+        for (Experiment experiment : constant.experiments) {
+            Future<List<ReportSummary>> future = executor.submit(new ExecuteAnalysis(experiment.getName(), constant));
+            futureList.add(future);
 		}
 
 		for (int i = 0; i < constant.experiments.size(); i++) {
 			try {
 				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
 			}
-		}
+        }
 
-		// read analysis summary report
+        // read analysis summary report
 		AnalysisSummary analysisSummary = IO.readAnalysisSummary(constant.patternResultPath);
 
 		// compress result folder
@@ -140,8 +135,8 @@ public class analysisServlet extends HttpServlet {
 		// passing JSTL parameters
 		constant.analysisSummary = analysisSummary;
 		constant.analysisTime = (System.currentTimeMillis() - start) / 1000;
-		constant.analysisResultLink = zipFileName.replace(constant.diskRootPath, constant.webRootPath);
-		constant.finishedAnalysis = true;
+        constant.analysisResultLink = zipFileName.replace(constant.DISKROOTPATH, constant.webRootPath);
+        constant.finishedAnalysis = true;
 		// update constant file on disk
 		Constant.writeConstant();
 		request.setAttribute("constant", constant);

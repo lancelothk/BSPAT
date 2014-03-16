@@ -23,15 +23,14 @@
             <%
                 String runID = request.getParameter("runID");
                 if (runID != null) {
-                    String rootPath = this.getServletContext().getRealPath("");
-                    Constant.WEBAPPFOLDER = rootPath;
+                    Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
                     Constant constant = Constant.readConstant(runID);
                     if (constant == null) {
                         Utilities.showAlertWindow(response, "Can not read result");
                         return;
                     }%>
             <table>
-                <% if (constant.isFinishedMapping()) { %>
+                <% if (constant.finishedMapping) { %>
                 <tr>
                     <td>Run ID:</td>
                     <td><%=runID %>
@@ -47,7 +46,7 @@
                         </form>
                     </td>
                 </tr>
-                <% if (constant.isFinishedAnalysis()) { %>
+                <% if (constant.finishedAnalysis) { %>
                 <tr>
                     <td>Analysis Result</td>
                     <td>

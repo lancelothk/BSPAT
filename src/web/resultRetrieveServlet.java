@@ -17,53 +17,51 @@ import java.io.IOException;
 @WebServlet(name = "/resultRetrieve", urlPatterns = {"/resultRetrieve"})
 @MultipartConfig
 public class resultRetrieveServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private Constant constant = null;
+    private static final long serialVersionUID = 1L;
+    private Constant constant = null;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public resultRetrieveServlet() {
-		super();
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public resultRetrieveServlet() {
+        super();
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 * response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	}
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     * response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 * response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException {
-		response.setContentType("text/html");
-		String rootPath = this.getServletContext().getRealPath("");
-		Constant.WEBAPPFOLDER = rootPath;
-		String runID = request.getParameter("runID");
-		constant = Constant.readConstant(runID);
-		if (constant != null) {
-			String mPage = request.getParameter("mPage");
-			String aPage = request.getParameter("aPage");
-			if (mPage != null) {
-				request.setAttribute("constant", constant);
-				request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
-				return;
-			}
-			if (aPage != null) {
-				request.setAttribute("constant", constant);
-				request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
-				return;
-			}
-			Utilities.showAlertWindow(response, "can not read data");
-			return;
-		} else {
-			Utilities.showAlertWindow(response, "can not read data");
-			return;
-		}
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     * response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+        Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
+        String runID = request.getParameter("runID");
+        constant = Constant.readConstant(runID);
+        if (constant != null) {
+            String mPage = request.getParameter("mPage");
+            String aPage = request.getParameter("aPage");
+            if (mPage != null) {
+                request.setAttribute("constant", constant);
+                request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
+                return;
+            }
+            if (aPage != null) {
+                request.setAttribute("constant", constant);
+                request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
+                return;
+            }
+            Utilities.showAlertWindow(response, "can not read data");
+            return;
+        } else {
+            Utilities.showAlertWindow(response, "can not read data");
+            return;
+        }
+    }
 
 }

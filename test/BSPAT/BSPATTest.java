@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public class BSPATTest {
 
-	@Test
-	public void testConvertCoordinates() throws IOException {
+    @Test
+    public void testConvertCoordinates() throws IOException {
 //		Class<?> c;
 //		try {
 //			DrawPattern dp = new DrawPattern("PNG", "hg18", "WebContent/tools");
@@ -19,23 +19,21 @@ public class BSPATTest {
 //			Object o = method.invoke(dp, "chr4", 20000, "hg19");
 //			assertEquals(30000,(long)o);
 //		} catch (Exception e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-	}
+    }
 
-	@Test
-	public void testConvertPSLtoCoorPair() {
+    @Test
+    public void testConvertPSLtoCoorPair() {
 //		try {
 //			Utilities.convertPSLtoCoorPair("testTemp/", "coordinates", "hg18");
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-	}
+    }
 
-	@Test
-	public void testObjSerWrite() throws FileNotFoundException, IOException {
+    @Test
+    public void testObjSerWrite() throws FileNotFoundException, IOException {
 //		Constant constant = Constant.getInstance();
 //		Constant.WEBAPPFOLDER = "/home/ke/";
 //		constant.runID = "12345";
@@ -45,10 +43,10 @@ public class BSPATTest {
 //		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("/home/ke/test.data"));
 //		out.writeObject(s);
 //		out.close();
-	}
+    }
 
-	@Test
-	public void testObjRead() throws FileNotFoundException, IOException, ClassNotFoundException {
+    @Test
+    public void testObjRead() throws FileNotFoundException, IOException, ClassNotFoundException {
 //		Constant.WEBAPPFOLDER = "/home/ke/";
 //		Constant constant = Constant.getInstance();
 //		constant = Constant.readConstant("12345");
@@ -57,19 +55,19 @@ public class BSPATTest {
 //		ObjectInputStream in = new ObjectInputStream(new FileInputStream("/home/ke/test.data"));
 //		String s = (String) in.readObject();
 //		System.out.println(s);
-	}
+    }
 
-	@Test
-	public void testReadMappingSummary() throws IOException {
+    @Test
+    public void testReadMappingSummary() throws IOException {
 //		String mappingResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run7538583663942149733/bismark_result";
 //		MappingSummary mappingSummary = IO.readMappingSummary(mappingResultPath);
 //		System.out.println(mappingSummary.toString());
-	}
+    }
 
-	@Test
-	public void testReadAnalysisSummary() throws IOException {
-		String analysisResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run3780745787145715763/pattern_result";
-		AnalysisSummary analysisSummary = IO.readAnalysisSummary(analysisResultPath);
-		System.out.println(analysisSummary.toString());
-	}
+    @Test
+    public void testReadAnalysisSummary() throws IOException {
+        String analysisResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run3780745787145715763/pattern_result";
+        AnalysisSummary analysisSummary = IO.readAnalysisSummary(analysisResultPath);
+        System.out.println(analysisSummary.toString());
+    }
 }
