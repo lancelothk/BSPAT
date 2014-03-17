@@ -3,7 +3,7 @@ if [ $1 ]
 then
     echo "start setting tools executable"
     cd $1/bismark
-    chmod u+x bismark bismark_genome_preparation methylation_extractor
+    chmod u+x bismark bismark_genome_preparation bismark2bedGraph bismark2report bismark_methylation_extractor coverage2cytosine deduplicate_bismark
     cd $1/bowtie
     chmod u+x bowtie bowtie-debug bowtie-build bowtie-build-debug bowtie-inspect bowtie-inspect-debug
     cd $1/liftover

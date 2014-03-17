@@ -271,7 +271,7 @@ public class mappingServlet extends HttpServlet {
         }
         BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + "modifiedReference.fa"));
         for (Coordinate coordinate : coordinateMap.values()) {
-            writer.write(String.format(">%s\n%s\n", coordinate.getId(), coordinate.getRefSeq()));
+            writer.write(String.format(">%s\n%s\n", coordinate.getId(), coordinate.getRefSeq().toUpperCase()));
         }
         writer.close();
     }

@@ -6,14 +6,24 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="refactor. &#10;Replace all ArrayList declaration with List">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/web/ExecuteBlatQuery.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" afterPath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Constant.java" afterPath="$PROJECT_DIR$/src/DataType/Constant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Coordinate.java" afterPath="$PROJECT_DIR$/src/DataType/Coordinate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Sequence.java" afterPath="$PROJECT_DIR$/src/DataType/Sequence.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/Utilities.java" afterPath="$PROJECT_DIR$/src/BSPAT/Utilities.java" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="add ref seq extension feature">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/Bismark_User_Guide_v0.10.1.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/RRBS_Guide.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/bismark2bedGraph" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/bismark2report" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/bismark_methylation_extractor" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/bismark_sitrep.tpl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/coverage2cytosine" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/deduplicate_bismark" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/WebContent/tools/bismark/Bismark_User_Guide_v0.7.6.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/WebContent/tools/bismark/methylation_extractor" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/CallBismark.java" afterPath="$PROJECT_DIR$/src/BSPAT/CallBismark.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" afterPath="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/tools/bismark/RELEASE_NOTES.txt" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/RELEASE_NOTES.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/tools/bismark/bismark" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/bismark" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/tools/bismark/bismark_genome_preparation" afterPath="$PROJECT_DIR$/WebContent/tools/bismark/bismark_genome_preparation" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/mappingServlet.java" afterPath="$PROJECT_DIR$/src/web/mappingServlet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/tools/setFileExecution.sh" afterPath="$PROJECT_DIR$/WebContent/tools/setFileExecution.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -78,10 +88,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="analysisServlet.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="111" column="75" selection-start="4648" selection-end="4648" vertical-scroll-proportion="0.0" vertical-offset="1458" max-vertical-offset="2340">
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExecuteAnalysis.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="32" selection-start="689" selection-end="689" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486">
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BSSeqAnalysis.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="32" column="61" selection-start="964" selection-end="983" vertical-scroll-proportion="0.0" vertical-offset="336" max-vertical-offset="8028">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImportBismarkResult.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="39" column="46" selection-start="1027" selection-end="1027" vertical-scroll-proportion="0.0" vertical-offset="546" max-vertical-offset="3672">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1080#1090#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="mappingServlet.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="220" column="17" selection-start="9708" selection-end="9708" vertical-scroll-proportion="-7.633333" vertical-offset="3731" max-vertical-offset="6138">
+            <state line="165" column="36" selection-start="6854" selection-end="6854" vertical-scroll-proportion="0.0" vertical-offset="2657" max-vertical-offset="6138">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -89,171 +142,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BSPATServletContextListener.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/web/BSPATServletContextListener.java">
+      <file leaf-file-name="ExecuteMapping.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/web/ExecuteMapping.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="0" selection-start="989" selection-end="989" vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="612">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Utilities.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/Utilities.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="38" selection-start="2246" selection-end="2246" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="4536">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Constant.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="114" column="51" selection-start="3509" selection-end="3509" vertical-scroll-proportion="0.0" vertical-offset="1728" max-vertical-offset="6678">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3172#3173#0" expanded="true" />
-                <element signature="e#3206#3207#0" expanded="true" />
-                <element signature="e#3260#3261#0" expanded="true" />
-                <element signature="e#3306#3307#0" expanded="true" />
-                <element signature="e#3350#3351#0" expanded="true" />
-                <element signature="e#3390#3391#0" expanded="true" />
-                <element signature="e#3456#3457#0" expanded="true" />
-                <element signature="e#3514#3515#0" expanded="true" />
-                <element signature="e#3558#3559#0" expanded="true" />
-                <element signature="e#3598#3599#0" expanded="true" />
-                <element signature="e#3664#3665#0" expanded="true" />
-                <element signature="e#3722#3723#0" expanded="true" />
-                <element signature="e#3761#3762#0" expanded="true" />
-                <element signature="e#3796#3797#0" expanded="true" />
-                <element signature="e#3852#3853#0" expanded="true" />
-                <element signature="e#3900#3901#0" expanded="true" />
-                <element signature="e#3942#3943#0" expanded="true" />
-                <element signature="e#3980#3981#0" expanded="true" />
-                <element signature="e#4042#4043#0" expanded="true" />
-                <element signature="e#4096#4097#0" expanded="true" />
-                <element signature="e#4138#4139#0" expanded="true" />
-                <element signature="e#4176#4177#0" expanded="true" />
-                <element signature="e#4238#4239#0" expanded="true" />
-                <element signature="e#4292#4293#0" expanded="true" />
-                <element signature="e#4327#4328#0" expanded="true" />
-                <element signature="e#4358#4359#0" expanded="true" />
-                <element signature="e#4406#4407#0" expanded="true" />
-                <element signature="e#4446#4447#0" expanded="true" />
-                <element signature="e#4482#4483#0" expanded="true" />
-                <element signature="e#4514#4515#0" expanded="true" />
-                <element signature="e#4564#4565#0" expanded="true" />
-                <element signature="e#4606#4607#0" expanded="true" />
-                <element signature="e#4638#4639#0" expanded="true" />
-                <element signature="e#4666#4667#0" expanded="true" />
-                <element signature="e#4708#4709#0" expanded="true" />
-                <element signature="e#4742#4743#0" expanded="true" />
-                <element signature="e#4773#4774#0" expanded="true" />
-                <element signature="e#4800#4801#0" expanded="true" />
-                <element signature="e#4840#4841#0" expanded="true" />
-                <element signature="e#4872#4873#0" expanded="true" />
-                <element signature="e#4908#4909#0" expanded="true" />
-                <element signature="e#4940#4941#0" expanded="true" />
-                <element signature="e#4991#4992#0" expanded="true" />
-                <element signature="e#5033#5034#0" expanded="true" />
-                <element signature="e#5072#5073#0" expanded="true" />
-                <element signature="e#5107#5108#0" expanded="true" />
-                <element signature="e#5163#5164#0" expanded="true" />
-                <element signature="e#5211#5212#0" expanded="true" />
-                <element signature="e#5248#5249#0" expanded="true" />
-                <element signature="e#5281#5282#0" expanded="true" />
-                <element signature="e#5333#5334#0" expanded="true" />
-                <element signature="e#5377#5378#0" expanded="true" />
-                <element signature="e#5413#5414#0" expanded="true" />
-                <element signature="e#5445#5446#0" expanded="true" />
-                <element signature="e#5495#5496#0" expanded="true" />
-                <element signature="e#5537#5538#0" expanded="true" />
-                <element signature="e#5588#5589#0" expanded="true" />
-                <element signature="e#5635#5636#0" expanded="true" />
-                <element signature="e#5715#5716#0" expanded="true" />
-                <element signature="e#5787#5788#0" expanded="true" />
-                <element signature="e#5828#5829#0" expanded="true" />
-                <element signature="e#5865#5866#0" expanded="true" />
-                <element signature="e#5925#5926#0" expanded="true" />
-                <element signature="e#5977#5978#0" expanded="true" />
-                <element signature="e#6017#6018#0" expanded="true" />
-                <element signature="e#6053#6054#0" expanded="true" />
-                <element signature="e#6111#6112#0" expanded="true" />
-                <element signature="e#6161#6162#0" expanded="true" />
-                <element signature="e#6206#6207#0" expanded="true" />
-                <element signature="e#6247#6248#0" expanded="true" />
-                <element signature="e#6315#6316#0" expanded="true" />
-                <element signature="e#6375#6376#0" expanded="true" />
-                <element signature="e#6425#6426#0" expanded="true" />
-                <element signature="e#6471#6472#0" expanded="true" />
-                <element signature="e#6549#6550#0" expanded="true" />
-                <element signature="e#6619#6620#0" expanded="true" />
-                <element signature="e#6671#6672#0" expanded="true" />
-                <element signature="e#6719#6720#0" expanded="true" />
-                <element signature="e#6801#6802#0" expanded="true" />
-                <element signature="e#6875#6876#0" expanded="true" />
-                <element signature="e#6923#6924#0" expanded="true" />
-                <element signature="e#6957#6958#0" expanded="true" />
-                <element signature="e#7021#7022#0" expanded="true" />
-                <element signature="e#7067#7068#0" expanded="true" />
-                <element signature="e#7099#7100#0" expanded="true" />
-                <element signature="e#7127#7128#0" expanded="true" />
-                <element signature="e#7169#7170#0" expanded="true" />
-                <element signature="e#7203#7204#0" expanded="true" />
-                <element signature="e#7239#7240#0" expanded="true" />
-                <element signature="e#7271#7272#0" expanded="true" />
-                <element signature="e#7321#7322#0" expanded="true" />
-                <element signature="e#7363#7364#0" expanded="true" />
-                <element signature="e#7393#7394#0" expanded="true" />
-                <element signature="e#7422#7423#0" expanded="true" />
-                <element signature="e#7463#7464#0" expanded="true" />
-                <element signature="e#7499#7500#0" expanded="true" />
-                <element signature="e#7538#7539#0" expanded="true" />
-                <element signature="e#7573#7574#0" expanded="true" />
-                <element signature="e#7629#7630#0" expanded="true" />
-                <element signature="e#7677#7678#0" expanded="true" />
-                <element signature="e#7719#7720#0" expanded="true" />
-                <element signature="e#7757#7758#0" expanded="true" />
-                <element signature="e#7820#7821#0" expanded="true" />
-                <element signature="e#7874#7875#0" expanded="true" />
-                <element signature="e#7917#7918#0" expanded="true" />
-                <element signature="e#7956#7957#0" expanded="true" />
-                <element signature="e#8021#8022#0" expanded="true" />
-                <element signature="e#8077#8078#0" expanded="true" />
-                <element signature="e#8121#8122#0" expanded="true" />
-                <element signature="e#8161#8162#0" expanded="true" />
-                <element signature="e#8227#8228#0" expanded="true" />
-                <element signature="e#8285#8286#0" expanded="true" />
-                <element signature="e#8330#8331#0" expanded="true" />
-                <element signature="e#8371#8372#0" expanded="true" />
-                <element signature="e#8439#8440#0" expanded="true" />
-                <element signature="e#8499#8500#0" expanded="true" />
-                <element signature="e#8535#8536#0" expanded="true" />
-                <element signature="e#8569#8570#0" expanded="true" />
-                <element signature="e#8621#8622#0" expanded="true" />
-                <element signature="e#8667#8668#0" expanded="true" />
-                <element signature="e#8704#8705#0" expanded="true" />
-                <element signature="e#8739#8740#0" expanded="true" />
-                <element signature="e#8793#8794#0" expanded="true" />
-                <element signature="e#8841#8842#0" expanded="true" />
-                <element signature="e#8890#8891#0" expanded="true" />
-                <element signature="e#8927#8928#0" expanded="true" />
-                <element signature="e#8995#8996#0" expanded="true" />
-                <element signature="e#9047#9048#0" expanded="true" />
-                <element signature="e#9098#9099#0" expanded="true" />
-                <element signature="e#9136#9137#0" expanded="true" />
-                <element signature="e#9207#9208#0" expanded="true" />
-                <element signature="e#9261#9262#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mappingResult.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="54" selection-start="1680" selection-end="1688" vertical-scroll-proportion="-7.3333335" vertical-offset="486" max-vertical-offset="2880">
+            <state line="23" column="17" selection-start="594" selection-end="594" vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="684">
               <folding />
             </state>
           </provider>
@@ -262,12 +154,12 @@
       <file leaf-file-name="Coordinate.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DataType/Coordinate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="30" selection-start="205" selection-end="205" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
+            <state line="10" column="30" selection-start="208" selection-end="208" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
               <folding>
-                <element signature="e#626#627#0" expanded="true" />
-                <element signature="e#655#656#0" expanded="true" />
-                <element signature="e#699#700#0" expanded="true" />
-                <element signature="e#735#736#0" expanded="true" />
+                <element signature="e#629#630#0" expanded="true" />
+                <element signature="e#658#659#0" expanded="true" />
+                <element signature="e#702#703#0" expanded="true" />
+                <element signature="e#738#739#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -276,7 +168,7 @@
       <file leaf-file-name="IO.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/IO.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="156" column="60" selection-start="4888" selection-end="4888" vertical-scroll-proportion="-11.833333" vertical-offset="2453" max-vertical-offset="3456">
+            <state line="135" column="14" selection-start="4018" selection-end="4018" vertical-scroll-proportion="-4.7" vertical-offset="2289" max-vertical-offset="3456">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2202#2208#0" expanded="true" />
@@ -288,8 +180,10 @@
       <file leaf-file-name="CallBismark.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/CallBismark.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="47" column="22" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.25974026" vertical-offset="690" max-vertical-offset="2718">
-              <folding />
+            <state line="163" column="41" selection-start="7608" selection-end="7608" vertical-scroll-proportion="0.40272373" vertical-offset="2727" max-vertical-offset="3636">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -314,10 +208,8 @@
       <list>
         <option value="$PROJECT_DIR$/test/BSPATTest.java" />
         <option value="$PROJECT_DIR$/WebContent/footer.html" />
-        <option value="$PROJECT_DIR$/WebContent/tools/setFileExecution.sh" />
         <option value="$PROJECT_DIR$/WebContent/analysis.jsp" />
         <option value="$PROJECT_DIR$/src/DataType/MappingResultComparator.java" />
-        <option value="$PROJECT_DIR$/src/web/ExecuteMapping.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
         <option value="$PROJECT_DIR$/src/web/resultRetrieveServlet.java" />
         <option value="$PROJECT_DIR$/src/web/ExecuteAnalysis.java" />
@@ -337,9 +229,7 @@
         <option value="$PROJECT_DIR$/src/DataType/SequenceComparatorRegion.java" />
         <option value="$PROJECT_DIR$/src/web/preprocessingServlet.java" />
         <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/CallBismark.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/Report.java" />
         <option value="$PROJECT_DIR$/src/DataType/Pattern.java" />
@@ -352,8 +242,13 @@
         <option value="$PROJECT_DIR$/src/DataType/Constant.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/Utilities.java" />
         <option value="$PROJECT_DIR$/src/web/BSPATServletContextListener.java" />
-        <option value="$PROJECT_DIR$/src/web/mappingServlet.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/IO.java" />
+        <option value="$PROJECT_DIR$/WebContent/tools/setFileExecution.sh" />
+        <option value="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" />
+        <option value="$PROJECT_DIR$/src/web/mappingServlet.java" />
+        <option value="$PROJECT_DIR$/src/web/ExecuteMapping.java" />
+        <option value="$PROJECT_DIR$/test/BSPAT/CallBismarkTest.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/CallBismark.java" />
       </list>
     </option>
   </component>
@@ -365,10 +260,10 @@
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1279" />
-    <option name="y" value="37" />
-    <option name="width" value="1602" />
-    <option name="height" value="901" />
+    <option name="x" value="-1" />
+    <option name="y" value="27" />
+    <option name="width" value="1282" />
+    <option name="height" value="998" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -449,6 +344,56 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="WebContent" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebContent" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -489,7 +434,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Java" />
+    <property name="options.lastSelected" value="preferences.sourceCode" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -499,13 +444,24 @@
     <property name="FullScreen" value="false" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
       <recent name="BSPAT" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/WebContent/tools/bismark" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="BSPAT" />
     </key>
   </component>
   <component name="RunManager" selected="Tomcat Server.BSPAT">
@@ -812,7 +768,7 @@
       <workItem from="1394946514110" duration="49000" />
       <workItem from="1394946569643" duration="49000" />
       <workItem from="1394946625334" duration="1366000" />
-      <workItem from="1394981808597" duration="14988000" />
+      <workItem from="1394981808597" duration="22606000" />
     </task>
     <task id="LOCAL-00001" summary="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug.">
       <created>1393911932594</created>
@@ -830,11 +786,15 @@
       <created>1394984857968</created>
       <updated>1394984857968</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="add ref seq extension feature">
+      <created>1395015569885</created>
+      <updated>1395015569885</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58393000" />
+    <option name="totallyTimeSpent" value="66011000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -857,7 +817,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1279" y="37" width="1602" height="901" extended-state="6" />
+    <frame x="-1" y="27" width="1282" height="998" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -867,26 +827,54 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33926585" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33290324" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3325688" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33830276" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25482625" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25445706" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31741935" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26898327" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2682334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32516128" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39678898" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31741935" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26898327" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33926585" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32903227" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33290324" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33830276" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25482625" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39678898" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -907,7 +895,8 @@
     <MESSAGE value="set scripts executable when context initialized" />
     <MESSAGE value="refactor. &#10;Including removing all auto TODO." />
     <MESSAGE value="refactor. &#10;Replace all ArrayList declaration with List" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor. &#10;Replace all ArrayList declaration with List" />
+    <MESSAGE value="add ref seq extension feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="add ref seq extension feature" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -919,18 +908,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="13" selection-start="2116" selection-end="2116" vertical-scroll-proportion="0.0" vertical-offset="870" max-vertical-offset="6840">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/Utilities.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="66" selection-start="1432" selection-end="1432" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="3750" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/footer.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="35" column="41" selection-start="1735" selection-end="1735" vertical-scroll-proportion="-11.75" vertical-offset="243" max-vertical-offset="960" />
@@ -961,11 +938,6 @@
         <state line="15" column="0" selection-start="343" selection-end="343" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="378" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/tools/setFileExecution.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="34" selection-start="209" selection-end="209" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="378" />
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/java/io/File.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1026" column="19" selection-start="42534" selection-end="42534" vertical-scroll-proportion="0.33293125" vertical-offset="17526" max-vertical-offset="38916">
@@ -986,11 +958,6 @@
     <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="10" column="13" selection-start="190" selection-end="190" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1800" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/ExecuteMapping.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="29" selection-start="476" selection-end="476" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="684" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Experiment.java">
@@ -1075,38 +1042,12 @@
         <state line="29" column="7" selection-start="861" selection-end="861" vertical-scroll-proportion="0.52110976" vertical-offset="0" max-vertical-offset="829" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="78" selection-start="4177" selection-end="4177" vertical-scroll-proportion="0.0" vertical-offset="1876" max-vertical-offset="2718">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="27" selection-start="684" selection-end="684" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="22" selection-start="511" selection-end="511" vertical-scroll-proportion="12.9" vertical-offset="1080" max-vertical-offset="9396">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#11911#11926#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="14" selection-start="995" selection-end="995" vertical-scroll-proportion="-2.3" vertical-offset="528" max-vertical-offset="3690">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1080#1090#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1159,15 +1100,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="1" column="0" selection-start="18" selection-end="18" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2808">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="9" selection-start="1305" selection-end="1305" vertical-scroll-proportion="0.38059703" vertical-offset="324" max-vertical-offset="8028">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1189,139 +1123,139 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="114" column="51" selection-start="3509" selection-end="3509" vertical-scroll-proportion="0.0" vertical-offset="1728" max-vertical-offset="6678">
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3172#3173#0" expanded="true" />
-            <element signature="e#3206#3207#0" expanded="true" />
-            <element signature="e#3260#3261#0" expanded="true" />
-            <element signature="e#3306#3307#0" expanded="true" />
-            <element signature="e#3350#3351#0" expanded="true" />
-            <element signature="e#3390#3391#0" expanded="true" />
-            <element signature="e#3456#3457#0" expanded="true" />
-            <element signature="e#3514#3515#0" expanded="true" />
-            <element signature="e#3558#3559#0" expanded="true" />
-            <element signature="e#3598#3599#0" expanded="true" />
-            <element signature="e#3664#3665#0" expanded="true" />
-            <element signature="e#3722#3723#0" expanded="true" />
-            <element signature="e#3761#3762#0" expanded="true" />
-            <element signature="e#3796#3797#0" expanded="true" />
-            <element signature="e#3852#3853#0" expanded="true" />
-            <element signature="e#3900#3901#0" expanded="true" />
-            <element signature="e#3942#3943#0" expanded="true" />
-            <element signature="e#3980#3981#0" expanded="true" />
-            <element signature="e#4042#4043#0" expanded="true" />
-            <element signature="e#4096#4097#0" expanded="true" />
-            <element signature="e#4138#4139#0" expanded="true" />
-            <element signature="e#4176#4177#0" expanded="true" />
-            <element signature="e#4238#4239#0" expanded="true" />
-            <element signature="e#4292#4293#0" expanded="true" />
-            <element signature="e#4327#4328#0" expanded="true" />
-            <element signature="e#4358#4359#0" expanded="true" />
-            <element signature="e#4406#4407#0" expanded="true" />
-            <element signature="e#4446#4447#0" expanded="true" />
-            <element signature="e#4482#4483#0" expanded="true" />
-            <element signature="e#4514#4515#0" expanded="true" />
-            <element signature="e#4564#4565#0" expanded="true" />
-            <element signature="e#4606#4607#0" expanded="true" />
-            <element signature="e#4638#4639#0" expanded="true" />
-            <element signature="e#4666#4667#0" expanded="true" />
-            <element signature="e#4708#4709#0" expanded="true" />
-            <element signature="e#4742#4743#0" expanded="true" />
-            <element signature="e#4773#4774#0" expanded="true" />
-            <element signature="e#4800#4801#0" expanded="true" />
-            <element signature="e#4840#4841#0" expanded="true" />
-            <element signature="e#4872#4873#0" expanded="true" />
-            <element signature="e#4908#4909#0" expanded="true" />
-            <element signature="e#4940#4941#0" expanded="true" />
-            <element signature="e#4991#4992#0" expanded="true" />
-            <element signature="e#5033#5034#0" expanded="true" />
-            <element signature="e#5072#5073#0" expanded="true" />
-            <element signature="e#5107#5108#0" expanded="true" />
-            <element signature="e#5163#5164#0" expanded="true" />
-            <element signature="e#5211#5212#0" expanded="true" />
-            <element signature="e#5248#5249#0" expanded="true" />
-            <element signature="e#5281#5282#0" expanded="true" />
-            <element signature="e#5333#5334#0" expanded="true" />
-            <element signature="e#5377#5378#0" expanded="true" />
-            <element signature="e#5413#5414#0" expanded="true" />
-            <element signature="e#5445#5446#0" expanded="true" />
-            <element signature="e#5495#5496#0" expanded="true" />
-            <element signature="e#5537#5538#0" expanded="true" />
-            <element signature="e#5588#5589#0" expanded="true" />
-            <element signature="e#5635#5636#0" expanded="true" />
-            <element signature="e#5715#5716#0" expanded="true" />
-            <element signature="e#5787#5788#0" expanded="true" />
-            <element signature="e#5828#5829#0" expanded="true" />
-            <element signature="e#5865#5866#0" expanded="true" />
-            <element signature="e#5925#5926#0" expanded="true" />
-            <element signature="e#5977#5978#0" expanded="true" />
-            <element signature="e#6017#6018#0" expanded="true" />
-            <element signature="e#6053#6054#0" expanded="true" />
-            <element signature="e#6111#6112#0" expanded="true" />
-            <element signature="e#6161#6162#0" expanded="true" />
-            <element signature="e#6206#6207#0" expanded="true" />
-            <element signature="e#6247#6248#0" expanded="true" />
-            <element signature="e#6315#6316#0" expanded="true" />
-            <element signature="e#6375#6376#0" expanded="true" />
-            <element signature="e#6425#6426#0" expanded="true" />
-            <element signature="e#6471#6472#0" expanded="true" />
-            <element signature="e#6549#6550#0" expanded="true" />
-            <element signature="e#6619#6620#0" expanded="true" />
-            <element signature="e#6671#6672#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#6801#6802#0" expanded="true" />
-            <element signature="e#6875#6876#0" expanded="true" />
-            <element signature="e#6923#6924#0" expanded="true" />
-            <element signature="e#6957#6958#0" expanded="true" />
-            <element signature="e#7021#7022#0" expanded="true" />
-            <element signature="e#7067#7068#0" expanded="true" />
-            <element signature="e#7099#7100#0" expanded="true" />
-            <element signature="e#7127#7128#0" expanded="true" />
-            <element signature="e#7169#7170#0" expanded="true" />
-            <element signature="e#7203#7204#0" expanded="true" />
-            <element signature="e#7239#7240#0" expanded="true" />
-            <element signature="e#7271#7272#0" expanded="true" />
-            <element signature="e#7321#7322#0" expanded="true" />
-            <element signature="e#7363#7364#0" expanded="true" />
-            <element signature="e#7393#7394#0" expanded="true" />
-            <element signature="e#7422#7423#0" expanded="true" />
-            <element signature="e#7463#7464#0" expanded="true" />
-            <element signature="e#7499#7500#0" expanded="true" />
-            <element signature="e#7538#7539#0" expanded="true" />
-            <element signature="e#7573#7574#0" expanded="true" />
-            <element signature="e#7629#7630#0" expanded="true" />
-            <element signature="e#7677#7678#0" expanded="true" />
-            <element signature="e#7719#7720#0" expanded="true" />
-            <element signature="e#7757#7758#0" expanded="true" />
-            <element signature="e#7820#7821#0" expanded="true" />
-            <element signature="e#7874#7875#0" expanded="true" />
-            <element signature="e#7917#7918#0" expanded="true" />
-            <element signature="e#7956#7957#0" expanded="true" />
-            <element signature="e#8021#8022#0" expanded="true" />
-            <element signature="e#8077#8078#0" expanded="true" />
-            <element signature="e#8121#8122#0" expanded="true" />
-            <element signature="e#8161#8162#0" expanded="true" />
-            <element signature="e#8227#8228#0" expanded="true" />
-            <element signature="e#8285#8286#0" expanded="true" />
-            <element signature="e#8330#8331#0" expanded="true" />
-            <element signature="e#8371#8372#0" expanded="true" />
-            <element signature="e#8439#8440#0" expanded="true" />
-            <element signature="e#8499#8500#0" expanded="true" />
-            <element signature="e#8535#8536#0" expanded="true" />
-            <element signature="e#8569#8570#0" expanded="true" />
-            <element signature="e#8621#8622#0" expanded="true" />
-            <element signature="e#8667#8668#0" expanded="true" />
-            <element signature="e#8704#8705#0" expanded="true" />
-            <element signature="e#8739#8740#0" expanded="true" />
-            <element signature="e#8793#8794#0" expanded="true" />
-            <element signature="e#8841#8842#0" expanded="true" />
-            <element signature="e#8890#8891#0" expanded="true" />
-            <element signature="e#8927#8928#0" expanded="true" />
-            <element signature="e#8995#8996#0" expanded="true" />
-            <element signature="e#9047#9048#0" expanded="true" />
-            <element signature="e#9098#9099#0" expanded="true" />
-            <element signature="e#9136#9137#0" expanded="true" />
-            <element signature="e#9207#9208#0" expanded="true" />
-            <element signature="e#9261#9262#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#3172#3173#0" expanded="false" />
+            <element signature="e#3206#3207#0" expanded="false" />
+            <element signature="e#3260#3261#0" expanded="false" />
+            <element signature="e#3306#3307#0" expanded="false" />
+            <element signature="e#3350#3351#0" expanded="false" />
+            <element signature="e#3390#3391#0" expanded="false" />
+            <element signature="e#3456#3457#0" expanded="false" />
+            <element signature="e#3514#3515#0" expanded="false" />
+            <element signature="e#3558#3559#0" expanded="false" />
+            <element signature="e#3598#3599#0" expanded="false" />
+            <element signature="e#3664#3665#0" expanded="false" />
+            <element signature="e#3722#3723#0" expanded="false" />
+            <element signature="e#3761#3762#0" expanded="false" />
+            <element signature="e#3796#3797#0" expanded="false" />
+            <element signature="e#3852#3853#0" expanded="false" />
+            <element signature="e#3900#3901#0" expanded="false" />
+            <element signature="e#3942#3943#0" expanded="false" />
+            <element signature="e#3980#3981#0" expanded="false" />
+            <element signature="e#4042#4043#0" expanded="false" />
+            <element signature="e#4096#4097#0" expanded="false" />
+            <element signature="e#4138#4139#0" expanded="false" />
+            <element signature="e#4176#4177#0" expanded="false" />
+            <element signature="e#4238#4239#0" expanded="false" />
+            <element signature="e#4292#4293#0" expanded="false" />
+            <element signature="e#4327#4328#0" expanded="false" />
+            <element signature="e#4358#4359#0" expanded="false" />
+            <element signature="e#4406#4407#0" expanded="false" />
+            <element signature="e#4446#4447#0" expanded="false" />
+            <element signature="e#4482#4483#0" expanded="false" />
+            <element signature="e#4514#4515#0" expanded="false" />
+            <element signature="e#4564#4565#0" expanded="false" />
+            <element signature="e#4606#4607#0" expanded="false" />
+            <element signature="e#4638#4639#0" expanded="false" />
+            <element signature="e#4666#4667#0" expanded="false" />
+            <element signature="e#4708#4709#0" expanded="false" />
+            <element signature="e#4742#4743#0" expanded="false" />
+            <element signature="e#4773#4774#0" expanded="false" />
+            <element signature="e#4800#4801#0" expanded="false" />
+            <element signature="e#4840#4841#0" expanded="false" />
+            <element signature="e#4872#4873#0" expanded="false" />
+            <element signature="e#4908#4909#0" expanded="false" />
+            <element signature="e#4940#4941#0" expanded="false" />
+            <element signature="e#4991#4992#0" expanded="false" />
+            <element signature="e#5033#5034#0" expanded="false" />
+            <element signature="e#5072#5073#0" expanded="false" />
+            <element signature="e#5107#5108#0" expanded="false" />
+            <element signature="e#5163#5164#0" expanded="false" />
+            <element signature="e#5211#5212#0" expanded="false" />
+            <element signature="e#5248#5249#0" expanded="false" />
+            <element signature="e#5281#5282#0" expanded="false" />
+            <element signature="e#5333#5334#0" expanded="false" />
+            <element signature="e#5377#5378#0" expanded="false" />
+            <element signature="e#5413#5414#0" expanded="false" />
+            <element signature="e#5445#5446#0" expanded="false" />
+            <element signature="e#5495#5496#0" expanded="false" />
+            <element signature="e#5537#5538#0" expanded="false" />
+            <element signature="e#5588#5589#0" expanded="false" />
+            <element signature="e#5635#5636#0" expanded="false" />
+            <element signature="e#5715#5716#0" expanded="false" />
+            <element signature="e#5787#5788#0" expanded="false" />
+            <element signature="e#5828#5829#0" expanded="false" />
+            <element signature="e#5865#5866#0" expanded="false" />
+            <element signature="e#5925#5926#0" expanded="false" />
+            <element signature="e#5977#5978#0" expanded="false" />
+            <element signature="e#6017#6018#0" expanded="false" />
+            <element signature="e#6053#6054#0" expanded="false" />
+            <element signature="e#6111#6112#0" expanded="false" />
+            <element signature="e#6161#6162#0" expanded="false" />
+            <element signature="e#6206#6207#0" expanded="false" />
+            <element signature="e#6247#6248#0" expanded="false" />
+            <element signature="e#6315#6316#0" expanded="false" />
+            <element signature="e#6375#6376#0" expanded="false" />
+            <element signature="e#6425#6426#0" expanded="false" />
+            <element signature="e#6471#6472#0" expanded="false" />
+            <element signature="e#6549#6550#0" expanded="false" />
+            <element signature="e#6619#6620#0" expanded="false" />
+            <element signature="e#6671#6672#0" expanded="false" />
+            <element signature="e#6719#6720#0" expanded="false" />
+            <element signature="e#6801#6802#0" expanded="false" />
+            <element signature="e#6875#6876#0" expanded="false" />
+            <element signature="e#6923#6924#0" expanded="false" />
+            <element signature="e#6957#6958#0" expanded="false" />
+            <element signature="e#7021#7022#0" expanded="false" />
+            <element signature="e#7067#7068#0" expanded="false" />
+            <element signature="e#7099#7100#0" expanded="false" />
+            <element signature="e#7127#7128#0" expanded="false" />
+            <element signature="e#7169#7170#0" expanded="false" />
+            <element signature="e#7203#7204#0" expanded="false" />
+            <element signature="e#7239#7240#0" expanded="false" />
+            <element signature="e#7271#7272#0" expanded="false" />
+            <element signature="e#7321#7322#0" expanded="false" />
+            <element signature="e#7363#7364#0" expanded="false" />
+            <element signature="e#7393#7394#0" expanded="false" />
+            <element signature="e#7422#7423#0" expanded="false" />
+            <element signature="e#7463#7464#0" expanded="false" />
+            <element signature="e#7499#7500#0" expanded="false" />
+            <element signature="e#7538#7539#0" expanded="false" />
+            <element signature="e#7573#7574#0" expanded="false" />
+            <element signature="e#7629#7630#0" expanded="false" />
+            <element signature="e#7677#7678#0" expanded="false" />
+            <element signature="e#7719#7720#0" expanded="false" />
+            <element signature="e#7757#7758#0" expanded="false" />
+            <element signature="e#7820#7821#0" expanded="false" />
+            <element signature="e#7874#7875#0" expanded="false" />
+            <element signature="e#7917#7918#0" expanded="false" />
+            <element signature="e#7956#7957#0" expanded="false" />
+            <element signature="e#8021#8022#0" expanded="false" />
+            <element signature="e#8077#8078#0" expanded="false" />
+            <element signature="e#8121#8122#0" expanded="false" />
+            <element signature="e#8161#8162#0" expanded="false" />
+            <element signature="e#8227#8228#0" expanded="false" />
+            <element signature="e#8285#8286#0" expanded="false" />
+            <element signature="e#8330#8331#0" expanded="false" />
+            <element signature="e#8371#8372#0" expanded="false" />
+            <element signature="e#8439#8440#0" expanded="false" />
+            <element signature="e#8499#8500#0" expanded="false" />
+            <element signature="e#8535#8536#0" expanded="false" />
+            <element signature="e#8569#8570#0" expanded="false" />
+            <element signature="e#8621#8622#0" expanded="false" />
+            <element signature="e#8667#8668#0" expanded="false" />
+            <element signature="e#8704#8705#0" expanded="false" />
+            <element signature="e#8739#8740#0" expanded="false" />
+            <element signature="e#8793#8794#0" expanded="false" />
+            <element signature="e#8841#8842#0" expanded="false" />
+            <element signature="e#8890#8891#0" expanded="false" />
+            <element signature="e#8927#8928#0" expanded="false" />
+            <element signature="e#8995#8996#0" expanded="false" />
+            <element signature="e#9047#9048#0" expanded="false" />
+            <element signature="e#9098#9099#0" expanded="false" />
+            <element signature="e#9136#9137#0" expanded="false" />
+            <element signature="e#9207#9208#0" expanded="false" />
+            <element signature="e#9261#9262#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1342,7 +1276,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/Utilities.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="38" selection-start="2246" selection-end="2246" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="4536">
+        <state line="51" column="38" selection-start="2247" selection-end="2247" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="4536">
           <folding />
         </state>
       </provider>
@@ -1354,30 +1288,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/Coordinate.java">
+    <entry file="file://$PROJECT_DIR$/WebContent/tools/bismark/bismark">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="30" selection-start="205" selection-end="205" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
+        <state line="5" column="5" selection-start="70" selection-end="75" vertical-scroll-proportion="0.21276596" vertical-offset="0" max-vertical-offset="143370">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/tools/setFileExecution.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="2" selection-start="521" selection-end="521" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="378">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="111" column="75" selection-start="4648" selection-end="4648" vertical-scroll-proportion="0.0" vertical-offset="1458" max-vertical-offset="2340">
           <folding>
-            <element signature="e#626#627#0" expanded="true" />
-            <element signature="e#655#656#0" expanded="true" />
-            <element signature="e#699#700#0" expanded="true" />
-            <element signature="e#735#736#0" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
+    <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="220" column="17" selection-start="9708" selection-end="9708" vertical-scroll-proportion="-7.633333" vertical-offset="3731" max-vertical-offset="6138">
+        <state line="23" column="32" selection-start="689" selection-end="689" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486">
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="61" selection-start="964" selection-end="983" vertical-scroll-proportion="0.0" vertical-offset="336" max-vertical-offset="8028">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/IO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="60" selection-start="4888" selection-end="4888" vertical-scroll-proportion="-11.833333" vertical-offset="2453" max-vertical-offset="3456">
+        <state line="135" column="14" selection-start="4018" selection-end="4018" vertical-scroll-proportion="-4.7" vertical-offset="2289" max-vertical-offset="3456">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2202#2208#0" expanded="true" />
@@ -1385,10 +1340,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/Coordinate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="30" selection-start="208" selection-end="208" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
+          <folding>
+            <element signature="e#629#630#0" expanded="true" />
+            <element signature="e#658#659#0" expanded="true" />
+            <element signature="e#702#703#0" expanded="true" />
+            <element signature="e#738#739#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="46" selection-start="1027" selection-end="1027" vertical-scroll-proportion="0.0" vertical-offset="546" max-vertical-offset="3672">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1080#1090#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="165" column="36" selection-start="6854" selection-end="6854" vertical-scroll-proportion="0.0" vertical-offset="2657" max-vertical-offset="6138">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/ExecuteMapping.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="17" selection-start="594" selection-end="594" vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="684">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/java/net/PlainSocketImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="61" selection-start="573" selection-end="634" vertical-scroll-proportion="0.08167331" vertical-offset="373" max-vertical-offset="1134">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/CallBismark.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="22" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.25974026" vertical-offset="690" max-vertical-offset="2718">
-          <folding />
+        <state line="163" column="41" selection-start="7608" selection-end="7608" vertical-scroll-proportion="0.40272373" vertical-offset="2727" max-vertical-offset="3636">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
