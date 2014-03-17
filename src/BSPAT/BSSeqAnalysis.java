@@ -44,6 +44,7 @@ public class BSSeqAnalysis {
         } else {
             throw new Exception("coordinates file is not ready!");
         }
+
         // 2. sort seqs by region
         Collections.sort(sequencesList, new SequenceComparatorRegion());
         String region = "";

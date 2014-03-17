@@ -5,6 +5,10 @@ import BSPAT.IO;
 import BSPAT.Utilities;
 import DataType.*;
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -13,14 +17,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +40,9 @@ import java.util.concurrent.TimeUnit;
 public class mappingServlet extends HttpServlet {
     private static final long serialVersionUID = 6078331324800268609L;
     private Constant constant = null;
-    private final long SPACETHRESHOLD = 4000;// maximum allow 4000MB space
-    private final int MAXEXECUTIONDAY = 10;
+    private static final long SPACETHRESHOLD = 4000;// maximum allow 4000MB space
+    private static final int MAXEXECUTIONDAY = 10;
+    private static final int REFEXTENSIONLENGTH = 1000;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -136,12 +144,14 @@ public class mappingServlet extends HttpServlet {
         constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
         constant.experiments = experiments;
         constant.email = request.getParameter("email");
-        // append xx to both end of reference
+        // execute BLAT query
+        blatQuery();
+        // fetch extended reference sequence
         try {
-            modifyRef(constant.originalRefPath, constant.modifiedRefPath);
-        } catch (Exception e) {
-            Utilities.showAlertWindow(response, "error in modifying reference");
+            fetchRefSeq(REFEXTENSIONLENGTH);
+        } catch (ParserConfigurationException | SAXException e) {
             e.printStackTrace();
+            System.err.println("fetch ref seq fails!");
         }
         // bismark indexing
         CallBismark callBismark = null;
@@ -155,7 +165,6 @@ public class mappingServlet extends HttpServlet {
         for (Experiment experiment : constant.experiments) {
             executor.execute(new ExecuteMapping(callBismark, experiment.getName(), constant));
         }
-        executor.execute(new ExecuteBlatQuery(constant));
         executor.shutdown();
         // Wait until all threads are finish
         try {
@@ -183,6 +192,35 @@ public class mappingServlet extends HttpServlet {
         //redirect page
         request.setAttribute("constant", constant);
         request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
+    }
+
+    /**
+     * fetch extended reference sequence from UCSC DAS server
+     * @param refExtensionLength Extension length
+     * @throws IOException
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     */
+    private void fetchRefSeq(int refExtensionLength) throws IOException, ParserConfigurationException, SAXException {
+        Map<String, Coordinate> coordinatesMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
+        StringBuilder dasQuery = new StringBuilder("http://genome.ucsc.edu/cgi-bin/das/" + constant.refVersion + "/dna?");
+        // build query url
+        List<String> coordinateKeyList = new ArrayList<>();
+        for (String key : coordinatesMap.keySet()) {
+            coordinateKeyList.add(key);
+            Coordinate coordinate = coordinatesMap.get(key);
+            dasQuery.append(String.format("segment=%s:%d,%d;", coordinate.getChr(), coordinate.getStart() - refExtensionLength, coordinate.getEnd() + refExtensionLength));
+        }
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new URL(dasQuery.toString()).openStream());
+        doc.getDocumentElement().normalize();
+        NodeList seqList = doc.getElementsByTagName("SEQUENCE");
+        for (int i = 0; i < seqList.getLength(); i++) {
+            Element item = (Element) seqList.item(i);
+            coordinatesMap.get(coordinateKeyList.get(i)).setRefSeq(item.getElementsByTagName("DNA").item(0).getTextContent().replace("\n", ""));
+        }
+        writeRef(coordinatesMap, constant.modifiedRefPath);
     }
 
     /**
@@ -220,46 +258,22 @@ public class mappingServlet extends HttpServlet {
     }
 
     /**
-     * append xx to both ends of original reference. Save result as modified
-     * reference
-     *
-     * @param originalRefPath
+     * write modified reference into file
+     * @param coordinateMap Key is ref seq ID, Value is Coordinate object
      * @param modifiedRefPath
      * @throws IOException
      */
-    private void modifyRef(String originalRefPath, String modifiedRefPath) throws IOException {
+
+    private void writeRef(Map<String, Coordinate> coordinateMap, String modifiedRefPath) throws IOException {
         File refFolder = new File(modifiedRefPath);
-        if (!refFolder.isDirectory()) {// if ref directory do not exist, make
-            // one
+        if (!refFolder.isDirectory()) {// if ref directory do not exist, make one
             refFolder.mkdirs();
         }
-        File originalRefPathFile = new File(originalRefPath);
-        String[] fileNames;
-        fileNames = originalRefPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa"}));
-        for (String str : fileNames) {
-            BufferedReader reader = new BufferedReader(new FileReader(originalRefPath + str));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + str));
-            String line;
-            StringBuilder ref = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith(">")) {
-                    if (ref.length() > 0) {
-                        // append XX to both end of reference
-                        writer.write("XX" + ref.toString() + "XX\n");
-                        ref = new StringBuilder();
-                    }
-                    writer.write(line + "\n");
-                } else {
-                    ref.append(line);
-                }
-            }
-            if (ref.length() > 0) {
-                // append XX to both end of reference
-                writer.write("XX" + ref.toString() + "XX\n");
-            }
-            reader.close();
-            writer.close();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + "modifiedReference.fa"));
+        for (Coordinate coordinate : coordinateMap.values()) {
+            writer.write(String.format(">%s\n%s\n", coordinate.getId(), coordinate.getRefSeq()));
         }
+        writer.close();
     }
 
     /**
@@ -290,6 +304,32 @@ public class mappingServlet extends HttpServlet {
                 }
             }
         }
+    }
+
+    /**
+     * execute blat query
+     */
+    private void blatQuery() {
+        File refFolder = new File(constant.originalRefPath);
+        String[] files = refFolder.list();
+        String blatQueryPath = constant.toolsPath + "BlatQuery/";
+        for (String name : files) {
+            try {
+                System.out.println("start blat query for " + name);
+                String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath, constant.refVersion, constant.originalRefPath, name);
+                Utilities.callCMD(blatQuery, new File(constant.coorFilePath));
+                System.out.println("blat query is finished for " + name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
+            constant.coorReady = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("blat result converted");
     }
 
 }
