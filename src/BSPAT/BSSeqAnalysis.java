@@ -72,193 +72,57 @@ public class BSSeqAnalysis {
         for (List<Sequence> seqGroup : sequenceGroups) {
             region = seqGroup.get(0).getRegion();
 
-            List<Sequence> Fgroup = new ArrayList<>();
-            List<Sequence> Rgroup = new ArrayList<>();
-            for (Sequence sequence : seqGroup) {
-                if (sequence.getFRstate().equals("F")) {
-                    Fgroup.add(sequence);
-                } else if (sequence.getFRstate().equals("R")) {
-                    Rgroup.add(sequence);
-                }
-            }
-            // remove mis-mapped sequences
-            Fgroup = removeMisMap(Fgroup);
-            Rgroup = removeMisMap(Rgroup);
-            // check F R for each region, overlap or not
-            Sequence Fseq = null, Rseq = null;
-            if (Fgroup != null && Rgroup != null) {
-                Fseq = Fgroup.get(0);
-                Rseq = Rgroup.get(0);
-            }
-            if ((Fseq != null) && (Rseq != null) && (Fseq.getStartPos() == Rseq.getStartPos()) &&
-                    (Fseq.getOriginalSeq().length() == Rseq.getOriginalSeq().length())) {
-                // F R are totally overlapped combine F R group together
-                List<Sequence> FRgroup = new ArrayList<>();
-                FRgroup.addAll(Fgroup);
-                FRgroup.addAll(Rgroup);
-                int totalCount = FRgroup.size();
-                List<Pattern> methylationPatterns = new ArrayList<>();
-                List<Pattern> mutationPatterns = new ArrayList<>();
+            int totalCount = seqGroup.size();
+            List<Pattern> methylationPatterns = new ArrayList<>();
+            List<Pattern> mutationPatterns = new ArrayList<>();
 
-                getMethylString(FRgroup);
-                FRgroup = filterSequences(FRgroup);
-                getMethylPattern(FRgroup, methylationPatterns);
-                getMutationPattern(FRgroup, mutationPatterns);
+            getMethylString(seqGroup);
+            seqGroup = filterSequences(seqGroup);
+            getMethylPattern(seqGroup, methylationPatterns);
+            getMutationPattern(seqGroup, mutationPatterns);
 
-                System.out.println(region + " Report");
-                ReportSummary reportSummary = new ReportSummary(region, "FR");
-                report = new Report("FR", region, outputFolder, FRgroup, methylationPatterns, mutationPatterns,
-                                    referenceSeqs, totalCount, reportSummary, constant
+            ReportSummary reportSummary = new ReportSummary(region, "F");
+            report = new Report("F", region, outputFolder, seqGroup, methylationPatterns, mutationPatterns,
+                                referenceSeqs, totalCount, reportSummary, constant
+            );
+            /** TODO it is better to include those function in constructor. **/
+            report.writeResult();
+            report.writeStatistics();
+            report.writeMethylationPatterns();
+            report.writeMutationPatterns();
+            if (constant.coorReady) {
+                System.out.println("start drawing -- BSSeqAnalysis -- execute");
+                DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
+                                                              constant.toolsPath
                 );
-                /** it is better to include those function in constructor. **/
-                report.writeResult();
-                report.writeStatistics();
-                report.writeMethylationPatterns();
-                report.writeMutationPatterns();
-                System.out.println(region + " Draw figure");
-                if (constant.coorReady) {
-                    System.out.println("start drawing -- BSSeqAnalysis -- execute");
-                    DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-                                                                  constant.toolsPath
-                    );
-                    drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                      reportSummary.getPatternLink(PatternLink.METHYLATION),
-                                                      experimentName, "FR", reportSummary, coordinates
-                                                     );
-                    drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                      reportSummary.getPatternLink(PatternLink.MUTATION),
-                                                      experimentName, "FR", reportSummary, coordinates
-                                                     );
-                    drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                      reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION),
-                                                      experimentName, "FR", reportSummary, coordinates
-                                                     );
-                    drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                      reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
-                                                      experimentName, "FR", reportSummary, coordinates
-                                                     );
-                    drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
-                            PatternLink.MUTATIONWITHMETHYLATION
-                                                                                                                  ),
-                                                                experimentName, "FR", reportSummary, coordinates
-                                                               );
-                }
-                System.out.println("finished DrawSingleFigure");
-                reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady,
-                                          constant.host
-                                         );
-                reportSummaries.add(reportSummary);
-            } else {
-                // consider F and R seperately like two regions
-                // F
-                if (Fgroup != null) {
-                    int totalCount = Fgroup.size();
-                    List<Pattern> methylationPatterns = new ArrayList<>();
-                    List<Pattern> mutationPatterns = new ArrayList<>();
-
-                    getMethylString(Fgroup);
-                    Fgroup = filterSequences(Fgroup);
-                    getMethylPattern(Fgroup, methylationPatterns);
-                    getMutationPattern(Fgroup, mutationPatterns);
-
-                    ReportSummary reportSummary = new ReportSummary(region, "F");
-                    report = new Report("F", region, outputFolder, Fgroup, methylationPatterns, mutationPatterns,
-                                        referenceSeqs, totalCount, reportSummary, constant
-                    );
-                    /** it is better to include those function in constructor. **/
-                    report.writeResult();
-                    report.writeStatistics();
-                    report.writeMethylationPatterns();
-                    report.writeMutationPatterns();
-                    if (constant.coorReady) {
-                        System.out.println("start drawing -- BSSeqAnalysis -- execute");
-                        DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-                                                                      constant.toolsPath
-                        );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                          reportSummary.getPatternLink(PatternLink.METHYLATION),
-                                                          experimentName, "F", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                          reportSummary.getPatternLink(PatternLink.MUTATION),
-                                                          experimentName, "F", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder, reportSummary.getPatternLink(
-                                PatternLink.MUTATIONWITHMETHYLATION
-                                                                                                            ),
-                                                          experimentName, "F", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder, reportSummary.getPatternLink(
-                                PatternLink.METHYLATIONWITHMUTATION
-                                                                                                            ),
-                                                          experimentName, "F", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
-                                PatternLink.MUTATIONWITHMETHYLATION
-                                                                                                                      ),
-                                                                    experimentName, "F", reportSummary, coordinates
-                                                                   );
-                    }
-                    reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady,
-                                              constant.host
-                                             );
-                    reportSummaries.add(reportSummary);
-                }
-                // R
-                if (Rgroup != null) {
-                    int totalCount = Rgroup.size();
-                    List<Pattern> methylationPatterns = new ArrayList<>();
-                    List<Pattern> mutationPatterns = new ArrayList<>();
-
-                    getMethylString(Rgroup);
-                    Rgroup = filterSequences(Rgroup);
-                    getMethylPattern(Rgroup, methylationPatterns);
-                    getMutationPattern(Rgroup, mutationPatterns);
-
-                    ReportSummary reportSummary = new ReportSummary(region, "R");
-                    report = new Report("R", region, outputFolder, Rgroup, methylationPatterns, mutationPatterns,
-                                        referenceSeqs, totalCount, reportSummary, constant
-                    );
-                    /** it is better to include those function in constructor. **/
-                    report.writeResult();
-                    report.writeStatistics();
-                    report.writeMethylationPatterns();
-                    report.writeMutationPatterns();
-                    if (constant.coorReady) {
-                        System.out.println("start drawing -- BSSeqAnalysis -- execute");
-                        DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-                                                                      constant.toolsPath
-                        );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                          reportSummary.getPatternLink(PatternLink.METHYLATION),
-                                                          experimentName, "R", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                          reportSummary.getPatternLink(PatternLink.MUTATION),
-                                                          experimentName, "R", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder, reportSummary.getPatternLink(
-                                PatternLink.MUTATIONWITHMETHYLATION
-                                                                                                            ),
-                                                          experimentName, "R", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPattern(region, outputFolder, reportSummary.getPatternLink(
-                                PatternLink.METHYLATIONWITHMUTATION
-                                                                                                            ),
-                                                          experimentName, "R", reportSummary, coordinates
-                                                         );
-                        drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
-                                PatternLink.MUTATIONWITHMETHYLATION
-                                                                                                                      ),
-                                                                    experimentName, "R", reportSummary, coordinates
-                                                                   );
-                    }
-                    reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady,
-                                              constant.host
-                                             );
-                    reportSummaries.add(reportSummary);
-                }
+                drawFigureLocal.drawMethylPattern(region, outputFolder,
+                                                  reportSummary.getPatternLink(PatternLink.METHYLATION), experimentName,
+                                                  "F", reportSummary, coordinates
+                                                 );
+                drawFigureLocal.drawMethylPattern(region, outputFolder,
+                                                  reportSummary.getPatternLink(PatternLink.MUTATION), experimentName,
+                                                  "F", reportSummary, coordinates
+                                                 );
+                drawFigureLocal.drawMethylPattern(region, outputFolder,
+                                                  reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION
+                                                                              ), experimentName, "F", reportSummary,
+                                                  coordinates
+                                                 );
+                drawFigureLocal.drawMethylPattern(region, outputFolder,
+                                                  reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION
+                                                                              ), experimentName, "F", reportSummary,
+                                                  coordinates
+                                                 );
+                drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
+                        PatternLink.MUTATIONWITHMETHYLATION
+                                                                                                              ),
+                                                            experimentName, "F", reportSummary, coordinates
+                                                           );
             }
+            reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host
+                                     );
+            reportSummaries.add(reportSummary);
+
         }
         return reportSummaries;
     }

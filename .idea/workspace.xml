@@ -6,11 +6,8 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="update bismark version to v0.10.1.&#10;add multiline fasta converter">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BSPAT.iml" afterPath="$PROJECT_DIR$/BSPAT.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/BSPAT.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/BSPAT.xml" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="modified BismarkResult Import process to suit new bismark version.&#10;modified BSseqAnalysis, remove seq count filter. May need to add in another position">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" afterPath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" afterPath="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -104,8 +101,10 @@
       <file leaf-file-name="BSSeqAnalysis.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="77" column="39" selection-start="2801" selection-end="2801" vertical-scroll-proportion="0.38962606" vertical-offset="1027" max-vertical-offset="7974">
-              <folding />
+            <state line="73" column="0" selection-start="2602" selection-end="2602" vertical-scroll-proportion="0.14489311" vertical-offset="1192" max-vertical-offset="7002">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -733,7 +732,7 @@
       <workItem from="1394946514110" duration="49000" />
       <workItem from="1394946569643" duration="49000" />
       <workItem from="1394946625334" duration="1366000" />
-      <workItem from="1394981808597" duration="27236000" />
+      <workItem from="1394981808597" duration="27662000" />
     </task>
     <task id="LOCAL-00001" summary="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug.">
       <created>1393911932594</created>
@@ -759,11 +758,15 @@
       <created>1395023503002</created>
       <updated>1395023503002</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="modified BismarkResult Import process to suit new bismark version.&#10;modified BSseqAnalysis, remove seq count filter. May need to add in another position">
+      <created>1395028158942</created>
+      <updated>1395028158942</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="70641000" />
+    <option name="totallyTimeSpent" value="71067000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -866,7 +869,8 @@
     <MESSAGE value="refactor. &#10;Replace all ArrayList declaration with List" />
     <MESSAGE value="add ref seq extension feature" />
     <MESSAGE value="update bismark version to v0.10.1.&#10;add multiline fasta converter" />
-    <option name="LAST_COMMIT_MESSAGE" value="update bismark version to v0.10.1.&#10;add multiline fasta converter" />
+    <MESSAGE value="modified BismarkResult Import process to suit new bismark version.&#10;modified BSseqAnalysis, remove seq count filter. May need to add in another position" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified BismarkResult Import process to suit new bismark version.&#10;modified BSseqAnalysis, remove seq count filter. May need to add in another position" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1355,8 +1359,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="39" selection-start="2801" selection-end="2801" vertical-scroll-proportion="0.38962606" vertical-offset="1027" max-vertical-offset="7974">
-          <folding />
+        <state line="73" column="0" selection-start="2602" selection-end="2602" vertical-scroll-proportion="0.14489311" vertical-offset="1192" max-vertical-offset="7002">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
