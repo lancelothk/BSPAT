@@ -1,8 +1,11 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="BSPAT">
+  <artifact type="exploded-war" build-on-make="true" name="BSPAT">
     <output-path>$PROJECT_DIR$/out/artifacts/BSPAT</output-path>
-    <root id="archive" name="BSPAT.war">
+    <root id="root">
       <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="BSPAT" />
+        </element>
         <element id="directory" name="lib">
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/G.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/ant.jar" />
@@ -82,10 +85,6 @@
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/geronimo-stax-api_1.0_spec-1.0.1.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/javax.servlet.jsp.jstl-api-1.2.1.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/geronimo-ws-metadata_2.0_spec-1.1.2.jar" />
-          <element id="dir-copy" path="$PROJECT_DIR$/WebContent" />
-        </element>
-        <element id="directory" name="classes">
-          <element id="module-output" name="BSPAT" />
         </element>
       </element>
       <element id="dir-copy" path="$PROJECT_DIR$/WebContent" />

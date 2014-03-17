@@ -48,7 +48,6 @@ public class ImportBismarkResult {
     /**
      * readReference
      *
-     * @param refPath
      * @throws IOException
      */
     private void readReference() throws IOException {
@@ -127,43 +126,41 @@ public class ImportBismarkResult {
     /**
      * readBismarkCpGResult
      *
-     * @param strand
      * @throws IOException
      */
     private void readBismarkCpGResult() throws IOException {
         File inputFile = new File(inputFolder);
-        String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam.txt"}));
+        String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.txt"}));
         Arrays.sort(names);
 
         for (String name : names) {
-            // skip non cpg result
-            if (name.startsWith("Non")) {
-                continue;
-            }
-            FileReader fileReader = new FileReader(inputFolder + name);
-            BufferedReader buffReader = new BufferedReader(fileReader);
-            String line = buffReader.readLine();
-            String[] items;
-            boolean methylLabel;
-            Sequence seq;
+            // only read CpG context result
+            if (name.startsWith("CpG_context")) {
+                FileReader fileReader = new FileReader(inputFolder + name);
+                BufferedReader buffReader = new BufferedReader(fileReader);
+                String line = buffReader.readLine();
+                String[] items;
+                boolean methylLabel;
+                Sequence seq;
 
-            while (line != null) {
-                items = line.split("\t");
-                if (items[1].equals("+")) {
-                    methylLabel = true;
-                } else {
-                    methylLabel = false;
+                while (line != null) {
+                    items = line.split("\t");
+                    if (items[1].equals("+")) {
+                        methylLabel = true;
+                    } else {
+                        methylLabel = false;
+                    }
+                    seq = sequencesHashtable.get(items[0]);
+                    if (seq != null) {
+                        // substract two bps from the start position to match
+                        // original reference
+                        CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 2, methylLabel);
+                        seq.addCpG(cpg);
+                    }
+                    line = buffReader.readLine();
                 }
-                seq = sequencesHashtable.get(items[0]);
-                if (seq != null) {
-                    // substract two bps from the start position to match
-                    // original reference
-                    CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 2, methylLabel);
-                    seq.addCpG(cpg);
-                }
-                line = buffReader.readLine();
+                buffReader.close();
             }
-            buffReader.close();
         }
     }
 
