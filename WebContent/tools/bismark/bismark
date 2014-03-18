@@ -529,33 +529,33 @@ sub print_final_analysis_report_single_end{
   ### All sequences from the original sequence file have been analysed now
   ### deleting temporary C->T or G->A infiles
 
-  if ($directional){
-    my $deletion_successful =  unlink "$temp_dir$C_to_T_infile";
-    if ($deletion_successful == 1){
-      warn "\nSuccessfully deleted the temporary file $temp_dir$C_to_T_infile\n\n";
-    }
-    else{
-      warn "Could not delete temporary file $C_to_T_infile properly $!\n";
-    }
-  }
-  elsif ($pbat){
-    my $deletion_successful =  unlink "$temp_dir$G_to_A_infile";
-    if ($deletion_successful == 1){
-      warn "\nSuccessfully deleted the temporary file $temp_dir$G_to_A_infile\n\n";
-    }
-    else{
-      warn "Could not delete temporary file $G_to_A_infile properly $!\n";
-    }
-  }
-  else{
-    my $deletion_successful =  unlink "$temp_dir$C_to_T_infile","$temp_dir$G_to_A_infile";
-    if ($deletion_successful == 2){
-      warn "\nSuccessfully deleted the temporary files $temp_dir$C_to_T_infile and $temp_dir$G_to_A_infile\n\n";
-    }
-    else{
-      warn "Could not delete temporary files properly $!\n";
-    }
-  }
+  ###if ($directional){
+  ###  my $deletion_successful =  unlink "$temp_dir$C_to_T_infile";
+  ###  if ($deletion_successful == 1){
+  ###    warn "\nSuccessfully deleted the temporary file $temp_dir$C_to_T_infile\n\n";
+  ###  }
+  ###  else{
+  ###    warn "Could not delete temporary file $C_to_T_infile properly $!\n";
+  ###  }
+  ###}
+  ###elsif ($pbat){
+    ###my $deletion_successful =  unlink "$temp_dir$G_to_A_infile";
+###    if ($deletion_successful == 1){
+###      warn "\nSuccessfully deleted the temporary file $temp_dir$G_to_A_infile\n\n";
+###    }
+###    else{
+ ###     warn "Could not delete temporary file $G_to_A_infile properly $!\n";
+###    }
+###  }
+###  else{
+###    my $deletion_successful =  unlink "$temp_dir$C_to_T_infile","$temp_dir$G_to_A_infile";
+###    if ($deletion_successful == 2){
+ ###     warn "\nSuccessfully deleted the temporary files $temp_dir$C_to_T_infile and $temp_dir$G_to_A_infile\n\n";
+###    }
+ ###   else{
+ ###     warn "Could not delete temporary files properly $!\n";
+###    }
+###  }
 
   ### printing a final report for the alignment procedure
   print REPORT "Final Alignment report\n",'='x22,"\n";

@@ -49,12 +49,11 @@ public class CallBismark {
         /** 1. build index **/
         // add "--yes_to_all" to always overwrite index folder
         // add "--no" to always skip existing reference
-        String preparation = String.format("%s/bismark_genome_preparation --yes_to_all --path_to_bowtie %s %s",
-                                           bismarkPathFile.getAbsolutePath(), bowtiePathFile.getAbsolutePath(),
-                                           refPathFile.getAbsolutePath()
-                                          );
+        String preparation = String.format(
+                "%s/bismark_genome_preparation --yes_to_all --path_to_bowtie %s %s > bismark_prep.log",
+                bismarkPathFile.getAbsolutePath(), bowtiePathFile.getAbsolutePath(), refPathFile.getAbsolutePath());
         System.out.println("Call preparation:");
-        Utilities.callCMD(preparation, null);
+        Utilities.callCMD(preparation, new File(refPathFile.getAbsolutePath()));
     }
 
     public void execute(String inputPath, String outputPath) throws IOException {
@@ -178,6 +177,7 @@ public class CallBismark {
                 if (line.startsWith(">")) {
                     if (seq.length() > 0) {
                         writer.write(seq.toString() + "\n");
+                        seq = new StringBuilder();
                     }
                     writer.write(line + "\n");
                 } else {

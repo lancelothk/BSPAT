@@ -15,6 +15,10 @@ public class CpGSite {
         return position;
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public boolean getMethylLabel() {
         return methylLabel;
     }

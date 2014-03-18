@@ -61,13 +61,15 @@ public class BSSeqAnalysis {
 
             getMethylString(region, seqGroup);
             seqGroup = filterSequences(seqGroup);
+            if (seqGroup.size() == 0) {
+                return reportSummaries;
+            }
             getMethylPattern(seqGroup, methylationPatterns);
             getMutationPattern(seqGroup, mutationPatterns);
 
             ReportSummary reportSummary = new ReportSummary(region, "F");
             report = new Report("F", region, outputFolder, seqGroup, methylationPatterns, mutationPatterns,
-                                referenceSeqs, totalCount, reportSummary, constant
-            );
+                                referenceSeqs, totalCount, reportSummary, constant);
             /** TODO it is better to include those function in constructor. **/
             report.writeResult();
             report.writeStatistics();
@@ -76,34 +78,23 @@ public class BSSeqAnalysis {
             if (constant.coorReady) {
                 System.out.println("start drawing -- BSSeqAnalysis -- execute");
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-                                                              constant.toolsPath
-                );
+                                                              constant.toolsPath);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATION), experimentName,
-                                                  "F", reportSummary, coordinates
-                                                 );
+                                                  "F", reportSummary, coordinates);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATION), experimentName,
-                                                  "F", reportSummary, coordinates
-                                                 );
+                                                  "F", reportSummary, coordinates);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                  reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION
-                                                                              ), experimentName, "F", reportSummary,
-                                                  coordinates
-                                                 );
+                                                  reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION),
+                                                  experimentName, "F", reportSummary, coordinates);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                  reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION
-                                                                              ), experimentName, "F", reportSummary,
-                                                  coordinates
-                                                 );
+                                                  reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
+                                                  experimentName, "F", reportSummary, coordinates);
                 drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
-                        PatternLink.MUTATIONWITHMETHYLATION
-                                                                                                              ),
-                                                            experimentName, "F", reportSummary, coordinates
-                                                           );
+                        PatternLink.MUTATIONWITHMETHYLATION), experimentName, "F", reportSummary, coordinates);
             }
-            reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host
-                                     );
+            reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
             reportSummaries.add(reportSummary);
 
         }
@@ -112,23 +103,36 @@ public class BSSeqAnalysis {
 
     /**
      * cutting mapped sequences to reference region and filter reads without covering whole reference seq
+     *
      * @param sequenceGroupMap
      */
     private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap) {
         for (String region : sequenceGroupMap.keySet()) {
-            for (Sequence sequence : sequenceGroupMap.get(region)) {
+            List<Sequence> sequenceGroup = sequenceGroupMap.get(region);
+            Iterator<Sequence> sequenceIterator = sequenceGroup.iterator();
+            while (sequenceIterator.hasNext()) {
+                Sequence sequence = sequenceIterator.next();
                 String refSeq = referenceSeqs.get(region);
-                int refStart = Constant.REFEXTENSIONLENGTH, refEnd = Constant.REFEXTENSIONLENGTH + refSeq.length() - 1;
+                int refStart = Constant.REFEXTENSIONLENGTH - 1, refEnd =
+                        Constant.REFEXTENSIONLENGTH + refSeq.length() - 1;
                 if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
                     // cut sequence to suit reference
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
-                                                                                refEnd - sequence.getStartPos()
-                                                                               )
-                                           );
-                    sequence.setStartPos(0);
+                                                                                refEnd - sequence.getStartPos()));
+                    // update CpG sites
+                    Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
+                    while (cpGSiteIterator.hasNext()) {
+                        CpGSite cpGSite = cpGSiteIterator.next();
+                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() <= refEnd) {
+                            cpGSite.setPosition(cpGSite.getPosition() - refStart);
+                        } else {
+                            cpGSiteIterator.remove();
+                        }
+                    }
+                    sequence.setStartPos(1);
                 } else {
                     // filter out
-                    sequenceGroupMap.get(region).remove(sequence);
+                    sequenceIterator.remove();
                 }
             }
         }
@@ -209,15 +213,15 @@ public class BSSeqAnalysis {
             }
             for (int i = 0; i < originalSeq.length(); i++) {
                 if (originalSeq.charAt(i) != convertedReferenceSeq.charAt(i + seq.getStartPos() - 1)) {
-                    if (i != originalSeq.length() - 1 && originalSeq.charAt(i) == 'C' &&
-                            originalSeq.charAt(i + 1) != 'G') {// non
-                        // CpG
-                        // context
-                        countofUnConvertedC++;
+                    if (i != originalSeq.length() - 1 && originalSeq.charAt(i) == 'C') {
+                        if (originalSeq.charAt(i + 1) != 'G') {// non CpG context
+                            countofUnConvertedC++;
+                        }
+                        //else CpG context, do nothing
                     } else {
                         unequalNucleotide++;
-                        methylationStringWithMutations[i + seq.getStartPos() - 1] = originalSeq.charAt(i); // with
-                        // mutations
+                        methylationStringWithMutations[i + seq.getStartPos() - 1] = originalSeq.charAt(
+                                i); // with mutations
                         mutationString[i + seq.getStartPos() - 1] = originalSeq.charAt(i);
                     }
                 }
@@ -252,9 +256,7 @@ public class BSSeqAnalysis {
             // conversion rate and methylation rate for each sequence.
             seq.setBisulConversionRate(1 - (countofUnConvertedC / countofCinRef));
             seq.setMethylationRate(countofMethylatedCpG / seq.getCpGSites().size());
-            seq.setSequenceIdentity(
-                    1 - (unequalNucleotide - countofMethylatedCpG) / (originalSeq.length() - seq.getCpGSites().size())
-                                   );
+            seq.setSequenceIdentity(1 - unequalNucleotide / (originalSeq.length() - seq.getCpGSites().size()));
             seq.setMethylationString(new String(methylationString));
             seq.setMethylationStringWithMutations(new String(methylationStringWithMutations));
             seq.setMutationString(new String(mutationString));
@@ -308,8 +310,7 @@ public class BSSeqAnalysis {
             methylationPatternWithMutations = new Pattern("");
             for (Sequence sequence : pattern.sequenceList()) {
                 if (!sequence.getMethylationStringWithMutations().equals(
-                        methylationPatternWithMutations.getPatternString()
-                                                                        )) {
+                        methylationPatternWithMutations.getPatternString())) {
                     if (!methylationPatternWithMutations.getPatternString().equals("")) {
                         pattern.addChildPattern(methylationPatternWithMutations);
                     }
@@ -358,8 +359,7 @@ public class BSSeqAnalysis {
             mutationpatternWithMethylation = new Pattern("");
             for (Sequence sequence : pattern.sequenceList()) {
                 if (!sequence.getMethylationStringWithMutations().equals(
-                        mutationpatternWithMethylation.getPatternString()
-                                                                        )) {
+                        mutationpatternWithMethylation.getPatternString())) {
                     if (!mutationpatternWithMethylation.getPatternString().equals("")) {
                         pattern.addChildPattern(mutationpatternWithMethylation);
                     }

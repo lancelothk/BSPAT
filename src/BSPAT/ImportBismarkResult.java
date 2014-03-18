@@ -62,7 +62,7 @@ public class ImportBismarkResult {
             while ((line = buffReader.readLine()) != null) {
                 if (line.startsWith(">")) {
                     if (ref.length() > 0) {
-                        referenceSeqs.put(name, ref.toString());
+                        referenceSeqs.put(name, ref.toString().toUpperCase());
                         ref = new StringBuilder();
                     }
                     name = line.replace(">", "");
@@ -71,7 +71,7 @@ public class ImportBismarkResult {
                 }
             }
             if (ref.length() > 0) {
-                referenceSeqs.put(name, ref.toString());
+                referenceSeqs.put(name, ref.toString().toUpperCase());
                 ref = new StringBuilder();
             }
             buffReader.close();
