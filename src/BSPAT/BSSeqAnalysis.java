@@ -124,7 +124,7 @@ public class BSSeqAnalysis {
                     while (cpGSiteIterator.hasNext()) {
                         CpGSite cpGSite = cpGSiteIterator.next();
                         if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() <= refEnd) {
-                            cpGSite.setPosition(cpGSite.getPosition() - refStart);
+                            cpGSite.setPosition(cpGSite.getPosition() - refStart + 1);
                         } else {
                             cpGSiteIterator.remove();
                         }
@@ -231,11 +231,11 @@ public class BSSeqAnalysis {
                     countofMethylatedCpG++;
                     // methylated CpG site represent by @@
                     methylationString[cpg.getPosition() - 1] = '@';
-                    if (cpg.getPosition() + 2 <= methylationString.length) {
+                    if (cpg.getPosition() + 1 <= methylationString.length) {
                         methylationString[cpg.getPosition()] = '@';
                     }
                     methylationStringWithMutations[cpg.getPosition() - 1] = '@';
-                    if (cpg.getPosition() + 2 <= methylationStringWithMutations.length) {
+                    if (cpg.getPosition() + 1 <= methylationStringWithMutations.length) {
                         methylationStringWithMutations[cpg.getPosition()] = '@';
                     }
                     // mutation
@@ -243,11 +243,11 @@ public class BSSeqAnalysis {
                 } else {
                     // un-methylated CpG site represent by **
                     methylationString[cpg.getPosition() - 1] = '*';
-                    if (cpg.getPosition() + 2 <= methylationString.length) {
+                    if (cpg.getPosition() + 1 <= methylationString.length) {
                         methylationString[cpg.getPosition()] = '*';
                     }
                     methylationStringWithMutations[cpg.getPosition() - 1] = '*';
-                    if (cpg.getPosition() + 2 <= methylationStringWithMutations.length) {
+                    if (cpg.getPosition() + 1 <= methylationStringWithMutations.length) {
                         methylationStringWithMutations[cpg.getPosition()] = '*';
                     }
                 }
