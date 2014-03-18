@@ -76,9 +76,12 @@ public class IO {
 			if (file.isDirectory()) {
 				list.addAll(visitFiles(file));
 			} else {
-				if (file.getName().endsWith(".txt") || file.getName().endsWith(".fq") || file.getName().endsWith(".fastq")
-						|| file.getName().endsWith(".fa") || file.getName().endsWith(".fasta")) {
-					list.add(file);
+				if (file.getName().endsWith(".txt") || file.getName().endsWith(".fq") || file.getName().endsWith(".fastq") ||
+                        file.getName().endsWith(".fa") || file.getName().endsWith(".fasta") ||
+                        file.getName().endsWith(".fna") || file.getName().endsWith(".ffn") ||
+                        file.getName().endsWith(".fas") || file.getName().endsWith(".faa") ||
+                        file.getName().endsWith(".frn")) {
+                    list.add(file);
 				}
 			}
 		}

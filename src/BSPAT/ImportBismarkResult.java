@@ -53,7 +53,7 @@ public class ImportBismarkResult {
     private void readReference() throws IOException {
         File refPathFile = new File(refPath);
         String[] fileNames = null;
-        fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa"}));
+        fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
         for (String str : fileNames) {
             FileReader fileReader = new FileReader(refPathFile + "/" + str);
             BufferedReader buffReader = new BufferedReader(fileReader);

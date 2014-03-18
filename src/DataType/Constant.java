@@ -17,6 +17,7 @@ public class Constant implements Serializable {
     public static final String HG18 = "hg18";
     public static final String HG19 = "hg19";
 
+
     // paths
     public String webRootPath;
     public String mappingResultPath;
