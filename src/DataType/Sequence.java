@@ -69,6 +69,10 @@ public class Sequence {
         return result;
     }
 
+    public int getEndPos() {
+        return startPos + length() - 1;
+    }
+
     public void setFRstate(String fRstate) {
         FRstate = fRstate;
     }

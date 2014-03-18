@@ -40,9 +40,6 @@ import java.util.concurrent.TimeUnit;
 public class mappingServlet extends HttpServlet {
     private static final long serialVersionUID = 6078331324800268609L;
     private Constant constant = null;
-    private static final long SPACETHRESHOLD = 4000;// maximum allow 4000MB space
-    private static final int MAXEXECUTIONDAY = 10;
-    private static final int REFEXTENSIONLENGTH = 1000;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -148,7 +145,7 @@ public class mappingServlet extends HttpServlet {
         blatQuery();
         // fetch extended reference sequence
         try {
-            fetchRefSeq(REFEXTENSIONLENGTH);
+            fetchRefSeq(Constant.REFEXTENSIONLENGTH);
         } catch (ParserConfigurationException | SAXException e) {
             e.printStackTrace();
             System.err.println("fetch ref seq fails!");
@@ -168,7 +165,7 @@ public class mappingServlet extends HttpServlet {
         executor.shutdown();
         // Wait until all threads are finish
         try {
-            executor.awaitTermination(MAXEXECUTIONDAY, TimeUnit.DAYS);
+            executor.awaitTermination(Constant.MAXEXECUTIONDAY, TimeUnit.DAYS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -284,9 +281,9 @@ public class mappingServlet extends HttpServlet {
     private void cleanRootFolder() throws IOException {
         File rootDirectory = new File(Constant.DISKROOTPATH);
         long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024;
-        long excess = rootFolderSize - SPACETHRESHOLD;
+        long excess = rootFolderSize - Constant.SPACETHRESHOLD;
         System.out.println("root folder space occupation:\t" + rootFolderSize);
-        if (rootFolderSize >= SPACETHRESHOLD) { // if exceed threshold, clean
+        if (rootFolderSize >= Constant.SPACETHRESHOLD) { // if exceed threshold, clean
             File[] subFolders = rootDirectory.listFiles();
             Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
             if (subFolders != null) {

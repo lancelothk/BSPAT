@@ -5,6 +5,9 @@ import java.util.List;
 
 public class Constant implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final long SPACETHRESHOLD = 4000;// maximum allow 4000MB space
+    public static final int MAXEXECUTIONDAY = 10;
+    public static final int REFEXTENSIONLENGTH = 1000;
     private static Constant constant = null;
     public static String DISKROOTPATH = "";
     public static final String PNG = "png";

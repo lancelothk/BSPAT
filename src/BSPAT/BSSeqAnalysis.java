@@ -45,38 +45,21 @@ public class BSSeqAnalysis {
             throw new Exception("coordinates file is not ready!");
         }
 
-        // 2. sort seqs by region
-        Collections.sort(sequencesList, new SequenceComparatorRegion());
-        String region = "";
-        List<List<Sequence>> sequenceGroups = new ArrayList<>();
-        List<Sequence> sequenceGroup = null;
-        for (Sequence seq : sequencesList) {
-            if (seq.getRegion().equals(region)) {
-                // add to same group
-                sequenceGroup.add(seq);
-            } else {
-                // new group
-                if (sequenceGroup != null) {
-                    sequenceGroups.add(sequenceGroup);
-                }
-                sequenceGroup = new ArrayList<>();
-                sequenceGroup.add(seq);
-                region = seq.getRegion();
-            }
-        }
-        if (sequenceGroup.size() != 0) {
-            sequenceGroups.add(sequenceGroup);
-        }
+        // 2. group seqs by region
+        Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByRegion(sequencesList);
 
-        // 3. generate report for each region
-        for (List<Sequence> seqGroup : sequenceGroups) {
-            region = seqGroup.get(0).getRegion();
+        // 3. cut and filter sequences
+        cutAndFilterSequence(sequenceGroupMap);
+
+        // 4. generate report for each region
+        for (String region : sequenceGroupMap.keySet()) {
+            List<Sequence> seqGroup = sequenceGroupMap.get(region);
 
             int totalCount = seqGroup.size();
             List<Pattern> methylationPatterns = new ArrayList<>();
             List<Pattern> mutationPatterns = new ArrayList<>();
 
-            getMethylString(seqGroup);
+            getMethylString(region, seqGroup);
             seqGroup = filterSequences(seqGroup);
             getMethylPattern(seqGroup, methylationPatterns);
             getMutationPattern(seqGroup, mutationPatterns);
@@ -128,11 +111,55 @@ public class BSSeqAnalysis {
     }
 
     /**
+     * cutting mapped sequences to reference region and filter reads without covering whole reference seq
+     * @param sequenceGroupMap
+     */
+    private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap) {
+        for (String region : sequenceGroupMap.keySet()) {
+            for (Sequence sequence : sequenceGroupMap.get(region)) {
+                String refSeq = referenceSeqs.get(region);
+                int refStart = Constant.REFEXTENSIONLENGTH, refEnd = Constant.REFEXTENSIONLENGTH + refSeq.length() - 1;
+                if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
+                    // cut sequence to suit reference
+                    sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
+                                                                                refEnd - sequence.getStartPos()
+                                                                               )
+                                           );
+                    sequence.setStartPos(0);
+                } else {
+                    // filter out
+                    sequenceGroupMap.get(region).remove(sequence);
+                }
+            }
+        }
+    }
+
+    /**
+     * group sequences by region
+     *
+     * @param sequencesList
+     * @return a HashMap with Key:String region, Value:List<Sequence>
+     */
+    private Map<String, List<Sequence>> groupSeqsByRegion(List<Sequence> sequencesList) {
+        Map<String, List<Sequence>> sequenceGroupMap = new HashMap<>();
+        for (Sequence seq : sequencesList) {
+            if (sequenceGroupMap.containsKey(seq.getRegion())) {
+                sequenceGroupMap.get(seq.getRegion()).add(seq);
+            } else {
+                List<Sequence> sequenceGroup = new ArrayList<>();
+                sequenceGroup.add(seq);
+                sequenceGroupMap.put(seq.getRegion(), sequenceGroup);
+            }
+        }
+        return sequenceGroupMap;
+    }
+
+    /**
      * get methylation String & methylation string with mutations; calculate
      * conversion rate, methylation rate
      */
 
-    public void getMethylString(List<Sequence> seqList) {
+    public void getMethylString(String region, List<Sequence> seqList) {
         char[] methylationString;
         char[] methylationStringWithMutations;
         char[] mutationString;
@@ -142,7 +169,7 @@ public class BSSeqAnalysis {
         double unequalNucleotide;
         String convertedReferenceSeq;
         int countofCinRef;
-        String referenceSeq = referenceSeqs.get(seqList.get(0).getRegion());
+        String referenceSeq = referenceSeqs.get(region);
 
         for (Sequence seq : seqList) {
             // convert reference sequence and count C in non-CpG context.
