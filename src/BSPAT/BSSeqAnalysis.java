@@ -1,6 +1,8 @@
 package BSPAT;
 
 import DataType.*;
+import org.apache.commons.math.MathException;
+import org.apache.commons.math.distribution.NormalDistributionImpl;
 
 import java.util.*;
 
@@ -26,7 +28,6 @@ public class BSSeqAnalysis {
      */
     public List<ReportSummary> execute(String experimentName, Constant constant) throws Exception {
         List<ReportSummary> reportSummaries = new ArrayList<>();
-        Report report;
         this.constant = constant;
         String inputFolder = constant.mappingResultPath + experimentName + "/";
         String outputFolder = constant.patternResultPath + experimentName + "/";
@@ -55,53 +56,140 @@ public class BSSeqAnalysis {
 
         // 3. cut and filter sequences
         cutAndFilterSequence(sequenceGroupMap);
+        // TODO handle case which no sequence remain after cut.
 
         // 4. generate report for each region
         for (String region : sequenceGroupMap.keySet()) {
+            ReportSummary reportSummary = new ReportSummary(region);
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
+            reportSummary.setSeqBeforeFilter(seqGroup.size());
 
-            int totalCount = seqGroup.size();
-
-            getMethylString(region, seqGroup);
+            processSequence(region, seqGroup);
             seqGroup = filterSequences(seqGroup);
+            reportSummary.setSeqAfterFilter(seqGroup.size());
+            // if no sequence exist after filtering, return empty reportSummary
             if (seqGroup.size() == 0) {
-                return reportSummaries;
+                continue;
             }
-            List<Pattern> methylationPatterns = getMethylPattern(seqGroup);
-            List<Pattern> mutationPatterns = getMutationPattern(seqGroup);
+            List<Pattern> methylationPatternList = getMethylPattern(seqGroup);
+            List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
 
-            ReportSummary reportSummary = new ReportSummary(region, "F");
-            report = new Report("F", region, outputFolder, seqGroup, methylationPatterns, mutationPatterns,
-                                referenceSeqs, totalCount, reportSummary, constant);
-            /** TODO it is better to include those function in constructor. **/
-            report.writeResult();
-            report.writeStatistics();
-            report.writeMethylationPatterns();
-            report.writeMutationPatterns();
+            methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size());
+            mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size());
+
+            sortAndAssignPatternID(methylationPatternList);
+            sortAndAssignPatternID(mutationPatternList);
+
+            List<Pattern> meMuPatternList = getMeMuPatern(methylationPatternList, mutationPatternList);
+
+            Report report = new Report(region, outputFolder, seqGroup, referenceSeqs.get(region), constant,
+                                       reportSummary);
+            report.writeReport(methylationPatternList, mutationPatternList, meMuPatternList);
+
             if (constant.coorReady) {
                 System.out.println("start drawing -- BSSeqAnalysis -- execute");
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
                                                               constant.toolsPath);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATION), experimentName,
-                                                  "F", reportSummary, coordinates);
+                                                  reportSummary, coordinates);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATION), experimentName,
-                                                  "F", reportSummary, coordinates);
+                                                  reportSummary, coordinates);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION),
-                                                  experimentName, "F", reportSummary, coordinates);
+                                                  experimentName, reportSummary, coordinates);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
-                                                  experimentName, "F", reportSummary, coordinates);
+                                                  experimentName, reportSummary, coordinates);
                 drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
-                        PatternLink.MUTATIONWITHMETHYLATION), experimentName, "F", reportSummary, coordinates);
+                        PatternLink.MUTATIONWITHMETHYLATION), experimentName, reportSummary, coordinates);
             }
             reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
             reportSummaries.add(reportSummary);
 
         }
         return reportSummaries;
+    }
+
+    private void sortAndAssignPatternID(List<Pattern> patternList) {
+        // sort methylation pattern.
+        Collections.sort(patternList, new PatternComparator());
+        // assign pattern id after sorting. So id is associated with order. Smaller id has large count.
+        for (Pattern pattern : patternList) {
+            pattern.assignPatternID();
+        }
+    }
+
+    // TODO replace list intersection with sequence parent id checking
+    private List<Pattern> getMeMuPatern(List<Pattern> methylationPatternList, List<Pattern> mutationPatternList) {
+        List<Pattern> meMuPaternList = new ArrayList<>();
+        for (Pattern methylationPattern : methylationPatternList) {
+            for (Pattern mutationPattern : mutationPatternList) {
+                Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
+                for (Sequence methylSeq : methylationPattern.sequenceList()) {
+                    for (Sequence mutationSeq : mutationPattern.sequenceList()) {
+                        // find intersection of two list
+                        if (methylSeq == mutationSeq) {
+                            memuPatern.addSequence(methylSeq);
+                        }
+                    }
+                }
+                if (memuPatern.sequenceList().size() != 0) {
+                    memuPatern.setPatternString(memuPatern.sequenceList().get(0).getMeMuString());
+                    memuPatern.setMethylationParentID(methylationPattern.getPatternID());
+                    memuPatern.setMutationParentID(mutationPattern.getPatternID());
+                    meMuPaternList.add(memuPatern);
+                }
+            }
+        }
+        return meMuPaternList;
+    }
+
+    private List<Pattern> filterMutationPatterns(List<Pattern> mutationPatterns, int totalSeqCount) {
+        List<Pattern> qualifiedMutationPattern = new ArrayList<>();
+        for (Pattern mutationPattern : mutationPatterns) {
+            double percentage = (double) mutationPattern.getCount() / totalSeqCount;
+            if (percentage >= constant.mutationPatternThreshold) {
+                qualifiedMutationPattern.add(mutationPattern);
+            }
+        }
+        return qualifiedMutationPattern;
+    }
+
+    private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount) {
+        List<Pattern> qualifiedMethylationPattern = new ArrayList<>();
+        // use percentage pattern threshold
+        if (constant.minP0Threshold == -1) {
+            for (Pattern methylationPattern : methylationPatterns) {
+                double percentage = methylationPattern.getCount() / totalSeqCount;
+                if (percentage >= constant.minMethylThreshold) {
+                    qualifiedMethylationPattern.add(methylationPattern);
+                }
+            }
+        } else {
+            // calculate methylation rate for each CpG site.
+            double p = 0.5;// probability of CpG site to be methylated.
+            double z;
+            double ph, p0;
+            NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
+            double criticalZ = 0;
+            try {
+                criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
+            } catch (MathException e) {
+                e.printStackTrace();
+            }
+            // significant pattern selection
+            for (Pattern methylationPattern : methylationPatterns) {
+                ph = methylationPattern.getCount() / totalSeqCount;
+                p0 = Math.max(constant.minP0Threshold, Math.pow(p, methylationPattern.getCGcount()));
+                z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
+                if (z > criticalZ) {
+                    qualifiedMethylationPattern.add(methylationPattern);
+                }
+            }
+        }
+        return qualifiedMethylationPattern;
     }
 
     /**
@@ -117,11 +205,11 @@ public class BSSeqAnalysis {
                 Sequence sequence = sequenceIterator.next();
                 String refSeq = referenceSeqs.get(region);
                 int refStart = Constant.REFEXTENSIONLENGTH - 1, refEnd =
-                        Constant.REFEXTENSIONLENGTH + refSeq.length() - 1;
+                        Constant.REFEXTENSIONLENGTH + refSeq.length() - 2;
                 if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
                     // cut sequence to suit reference
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
-                                                                                refEnd - sequence.getStartPos()));
+                                                                                refEnd - sequence.getStartPos() + 1));
                     // update CpG sites
                     Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
                     while (cpGSiteIterator.hasNext()) {
@@ -143,8 +231,9 @@ public class BSSeqAnalysis {
 
     /**
      * group sequences by given key function
+     *
      * @param sequencesList
-     * @param getKey function parameter to return String key.
+     * @param getKey        function parameter to return String key.
      * @return HashMap contains <key function return value, grouped sequence list>
      */
     private Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
@@ -162,11 +251,11 @@ public class BSSeqAnalysis {
     }
 
     /**
-     * get methylation String & methylation string with mutations; calculate
+     * generate methylation and mutation String; calculate
      * conversion rate, methylation rate
      */
 
-    public void getMethylString(String region, List<Sequence> seqList) {
+    public void processSequence(String region, List<Sequence> seqList) {
         char[] methylationString;
         char[] mutationString;
         String originalSeq;
@@ -211,13 +300,18 @@ public class BSSeqAnalysis {
                 mutationString[i] = '-';
             }
             for (int i = 0; i < originalSeq.length(); i++) {
+                // meet unequal element
                 if (originalSeq.charAt(i) != convertedReferenceSeq.charAt(i + seq.getStartPos() - 1)) {
-                    if (i != originalSeq.length() - 1 && originalSeq.charAt(i) == 'C') {
-                        if (originalSeq.charAt(i + 1) != 'G') {// non CpG context
+                    // unequal pair is 'C/T'. Two possible cases: 1. CpG context, methylation; 2. non-CpG context, unconverted C.
+                    if (originalSeq.charAt(i) == 'C' &&
+                            convertedReferenceSeq.charAt(i + seq.getStartPos() - 1) == 'T') {
+                        // next char is not 'G' --- non-CpG context
+                        if (i != originalSeq.length() - 1 && originalSeq.charAt(i + 1) != 'G') {
                             countofUnConvertedC++;
                         }
-                        //else CpG context, do nothing
+                        // else: next char is 'G' --- CpG context. Do nothing.
                     } else {
+                        // non C/T inequality.
                         unequalNucleotide++;
                         mutationString[i + seq.getStartPos() - 1] = originalSeq.charAt(i);
                     }
@@ -258,15 +352,15 @@ public class BSSeqAnalysis {
      * @return
      */
     private List<Sequence> filterSequences(List<Sequence> seqList) {
-        List<Sequence> tempSeqList = new ArrayList<>();
+        List<Sequence> qualifiedSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
             // filter unqualified reads
             if (seq.getBisulConversionRate() >= constant.conversionRateThreshold &&
                     seq.getSequenceIdentity() >= constant.sequenceIdentityThreshold) {
-                tempSeqList.add(seq);
+                qualifiedSeqList.add(seq);
             }
         }
-        return tempSeqList;
+        return qualifiedSeqList;
     }
 
     public List<Pattern> getMethylPattern(List<Sequence> seqList) {

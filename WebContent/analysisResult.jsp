@@ -52,11 +52,11 @@
                 </tr>
                 <tr>
                     <td>Sequence number before filtering:</td>
-                    <td><c:out value="${constant.analysisSummary.getSeqBeforeFilter()}"/></td>
+                    <td><c:out value="${constant.seqCountSummary.getSeqBeforeFilter()}"/></td>
                 </tr>
                 <tr>
                     <td>Sequence number after filtering:</td>
-                    <td><c:out value="${constant.analysisSummary.getSeqAfterFilter()}"/></td>
+                    <td><c:out value="${constant.seqCountSummary.getSeqAfterFilter()}"/></td>
                 </tr>
                 <c:choose>
                     <c:when test="${constant.minP0Threshold != -1}">
@@ -98,8 +98,7 @@
                                var="reportSummary">
                         <tr>
                             <td>Region:</td>
-                            <td><c:out value="${reportSummary.getId()}"/>-<c:out
-                                    value="${reportSummary.getFRState()}"/></td>
+                            <td><c:out value="${reportSummary.getId()}"/></td>
                         </tr>
                         <c:forEach items="${reportSummary.getPatternLinks()}"
                                    var="patternLink">

@@ -39,7 +39,7 @@ public class Sequence {
         this.editDist = editDist;
         this.mismatchString = mismatchString;
         this.methylCall = methylCall;
-        this.CpGSites = new ArrayList<CpGSite>();
+        this.CpGSites = new ArrayList<>();
         this.readConvState = readConvState;
     }
 
@@ -213,5 +213,21 @@ public class Sequence {
 
     public int length() {
         return originalSeq.length();
+    }
+
+    public String getMeMuString() {
+        StringBuilder meMuBuilder = new StringBuilder();
+        for (int i = 0; i < originalSeq.length(); i++) {
+            if (methylationString.charAt(i) != '-' && mutationString.charAt(i) != '-') {
+                throw new RuntimeException("methylation conflict with mutation!");
+            } else if (methylationString.charAt(i) != '-') {
+                meMuBuilder.append(methylationString.charAt(i));
+            } else if (mutationString.charAt(i) != '-') {
+                meMuBuilder.append(mutationString.charAt(i));
+            } else {
+                meMuBuilder.append('-');
+            }
+        }
+        return meMuBuilder.toString();
     }
 }

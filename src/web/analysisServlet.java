@@ -1,9 +1,7 @@
 package web;
 
-import BSPAT.IO;
 import BSPAT.ReportSummary;
 import BSPAT.Utilities;
-import DataType.AnalysisSummary;
 import DataType.Constant;
 import DataType.Experiment;
 
@@ -41,14 +39,16 @@ public class analysisServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      * response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
     }
 
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
      * response)
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException, IOException {
         long start = System.currentTimeMillis();
         response.setContentType("text/html");
         String runID = request.getParameter("runID");
@@ -121,17 +121,15 @@ public class analysisServlet extends HttpServlet {
             }
         }
 
-        // read analysis summary report
-        AnalysisSummary analysisSummary = IO.readAnalysisSummary(constant.patternResultPath);
-
         // compress result folder
         String zipFileName = constant.randomDir + "/" + "analysisResult.zip";
         Utilities.zipFolder(constant.patternResultPath, zipFileName);
         // send email to inform user
-        Utilities.sendEmail(constant.email, constant.runID, "Analysis has finished.\n" + "Your runID is " + constant.runID + "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+        Utilities.sendEmail(constant.email, constant.runID,
+                            "Analysis has finished.\n" + "Your runID is " + constant.runID +
+                                    "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
 
         // passing JSTL parameters
-        constant.analysisSummary = analysisSummary;
         constant.analysisTime = (System.currentTimeMillis() - start) / 1000;
         constant.analysisResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
         constant.finishedAnalysis = true;

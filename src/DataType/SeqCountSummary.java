@@ -2,8 +2,8 @@ package DataType;
 
 import java.io.Serializable;
 
-public class AnalysisSummary implements Serializable {
-	/**
+public class SeqCountSummary implements Serializable {
+    /**
 	 *
 	 */
 	private static final long serialVersionUID = -4282040809641125013L;

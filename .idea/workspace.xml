@@ -6,13 +6,24 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="fix part of file extension bug">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/BSPAT/GetKeyFunction.java" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/DataType/MeMuPatternComparator.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/DataType/MuMePatternComparator.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/DataType/SequenceComparatorMM.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/DataType/SequenceComparatorMutations.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/DataType/AnalysisSummary.java" afterPath="$PROJECT_DIR$/src/DataType/SeqCountSummary.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/BSPAT/BSPATTest.java" afterPath="$PROJECT_DIR$/test/BSPAT/BSPATTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" afterPath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Constant.java" afterPath="$PROJECT_DIR$/src/DataType/Constant.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" afterPath="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/IO.java" afterPath="$PROJECT_DIR$/src/BSPAT/IO.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Pattern.java" afterPath="$PROJECT_DIR$/src/DataType/Pattern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" afterPath="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/Report.java" afterPath="$PROJECT_DIR$/src/BSPAT/Report.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" afterPath="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Sequence.java" afterPath="$PROJECT_DIR$/src/DataType/Sequence.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/analysisResult.jsp" afterPath="$PROJECT_DIR$/WebContent/analysisResult.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/analysisServlet.java" afterPath="$PROJECT_DIR$/src/web/analysisServlet.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -68,7 +79,23 @@
       </breakpoint>
     </breakpoint_any>
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
-    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
+      <breakpoint url="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" line="57" class="BSPAT.BSSeqAnalysis" package="BSPAT">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </line_breakpoints>
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -78,69 +105,77 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BSSeqAnalysis.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Report.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BSPAT/Report.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="94" column="49" selection-start="4489" selection-end="4489" vertical-scroll-proportion="0.0" vertical-offset="1302" max-vertical-offset="2664">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReportSummary.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="22" column="32" selection-start="582" selection-end="582" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="2142">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2947#2948#0" expanded="true" />
+                <element signature="e#2985#2986#0" expanded="true" />
+                <element signature="e#3044#3045#0" expanded="true" />
+                <element signature="e#3098#3099#0" expanded="true" />
+                <element signature="e#3136#3137#0" expanded="true" />
+                <element signature="e#3173#3174#0" expanded="true" />
+                <element signature="e#3230#3231#0" expanded="true" />
+                <element signature="e#3282#3283#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImportBismarkResult.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="98" column="19" selection-start="3302" selection-end="3302" vertical-scroll-proportion="0.0" vertical-offset="1271" max-vertical-offset="3438">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BSSeqAnalysis.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="249" column="62" selection-start="11904" selection-end="11904" vertical-scroll-proportion="5.4859242" vertical-offset="0" max-vertical-offset="5724">
+            <state line="57" column="0" selection-start="2018" selection-end="2018" vertical-scroll-proportion="0.0" vertical-offset="821" max-vertical-offset="7236">
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1728#1884#0" expanded="true" />
-                <element signature="e#1873#1874#0" expanded="true" />
-                <element signature="e#12786#12953#0" expanded="true" />
-                <element signature="e#12942#12943#0" expanded="true" />
-                <element signature="e#13703#13867#0" expanded="true" />
-                <element signature="e#13856#13857#0" expanded="true" />
+                <element signature="e#1819#1975#0" expanded="true" />
+                <element signature="e#1964#1965#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Pattern.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DataType/Pattern.java">
+      <file leaf-file-name="ExecuteAnalysis.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="29" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="508" max-vertical-offset="1350">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#737#738#0" expanded="true" />
-                <element signature="e#769#770#0" expanded="true" />
-                <element signature="e#1418#1419#0" expanded="true" />
-                <element signature="e#1452#1453#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GetKeyFunction.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/GetKeyFunction.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="23" selection-start="140" selection-end="145" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="288">
+            <state line="23" column="34" selection-start="691" selection-end="691" vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="486">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analysisServlet.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ReadAnalysisResult.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="89" column="50" selection-start="2895" selection-end="2895" vertical-scroll-proportion="0.0" vertical-offset="1311" max-vertical-offset="2304">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="analysisServlet.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="36" selection-start="2502" selection-end="2502" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="2340">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DrawPattern.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="396" column="24" selection-start="21738" selection-end="21738" vertical-scroll-proportion="-5.4" vertical-offset="6696" max-vertical-offset="9126">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Sequence.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DataType/Sequence.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="159" column="0" selection-start="4429" selection-end="4429" vertical-scroll-proportion="0.0" vertical-offset="1404" max-vertical-offset="2790">
+            <state line="118" column="86" selection-start="4941" selection-end="4941" vertical-scroll-proportion="0.78054863" vertical-offset="1469" max-vertical-offset="2340">
               <folding />
             </state>
           </provider>
@@ -149,21 +184,32 @@
       <file leaf-file-name="Constant.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="42" selection-start="1203" selection-end="1227" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="4428">
+            <state line="365" column="5" selection-start="9353" selection-end="9353" vertical-scroll-proportion="0.0" vertical-offset="3954" max-vertical-offset="4464">
               <folding>
-                <element signature="e#5775#5776#0" expanded="true" />
-                <element signature="e#5822#5823#0" expanded="true" />
-                <element signature="e#5902#5903#0" expanded="true" />
-                <element signature="e#5974#5975#0" expanded="true" />
+                <element signature="e#9211#9212#0" expanded="true" />
+                <element signature="e#9263#9264#0" expanded="true" />
+                <element signature="e#9314#9315#0" expanded="true" />
+                <element signature="e#9352#9353#0" expanded="true" />
+                <element signature="e#9423#9424#0" expanded="true" />
+                <element signature="e#9477#9478#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Report.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/Report.java">
+      <file leaf-file-name="analysisResult.jsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="296" column="45" selection-start="16511" selection-end="16523" vertical-scroll-proportion="0.0" vertical-offset="4981" max-vertical-offset="5832">
+            <state line="100" column="71" selection-start="4641" selection-end="4641" vertical-scroll-proportion="-5.3703704" vertical-offset="1655" max-vertical-offset="2898">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SeqCountSummary.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/DataType/SeqCountSummary.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="0" selection-start="314" selection-end="314" vertical-scroll-proportion="0.0" vertical-offset="67" max-vertical-offset="630">
               <folding />
             </state>
           </provider>
@@ -187,16 +233,12 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/test/BSPATTest.java" />
-        <option value="$PROJECT_DIR$/WebContent/footer.html" />
         <option value="$PROJECT_DIR$/WebContent/analysis.jsp" />
         <option value="$PROJECT_DIR$/src/DataType/MappingResultComparator.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
         <option value="$PROJECT_DIR$/src/web/resultRetrieveServlet.java" />
         <option value="$PROJECT_DIR$/src/web/ExecuteAnalysis.java" />
         <option value="$PROJECT_DIR$/src/DataType/Experiment.java" />
         <option value="$PROJECT_DIR$/WebContent/result.jsp" />
-        <option value="$PROJECT_DIR$/test/BSPAT/BSPATTest.java" />
         <option value="$PROJECT_DIR$/src/DataType/CpGComparator.java" />
         <option value="$PROJECT_DIR$/src/DataType/CpGSite.java" />
         <option value="$PROJECT_DIR$/src/DataType/CpGStatComparator.java" />
@@ -209,9 +251,6 @@
         <option value="$PROJECT_DIR$/src/DataType/SequenceComparatorMutations.java" />
         <option value="$PROJECT_DIR$/src/DataType/SequenceComparatorRegion.java" />
         <option value="$PROJECT_DIR$/src/web/preprocessingServlet.java" />
-        <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
         <option value="$PROJECT_DIR$/src/DataType/PatternResult.java" />
         <option value="$PROJECT_DIR$/src/web/ExecuteBlatQuery.java" />
         <option value="$PROJECT_DIR$/src/DataType/Coordinate.java" />
@@ -224,14 +263,27 @@
         <option value="$PROJECT_DIR$/src/BSPAT/CallBismark.java" />
         <option value="$PROJECT_DIR$/WebContent/index.jsp" />
         <option value="$PROJECT_DIR$/src/web/mappingServlet.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/IO.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/GetKeyFunction.java" />
+        <option value="$PROJECT_DIR$/src/DataType/PatternLink.java" />
+        <option value="$PROJECT_DIR$/src/DataType/Pattern.java" />
+        <option value="$PROJECT_DIR$/src/DataType/MeMuComparator.java" />
+        <option value="$PROJECT_DIR$/src/DataType/MethylationParentIDComparator.java" />
+        <option value="$PROJECT_DIR$/src/DataType/MeMuPatternComparator.java" />
+        <option value="$PROJECT_DIR$/src/DataType/MuMePatternComparator.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/IO.java" />
+        <option value="$PROJECT_DIR$/src/DataType/AnalysisSummary.java" />
+        <option value="$PROJECT_DIR$/src/DataType/SeqCountSummary.java" />
+        <option value="$PROJECT_DIR$/test/BSPAT/BSPATTest.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
+        <option value="$PROJECT_DIR$/WebContent/analysisResult.jsp" />
+        <option value="$PROJECT_DIR$/src/DataType/Sequence.java" />
         <option value="$PROJECT_DIR$/src/DataType/Constant.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/Report.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/GetKeyFunction.java" />
-        <option value="$PROJECT_DIR$/src/DataType/Pattern.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
-        <option value="$PROJECT_DIR$/src/DataType/Sequence.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
+        <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
       </list>
     </option>
   </component>
@@ -302,7 +354,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -349,12 +400,31 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="DataType" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BSPAT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="BSPAT" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -384,20 +454,23 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="BSPAT" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/WebContent/tools/bismark" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="DataType" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="BSPAT" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager" selected="Tomcat Server.BSPAT">
@@ -478,26 +551,6 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
-      <option name="LOCAL" value="false" />
-      <deployment />
-      <server-settings>
-        <data>
-          <option name="transportHostId" />
-        </data>
-      </server-settings>
-      <predefined_log_file id="Tomcat" enabled="true" />
-      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="37675" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="false" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
     <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.26" ALTERNATIVE_JRE_ENABLED="false" ALTERNATIVE_JRE_PATH="">
       <option name="BROWSER_ID" value="Chrome" />
       <option name="UPDATING_POLICY" value="restart-server" />
@@ -563,6 +616,26 @@
           <option name="PROGRAM_PARAMETERS" value="" />
         </SHUTDOWN>
       </ConfigurationWrapper>
+      <method />
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="LOCAL" value="false" />
+      <deployment />
+      <server-settings>
+        <data>
+          <option name="transportHostId" />
+        </data>
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="37675" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
     <configuration default="false" name="BSPAT" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.26" ALTERNATIVE_JRE_ENABLED="false" ALTERNATIVE_JRE_PATH="">
@@ -708,7 +781,8 @@
       <workItem from="1395113258741" duration="3049000" />
       <workItem from="1395178769697" duration="651000" />
       <workItem from="1395179434579" duration="492000" />
-      <workItem from="1395181747803" duration="6415000" />
+      <workItem from="1395181747803" duration="21463000" />
+      <workItem from="1395240545178" duration="7662000" />
     </task>
     <task id="LOCAL-00001" summary="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug.">
       <created>1393911932594</created>
@@ -750,11 +824,15 @@
       <created>1395116268144</created>
       <updated>1395116268144</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis.">
+      <created>1395196139583</created>
+      <updated>1395196139583</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90868000" />
+    <option name="totallyTimeSpent" value="113578000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -787,16 +865,16 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33806452" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47741935" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.47706422" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47706422" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33806452" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33715597" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23419774" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31741935" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15397082" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15640195" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32454127" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -810,10 +888,10 @@
     <layout-to-restore>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -831,8 +909,8 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33830276" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25482625" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39678898" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
@@ -861,7 +939,8 @@
     <MESSAGE value="start to implement cutting mapped reads to suit original reference" />
     <MESSAGE value="fix cpg position bug" />
     <MESSAGE value="fix part of file extension bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix part of file extension bug" />
+    <MESSAGE value="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis." />
+    <option name="LAST_COMMIT_MESSAGE" value="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -877,21 +956,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-3.6914062" vertical-offset="1890" max-vertical-offset="2430" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/analysis.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="34" selection-start="5281" selection-end="5281" vertical-scroll-proportion="0.018796992" vertical-offset="2222" max-vertical-offset="2754" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/MappingResultComparator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="343" selection-end="343" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="378" />
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/java/io/File.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1026" column="19" selection-start="42534" selection-end="42534" vertical-scroll-proportion="0.33293125" vertical-offset="17526" max-vertical-offset="38916" />
@@ -907,11 +971,6 @@
         <state line="239" column="18" selection-start="8493" selection-end="8493" vertical-scroll-proportion="0.33207548" vertical-offset="3478" max-vertical-offset="6120" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="13" selection-start="190" selection-end="190" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1800" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Experiment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="67" column="11" selection-start="1148" selection-end="1148" vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="918" />
@@ -925,11 +984,6 @@
     <entry file="file://$PROJECT_DIR$/WebContent/result.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state line="21" column="0" selection-start="852" selection-end="852" vertical-scroll-proportion="0.61290324" vertical-offset="93" max-vertical-offset="1368" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/BSPAT/BSPATTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="15" selection-start="834" selection-end="834" vertical-scroll-proportion="0.0" vertical-offset="304" max-vertical-offset="1350" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/CpGComparator.java">
@@ -962,24 +1016,9 @@
         <state line="9" column="11" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/PatternComparator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="11" selection-start="188" selection-end="188" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="432" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/SequenceComparatorMethylation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="11" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/SequenceComparatorMM.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="11" selection-start="194" selection-end="194" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="306" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/SequenceComparatorMutations.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="11" selection-start="201" selection-end="201" vertical-scroll-proportion="0.17102137" vertical-offset="0" max-vertical-offset="842" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/preprocessingServlet.java">
@@ -1065,70 +1104,16 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/tools/bismark/bismark">
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="5" selection-start="70" selection-end="75" vertical-scroll-proportion="0.20044543" vertical-offset="0" max-vertical-offset="143370" />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="5" selection-start="471" selection-end="471" vertical-scroll-proportion="0.41073826" vertical-offset="0" max-vertical-offset="745">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="62" selection-start="3485" selection-end="3485" vertical-scroll-proportion="0.0" vertical-offset="1836" max-vertical-offset="2718">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/IO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="37" selection-start="2306" selection-end="2306" vertical-scroll-proportion="0.0" vertical-offset="1058" max-vertical-offset="3276">
-          <folding />
-        </state>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/CallBismark.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="94" column="6" selection-start="3851" selection-end="3851" vertical-scroll-proportion="0.0" vertical-offset="1560" max-vertical-offset="3618">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="4" selection-start="1471" selection-end="1471" vertical-scroll-proportion="0.0" vertical-offset="604" max-vertical-offset="3438">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="42" selection-start="1203" selection-end="1227" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="4428">
-          <folding>
-            <element signature="e#5775#5776#0" expanded="true" />
-            <element signature="e#5822#5823#0" expanded="true" />
-            <element signature="e#5902#5903#0" expanded="true" />
-            <element signature="e#5974#5975#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="36" selection-start="2502" selection-end="2502" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="2340">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="396" column="24" selection-start="21738" selection-end="21738" vertical-scroll-proportion="-5.4" vertical-offset="6696" max-vertical-offset="9126">
           <folding />
         </state>
       </provider>
@@ -1140,45 +1125,158 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/Report.java">
+    <entry file="file://$PROJECT_DIR$/src/DataType/PatternComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="296" column="45" selection-start="16511" selection-end="16523" vertical-scroll-proportion="0.0" vertical-offset="4981" max-vertical-offset="5832">
+        <state line="4" column="13" selection-start="62" selection-end="62" vertical-scroll-proportion="0.10465116" vertical-offset="0" max-vertical-offset="688">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/PatternLink.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="4" selection-start="357" selection-end="517" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/MeMuPatternComparator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="8" selection-start="213" selection-end="453" vertical-scroll-proportion="0.20930232" vertical-offset="0" max-vertical-offset="688">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/MuMePatternComparator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="74" selection-start="346" selection-end="346" vertical-scroll-proportion="0.48255813" vertical-offset="0" max-vertical-offset="688">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/IO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="0" selection-start="2846" selection-end="2846" vertical-scroll-proportion="0.0" vertical-offset="1350" max-vertical-offset="2502">
+          <folding>
+            <element signature="e#2169#2175#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/BSPAT/BSPATTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="5" selection-start="2118" selection-end="2118" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="1224">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Pattern.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="29" selection-start="801" selection-end="801" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="1350">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#737#738#0" expanded="true" />
-            <element signature="e#769#770#0" expanded="true" />
-            <element signature="e#1418#1419#0" expanded="true" />
-            <element signature="e#1452#1453#0" expanded="true" />
-          </folding>
+        <state line="57" column="27" selection-start="1604" selection-end="1616" vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="1314">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="0" selection-start="1614" selection-end="1614" vertical-scroll-proportion="0.0" vertical-offset="429" max-vertical-offset="9126">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Sequence.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="159" column="0" selection-start="4429" selection-end="4429" vertical-scroll-proportion="0.0" vertical-offset="1404" max-vertical-offset="2790">
+        <state line="230" column="0" selection-start="6093" selection-end="6093" vertical-scroll-proportion="0.0" vertical-offset="2695" max-vertical-offset="3096">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="98" column="19" selection-start="3302" selection-end="3302" vertical-scroll-proportion="0.0" vertical-offset="1271" max-vertical-offset="3438">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="50" selection-start="2895" selection-end="2895" vertical-scroll-proportion="0.0" vertical-offset="1311" max-vertical-offset="2304">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="34" selection-start="691" selection-end="691" vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="486">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/Report.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="94" column="49" selection-start="4489" selection-end="4489" vertical-scroll-proportion="0.0" vertical-offset="1302" max-vertical-offset="2664">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="32" selection-start="582" selection-end="582" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="2142">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2947#2948#0" expanded="true" />
+            <element signature="e#2985#2986#0" expanded="true" />
+            <element signature="e#3044#3045#0" expanded="true" />
+            <element signature="e#3098#3099#0" expanded="true" />
+            <element signature="e#3136#3137#0" expanded="true" />
+            <element signature="e#3173#3174#0" expanded="true" />
+            <element signature="e#3230#3231#0" expanded="true" />
+            <element signature="e#3282#3283#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="100" column="71" selection-start="4641" selection-end="4641" vertical-scroll-proportion="-5.3703704" vertical-offset="1655" max-vertical-offset="2898">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/SeqCountSummary.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="0" selection-start="314" selection-end="314" vertical-scroll-proportion="0.0" vertical-offset="67" max-vertical-offset="630">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="365" column="5" selection-start="9353" selection-end="9353" vertical-scroll-proportion="0.0" vertical-offset="3954" max-vertical-offset="4464">
+          <folding>
+            <element signature="e#9211#9212#0" expanded="true" />
+            <element signature="e#9263#9264#0" expanded="true" />
+            <element signature="e#9314#9315#0" expanded="true" />
+            <element signature="e#9352#9353#0" expanded="true" />
+            <element signature="e#9423#9424#0" expanded="true" />
+            <element signature="e#9477#9478#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="249" column="62" selection-start="11904" selection-end="11904" vertical-scroll-proportion="5.4859242" vertical-offset="0" max-vertical-offset="5724">
+        <state line="57" column="0" selection-start="2018" selection-end="2018" vertical-scroll-proportion="0.0" vertical-offset="821" max-vertical-offset="7236">
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1728#1884#0" expanded="true" />
-            <element signature="e#1873#1874#0" expanded="true" />
-            <element signature="e#12786#12953#0" expanded="true" />
-            <element signature="e#12942#12943#0" expanded="true" />
-            <element signature="e#13703#13867#0" expanded="true" />
-            <element signature="e#13856#13857#0" expanded="true" />
+            <element signature="e#1819#1975#0" expanded="true" />
+            <element signature="e#1964#1965#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="86" selection-start="4941" selection-end="4941" vertical-scroll-proportion="0.78054863" vertical-offset="1469" max-vertical-offset="2340">
+          <folding />
         </state>
       </provider>
     </entry>

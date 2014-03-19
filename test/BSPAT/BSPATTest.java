@@ -1,6 +1,5 @@
 package BSPAT;
 
-import DataType.AnalysisSummary;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -62,12 +61,5 @@ public class BSPATTest {
 //		String mappingResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run7538583663942149733/bismark_result";
 //		MappingSummary mappingSummary = IO.readMappingSummary(mappingResultPath);
 //		System.out.println(mappingSummary.toString());
-    }
-
-    @Test
-    public void testReadAnalysisSummary() throws IOException {
-        String analysisResultPath = "/home/ke/Dropbox/JavaWorkspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/BSPAT/Run3780745787145715763/pattern_result";
-        AnalysisSummary analysisSummary = IO.readAnalysisSummary(analysisResultPath);
-        System.out.println(analysisSummary.toString());
     }
 }

@@ -9,116 +9,127 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ReportSummary implements Serializable {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	private String statTextLink;
-	private HashMap<String, PatternLink> patternHash = new HashMap<>();
-	private String ASMFigureLink;
-	private String ASMGBLink;
-	private boolean hasASM;
-	private SNP ASMsnp;
-	private String id;
-	private String FRState;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private String statTextLink;
+    private HashMap<String, PatternLink> patternHash = new HashMap<>();
+    private String ASMFigureLink;
+    private String ASMGBLink;
+    private boolean hasASM;
+    private SNP ASMsnp;
+    private String id;
+    private int seqBeforeFilter;
+    private int seqAfterFilter;
 
-	public ReportSummary(String id, String FRState) {
-		this.id = id;
-		this.FRState = FRState;
-		patternHash.put(PatternLink.METHYLATION, new PatternLink(PatternLink.METHYLATION));
-		patternHash.put(PatternLink.MUTATION, new PatternLink(PatternLink.MUTATION));
-		patternHash.put(PatternLink.METHYLATIONWITHMUTATION, new PatternLink(PatternLink.METHYLATIONWITHMUTATION));
-		patternHash.put(PatternLink.MUTATIONWITHMETHYLATION, new PatternLink(PatternLink.MUTATIONWITHMETHYLATION));
-	}
+    public ReportSummary(String id) {
+        this.id = id;
+        patternHash.put(PatternLink.METHYLATION, new PatternLink(PatternLink.METHYLATION));
+        patternHash.put(PatternLink.MUTATION, new PatternLink(PatternLink.MUTATION));
+        patternHash.put(PatternLink.METHYLATIONWITHMUTATION, new PatternLink(PatternLink.METHYLATIONWITHMUTATION));
+        patternHash.put(PatternLink.MUTATIONWITHMETHYLATION, new PatternLink(PatternLink.MUTATIONWITHMETHYLATION));
+    }
 
-	public void replacePath(String diskPath, String webPath, boolean hasFigure, String host) {
-		statTextLink = statTextLink.replace(diskPath, webPath);
-		for (PatternLink patternLink : patternHash.values()) {
-			patternLink.setTextResultLink(patternLink.getTextResultLink().replace(diskPath, webPath));
-		}
-		if (hasFigure == true) {
-			for (PatternLink patternLink : patternHash.values()) {
-				patternLink.setFigureResultLink(patternLink.getFigureResultLink().replace(diskPath, webPath));
-				patternLink.setGBResultLink(host + patternLink.getGBResultLink().replace(diskPath, webPath));
-			}
-			if (hasASM == true) {
-				ASMFigureLink = ASMFigureLink.replace(diskPath, webPath);
-				ASMGBLink = host + ASMGBLink.replace(diskPath, webPath);
-			}
-		}
-	}
+    public void replacePath(String diskPath, String webPath, boolean hasFigure, String host) {
+        statTextLink = statTextLink.replace(diskPath, webPath);
+        for (PatternLink patternLink : patternHash.values()) {
+            patternLink.setTextResultLink(patternLink.getTextResultLink().replace(diskPath, webPath));
+        }
+        if (hasFigure == true) {
+            for (PatternLink patternLink : patternHash.values()) {
+                patternLink.setFigureResultLink(patternLink.getFigureResultLink().replace(diskPath, webPath));
+                patternLink.setGBResultLink(host + patternLink.getGBResultLink().replace(diskPath, webPath));
+            }
+            if (hasASM == true) {
+                ASMFigureLink = ASMFigureLink.replace(diskPath, webPath);
+                ASMGBLink = host + ASMGBLink.replace(diskPath, webPath);
+            }
+        }
+    }
 
-	public PatternLink getPatternLink(String patternType) {
-		return this.patternHash.get(patternType);
-	}
+    public PatternLink getPatternLink(String patternType) {
+        return this.patternHash.get(patternType);
+    }
 
-	public Collection<PatternLink> getPatternLinks() {
-		PatternLink[] patternLinks = new PatternLink[4];
-		for (PatternLink patternLink : patternHash.values()) {
-			switch (patternLink.getPatternType()) {
-				case PatternLink.METHYLATION:
-					patternLinks[0] = patternLink;
-					break;
-				case PatternLink.METHYLATIONWITHMUTATION:
-					patternLinks[1] = patternLink;
-					break;
-				case PatternLink.MUTATION:
-					patternLinks[2] = patternLink;
-					break;
-				case PatternLink.MUTATIONWITHMETHYLATION:
-					patternLinks[3] = patternLink;
-					break;
-			}
-		}
-		return Arrays.asList(patternLinks);
-	}
+    public Collection<PatternLink> getPatternLinks() {
+        PatternLink[] patternLinks = new PatternLink[4];
+        for (PatternLink patternLink : patternHash.values()) {
+            switch (patternLink.getPatternType()) {
+                case PatternLink.METHYLATION:
+                    patternLinks[0] = patternLink;
+                    break;
+                case PatternLink.METHYLATIONWITHMUTATION:
+                    patternLinks[1] = patternLink;
+                    break;
+                case PatternLink.MUTATION:
+                    patternLinks[2] = patternLink;
+                    break;
+                case PatternLink.MUTATIONWITHMETHYLATION:
+                    patternLinks[3] = patternLink;
+                    break;
+            }
+        }
+        return Arrays.asList(patternLinks);
+    }
 
-	public String getStatTextLink() {
-		return statTextLink;
-	}
+    public int getSeqBeforeFilter() {
+        return seqBeforeFilter;
+    }
 
-	public void setStatTextLink(String statTextLink) {
-		this.statTextLink = statTextLink;
-	}
+    public void setSeqBeforeFilter(int seqBeforeFilter) {
+        this.seqBeforeFilter = seqBeforeFilter;
+    }
 
-	public String getASMFigureLink() {
-		return ASMFigureLink;
-	}
+    public int getSeqAfterFilter() {
+        return seqAfterFilter;
+    }
 
-	public void setASMFigureLink(String ASMFigureLink) {
-		this.ASMFigureLink = ASMFigureLink;
-	}
+    public void setSeqAfterFilter(int seqAfterFilter) {
+        this.seqAfterFilter = seqAfterFilter;
+    }
 
-	public String getASMGBLink() {
-		return ASMGBLink;
-	}
+    public String getStatTextLink() {
+        return statTextLink;
+    }
 
-	public void setASMGBLink(String ASMGBLink) {
-		this.ASMGBLink = ASMGBLink;
-	}
+    public void setStatTextLink(String statTextLink) {
+        this.statTextLink = statTextLink;
+    }
 
-	public boolean isHasASM() {
-		return hasASM;
-	}
+    public String getASMFigureLink() {
+        return ASMFigureLink;
+    }
 
-	public void setHasASM(boolean hasASM) {
-		this.hasASM = hasASM;
-	}
+    public void setASMFigureLink(String ASMFigureLink) {
+        this.ASMFigureLink = ASMFigureLink;
+    }
 
-	public SNP getASMsnp() {
-		return ASMsnp;
-	}
+    public String getASMGBLink() {
+        return ASMGBLink;
+    }
 
-	public void setASMsnp(SNP aSMsnp) {
-		ASMsnp = aSMsnp;
-	}
+    public void setASMGBLink(String ASMGBLink) {
+        this.ASMGBLink = ASMGBLink;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public boolean isHasASM() {
+        return hasASM;
+    }
 
-	public String getFRState() {
-		return FRState;
-	}
+    public void setHasASM(boolean hasASM) {
+        this.hasASM = hasASM;
+    }
 
+    public SNP getASMsnp() {
+        return ASMsnp;
+    }
+
+    public void setASMsnp(SNP aSMsnp) {
+        ASMsnp = aSMsnp;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

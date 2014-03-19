@@ -55,7 +55,7 @@ public class Constant implements Serializable {
     public long mappingTime;
     public long analysisTime;
     public MappingSummary mappingSummary;
-    public AnalysisSummary analysisSummary;
+    public SeqCountSummary seqCountSummary;
 
     private Constant() {
     }
@@ -359,11 +359,11 @@ public class Constant implements Serializable {
         this.mappingSummary = mappingSummary;
     }
 
-    public AnalysisSummary getAnalysisSummary() {
-        return analysisSummary;
+    public SeqCountSummary getSeqCountSummary() {
+        return seqCountSummary;
     }
 
-    public void setAnalysisSummary(AnalysisSummary analysisSummary) {
-        this.analysisSummary = analysisSummary;
+    public void setSeqCountSummary(SeqCountSummary seqCountSummary) {
+        this.seqCountSummary = seqCountSummary;
     }
 }

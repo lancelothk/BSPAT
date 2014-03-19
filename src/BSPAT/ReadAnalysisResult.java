@@ -18,15 +18,13 @@ public class ReadAnalysisResult {
 	private Coordinate coordinate;
 	private String beginCoor;
 	private String endCoor;
-	private String FRState;
 	private String patternType;
 	private String cellLine;
 
-	public ReadAnalysisResult(String inputFolder, String patternType, String cellLine, String ID, String FRState, Coordinate coordinate)
-			throws IOException {
+    public ReadAnalysisResult(String inputFolder, String patternType, String cellLine, String ID,
+                              Coordinate coordinate) throws IOException {
 		this.inputFolder = inputFolder;
 		this.coordinate = coordinate;
-		this.FRState = FRState;
 		this.patternType = patternType;
 		this.cellLine = cellLine;
 		System.out.println("readStatFile");
@@ -38,8 +36,8 @@ public class ReadAnalysisResult {
 	}
 
 	private void readStatFile(String ID) throws IOException {
-		FileReader statReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_report.txt");
-		BufferedReader statBuffReader = new BufferedReader(statReader);
+        FileReader statReader = new FileReader(inputFolder + ID + "_bismark.analysis_report.txt");
+        BufferedReader statBuffReader = new BufferedReader(statReader);
 
 		String line;
 		String[] items;
@@ -72,8 +70,8 @@ public class ReadAnalysisResult {
 	}
 
 	private void readPatternFile(String ID) throws IOException {
-		FileReader patternReader = new FileReader(inputFolder + ID + FRState + "_bismark.analysis_" + this.patternType + ".txt");
-		BufferedReader patternBuffReader = new BufferedReader(patternReader);
+        FileReader patternReader = new FileReader(inputFolder + ID + "_bismark.analysis_" + this.patternType + ".txt");
+        BufferedReader patternBuffReader = new BufferedReader(patternReader);
 		// skip column names and reference line
 		patternBuffReader.readLine();
 		patternBuffReader.readLine();

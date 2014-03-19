@@ -5,23 +5,29 @@ import java.util.List;
 
 public class Pattern {
     public enum PatternType {
-        METHYLATION, MUTATION
+        METHYLATION, MUTATION, MEMU
     }
 
-    private static int patternCount = 0;
+    private static int patternCount = 1;
     private String patternString;
     private List<Sequence> sequenceList;
     private int patternID;
-    private int parrentPatternID;
-    private List<Pattern> childPatternsList;
+    private int methylationParentID;
+    private int mutationParentID;
     private PatternType patternType;
 
     public Pattern(String patternString, PatternType patternType) {
         this.patternString = patternString;
-        this.patternID = patternCount++;
         this.patternType = patternType;
         sequenceList = new ArrayList<>();
-        childPatternsList = new ArrayList<>();
+    }
+
+    public void assignPatternID() {
+        this.patternID = patternCount++;
+    }
+
+    public void setPatternString(String patternString) {
+        this.patternString = patternString;
     }
 
     public int getPatternID() {
@@ -48,22 +54,6 @@ public class Pattern {
         return patternType;
     }
 
-    public void addChildPattern(Pattern childPattern) {
-        childPatternsList.add(childPattern);
-    }
-
-    public void setParrentPatternID(int parrentPatternID) {
-        this.parrentPatternID = parrentPatternID;
-    }
-
-    public List<Pattern> getChildPatternsList() {
-        return childPatternsList;
-    }
-
-    public int getParrentPatternID() {
-        return parrentPatternID;
-    }
-
     public int getCount() {
         return sequenceList.size();
     }
@@ -74,5 +64,21 @@ public class Pattern {
 
     public List<Sequence> sequenceList() {
         return sequenceList;
+    }
+
+    public int getMethylationParentID() {
+        return methylationParentID;
+    }
+
+    public void setMethylationParentID(int methylationParentID) {
+        this.methylationParentID = methylationParentID;
+    }
+
+    public int getMutationParentID() {
+        return mutationParentID;
+    }
+
+    public void setMutationParentID(int mutationParentID) {
+        this.mutationParentID = mutationParentID;
     }
 }
