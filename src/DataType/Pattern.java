@@ -4,28 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pattern {
-    private String patternString;
-    private List<Sequence> sequenceList;
-    private int parrentPatternID;
-    private List<Pattern> childPatternsList;
-    private int CGcount;
-
-    public Pattern(String patternString) {
-        this.patternString = patternString;
-        sequenceList = new ArrayList<Sequence>();
-        childPatternsList = new ArrayList<Pattern>();
+    public enum PatternType {
+        METHYLATION, MUTATION
     }
 
-    public void setCGcount(int cGcount) {
-        CGcount = cGcount;
+    private static int patternCount = 0;
+    private String patternString;
+    private List<Sequence> sequenceList;
+    private int patternID;
+    private int parrentPatternID;
+    private List<Pattern> childPatternsList;
+    private PatternType patternType;
+
+    public Pattern(String patternString, PatternType patternType) {
+        this.patternString = patternString;
+        this.patternID = patternCount++;
+        this.patternType = patternType;
+        sequenceList = new ArrayList<>();
+        childPatternsList = new ArrayList<>();
+    }
+
+    public int getPatternID() {
+        return patternID;
     }
 
     public int getCGcount() {
-        return CGcount;
+        if (patternType != PatternType.METHYLATION) {
+            throw new RuntimeException("getCGcount only available for methylation type");
+        }
+        // since patterns is grouped by hashmap, every pattern should contain at least one sequence.
+        if (sequenceList.size() == 0) {
+            throw new RuntimeException("pattern sequence list is empty!");
+        }
+        // all seqs in list share same pattern
+        return this.sequenceList.get(0).getCpGSites().size();
     }
 
     public void addSequence(Sequence seq) {
         sequenceList.add(seq);
+    }
+
+    public PatternType getPatternType() {
+        return patternType;
     }
 
     public void addChildPattern(Pattern childPattern) {

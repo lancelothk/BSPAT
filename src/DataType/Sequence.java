@@ -22,14 +22,14 @@ public class Sequence {
     //	private String XGtag; // 16 genome conversion state for the alignment
     private List<CpGSite> CpGSites;
     private String methylationString;
-    private String methylationStringWithMutations;
     private String mutationString;
     private double methylationRate;
     private double bisulConversionRate;
     private double sequenceIdentity;
     private String FRstate = "";
 
-    public Sequence(String id, String flag, String region, int startPos, String originalSeq, String qualityScore, String editDist, String mismatchString, String methylCall, String readConvState) {
+    public Sequence(String id, String flag, String region, int startPos, String originalSeq, String qualityScore,
+                    String editDist, String mismatchString, String methylCall, String readConvState) {
         this.id = id;
         this.flag = flag;
         this.region = region;
@@ -125,9 +125,6 @@ public class Sequence {
         this.sequenceIdentity = sequenceIdentity;
     }
 
-    public void setMethylationStringWithMutations(String methylationStringWithMutations) {
-        this.methylationStringWithMutations = methylationStringWithMutations;
-    }
 
     public void setEditDist(String editDist) {
         this.editDist = editDist;
@@ -161,9 +158,6 @@ public class Sequence {
         return mismatchString;
     }
 
-    public String getMethylationStringWithMutations() {
-        return methylationStringWithMutations;
-    }
 
     public double getSequenceIdentity() {
         return sequenceIdentity;

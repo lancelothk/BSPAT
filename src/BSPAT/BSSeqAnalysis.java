@@ -46,7 +46,12 @@ public class BSSeqAnalysis {
         }
 
         // 2. group seqs by region
-        Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByRegion(sequencesList);
+        Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, new GetKeyFunction() {
+            @Override
+            public String apply(Sequence seq) {
+                return seq.getRegion();
+            }
+        });
 
         // 3. cut and filter sequences
         cutAndFilterSequence(sequenceGroupMap);
@@ -56,16 +61,14 @@ public class BSSeqAnalysis {
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
 
             int totalCount = seqGroup.size();
-            List<Pattern> methylationPatterns = new ArrayList<>();
-            List<Pattern> mutationPatterns = new ArrayList<>();
 
             getMethylString(region, seqGroup);
             seqGroup = filterSequences(seqGroup);
             if (seqGroup.size() == 0) {
                 return reportSummaries;
             }
-            getMethylPattern(seqGroup, methylationPatterns);
-            getMutationPattern(seqGroup, mutationPatterns);
+            List<Pattern> methylationPatterns = getMethylPattern(seqGroup);
+            List<Pattern> mutationPatterns = getMutationPattern(seqGroup);
 
             ReportSummary reportSummary = new ReportSummary(region, "F");
             report = new Report("F", region, outputFolder, seqGroup, methylationPatterns, mutationPatterns,
@@ -139,20 +142,20 @@ public class BSSeqAnalysis {
     }
 
     /**
-     * group sequences by region
-     *
+     * group sequences by given key function
      * @param sequencesList
-     * @return a HashMap with Key:String region, Value:List<Sequence>
+     * @param getKey function parameter to return String key.
+     * @return HashMap contains <key function return value, grouped sequence list>
      */
-    private Map<String, List<Sequence>> groupSeqsByRegion(List<Sequence> sequencesList) {
+    private Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
         Map<String, List<Sequence>> sequenceGroupMap = new HashMap<>();
         for (Sequence seq : sequencesList) {
-            if (sequenceGroupMap.containsKey(seq.getRegion())) {
-                sequenceGroupMap.get(seq.getRegion()).add(seq);
+            if (sequenceGroupMap.containsKey(getKey.apply(seq))) {
+                sequenceGroupMap.get(getKey.apply(seq)).add(seq);
             } else {
                 List<Sequence> sequenceGroup = new ArrayList<>();
                 sequenceGroup.add(seq);
-                sequenceGroupMap.put(seq.getRegion(), sequenceGroup);
+                sequenceGroupMap.put(getKey.apply(seq), sequenceGroup);
             }
         }
         return sequenceGroupMap;
@@ -165,7 +168,6 @@ public class BSSeqAnalysis {
 
     public void getMethylString(String region, List<Sequence> seqList) {
         char[] methylationString;
-        char[] methylationStringWithMutations;
         char[] mutationString;
         String originalSeq;
         double countofUnConvertedC;
@@ -197,18 +199,15 @@ public class BSSeqAnalysis {
             countofMethylatedCpG = 0;
             unequalNucleotide = 0;
             methylationString = new char[convertedReferenceSeq.length()];
-            methylationStringWithMutations = new char[convertedReferenceSeq.length()];
             mutationString = new char[convertedReferenceSeq.length()];
 
             for (int i = 0; i < convertedReferenceSeq.length(); i++) {
                 methylationString[i] = ' ';
-                methylationStringWithMutations[i] = ' ';
                 mutationString[i] = ' ';
             }
             originalSeq = seq.getOriginalSeq();
             for (int i = seq.getStartPos() - 1; i < seq.getStartPos() - 1 + originalSeq.length(); i++) {
                 methylationString[i] = '-';
-                methylationStringWithMutations[i] = '-';
                 mutationString[i] = '-';
             }
             for (int i = 0; i < originalSeq.length(); i++) {
@@ -220,8 +219,6 @@ public class BSSeqAnalysis {
                         //else CpG context, do nothing
                     } else {
                         unequalNucleotide++;
-                        methylationStringWithMutations[i + seq.getStartPos() - 1] = originalSeq.charAt(
-                                i); // with mutations
                         mutationString[i + seq.getStartPos() - 1] = originalSeq.charAt(i);
                     }
                 }
@@ -234,10 +231,6 @@ public class BSSeqAnalysis {
                     if (cpg.getPosition() + 1 <= methylationString.length) {
                         methylationString[cpg.getPosition()] = '@';
                     }
-                    methylationStringWithMutations[cpg.getPosition() - 1] = '@';
-                    if (cpg.getPosition() + 1 <= methylationStringWithMutations.length) {
-                        methylationStringWithMutations[cpg.getPosition()] = '@';
-                    }
                     // mutation
                     mutationString[cpg.getPosition() - 1] = '-';
                 } else {
@@ -245,10 +238,6 @@ public class BSSeqAnalysis {
                     methylationString[cpg.getPosition() - 1] = '*';
                     if (cpg.getPosition() + 1 <= methylationString.length) {
                         methylationString[cpg.getPosition()] = '*';
-                    }
-                    methylationStringWithMutations[cpg.getPosition() - 1] = '*';
-                    if (cpg.getPosition() + 1 <= methylationStringWithMutations.length) {
-                        methylationStringWithMutations[cpg.getPosition()] = '*';
                     }
                 }
             }
@@ -258,13 +247,17 @@ public class BSSeqAnalysis {
             seq.setMethylationRate(countofMethylatedCpG / seq.getCpGSites().size());
             seq.setSequenceIdentity(1 - unequalNucleotide / (originalSeq.length() - seq.getCpGSites().size()));
             seq.setMethylationString(new String(methylationString));
-            seq.setMethylationStringWithMutations(new String(methylationStringWithMutations));
             seq.setMutationString(new String(mutationString));
         }
     }
 
+    /**
+     * fill sequence list filtered by threshold.
+     *
+     * @param seqList
+     * @return
+     */
     private List<Sequence> filterSequences(List<Sequence> seqList) {
-        // fill sequence list filtered by threshold.
         List<Sequence> tempSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
             // filter unqualified reads
@@ -276,135 +269,45 @@ public class BSSeqAnalysis {
         return tempSeqList;
     }
 
-    /**
-     * get methylation pattern
-     */
-    public void getMethylPattern(List<Sequence> seqList, List<Pattern> methylationPatterns) {
-        // sort sequences by methylationString first. Character order.
-        Collections.sort(seqList, new SequenceComparatorMethylation());
-
-        // group sequences by methylationString, distribute each seq into one
-        // pattern
-        Pattern methylationPattern = new Pattern("");
-        Pattern methylationPatternWithMutations;
-        for (Sequence sequence : seqList) {
-            if (!sequence.getMethylationString().equals(methylationPattern.getPatternString())) {
-                if (!methylationPattern.getPatternString().equals("")) {
-                    methylationPatterns.add(methylationPattern);
-                }
-                methylationPattern = new Pattern(sequence.getMethylationString());
-                methylationPattern.setCGcount(sequence.getCpGSites().size());
-                methylationPattern.setParrentPatternID(methylationPatterns.size());
-                methylationPattern.addSequence(sequence);
-            } else {
-                methylationPattern.addSequence(sequence);
+    public List<Pattern> getMethylPattern(List<Sequence> seqList) {
+        List<Pattern> methylationPatterns = new ArrayList<>();
+        // group sequences by methylationString, distribute each seq into one pattern
+        Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
+            @Override
+            public String apply(Sequence seq) {
+                return seq.getMethylationString();
             }
-        }
-        methylationPatterns.add(methylationPattern);
+        });
 
-        for (Pattern pattern : methylationPatterns) {
-            // sort sequences by methylationStringMutations first. Character
-            // order.
-            Collections.sort(pattern.sequenceList(), new SequenceComparatorMM());
-
-            methylationPatternWithMutations = new Pattern("");
-            for (Sequence sequence : pattern.sequenceList()) {
-                if (!sequence.getMethylationStringWithMutations().equals(
-                        methylationPatternWithMutations.getPatternString())) {
-                    if (!methylationPatternWithMutations.getPatternString().equals("")) {
-                        pattern.addChildPattern(methylationPatternWithMutations);
-                    }
-                    methylationPatternWithMutations = new Pattern(sequence.getMethylationStringWithMutations());
-                    methylationPatternWithMutations.setParrentPatternID(pattern.getParrentPatternID());
-                    methylationPatternWithMutations.addSequence(sequence);
-                } else {
-                    methylationPatternWithMutations.addSequence(sequence);
-                }
+        for (String methylString : patternMap.keySet()) {
+            List<Sequence> patternSeqList = patternMap.get(methylString);
+            Pattern methylationPattern = new Pattern(methylString, Pattern.PatternType.METHYLATION);
+            for (Sequence seq : patternSeqList) {
+                methylationPattern.addSequence(seq);
             }
-            pattern.addChildPattern(methylationPatternWithMutations);
+            methylationPatterns.add(methylationPattern);
         }
+        return methylationPatterns;
     }
 
-    /**
-     * get mutation pattern
-     */
-    public void getMutationPattern(List<Sequence> seqList, List<Pattern> mutationPatterns) {
-        // sort sequences by methylationString first. Character order.
-        Collections.sort(seqList, new SequenceComparatorMutations());
-
-        // group sequences by methylationString, distribute each seq into one
-        // pattern
-        Pattern mutationpattern = new Pattern("");
-        Pattern mutationpatternWithMethylation;
-        for (Sequence sequence : seqList) {
-            if (!sequence.getMutationString().equals(mutationpattern.getPatternString())) {
-                if (!mutationpattern.getPatternString().equals("")) {
-                    mutationPatterns.add(mutationpattern);
-                }
-                mutationpattern = new Pattern(sequence.getMutationString());
-                mutationpattern.setCGcount(sequence.getCpGSites().size());
-                mutationpattern.setParrentPatternID(mutationPatterns.size());
-                mutationpattern.addSequence(sequence);
-            } else {
-                mutationpattern.addSequence(sequence);
+    public List<Pattern> getMutationPattern(List<Sequence> seqList) {
+        List<Pattern> mutationPatterns = new ArrayList<>();
+        // group sequences by mutationString, distribute each seq into one pattern
+        Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
+            @Override
+            public String apply(Sequence seq) {
+                return seq.getMutationString();
             }
-        }
-        mutationPatterns.add(mutationpattern);
+        });
 
-        for (Pattern pattern : mutationPatterns) {
-            // sort sequences by methylationStringMutations first. Character
-            // order.
-            Collections.sort(pattern.sequenceList(), new SequenceComparatorMM());
-
-            mutationpatternWithMethylation = new Pattern("");
-            for (Sequence sequence : pattern.sequenceList()) {
-                if (!sequence.getMethylationStringWithMutations().equals(
-                        mutationpatternWithMethylation.getPatternString())) {
-                    if (!mutationpatternWithMethylation.getPatternString().equals("")) {
-                        pattern.addChildPattern(mutationpatternWithMethylation);
-                    }
-                    mutationpatternWithMethylation = new Pattern(sequence.getMethylationStringWithMutations());
-                    mutationpatternWithMethylation.setParrentPatternID(pattern.getParrentPatternID());
-                    mutationpatternWithMethylation.addSequence(sequence);
-                    mutationpatternWithMethylation.setCGcount(pattern.getCGcount());
-                } else {
-                    mutationpatternWithMethylation.addSequence(sequence);
-                }
+        for (String mutationString : patternMap.keySet()) {
+            List<Sequence> patternSeqList = patternMap.get(mutationString);
+            Pattern mutationPattern = new Pattern(mutationString, Pattern.PatternType.METHYLATION);
+            for (Sequence seq : patternSeqList) {
+                mutationPattern.addSequence(seq);
             }
-            pattern.addChildPattern(mutationpatternWithMethylation);
+            mutationPatterns.add(mutationPattern);
         }
+        return mutationPatterns;
     }
-
-    private List<Sequence> removeMisMap(List<Sequence> seqList) {
-        List<Sequence> newList = null;
-        if (seqList.size() != 0) {
-            // count sequence with same start position
-            HashMap<Integer, Integer> positionMap = new HashMap<>();
-            for (Sequence sequence : seqList) {
-                if (!positionMap.containsKey(sequence.getStartPos())) {
-                    positionMap.put(sequence.getStartPos(), 1);
-                } else {
-                    positionMap.put(sequence.getStartPos(), positionMap.get(sequence.getStartPos()) + 1);
-                }
-            }
-            // select majority position
-            int max = 0;
-            int maxKey = 0;
-            for (Integer key : positionMap.keySet()) {
-                if (positionMap.get(key) >= max) {
-                    max = positionMap.get(key);
-                    maxKey = key;
-                }
-            }
-            // remove minority
-            newList = new ArrayList<>();
-            for (Sequence sequence : seqList) {
-                if (sequence.getStartPos() == maxKey) {
-                    newList.add(sequence);
-                }
-            }
-        }
-        return newList;
-    }
-
 }
