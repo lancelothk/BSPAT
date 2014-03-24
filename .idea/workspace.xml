@@ -2,28 +2,20 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="BSPAT" />
+      <artifact name="BSPAT archive" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/DataType/MeMuPatternComparator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/DataType/MuMePatternComparator.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/DataType/SequenceComparatorMM.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/DataType/SequenceComparatorMutations.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/DataType/AnalysisSummary.java" afterPath="$PROJECT_DIR$/src/DataType/SeqCountSummary.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/BSPAT/BSPATTest.java" afterPath="$PROJECT_DIR$/test/BSPAT/BSPATTest.java" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="finished pattern fix. &#10;Still has bug to show sequence before/ after filter.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/BSPAT_archive.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/junit_4_11.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BSPAT.iml" afterPath="$PROJECT_DIR$/BSPAT.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/BSPAT.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/BSPAT.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" afterPath="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Constant.java" afterPath="$PROJECT_DIR$/src/DataType/Constant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" afterPath="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/IO.java" afterPath="$PROJECT_DIR$/src/BSPAT/IO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Pattern.java" afterPath="$PROJECT_DIR$/src/DataType/Pattern.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" afterPath="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/Report.java" afterPath="$PROJECT_DIR$/src/BSPAT/Report.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" afterPath="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Sequence.java" afterPath="$PROJECT_DIR$/src/DataType/Sequence.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/analysisResult.jsp" afterPath="$PROJECT_DIR$/WebContent/analysisResult.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/analysisServlet.java" afterPath="$PROJECT_DIR$/src/web/analysisServlet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/footer.html" afterPath="$PROJECT_DIR$/WebContent/footer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/progress.html" afterPath="$PROJECT_DIR$/WebContent/progress.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -35,6 +27,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel url="file://$PROJECT_DIR$" />
+    <rightPanel url="file://$PROJECT_DIR$" />
+    <splitter proportion="0.5" />
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
@@ -42,7 +39,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
         <option name="NOTIFY_UNCAUGHT" value="true" />
@@ -78,8 +75,8 @@
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </breakpoint_any>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
-    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true" />
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true">
       <breakpoint url="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" line="57" class="BSPAT.BSSeqAnalysis" package="BSPAT">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
@@ -96,8 +93,64 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </line_breakpoints>
-    <breakpoint_rules />
-    <ui_properties />
+    <breakpoint_rules converted="true" />
+    <ui_properties converted="true" />
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true">
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
+    </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true" />
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" converted="true">
+      <breakpoint url="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" line="57" class="BSPAT.BSSeqAnalysis" package="BSPAT">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </line_breakpoints>
+    <breakpoint_rules converted="true" />
+    <ui_properties converted="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
@@ -105,38 +158,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Report.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/Report.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="94" column="49" selection-start="4489" selection-end="4489" vertical-scroll-proportion="0.0" vertical-offset="1302" max-vertical-offset="2664">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ReportSummary.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ReportSummary.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="32" selection-start="582" selection-end="582" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="2142">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2947#2948#0" expanded="true" />
-                <element signature="e#2985#2986#0" expanded="true" />
-                <element signature="e#3044#3045#0" expanded="true" />
-                <element signature="e#3098#3099#0" expanded="true" />
-                <element signature="e#3136#3137#0" expanded="true" />
-                <element signature="e#3173#3174#0" expanded="true" />
-                <element signature="e#3230#3231#0" expanded="true" />
-                <element signature="e#3282#3283#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ImportBismarkResult.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="98" column="19" selection-start="3302" selection-end="3302" vertical-scroll-proportion="0.0" vertical-offset="1271" max-vertical-offset="3438">
+            <state vertical-scroll-proportion="0.30585107" vertical-offset="29" max-vertical-offset="1854">
+              <caret line="14" column="52" selection-start-line="14" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -145,71 +171,18 @@
       <file leaf-file-name="BSSeqAnalysis.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="0" selection-start="2018" selection-end="2018" vertical-scroll-proportion="0.0" vertical-offset="821" max-vertical-offset="7236">
-              <folding>
-                <element signature="e#1819#1975#0" expanded="true" />
-                <element signature="e#1964#1965#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExecuteAnalysis.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="34" selection-start="691" selection-end="691" vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="486">
+            <state vertical-scroll-proportion="0.0" vertical-offset="955" max-vertical-offset="7236">
+              <caret line="76" column="36" selection-start-line="76" selection-start-column="36" selection-end-line="76" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReadAnalysisResult.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java">
+      <file leaf-file-name="Sequence.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/DataType/Sequence.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="89" column="50" selection-start="2895" selection-end="2895" vertical-scroll-proportion="0.0" vertical-offset="1311" max-vertical-offset="2304">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="analysisServlet.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="118" column="86" selection-start="4941" selection-end="4941" vertical-scroll-proportion="0.78054863" vertical-offset="1469" max-vertical-offset="2340">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Constant.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="365" column="5" selection-start="9353" selection-end="9353" vertical-scroll-proportion="0.0" vertical-offset="3954" max-vertical-offset="4464">
-              <folding>
-                <element signature="e#9211#9212#0" expanded="true" />
-                <element signature="e#9263#9264#0" expanded="true" />
-                <element signature="e#9314#9315#0" expanded="true" />
-                <element signature="e#9352#9353#0" expanded="true" />
-                <element signature="e#9423#9424#0" expanded="true" />
-                <element signature="e#9477#9478#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="analysisResult.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="100" column="71" selection-start="4641" selection-end="4641" vertical-scroll-proportion="-5.3703704" vertical-offset="1655" max-vertical-offset="2898">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SeqCountSummary.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DataType/SeqCountSummary.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="0" selection-start="314" selection-end="314" vertical-scroll-proportion="0.0" vertical-offset="67" max-vertical-offset="630">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2261" max-vertical-offset="3042">
+              <caret line="200" column="0" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -233,8 +206,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/WebContent/analysis.jsp" />
-        <option value="$PROJECT_DIR$/src/DataType/MappingResultComparator.java" />
         <option value="$PROJECT_DIR$/src/web/resultRetrieveServlet.java" />
         <option value="$PROJECT_DIR$/src/web/ExecuteAnalysis.java" />
         <option value="$PROJECT_DIR$/src/DataType/Experiment.java" />
@@ -278,12 +249,14 @@
         <option value="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
         <option value="$PROJECT_DIR$/WebContent/analysisResult.jsp" />
-        <option value="$PROJECT_DIR$/src/DataType/Sequence.java" />
         <option value="$PROJECT_DIR$/src/DataType/Constant.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/Report.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
-        <option value="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
         <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/ReportSummary.java" />
+        <option value="$PROJECT_DIR$/WebContent/footer.html" />
+        <option value="$PROJECT_DIR$/WebContent/progress.html" />
+        <option value="$PROJECT_DIR$/src/DataType/Sequence.java" />
+        <option value="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
       </list>
     </option>
   </component>
@@ -295,10 +268,10 @@
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
-    <option name="y" value="27" />
-    <option name="width" value="1282" />
-    <option name="height" value="998" />
+    <option name="x" value="1279" />
+    <option name="y" value="37" />
+    <option name="width" value="1602" />
+    <option name="height" value="901" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -308,16 +281,58 @@
             <id />
           </State>
           <State>
+            <id>Bash</id>
+          </State>
+          <State>
+            <id>CDI(Contexts and Dependency Injection) issues</id>
+          </State>
+          <State>
             <id>CSS</id>
+          </State>
+          <State>
+            <id>Code style issues</id>
           </State>
           <State>
             <id>Declaration redundancy</id>
           </State>
           <State>
+            <id>Faces Model</id>
+          </State>
+          <State>
+            <id>HTML</id>
+          </State>
+          <State>
+            <id>Imports</id>
+          </State>
+          <State>
+            <id>Initialization issues</id>
+          </State>
+          <State>
+            <id>Java EE issues</id>
+          </State>
+          <State>
+            <id>Java language level migration aids</id>
+          </State>
+          <State>
             <id>Javadoc issues</id>
           </State>
           <State>
+            <id>Logging issues</id>
+          </State>
+          <State>
+            <id>Manifest</id>
+          </State>
+          <State>
+            <id>Performance issues</id>
+          </State>
+          <State>
             <id>Plugin DevKit</id>
+          </State>
+          <State>
+            <id>Resource management issues</id>
+          </State>
+          <State>
+            <id>Threading issues</id>
           </State>
         </expanded-state>
         <selected-state>
@@ -342,7 +357,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -354,6 +369,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -383,6 +400,10 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -424,8 +445,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -435,12 +454,12 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/WebContent" />
+    <property name="last_opened_file_path" value="$APPLICATION_HOME_DIR$/lib/junit-4.11.jar!/" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="options.lastSelected" value="tasks" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -474,21 +493,10 @@
     </key>
   </component>
   <component name="RunManager" selected="Tomcat Server.BSPAT">
-    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin" singleton="true">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
       <option name="PROGRAM_PARAMETERS" />
-      <method />
-    </configuration>
-    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="INTERPRETER_PATH" value="/bin/bash" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <module name="BSPAT" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
       <method />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
@@ -499,7 +507,7 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -549,6 +557,26 @@
       </option>
       <envs />
       <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="LOCAL" value="false" />
+      <deployment />
+      <server-settings>
+        <data>
+          <option name="transportHostId" />
+        </data>
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="37675" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
     <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.26" ALTERNATIVE_JRE_ENABLED="false" ALTERNATIVE_JRE_PATH="">
@@ -616,26 +644,6 @@
           <option name="PROGRAM_PARAMETERS" value="" />
         </SHUTDOWN>
       </ConfigurationWrapper>
-      <method />
-    </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
-      <option name="LOCAL" value="false" />
-      <deployment />
-      <server-settings>
-        <data>
-          <option name="transportHostId" />
-        </data>
-      </server-settings>
-      <predefined_log_file id="Tomcat" enabled="true" />
-      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="37675" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="false" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
     <configuration default="false" name="BSPAT" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.26" ALTERNATIVE_JRE_ENABLED="false" ALTERNATIVE_JRE_PATH="">
@@ -755,7 +763,7 @@
     <task active="true" id="Default" summary="Default task">
       <changelist id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="" />
       <created>1393802685406</created>
-      <updated>1393802685406</updated>
+      <updated>1395284994025</updated>
       <workItem from="1393802695531" duration="489000" />
       <workItem from="1393803191703" duration="5721000" />
       <workItem from="1393820937020" duration="579000" />
@@ -782,7 +790,14 @@
       <workItem from="1395178769697" duration="651000" />
       <workItem from="1395179434579" duration="492000" />
       <workItem from="1395181747803" duration="21463000" />
-      <workItem from="1395240545178" duration="7662000" />
+      <workItem from="1395240545178" duration="9370000" />
+      <workItem from="1395277107836" duration="1691000" />
+      <workItem from="1395281280454" duration="30000" />
+      <workItem from="1395281405754" duration="44000" />
+      <workItem from="1395281457578" duration="16000" />
+      <workItem from="1395281480041" duration="689000" />
+      <workItem from="1395282175014" duration="1414000" />
+      <workItem from="1395284994490" duration="18000" />
     </task>
     <task id="LOCAL-00001" summary="add run setting tools executable in intellij.&#10;tried to fix pattern count / percent filter bug.">
       <created>1393911932594</created>
@@ -828,13 +843,22 @@
       <created>1395196139583</created>
       <updated>1395196139583</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="finished pattern fix. &#10;Still has bug to show sequence before/ after filter.">
+      <created>1395248341962</created>
+      <updated>1395248341962</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <option name="clearContext" value="false" />
+    <option name="createChangelist" value="false" />
+    <option name="createBranch" value="false" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="113578000" />
+    <option name="totallyTimeSpent" value="120541000" />
+    <option name="autoMode" value="false" />
+    <option name="showClosedTasks" value="false" />
   </component>
-  <component name="TodoView" selected-index="0">
+  <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
       <are-packages-shown value="false" />
       <are-modules-shown value="false" />
@@ -855,43 +879,44 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="27" width="1282" height="998" extended-state="6" />
+    <frame x="1279" y="37" width="1602" height="901" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3367742" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32387096" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33806452" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.47706422" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47706422" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33715597" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23419774" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31741935" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15640195" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34942085" sideWeight="0.49935484" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.47612903" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34491634" sideWeight="0.50064516" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47612903" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32454127" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264516" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32774192" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Time Tracking" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23294723" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39678898" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328877" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798165" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -909,13 +934,16 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33830276" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25482625" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39678898" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
       <collection />
     </option>
   </component>
@@ -940,15 +968,25 @@
     <MESSAGE value="fix cpg position bug" />
     <MESSAGE value="fix part of file extension bug" />
     <MESSAGE value="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis." />
-    <option name="LAST_COMMIT_MESSAGE" value="modified Methylation and Mutation pattern generation. Removed MeMu and MuMe generation in BSSeqAnalysis." />
+    <MESSAGE value="finished pattern fix. &#10;Still has bug to show sequence before/ after filter." />
+    <option name="LAST_COMMIT_MESSAGE" value="finished pattern fix. &#10;Still has bug to show sequence before/ after filter." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java</url>
+          <line>57</line>
+          <properties />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
+      <option name="time" value="6" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -956,156 +994,193 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/java/io/File.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1026" column="19" selection-start="42534" selection-end="42534" vertical-scroll-proportion="0.33293125" vertical-offset="17526" max-vertical-offset="38916" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/SNP.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="52" selection-start="1133" selection-end="1133" vertical-scroll-proportion="0.0" vertical-offset="373" max-vertical-offset="1152" />
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/java/util/concurrent/ExecutorService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="239" column="18" selection-start="8493" selection-end="8493" vertical-scroll-proportion="0.33207548" vertical-offset="3478" max-vertical-offset="6120" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Experiment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="11" selection-start="1148" selection-end="1148" vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="918" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="918">
+          <caret line="67" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/resultRetrieveServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="31" selection-start="1416" selection-end="1416" vertical-scroll-proportion="0.0" vertical-offset="341" max-vertical-offset="1170" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="341" max-vertical-offset="1170">
+          <caret line="46" column="31" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/result.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="852" selection-end="852" vertical-scroll-proportion="0.61290324" vertical-offset="93" max-vertical-offset="1368" />
+        <state vertical-scroll-proportion="0.61290324" vertical-offset="93" max-vertical-offset="1368">
+          <caret line="21" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/CpGComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="11" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="432" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="432">
+          <caret line="8" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/CpGSite.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="11" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="882" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="882">
+          <caret line="9" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/CpGStatComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="11" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+          <caret line="9" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/CpGStatistics.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="11" selection-start="220" selection-end="220" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="792" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="792">
+          <caret line="11" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/ExtensionFilter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="11" selection-start="464" selection-end="464" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="828" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="828">
+          <caret line="22" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/FileDateComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="11" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324">
+          <caret line="9" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/SequenceComparatorMethylation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="11" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="324">
+          <caret line="8" column="11" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/preprocessingServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="7" selection-start="861" selection-end="861" vertical-scroll-proportion="0.52110976" vertical-offset="0" max-vertical-offset="829" />
+        <state vertical-scroll-proportion="0.52110976" vertical-offset="0" max-vertical-offset="829">
+          <caret line="29" column="7" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/PatternResult.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="12" selection-start="231" selection-end="231" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1116" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1116">
+          <caret line="10" column="12" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/tools/BlatQuery/BlatBot_updated.pl">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="18" selection-start="3025" selection-end="3025" vertical-scroll-proportion="0.33333334" vertical-offset="1411" max-vertical-offset="3348" />
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="1411" max-vertical-offset="3348">
+          <caret line="87" column="18" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="54" selection-start="1680" selection-end="1688" vertical-scroll-proportion="-7.3333335" vertical-offset="486" max-vertical-offset="2880" />
+        <state vertical-scroll-proportion="-7.3333335" vertical-offset="486" max-vertical-offset="2880">
+          <caret line="38" column="54" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/javax/xml/parsers/DocumentBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="0" selection-start="3868" selection-end="3868" vertical-scroll-proportion="0.0" vertical-offset="1368" max-vertical-offset="5742" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1368" max-vertical-offset="5742">
+          <caret line="120" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar:///usr/local/apache-tomcat-7.0.42/lib/servlet-api.jar!/javax/servlet/http/HttpServlet.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="19" selection-start="2713" selection-end="2713" vertical-scroll-proportion="-10.04" vertical-offset="451" max-vertical-offset="900" />
+        <state vertical-scroll-proportion="-10.04" vertical-offset="451" max-vertical-offset="900">
+          <caret line="40" column="19" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/Utilities.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="38" selection-start="2247" selection-end="2247" vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="4536" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="4536">
+          <caret line="51" column="38" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/BSPATServletContextListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="989" selection-end="989" vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="612" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="612">
+          <caret line="28" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/tools/setFileExecution.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="2" selection-start="521" selection-end="521" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="378" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="378">
+          <caret line="15" column="2" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Coordinate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="30" selection-start="208" selection-end="208" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="774">
+          <caret line="10" column="30" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/ExecuteMapping.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="17" selection-start="594" selection-end="594" vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="684" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="150" max-vertical-offset="684">
+          <caret line="23" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="jar:///usr/lib/jvm/jdk1.7.0_51/src.zip!/java/net/PlainSocketImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="61" selection-start="573" selection-end="634" vertical-scroll-proportion="0.08167331" vertical-offset="373" max-vertical-offset="1134" />
+        <state vertical-scroll-proportion="0.08167331" vertical-offset="373" max-vertical-offset="1134">
+          <caret line="47" column="61" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/index.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="40" selection-start="923" selection-end="923" vertical-scroll-proportion="0.6034483" vertical-offset="134" max-vertical-offset="2808" />
+        <state vertical-scroll-proportion="0.6034483" vertical-offset="134" max-vertical-offset="2808">
+          <caret line="23" column="40" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="299" column="21" selection-start="13529" selection-end="13529" vertical-scroll-proportion="0.040983606" vertical-offset="5352" max-vertical-offset="6084">
-          <folding />
+        <state vertical-scroll-proportion="0.040983606" vertical-offset="5352" max-vertical-offset="6084">
+          <caret line="299" column="21" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/SequenceComparatorRegion.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="13" selection-start="62" selection-end="62" vertical-scroll-proportion="0.0966443" vertical-offset="0" max-vertical-offset="918" />
+        <state vertical-scroll-proportion="0.0966443" vertical-offset="0" max-vertical-offset="918">
+          <caret line="4" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="22212" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="22212">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/tools/bismark/bismark">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="5" selection-start="70" selection-end="75" vertical-scroll-proportion="0.20044543" vertical-offset="0" max-vertical-offset="143370" />
+        <state vertical-scroll-proportion="0.20044543" vertical-offset="0" max-vertical-offset="143370">
+          <caret line="5" column="5" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
       </provider>
       <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
         <state />
@@ -1113,169 +1188,171 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/CallBismark.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="6" selection-start="3851" selection-end="3851" vertical-scroll-proportion="0.0" vertical-offset="1560" max-vertical-offset="3618">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1560" max-vertical-offset="3618">
+          <caret line="94" column="6" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/GetKeyFunction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="23" selection-start="140" selection-end="145" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="288">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="288">
+          <caret line="8" column="23" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/PatternComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="13" selection-start="62" selection-end="62" vertical-scroll-proportion="0.10465116" vertical-offset="0" max-vertical-offset="688">
-          <folding />
+        <state vertical-scroll-proportion="0.10465116" vertical-offset="0" max-vertical-offset="688">
+          <caret line="4" column="13" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/PatternLink.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="4" selection-start="357" selection-end="517" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
+          <caret line="13" column="4" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/MeMuPatternComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="8" selection-start="213" selection-end="453" vertical-scroll-proportion="0.20930232" vertical-offset="0" max-vertical-offset="688">
-          <folding />
+        <state vertical-scroll-proportion="0.20930232" vertical-offset="0" max-vertical-offset="688">
+          <caret line="8" column="8" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/MuMePatternComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="74" selection-start="346" selection-end="346" vertical-scroll-proportion="0.48255813" vertical-offset="0" max-vertical-offset="688">
-          <folding />
+        <state vertical-scroll-proportion="0.48255813" vertical-offset="0" max-vertical-offset="688">
+          <caret line="9" column="74" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/IO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="0" selection-start="2846" selection-end="2846" vertical-scroll-proportion="0.0" vertical-offset="1350" max-vertical-offset="2502">
-          <folding>
-            <element signature="e#2169#2175#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/BSPAT/BSPATTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="5" selection-start="2118" selection-end="2118" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="1224">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1350" max-vertical-offset="2502">
+          <caret line="88" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Pattern.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="27" selection-start="1604" selection-end="1616" vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="1314">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="1314">
+          <caret line="57" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="0" selection-start="1614" selection-end="1614" vertical-scroll-proportion="0.0" vertical-offset="429" max-vertical-offset="9126">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/Sequence.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="230" column="0" selection-start="6093" selection-end="6093" vertical-scroll-proportion="0.0" vertical-offset="2695" max-vertical-offset="3096">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="429" max-vertical-offset="9126">
+          <caret line="46" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="19" selection-start="3302" selection-end="3302" vertical-scroll-proportion="0.0" vertical-offset="1271" max-vertical-offset="3438">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1271" max-vertical-offset="3438">
+          <caret line="98" column="19" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="50" selection-start="2895" selection-end="2895" vertical-scroll-proportion="0.0" vertical-offset="1311" max-vertical-offset="2304">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1311" max-vertical-offset="2304">
+          <caret line="89" column="50" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/ExecuteAnalysis.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="34" selection-start="691" selection-end="691" vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="486">
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="486">
+          <caret line="23" column="34" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/SeqCountSummary.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="67" max-vertical-offset="630">
+          <caret line="15" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3954" max-vertical-offset="4464">
+          <caret line="363" column="5" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1793" max-vertical-offset="2340">
+          <caret line="114" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/Report.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="49" selection-start="4489" selection-end="4489" vertical-scroll-proportion="0.0" vertical-offset="1302" max-vertical-offset="2664">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1649" max-vertical-offset="2646">
+          <caret line="118" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1605" max-vertical-offset="2898">
+          <caret line="103" column="51" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/BSPAT/BSPATTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33606556" vertical-offset="42" max-vertical-offset="1224">
+          <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/BSPAT/BSSeqAnalysisTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.446281" vertical-offset="0" max-vertical-offset="484">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/progress.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6406685" vertical-offset="134" max-vertical-offset="972">
+          <caret line="33" column="22" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/footer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.77437323" vertical-offset="434" max-vertical-offset="1152">
+          <caret line="55" column="22" selection-start-line="55" selection-start-column="22" selection-end-line="55" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/Sequence.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2261" max-vertical-offset="3042">
+          <caret line="200" column="0" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="955" max-vertical-offset="7236">
+          <caret line="76" column="36" selection-start-line="76" selection-start-column="36" selection-end-line="76" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="32" selection-start="582" selection-end="582" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="2142">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2947#2948#0" expanded="true" />
-            <element signature="e#2985#2986#0" expanded="true" />
-            <element signature="e#3044#3045#0" expanded="true" />
-            <element signature="e#3098#3099#0" expanded="true" />
-            <element signature="e#3136#3137#0" expanded="true" />
-            <element signature="e#3173#3174#0" expanded="true" />
-            <element signature="e#3230#3231#0" expanded="true" />
-            <element signature="e#3282#3283#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="100" column="71" selection-start="4641" selection-end="4641" vertical-scroll-proportion="-5.3703704" vertical-offset="1655" max-vertical-offset="2898">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/SeqCountSummary.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="314" selection-end="314" vertical-scroll-proportion="0.0" vertical-offset="67" max-vertical-offset="630">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="365" column="5" selection-start="9353" selection-end="9353" vertical-scroll-proportion="0.0" vertical-offset="3954" max-vertical-offset="4464">
-          <folding>
-            <element signature="e#9211#9212#0" expanded="true" />
-            <element signature="e#9263#9264#0" expanded="true" />
-            <element signature="e#9314#9315#0" expanded="true" />
-            <element signature="e#9352#9353#0" expanded="true" />
-            <element signature="e#9423#9424#0" expanded="true" />
-            <element signature="e#9477#9478#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="0" selection-start="2018" selection-end="2018" vertical-scroll-proportion="0.0" vertical-offset="821" max-vertical-offset="7236">
-          <folding>
-            <element signature="e#1819#1975#0" expanded="true" />
-            <element signature="e#1964#1965#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="86" selection-start="4941" selection-end="4941" vertical-scroll-proportion="0.78054863" vertical-offset="1469" max-vertical-offset="2340">
+        <state vertical-scroll-proportion="0.30585107" vertical-offset="29" max-vertical-offset="1854">
+          <caret line="14" column="52" selection-start-line="14" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1287,9 +1364,9 @@
         <settings>
           <artifact-editor>
             <show-content>
-              <type id="artifact" />
               <type id="jpa-descriptors" />
               <type id="javaee-facet-resources" />
+              <type id="artifact" />
               <type id="library" />
             </show-content>
           </artifact-editor>
@@ -1346,7 +1423,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
@@ -1366,7 +1442,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>javax.servlet.jsp.jstl-1.2.1</last-edited>
+          <last-edited>junit-4.11</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

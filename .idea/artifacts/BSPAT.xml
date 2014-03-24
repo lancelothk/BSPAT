@@ -85,6 +85,7 @@
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/geronimo-stax-api_1.0_spec-1.0.1.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/javax.servlet.jsp.jstl-api-1.2.1.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/geronimo-ws-metadata_2.0_spec-1.1.2.jar" />
+          <element id="library" level="project" name="junit-4.11" />
         </element>
       </element>
       <element id="dir-copy" path="$PROJECT_DIR$/WebContent" />
