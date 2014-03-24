@@ -558,7 +558,7 @@ public class DrawPattern {
         String callLiftOver = liftOverPathFile.getAbsolutePath() + "/liftOver -positions " + originPosFileName + " " +
                 liftOverPathFile.getAbsolutePath() + "/" + chain + " " + targetPosFileName + " /dev/null";
         System.out.println("Call liftOver:");
-        Utilities.callCMD(callLiftOver, new File(patternResultPath));
+        Utilities.callCMD(callLiftOver, new File(patternResultPath), null);
 
         // read result
         BufferedReader coorReader = new BufferedReader(new FileReader(patternResultPath + targetPosFileName));

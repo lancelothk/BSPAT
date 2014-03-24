@@ -314,7 +314,7 @@ public class mappingServlet extends HttpServlet {
             try {
                 System.out.println("start blat query for " + name);
                 String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath, constant.refVersion, constant.originalRefPath, name);
-                Utilities.callCMD(blatQuery, new File(constant.coorFilePath));
+                Utilities.callCMD(blatQuery, new File(constant.coorFilePath), null);
                 System.out.println("blat query is finished for " + name);
             } catch (Exception e) {
                 e.printStackTrace();

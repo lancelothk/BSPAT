@@ -49,11 +49,11 @@ public class CallBismark {
         /** 1. build index **/
         // add "--yes_to_all" to always overwrite index folder
         // add "--no" to always skip existing reference
-        String preparation = String.format(
-                "%s/bismark_genome_preparation --yes_to_all --path_to_bowtie %s %s > bismark_prep.log",
+        String preparation = String.format("%s/bismark_genome_preparation --yes_to_all --path_to_bowtie %s %s",
                 bismarkPathFile.getAbsolutePath(), bowtiePathFile.getAbsolutePath(), refPathFile.getAbsolutePath());
         System.out.println("Call preparation:");
-        Utilities.callCMD(preparation, new File(refPathFile.getAbsolutePath()));
+        Utilities.callCMD(preparation, new File(refPathFile.getAbsolutePath()),
+                          refPathFile.getAbsolutePath() + "bismark_prep.log");
     }
 
     public void execute(String inputPath, String outputPath) throws IOException {
@@ -61,6 +61,7 @@ public class CallBismark {
         File outputFile = new File(outputPath);
         File tempDir = new File(outputPath + "tmp/");
         List<File> fileList = null;
+        System.out.println("Call bismark for:\t" + inputPath);
 
         // if the output path not exists, create it.
         if (!outputFile.exists()) {
@@ -116,8 +117,7 @@ public class CallBismark {
                                     bowtiePathFile.getAbsolutePath(), maxmis, outputFile.getAbsolutePath(),
                                     tempDir.getAbsoluteFile(), refPathFile.getAbsolutePath(), nameList
                                                    );
-                            System.out.println("Call bismark:");
-                            Utilities.callCMD(bismark, new File(inputPath));
+                            Utilities.callCMD(bismark, new File(outputPath), outputPath + "bismark_" + i + ".log");
                             nameList = "";
                             i = 0;
                         }
@@ -129,13 +129,13 @@ public class CallBismark {
                                 bowtiePathFile.getAbsolutePath(), maxmis, outputFile.getAbsolutePath(),
                                 tempDir.getAbsoluteFile(), refPathFile.getAbsolutePath(), nameList
                                                );
-                        System.out.println("Call bismark:");
-                        Utilities.callCMD(bismark, new File(inputPath));
+                        Utilities.callCMD(bismark, new File(outputPath), outputPath + "bismark_" + i + ".log");
                     }
                 }
             }
 
             /** 3. extract information **/
+            System.out.println("Call extractor for:\t" + inputPath);
             String seqFile = null;
             if (fileList != null) {
                 seqFile = "";
@@ -149,8 +149,7 @@ public class CallBismark {
                     "%sbismark_methylation_extractor -s -o %s --comprehensive --no_header --merge_non_CpG %s",
                     bismarkPath, outputPath, seqFile
                                             );
-            System.out.println("Call extractor:");
-            Utilities.callCMD(extractor, new File(outputPath));
+            Utilities.callCMD(extractor, new File(outputPath), outputPath + "bismark_methylExtractor.log");
 
             System.out.println("Call bismark finished!!!");
         } catch (Exception e) {

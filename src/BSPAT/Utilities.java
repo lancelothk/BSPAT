@@ -98,24 +98,43 @@ public class Utilities {
         }
     }
 
-    public static void callCMD(String cmd, File directory) throws IOException, InterruptedException {
-        String progOutput = null;
+    /**
+     * cmd program caller wrapper.
+     *
+     * @param cmd       command string.
+     * @param directory execution directory
+     * @param fileName  file name to write output. If leave null, write to stdout.
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void callCMD(String cmd, File directory, String fileName) throws IOException, InterruptedException {
         final Process process = Runtime.getRuntime().exec(cmd, null, directory);
-
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
         BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        String progOutput;
+        if (fileName != null) {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            // read the error from the command
+            while ((progOutput = stdError.readLine()) != null) {
+                writer.write(progOutput);
+            }
 
-        // read the error from the command
-        while ((progOutput = stdError.readLine()) != null) {
-            System.out.println(progOutput);
+            // read the output from the command
+            while ((progOutput = stdInput.readLine()) != null) {
+                writer.write(progOutput);
+            }
+            writer.close();
+        } else {
+            // read the error from the command
+            while ((progOutput = stdError.readLine()) != null) {
+                System.out.println(progOutput);
+            }
+
+            // read the output from the command
+            while ((progOutput = stdInput.readLine()) != null) {
+                System.out.println(progOutput);
+            }
         }
-
-        // read the output from the command
-        while ((progOutput = stdInput.readLine()) != null) {
-            System.out.println(progOutput);
-        }
-
         process.waitFor();
     }
 

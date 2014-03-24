@@ -19,8 +19,8 @@ public class BSPATServletContextListener implements ServletContextListener {
         String toolsPath = servletContextEvent.getServletContext().getRealPath("") + "/tools/";
         String setFileExecution = String.format("./setFileExecution.sh %s", toolsPath);
         try {
-            Utilities.callCMD("chmod u+x setFileExecution.sh", new File(toolsPath));
-            Utilities.callCMD(setFileExecution, new File(toolsPath));
+            Utilities.callCMD("chmod u+x setFileExecution.sh", new File(toolsPath), null);
+            Utilities.callCMD(setFileExecution, new File(toolsPath), null);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             System.exit(-1);
