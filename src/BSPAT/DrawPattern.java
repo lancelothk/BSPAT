@@ -261,6 +261,7 @@ public class DrawPattern {
             bedWriter.close();
             return;
         }
+        // select most significant pattern with allele
         PatternResult patternWithAllele = new PatternResult(allelePatternResultsLists.get(0));
         PatternResult patternWithoutAllele = new PatternResult(patternResultLists.get(0));
         for (PatternResult patternResult : allelePatternResultsLists) {
