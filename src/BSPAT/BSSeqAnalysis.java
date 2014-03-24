@@ -356,6 +356,7 @@ public class BSSeqAnalysis {
      * @return
      */
     private List<Sequence> filterSequences(List<Sequence> seqList) {
+        System.out.println("Filter Sequences: before filter count:\t" + seqList.size());
         List<Sequence> qualifiedSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
             // filter unqualified reads
@@ -364,6 +365,7 @@ public class BSSeqAnalysis {
                 qualifiedSeqList.add(seq);
             }
         }
+        System.out.println("Filter Sequences: after filter count:\t" + qualifiedSeqList.size());
         return qualifiedSeqList;
     }
 
