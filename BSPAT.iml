@@ -3,18 +3,12 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/WebContent/images" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/WebContent/META-INF" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/WebContent/download" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/WebContent/tools" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/WebContent/WEB-INF" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/WebContent" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/WebContent/WEB-INF/lib" />
@@ -28,7 +22,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 7.0.26" level="application_server_libraries" />
-    <orderEntry type="library" name="junit-4.11" level="project" />
   </component>
 </module>
 
