@@ -42,7 +42,12 @@ public class resultRetrieveServlet extends HttpServlet {
         response.setContentType("text/html");
         Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
         String runID = request.getParameter("runID");
-        constant = Constant.readConstant(runID);
+        try {
+            constant = Constant.readConstant(runID);
+        } catch (IOException e) {
+            Utilities.showAlertWindow(response, "can not find Result ID:\t" + runID);
+            return;
+        }
         if (constant != null) {
             String mPage = request.getParameter("mPage");
             String aPage = request.getParameter("aPage");

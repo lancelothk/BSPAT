@@ -9,6 +9,7 @@
 </head>
 
 <%@ page import="BSPAT.Utilities, DataType.Constant" %>
+<%@ page import="java.io.IOException" %>
 
 <body>
 <div id="container">
@@ -24,7 +25,13 @@
                 String runID = request.getParameter("runID");
                 if (runID != null) {
                     Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
-                    Constant constant = Constant.readConstant(runID);
+                    Constant constant = null;
+                    try {
+                        constant = Constant.readConstant(runID);
+                    } catch (IOException e) {
+                        Utilities.showAlertWindow(response, "can not find Result ID:\t" + runID);
+                        return;
+                    }
                     if (constant == null) {
                         Utilities.showAlertWindow(response, "Can not read result");
                         return;

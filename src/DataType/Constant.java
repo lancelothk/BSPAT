@@ -76,7 +76,8 @@ public class Constant implements Serializable {
      */
     public static void writeConstant() {
         try {
-            FileOutputStream constantOutputStream = new FileOutputStream(DISKROOTPATH + "/Run" + constant.runID + "/" + constant.runID + ".data");
+            FileOutputStream constantOutputStream = new FileOutputStream(
+                    DISKROOTPATH + "/Run" + constant.runID + "/" + constant.runID + ".data");
             ObjectOutputStream constantObjectStream = new ObjectOutputStream(constantOutputStream);
             constantObjectStream.writeObject(constant);
             constantOutputStream.close();
@@ -91,15 +92,17 @@ public class Constant implements Serializable {
      * @param runID
      * @return singleton of constant
      */
-    public static Constant readConstant(String runID) {
+    public static Constant readConstant(String runID) throws IOException {
+        ObjectInputStream constantObjectStream = new ObjectInputStream(
+                new FileInputStream(DISKROOTPATH + "/Run" + runID + "/" + runID + ".data"));
+        Object obj = null;
         try {
-            ObjectInputStream constantObjectStream = new ObjectInputStream(new FileInputStream(DISKROOTPATH + "/Run" + runID + "/" + runID + ".data"));
-            Object obj = constantObjectStream.readObject();
-            constant = (Constant) obj;
-            constantObjectStream.close();
-        } catch (Exception e) {
+            obj = constantObjectStream.readObject();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        constant = (Constant) obj;
+        constantObjectStream.close();
         return constant;
     }
 
