@@ -4,6 +4,7 @@ import BSPAT.ReportSummary;
 import BSPAT.Utilities;
 import DataType.Constant;
 import DataType.Experiment;
+import DataType.SeqCountSummary;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -113,9 +114,15 @@ public class analysisServlet extends HttpServlet {
             futureList.add(future);
         }
 
+        constant.seqCountSummary = new SeqCountSummary();
         for (int i = 0; i < constant.experiments.size(); i++) {
             try {
                 constant.experiments.get(i).reportSummaries = futureList.get(i).get();
+                System.out.println(constant.experiments.get(i).getName() + "\tfinished!");
+                for (ReportSummary reportSummary : constant.experiments.get(i).reportSummaries) {
+                    constant.seqCountSummary.addSeqBeforeFilter(reportSummary.getSeqBeforeFilter());
+                    constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqAfterFilter());
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

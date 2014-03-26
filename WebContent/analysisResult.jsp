@@ -51,7 +51,7 @@
                     <td><c:out value="${constant.sequenceIdentityThreshold}"/></td>
                 </tr>
                 <tr>
-                    <td>Sequence number before filtering:</td>
+                    <td>Sequence number cover target region:</td>
                     <td><c:out value="${constant.seqCountSummary.getSeqBeforeFilter()}"/></td>
                 </tr>
                 <tr>

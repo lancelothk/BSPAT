@@ -62,9 +62,9 @@ public class BSSeqAnalysis {
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
-            reportSummary.setSeqBeforeFilter(seqGroup.size());
 
             processSequence(region, seqGroup);
+            reportSummary.setSeqBeforeFilter(seqGroup.size());
             seqGroup = filterSequences(seqGroup);
             reportSummary.setSeqAfterFilter(seqGroup.size());
             // if no sequence exist after filtering, return empty reportSummary
@@ -272,9 +272,7 @@ public class BSSeqAnalysis {
             countofCinRef = 0;// count C in non-CpG context.
             for (int i = 0; i < referenceSeq.length(); i++) {
                 if (i != referenceSeq.length() - 1 && referenceSeq.charAt(i) == 'C' &&
-                        referenceSeq.charAt(i + 1) != 'G') {// non
-                    // CpG
-                    // context
+                        referenceSeq.charAt(i + 1) != 'G') {// non CpG context
                     countofCinRef++;
                 }
                 if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {

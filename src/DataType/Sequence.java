@@ -219,10 +219,8 @@ public class Sequence {
         StringBuilder meMuBuilder = new StringBuilder();
         for (int i = 0; i < originalSeq.length(); i++) {
             if (methylationString.charAt(i) != '-' && mutationString.charAt(i) != '-') {
-                throw new RuntimeException(
-                        String.format("methylation conflict with mutation!\tme:%s\tmu:%s", methylationString.charAt(i),
-                                      mutationString.charAt(i))
-                );
+                meMuBuilder.append(mutationString.charAt(i));
+                System.err.println("mismatch happens in G of CpG site!");
             } else if (methylationString.charAt(i) != '-') {
                 meMuBuilder.append(methylationString.charAt(i));
             } else if (mutationString.charAt(i) != '-') {
