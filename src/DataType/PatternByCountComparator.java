@@ -2,7 +2,7 @@ package DataType;
 
 import java.util.Comparator;
 
-public class PatternComparator implements Comparator<Pattern> {
+public class PatternByCountComparator implements Comparator<Pattern> {
 
     @Override
     public int compare(Pattern m1, Pattern m2) {

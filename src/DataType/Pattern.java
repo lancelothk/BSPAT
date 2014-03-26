@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Pattern {
     public enum PatternType {
-        METHYLATION, MUTATION, MEMU
+        METHYLATION, MUTATION, MEMU, ALLELE, NONALLELE
     }
 
     private static int patternCount = 1;
@@ -24,6 +24,10 @@ public class Pattern {
 
     public void assignPatternID() {
         this.patternID = patternCount++;
+    }
+
+    public static void resetPatternCount() {
+        patternCount = 1;
     }
 
     public void setPatternString(String patternString) {

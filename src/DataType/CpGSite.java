@@ -4,7 +4,7 @@ public class CpGSite {
     private int position;
     private boolean methylLabel;
     private int methylCount = 0;
-    private int totalCount = 0;
+    private int nonMethylCount = 0;
 
     public CpGSite(int position, boolean methylLabel) {
         this.methylLabel = methylLabel;
@@ -27,20 +27,20 @@ public class CpGSite {
         return methylCount;
     }
 
-    public void methylCountPlus(int count) {
+    public int getNonMethylCount() {
+        return nonMethylCount;
+    }
+
+    public void addMethylCount(int count) {
         this.methylCount += count;
     }
 
-    public int getTotalCount() {
-        return totalCount;
-    }
-
-    public void totalCountPlus(int count) {
-        this.totalCount += count;
+    public void addNonMethylCount(int count) {
+        this.nonMethylCount += count;
     }
 
     public double getMethylLevel() {
-        return methylCount / (double) totalCount;
+        return methylCount / (double) (methylCount + nonMethylCount);
     }
 
     public char getMethylType() {

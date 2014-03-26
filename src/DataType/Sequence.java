@@ -27,6 +27,7 @@ public class Sequence {
     private double bisulConversionRate;
     private double sequenceIdentity;
     private String FRstate = "";
+    private List<String> allelePosList;
 
     public Sequence(String id, String flag, String region, int startPos, String originalSeq, String qualityScore,
                     String editDist, String mismatchString, String methylCall, String readConvState) {
@@ -41,6 +42,7 @@ public class Sequence {
         this.methylCall = methylCall;
         this.CpGSites = new ArrayList<>();
         this.readConvState = readConvState;
+        this.allelePosList = new ArrayList<>();
     }
 
     /**
@@ -213,6 +215,14 @@ public class Sequence {
 
     public int length() {
         return originalSeq.length();
+    }
+
+    public List<String> getAlleleList() {
+        return allelePosList;
+    }
+
+    public void addAllele(String allele) {
+        this.allelePosList.add(allele);
     }
 
     public String getMeMuString() {

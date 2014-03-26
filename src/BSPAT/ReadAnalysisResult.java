@@ -35,6 +35,17 @@ public class ReadAnalysisResult {
 		setCoordinate();
 	}
 
+    public ReadAnalysisResult(String inputFolder, String cellLine, String ID,
+                              Coordinate coordinate) throws IOException {
+        this.inputFolder = inputFolder;
+        this.coordinate = coordinate;
+        this.cellLine = cellLine;
+        System.out.println("readStatFile");
+        readStatFile(ID);
+        System.out.println("setCoordinate");
+        setCoordinate();
+    }
+
 	private void readStatFile(String ID) throws IOException {
         FileReader statReader = new FileReader(inputFolder + ID + "_bismark.analysis_report.txt");
         BufferedReader statBuffReader = new BufferedReader(statReader);

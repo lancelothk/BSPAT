@@ -73,14 +73,19 @@ public class BSSeqAnalysis {
             }
             List<Pattern> methylationPatternList = getMethylPattern(seqGroup);
             List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
+            List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 
             methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size());
             mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size());
+            Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size());
+            Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
+            Pattern.resetPatternCount();
             sortAndAssignPatternID(methylationPatternList);
             sortAndAssignPatternID(mutationPatternList);
 
             List<Pattern> meMuPatternList = getMeMuPatern(methylationPatternList, mutationPatternList);
+
 
             Report report = new Report(region, outputFolder, seqGroup, referenceSeqs.get(region), constant,
                                        reportSummary);
@@ -102,8 +107,9 @@ public class BSSeqAnalysis {
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
                                                   experimentName, reportSummary, coordinates);
-                drawFigureLocal.drawMethylPatternWithAllele(region, outputFolder, reportSummary.getPatternLink(
-                        PatternLink.MUTATIONWITHMETHYLATION), experimentName, reportSummary, coordinates);
+                drawFigureLocal.drawASMPattern(region, outputFolder, experimentName, reportSummary, coordinates,
+                                               allelePattern, nonAllelePattern, seqGroup.size());
+
             }
             reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
             reportSummaries.add(reportSummary);
@@ -112,9 +118,34 @@ public class BSSeqAnalysis {
         return reportSummaries;
     }
 
+    private Pattern generateNonAllelePattern(Pattern allelePattern, List<Sequence> seqGroup) {
+        Pattern nonAllelePattern = new Pattern("", Pattern.PatternType.NONALLELE);
+        if (allelePattern != null) {
+            nonAllelePattern.sequenceList().addAll(seqGroup);
+            nonAllelePattern.sequenceList().removeAll(allelePattern.sequenceList());
+        }
+        return nonAllelePattern;
+    }
+
+    private List<Pattern> getAllelePattern(List<Sequence> seqGroup) {
+        // generate allele pattern for each unique(position and character) allele
+        Map<String, Pattern> allelePatternMap = new HashMap<>();
+        for (Sequence sequence : seqGroup) {
+            for (String allele : sequence.getAlleleList()) {
+                if (allelePatternMap.containsKey(allele)) {
+                    allelePatternMap.get(allele).addSequence(sequence);
+                } else {
+                    allelePatternMap.put(allele, new Pattern(allele, Pattern.PatternType.ALLELE));
+                    allelePatternMap.get(allele).addSequence(sequence);
+                }
+            }
+        }
+        return new ArrayList<>(allelePatternMap.values());
+    }
+
     private void sortAndAssignPatternID(List<Pattern> patternList) {
         // sort methylation pattern.
-        Collections.sort(patternList, new PatternComparator());
+        Collections.sort(patternList, new PatternByCountComparator());
         // assign pattern id after sorting. So id is associated with order. Smaller id has large count.
         for (Pattern pattern : patternList) {
             pattern.assignPatternID();
@@ -146,25 +177,42 @@ public class BSSeqAnalysis {
         return meMuPaternList;
     }
 
+    private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount) {
+        List<Pattern> qualifiedAllelePAtternList = new ArrayList<>();
+        for (Pattern pattern : allelePatternList) {
+            double percentage = (double) pattern.getCount() / totalSeqCount;
+            if (percentage >= constant.mutationPatternThreshold) {
+                qualifiedAllelePAtternList.add(pattern);
+            }
+        }
+        Collections.sort(qualifiedAllelePAtternList, new PatternByCountComparator());
+        // only keep most significant allele pattern
+        if (qualifiedAllelePAtternList.size() > 0) {
+            return qualifiedAllelePAtternList.get(0);
+        } else {
+            return null;
+        }
+    }
+
     private List<Pattern> filterMutationPatterns(List<Pattern> mutationPatterns, int totalSeqCount) {
-        List<Pattern> qualifiedMutationPattern = new ArrayList<>();
+        List<Pattern> qualifiedMutationPatternList = new ArrayList<>();
         for (Pattern mutationPattern : mutationPatterns) {
             double percentage = (double) mutationPattern.getCount() / totalSeqCount;
             if (percentage >= constant.mutationPatternThreshold) {
-                qualifiedMutationPattern.add(mutationPattern);
+                qualifiedMutationPatternList.add(mutationPattern);
             }
         }
-        return qualifiedMutationPattern;
+        return qualifiedMutationPatternList;
     }
 
     private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount) {
-        List<Pattern> qualifiedMethylationPattern = new ArrayList<>();
+        List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
         // use percentage pattern threshold
         if (constant.minP0Threshold == -1) {
             for (Pattern methylationPattern : methylationPatterns) {
                 double percentage = methylationPattern.getCount() / totalSeqCount;
                 if (percentage >= constant.minMethylThreshold) {
-                    qualifiedMethylationPattern.add(methylationPattern);
+                    qualifiedMethylationPatternList.add(methylationPattern);
                 }
             }
         } else {
@@ -185,11 +233,11 @@ public class BSSeqAnalysis {
                 p0 = Math.max(constant.minP0Threshold, Math.pow(p, methylationPattern.getCGcount()));
                 z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
                 if (z > criticalZ) {
-                    qualifiedMethylationPattern.add(methylationPattern);
+                    qualifiedMethylationPatternList.add(methylationPattern);
                 }
             }
         }
-        return qualifiedMethylationPattern;
+        return qualifiedMethylationPatternList;
     }
 
     /**
@@ -254,7 +302,7 @@ public class BSSeqAnalysis {
      * generate methylation and mutation String; calculate
      * conversion rate, methylation rate
      */
-
+    // TODO move to Sequence class
     public void processSequence(String region, List<Sequence> seqList) {
         char[] methylationString;
         char[] mutationString;
@@ -312,6 +360,7 @@ public class BSSeqAnalysis {
                         // non C/T inequality.
                         unequalNucleotide++;
                         mutationString[i + seq.getStartPos() - 1] = originalSeq.charAt(i);
+                        seq.addAllele(String.format("%d-%s", i, originalSeq.charAt(i)));
                     }
                 }
             }

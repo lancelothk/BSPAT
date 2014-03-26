@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="war" build-on-make="true" name="BSPAT">
+  <artifact type="war" name="BSPAT">
     <output-path>$PROJECT_DIR$/out/artifacts/BSPAT</output-path>
     <root id="archive" name="BSPAT.war">
       <element id="artifact" artifact-name="BSPAT_exploded" />

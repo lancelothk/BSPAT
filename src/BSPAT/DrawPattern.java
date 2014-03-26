@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DrawPattern {
     private final int WIDTH = 20;
@@ -44,7 +45,6 @@ public class DrawPattern {
     public void drawMethylPattern(String region, String patternResultPath, PatternLink patternLink, String sampleName,
                                   ReportSummary reportSummary,
                                   HashMap<String, Coordinate> coordinates) throws IOException {
-        int height = STARTY;
         System.out.println("readCoordinates -- DrawSingleFigure");
         ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, patternLink.getPatternType(), sampleName,
                                                          region, coordinates.get(region));
@@ -88,6 +88,7 @@ public class DrawPattern {
             }
             patternLink.setFigureResultLink(fileName);
 
+            int height = STARTY;
             // 1. add coordinates
             graphWriter.setBackground(Color.WHITE);
             graphWriter.clearRect(0, 0, imageWidth, imageHeight);
@@ -132,7 +133,8 @@ public class DrawPattern {
                                 "chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + j + "\t" + 1000 +
                                         "\t+\t" + (allelePos - 1) + "\t"
 
-                                        + allelePos + "\t0,0,255\n");
+                                        + allelePos + "\t0,0,255\n"
+                                       );
                     }
                     graphWriter.setPaint(Color.BLACK);
                 }
@@ -151,14 +153,16 @@ public class DrawPattern {
                         // fill black circle
                         graphWriter.fill(
                                 new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
-                                                     RADIUS));
+                                                     RADIUS)
+                                        );
                         bedWriter.write("0,0,0\n");
                     } else {
                         // draw empty circle
                         graphWriter.setStroke(new BasicStroke(0.05f));
                         graphWriter.draw(
                                 new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
-                                                     RADIUS));
+                                                     RADIUS)
+                                        );
                         graphWriter.setStroke(new BasicStroke());
                         bedWriter.write("254,254,254\n");
                     }
@@ -179,7 +183,8 @@ public class DrawPattern {
                                     "-" + region + "\" visibility=1 itemRgb=\"On\"\n");
             bedWriter.write(
                     "chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
-                            "\t0,0,0\n");
+                            "\t0,0,0\n"
+                           );
             for (CpGStatistics cpgStat : statList) {
                 int R = 0, G = 0, B = 0;
                 if (cpgStat.getMethylationRate() > 0.5) {
@@ -197,7 +202,8 @@ public class DrawPattern {
                 graphWriter.setPaint(new Color(R, G, B));
                 graphWriter.fill(
                         new Ellipse2D.Double(STARTX + (cpgStat.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
-                                             RADIUS));
+                                             RADIUS)
+                                );
                 graphWriter.setPaint(Color.BLACK);
                 // move percentage a little left and shink the font size
                 graphWriter.setFont(new Font(fontChoice, styleChoice, smallPercentSize));
@@ -227,90 +233,30 @@ public class DrawPattern {
         bedWriter.close();
     }
 
-    public void drawMethylPatternWithAllele(String region, String patternResultPath, PatternLink patternType,
-                                            String sampleName, ReportSummary reportSummary,
-                                            HashMap<String, Coordinate> coordinates) throws IOException {
-        int height = STARTY;
-        System.out.println("readCoordinates -- DrawSingleFigure");
-        ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, patternType.getPatternType(), sampleName,
-                                                         region, coordinates.get(region));
-        System.out.println("start drawMethylPatternWithAllele");
 
+    public void drawASMPattern(String region, String patternResultPath, String sampleName, ReportSummary reportSummary,
+                               HashMap<String, Coordinate> coordinates, Pattern allelePattern, Pattern nonAllelePattern,
+                               int totalCount) throws IOException {
         File folder = new File(patternResultPath + "pics/");
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
+        ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, sampleName, region,
+                                                         coordinates.get(region));
         List<Integer> refCpGs = data.getRefCpGs();
 
-        List<PatternResult> patternResultLists = data.getPatternResultLists();
-        List<PatternResult> allelePatternResultsLists = new ArrayList<PatternResult>();
-        for (int i = 0; i < patternResultLists.size(); i++) {
-            if (patternResultLists.get(i).hasAllele()) {
-                allelePatternResultsLists.add(patternResultLists.get(i));
-                patternResultLists.remove(i);
-                i--;
-            }
-        }
         // set GB link
         String ASMGBLinkFileName = patternResultPath + "pics/" + region + "_ASM.bed";
         FileWriter fileWriter = new FileWriter(ASMGBLinkFileName);
         reportSummary.setASMGBLink(ASMGBLinkFileName);
         BufferedWriter bedWriter = new BufferedWriter(fileWriter);
-        if (allelePatternResultsLists.size() == 0 || patternResultLists.size() == 0) {
+        if (allelePattern.sequenceList().size() == 0 || nonAllelePattern.sequenceList().size() == 0) {
             bedWriter.close();
             return;
         }
-        // select most significant pattern with allele
-        PatternResult patternWithAllele = new PatternResult(allelePatternResultsLists.get(0));
-        PatternResult patternWithoutAllele = new PatternResult(patternResultLists.get(0));
-        for (PatternResult patternResult : allelePatternResultsLists) {
-            // match same allele ---- only keep most frequent allele
-            // has same number of alleles
-            if (patternWithAllele.getAlleleList().size() == patternResult.getAlleleList().size()) {
-                boolean sameAlleleList = true;
-                for (int i = 0; i < patternWithAllele.getAlleleList().size(); i++) {
-                    if (patternWithAllele.getAlleleList().get(i).intValue() !=
-                            (patternResult.getAlleleList().get(i).intValue())) {
-                        sameAlleleList = false;
-                        break;
-                    }
-                }
-                if (sameAlleleList) {
-                    // match two cpgSite
-                    for (CpGSite cpgSiteA : patternResult.getCpGList()) {
-                        for (CpGSite cpgSiteB : patternWithAllele.getCpGList()) {
-                            if (cpgSiteA.getPosition() == cpgSiteB.getPosition()) {
-                                if (cpgSiteA.getMethylLabel()) {
-                                    cpgSiteB.methylCountPlus(patternResult.getCount());
-                                }
-                                cpgSiteB.totalCountPlus(patternResult.getCount());
-                            }
-                        }
-                    }
-                    patternWithAllele.countPlus(patternResult.getCount());
-                }
-            }
-        }
-
-        for (PatternResult patternResult : patternResultLists) {
-            // match two cpgSite
-            for (CpGSite cpgSiteA : patternResult.getCpGList()) {
-                for (CpGSite cpgSiteB : patternWithoutAllele.getCpGList()) {
-                    if (cpgSiteA.getPosition() == cpgSiteB.getPosition()) {
-                        if (cpgSiteA.getMethylLabel()) {
-                            cpgSiteB.methylCountPlus(patternResult.getCount());
-                        }
-                        cpgSiteB.totalCountPlus(patternResult.getCount());
-                    }
-                }
-            }
-            patternWithoutAllele.countPlus(patternResult.getCount());
-        }
-
-        int totalCount = patternWithAllele.getCount() + patternWithoutAllele.getCount();
-        patternWithAllele.setPercent(patternWithAllele.getCount() / (double) totalCount);
-        patternWithoutAllele.setPercent(patternWithoutAllele.getCount() / (double) totalCount);
+        PatternResult patternWithAllele = patternToPatternResult(allelePattern, refCpGs, totalCount);
+        PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, refCpGs, totalCount);
 
         int refLength = data.getRefLength();
         String beginCoor = data.getBeginCoor();
@@ -343,6 +289,7 @@ public class DrawPattern {
                 reportSummary.setHasASM(true);
             }
 
+            int height = STARTY;
             // 1. add coordinates
             // gImage.setColor(Color.WHITE);
             graphWriter.setBackground(Color.WHITE);
@@ -375,7 +322,8 @@ public class DrawPattern {
                                     sampleName + "-" + region + "-ASM\" visibility=1 itemRgb=\"On\"\n");
             bedWriter.write(
                     "chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
-                            "\t0,0,0\n");
+                            "\t0,0,0\n"
+                           );
             DecimalFormat percent = new DecimalFormat("##.00%");
             height += HEIGHTINTERVAL;
             graphWriter.drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX, height + HEIGHTINTERVAL);
@@ -400,7 +348,8 @@ public class DrawPattern {
                                     "-ASM\" visibility=1 itemRgb=\"On\"\n");
             bedWriter.write(
                     "chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
-                            "\t0,0,0\n");
+                            "\t0,0,0\n"
+                           );
             addAverage(graphWriter, fontChoice, patternWithoutAllele, chr, startPos, "PatternB", bedWriter, height);
             height += HEIGHTINTERVAL;
             graphWriter.drawString(
@@ -424,6 +373,40 @@ public class DrawPattern {
         bedWriter.close();
     }
 
+    private PatternResult patternToPatternResult(Pattern pattern, List<Integer> refCpGs, int totalCount) {
+        PatternResult patternResult = new PatternResult();
+        Map<Integer, CpGSite> cpGSiteMap = new HashMap<>();
+        for (Integer pos : refCpGs) {
+            if (cpGSiteMap.containsKey(pos)) {
+                throw new RuntimeException("refCpG has duplicated CpGsites!");
+            }
+            cpGSiteMap.put(pos, new CpGSite(pos, false));
+        }
+        for (Sequence sequence : pattern.sequenceList()) {
+            for (CpGSite cpGSite : sequence.getCpGSites()) {
+                int pos = cpGSite.getPosition() - 1;
+                if (cpGSiteMap.containsKey(pos)) {
+                    if (cpGSite.getMethylLabel()) {
+                        cpGSiteMap.get(pos).addMethylCount(1);
+                    } else {
+                        cpGSiteMap.get(pos).addNonMethylCount(1);
+                    }
+                } else {
+                    throw new RuntimeException("sequence contains cpgsite not in ref");
+                }
+            }
+        }
+        patternResult.setCpGList(new ArrayList<>(cpGSiteMap.values()));
+        patternResult.setCount(pattern.sequenceList().size());
+        patternResult.setPercent(pattern.sequenceList().size() / (double) totalCount);
+        if (pattern.getPatternType() == Pattern.PatternType.ALLELE) {
+            patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split("-")[0]));
+        } else if (pattern.getPatternType() != Pattern.PatternType.NONALLELE) {
+            throw new RuntimeException("only support convert allele and nonallele Rattern to PatternResult");
+        }
+        return patternResult;
+    }
+
     private void addAverage(Graphics2D gImage, String fontChoice, PatternResult patternResult, String chr,
                             String startPos, String patternName, BufferedWriter bedWriter,
                             int height) throws IOException {
@@ -438,19 +421,21 @@ public class DrawPattern {
             int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
             bedWriter.write(
                     "chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + patternName + "\t" + 1000 +
-                            "\t+\t" + (allelePos - 1) + "\t" + allelePos + "\t0,0,255\n");
+                            "\t+\t" + (allelePos - 1) + "\t" + allelePos + "\t0,0,255\n"
+                           );
         }
         for (CpGSite cpg : patternResult.getCpGList()) {
             int R = 0, G = 0, B = 0;
-            if (cpg.getMethylLevel() > 0.5) {
-                G = 255 - (int) ((cpg.getMethylLevel() - 0.5) * 100 * RGBinterval);
+            double methylLevel = cpg.getMethylLevel();
+            if (methylLevel > 0.5) {
+                G = (int) (255 - ((methylLevel - 0.5) * 100 * RGBinterval));
                 R = 255;
             }
-            if (cpg.getMethylLevel() < 0.5) {
+            if (methylLevel < 0.5) {
                 G = 255;
-                R = (int) (cpg.getMethylLevel() * 100 * RGBinterval);
+                R = (int) (methylLevel * 100 * RGBinterval);
             }
-            if (cpg.getMethylLevel() == 0.5) {
+            if (methylLevel == 0.5) {
                 R = 255;
                 G = 255;
             }
@@ -572,4 +557,5 @@ public class DrawPattern {
         IO.deleteFiles(patternResultPath, new String[]{".bed", ".bedmapped", ".bedunmapped"});
         return Long.valueOf(items[1].split("-")[0]);
     }
+
 }
