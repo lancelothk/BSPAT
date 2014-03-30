@@ -22,7 +22,7 @@
 <h3 id="resultSummary">Result summary section:</h3>
 <table>
     <tr>
-        <td><img src="images/resultSummarySection.png" border="1"/></td>
+        <td><img src="images/resultSummarySection.png" border="1" alt=""/></td>
     </tr>
     <tr>
         <td>
@@ -130,7 +130,7 @@
         <td><h3 id="experimentResult">Experiment result section:</h3></td>
     </tr>
     <tr>
-    <td><img src="images/experimentResultSection.png" border="1"/></td>
+        <td><img src="images/experimentResultSection.png" border="1" alt=""/></td>
     </tr>
     <tr>
         <td><p class="ptext">The result of each experiment and each region is listed one by one. A link to download all
@@ -187,9 +187,7 @@
         <td>
             <p class="ptext">In the text representation of pattern, "@@" means one methylated CpG site, "**"
                 means unmethylated CpG site. "-" means non-CpG site nucleotide, Mismatch comparing to reference is
-                represented by
-                <actual></actual>
-                character of that position. Read count and percentage of each pattern is shown
+                represented by actual character of that position. Read count and percentage of each pattern is shown
                 at the end. Here the percentage of pattern is calculated as read count
                 of the pattern divided by total count of reads. Last two columns are methylation pattern ID and mutation
                 parent pattern ID.
@@ -199,7 +197,7 @@
     <tr>
         <td>Example:<br/> <a href="images/text_example.png"
                              target="_blank"><img src="images/text_example.png" border="1"
-                                                  width="620"/></a></td>
+                                                  width="620" alt=""/></a></td>
     </tr>
     <tr>
         <td><h4>Figure:</h4></td>
@@ -217,7 +215,7 @@
     <tr>
         <td>Example:<br/> <a href="images/figure_example.png"
                              target="_blank"><img src="images/figure_example.png"
-                                                  border="1" width="620"/></a></td>
+                                                  border="1" width="620" alt=""/></a></td>
     </tr>
     <tr>
         <td><h4>Genome Browser Link:</h4></td>
@@ -230,7 +228,7 @@
     <tr>
         <td>Example:<br/> <a href="images/gb_example.png"
                              target="_blank"><img src="images/gb_example.png" border="1"
-                                                  width="620"/></a></td>
+                                                  width="620" alt=""/></a></td>
     </tr>
     <tr>
         <td><h4>dbSNP link:</h4></td>

@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
-    <script language="javascript">
+    <script language="javascript" type="">
         function check() {
             if (document.getElementById('minp0').checked) {
                 document.getElementById('minp0text').disabled = false;
@@ -96,48 +96,57 @@
                     <tr>
                         <td>Bisulfite conversion rate<sup><a
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
-                        <td><input type="text" name="conversionRateThreshold"
-                                   value=0.95></td>
+                        <td><label>
+                            <input type="text" name="conversionRateThreshold"
+                                   value=0.95>
+                        </label></td>
                     </tr>
                     <tr>
                         <td>Sequence identity<sup><a
-                                href="manualAnzalysis.jsp#seqIdentity">?</a></sup></td>
-                        <td><input type="text" name="sequenceIdentityThreshold"
-                                   value=0.9></td>
+                                href="manualAnalysis.jsp#seqIdentity">?</a></sup></td>
+                        <td><label>
+                            <input type="text" name="sequenceIdentityThreshold"
+                                   value=0.9>
+                        </label></td>
                     </tr>
                     <tr>
-                        <td><input type="radio" name="par" id="minp0" value="minp0"
+                        <td><label for="minp0"></label><input type="radio" name="par" id="minp0" value="minp0"
                                    checked="yes" onclick="check()"/>&alpha; threshold<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
-                        <td><input type="text" id="minp0text" name="minp0text"
+                        <td><label for="minp0text"></label><input type="text" id="minp0text" name="minp0text"
                                    value=0.02></td>
                     </tr>
                     <tr>
                         <td>&nbsp;&nbsp;&nbsp;Critical Value<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
-                        <td><input type="text" id="criticalValue" name="criticalValue" value=0.05></td>
+                        <td><label for="criticalValue"></label><input type="text" id="criticalValue"
+                                                                      name="criticalValue" value=0.05></td>
                     </tr>
                     <tr>
-                        <td><input type="radio" name="par" id="minmethyl"
+                        <td><label for="minmethyl"></label><input type="radio" name="par" id="minmethyl"
                                    value="minmethyl" onclick="check()"/>Methylation pattern
                             threshold<sup><a
                                     href="manualAnalysis.jsp#methylPatternThreshold">?</a></sup></td>
-                        <td><input type="text" id="minmethyltext"
+                        <td><label for="minmethyltext"></label><input type="text" id="minmethyltext"
                                    name="minmethyltext" value=0.1 disabled="true"/></td>
                     </tr>
                     <tr>
                         <td>Mutation threshold<sup><a
                                 href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
-                        <td><input type="text" name="mutationpatternThreshold"
-                                   value=0.3></td>
+                        <td><label>
+                            <input type="text" name="mutationpatternThreshold"
+                                   value=0.3>
+                        </label></td>
                     </tr>
                     <tr>
                         <td>Figure Format<sup><a
                                 href="manualAnalysis.jsp#figureFormat">?</a></sup></td>
-                        <td><select name="figureFormat">
-                            <option value="png">PNG</option>
-                            <option value="eps">EPS</option>
-                        </select></td>
+                        <td><label>
+                            <select name="figureFormat">
+                                <option value="png">PNG</option>
+                                <option value="eps">EPS</option>
+                            </select>
+                        </label></td>
                     </tr>
                     <tr>
                         <td><input type="submit" value="Execute"
@@ -149,7 +158,7 @@
         </div>
         <div id="content_bottom"></div>
     </div>
-    <%@ include file="../footer.html" %>
+    <%@ include file="footer.html" %>
 </div>
 </body>
 </html>

@@ -22,7 +22,7 @@
             <h3>Reference and Parameter section:</h3>
             <table>
                 <tr>
-                    <td><img src="images/RefParSection.png" border="1"/></td>
+                    <td><img src="images/RefParSection.png" border="1" alt=""/></td>
                 </tr>
                 <tr id="email">
                     <td>
@@ -49,7 +49,9 @@
                             of target sequence should be a unique identifier in the
                             target sequence file. The name should only be consist of character and
                             digits.</p>
-                        <textarea readonly rows="5">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
+                        <label>
+                            <textarea readonly rows="5" cols="">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
+                        </label>
                     </td>
                 </tr>
                 <tr id="refVersion">
@@ -103,7 +105,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><img src="images/ExperimentSection.png" border="1"/></td>
+                    <td><img src="images/ExperimentSection.png" border="1" alt=""/></td>
                 </tr>
                 <tr>
                     <td>
@@ -119,7 +121,9 @@
                                 href="http://sco.h-its.org/exelixis/web/software/pear/">PEAR</a>
                             to merge paired-end reads into single-end reads.<br/>(b) In the following analysis, only
                             sequences fully covering target region will be included. E.g:
-                            <textarea readonly rows="5">ref:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
+                            <label>
+                                <textarea readonly rows="5" cols="">ref:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
+                            </label>
 
                         </p>
                     </td>
@@ -133,7 +137,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><img src="images/mappingButton_sample.png" border="1"/></td>
+                    <td><img src="images/mappingButton_sample.png" border="1" alt=""/></td>
                 </tr>
                 <tr>
                     <td>

@@ -18,14 +18,16 @@
         <div id="content_top"></div>
         <div id="content_main">
             <form action="result.jsp" enctype="multipart/form-data" method="get">
-                Result ID: <input type="text" name="runID"/> <input type="submit" value="Query"/>
+                Result ID: <label>
+                <input type="text" name="runID"/>
+            </label> <input type="submit" value="Query"/>
             </form>
 
             <%
                 String runID = request.getParameter("runID");
                 if (runID != null) {
                     Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
-                    Constant constant = null;
+                    Constant constant;
                     try {
                         constant = Constant.readConstant(runID);
                     } catch (IOException e) {

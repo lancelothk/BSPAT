@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
-    <script language="javascript">
+    <script language="javascript" type="">
         function check() {
             if (document.getElementById('minp0').checked) {
                 document.getElementById('minp0text').disabled = false;
@@ -150,7 +150,7 @@
         </div>
         <div id="content_bottom"></div>
     </div>
-    <%@ include file="../footer.html" %>
+    <%@ include file="footer.html" %>
 </div>
 </body>
 </html>

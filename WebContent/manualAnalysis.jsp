@@ -22,7 +22,7 @@
 <h3 id="mappingSummary">Mapping summary section:</h3>
 <table>
     <tr>
-        <td><img src="images/mappingSummary_sample.png" border="1"/>
+        <td><img src="images/mappingSummary_sample.png" border="1" alt=""/>
         </td>
     </tr>
     <tr>
@@ -142,7 +142,7 @@
 <h3>Analysis option section:</h3>
 <table>
     <tr>
-        <td><img src="images/AnalysisOptionsSection.png" border="1"/>
+        <td><img src="images/AnalysisOptionsSection.png" border="1" alt=""/>
         </td>
     </tr>
     <tr id="conversionRate">
@@ -182,7 +182,7 @@
                 Methylation pattern threshold. If there is no result to show
                 under user assigned parameter, the program will use methylation
                 pattern threshold instead to generate result.</p> <img
-                src="images/formula.png" border="1" width="500"/>
+                src="images/formula.png" border="1" width="500" alt=""/>
         </td>
     </tr>
     <tr id="methylPatternThreshold">

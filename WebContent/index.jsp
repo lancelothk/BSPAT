@@ -24,7 +24,9 @@
                     <table id="refcoor">
                         <tr>
                             <td>Email address(Optional):<sup><a href="manualMapping.jsp#email">?</a></sup></td>
-                            <td><input type="text" name="email"/></td>
+                            <td><label>
+                                <input type="text" name="email"/>
+                            </label></td>
                         </tr>
                         <tr>
                             <td>Target Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
@@ -32,30 +34,36 @@
                         </tr>
                         <tr>
                             <td>Reference Genome Version:<sup><a href="manualMapping.jsp#refVersion">?</a></sup></td>
-                            <td><select name="refVersion">
-                                <option value="hg19">hg19</option>
-                                <option value="hg18" selected="selected">hg18</option>
-                                <option value="hg17">hg17</option>
-                                <option value="hg16">hg16</option>
-                            </select></td>
+                            <td><label>
+                                <select name="refVersion">
+                                    <option value="hg19">hg19</option>
+                                    <option value="hg18" selected="selected">hg18</option>
+                                    <option value="hg17">hg17</option>
+                                    <option value="hg16">hg16</option>
+                                </select>
+                            </label></td>
                         </tr>
                         <tr>
                             <td>Quality Score type:<sup><a href="manualMapping.jsp#quality">?</a></sup></td>
-                            <td><select name="qualsType">
-                                <option value="phred33" selected="selected">phred33</option>
-                                <option value="phred64">phred64</option>
-                                <option value="solexa">solexa</option>
-                                <option value="solexa-1.3">solexa-1.3</option>
-                            </select></td>
+                            <td><label>
+                                <select name="qualsType">
+                                    <option value="phred33" selected="selected">phred33</option>
+                                    <option value="phred64">phred64</option>
+                                    <option value="solexa">solexa</option>
+                                    <option value="solexa-1.3">solexa-1.3</option>
+                                </select>
+                            </label></td>
                         </tr>
                         <tr>
                             <td>Maximum Permitted Mismatches:<sup><a href="manualMapping.jsp#maxMis">?</a></sup></td>
-                            <td><select name="maxmis">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2" selected="selected">2</option>
-                                <option value="3">3</option>
-                            </select></td>
+                            <td><label>
+                                <select name="maxmis">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2" selected="selected">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </label></td>
                         </tr>
                     </table>
                     <p class="dottedline"></p>

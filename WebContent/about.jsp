@@ -15,16 +15,16 @@
         <div id="content_top"></div>
         <div id="content_main">
             <p class="phead">
-                Developed and Maintained By: </br>
+                Developed and Maintained By: <br/>
             </p>
 
             <p class="ptext">
                 Ke Hu &nbsp&nbsp Ph.D student
-                </br>Advised by: &nbsp&nbsp <a href="http://engr.case.edu/li_jing/index.html">Dr. Jing Li </a>
-                </br>Computational Biology Lab @ EECS department
-                </br>Case Western Reserve University</br>
+                <br/>Advised by: &nbsp&nbsp <a href="http://engr.case.edu/li_jing/index.html">Dr. Jing Li </a>
+                <br/>Computational Biology Lab @ EECS department
+                <br/>Case Western Reserve University<br/>
                 If you have any questions or suggestions, feel free to send an email to:
-                <img src="images/emailadd.png"/>
+                <img src="images/emailadd.png" alt=""/>
             </p>
         </div>
         <div id="content_bottom"></div>
