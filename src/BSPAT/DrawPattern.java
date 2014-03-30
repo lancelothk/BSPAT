@@ -251,7 +251,8 @@ public class DrawPattern {
         FileWriter fileWriter = new FileWriter(ASMGBLinkFileName);
         reportSummary.setASMGBLink(ASMGBLinkFileName);
         BufferedWriter bedWriter = new BufferedWriter(fileWriter);
-        if (allelePattern.sequenceList().size() == 0 || nonAllelePattern.sequenceList().size() == 0) {
+        if (allelePattern == null || allelePattern.sequenceList().size() == 0 ||
+                nonAllelePattern.sequenceList().size() == 0) {
             bedWriter.close();
             return;
         }
