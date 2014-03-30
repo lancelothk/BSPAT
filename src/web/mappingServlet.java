@@ -63,7 +63,6 @@ public class mappingServlet extends HttpServlet {
         response.setContentType("text/html");
         initializeConstant(request); // initialize constant, which is a singleton
         cleanRootFolder(); // release root folder space
-        Collection<Part> parts = request.getParts(); // get submitted data
         List<Experiment> experiments = new ArrayList<>();
         // add each experiment in list
         String experimentName;
@@ -78,6 +77,72 @@ public class mappingServlet extends HttpServlet {
                 index++; // separate ++ operation makes code clear.
             }
         }
+        handleUploadedFiles(request, response, experiments);
+
+        long start = System.currentTimeMillis();
+        // set other parameters
+        constant.refVersion = request.getParameter("refVersion");
+        constant.coorFileName = "coordinates";
+        constant.qualsType = request.getParameter("qualsType");
+        constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
+        constant.experiments = experiments;
+        constant.email = request.getParameter("email");
+        // execute BLAT query
+        blatQuery();
+        // fetch extended reference sequence
+        try {
+            fetchRefSeq(Constant.REFEXTENSIONLENGTH);
+        } catch (ParserConfigurationException | SAXException e) {
+            e.printStackTrace();
+            System.err.println("fetch ref seq fails!");
+        }
+        // bismark indexing
+        CallBismark callBismark = null;
+        try {
+            callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType,
+                                          constant.maxmis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // multiple threads to execute bismark mapping
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (Experiment experiment : constant.experiments) {
+            executor.execute(new ExecuteMapping(callBismark, experiment.getName(), constant));
+        }
+        executor.shutdown();
+        // Wait until all threads are finish
+        try {
+            executor.awaitTermination(Constant.MAXEXECUTIONDAY, TimeUnit.DAYS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // read mapping summary report
+        MappingSummary mappingSummary = IO.readMappingSummary(constant.mappingResultPath);
+
+        // compress result folder
+        String zipFileName = constant.randomDir + "/mappingResult.zip";
+        Utilities.zipFolder(constant.mappingResultPath, zipFileName);
+
+        // passing JSTL parameters
+        constant.mappingSummary = mappingSummary;
+        constant.mappingTime = (System.currentTimeMillis() - start) / 1000;
+        constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
+        constant.finishedMapping = true;
+        // save constant object to file
+        Constant.writeConstant();
+        // send email to inform user
+        Utilities.sendEmail(constant.email, constant.runID,
+                            "Mapping has finished.\n" + "Your runID is " + constant.runID +
+                                    "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+        //redirect page
+        request.setAttribute("constant", constant);
+        request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
+    }
+
+    private void handleUploadedFiles(HttpServletRequest request, HttpServletResponse response,
+                                     List<Experiment> experiments) throws IOException, ServletException {
+        Collection<Part> parts = request.getParts(); // get submitted data
         // for each part, add it into corresponding experiment
         boolean refReady = false;
         for (Part part : parts) {
@@ -133,62 +198,6 @@ public class mappingServlet extends HttpServlet {
             Utilities.showAlertWindow(response, "Reference file missing!");
             return;
         }
-        long start = System.currentTimeMillis();
-        // set other parameters
-        constant.refVersion = request.getParameter("refVersion");
-        constant.coorFileName = "coordinates";
-        constant.qualsType = request.getParameter("qualsType");
-        constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
-        constant.experiments = experiments;
-        constant.email = request.getParameter("email");
-        // execute BLAT query
-        blatQuery();
-        // fetch extended reference sequence
-        try {
-            fetchRefSeq(Constant.REFEXTENSIONLENGTH);
-        } catch (ParserConfigurationException | SAXException e) {
-            e.printStackTrace();
-            System.err.println("fetch ref seq fails!");
-        }
-        // bismark indexing
-        CallBismark callBismark = null;
-        try {
-            callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType, constant.maxmis);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-        // multiple threads to execute bismark mapping
-        ExecutorService executor = Executors.newCachedThreadPool();
-        for (Experiment experiment : constant.experiments) {
-            executor.execute(new ExecuteMapping(callBismark, experiment.getName(), constant));
-        }
-        executor.shutdown();
-        // Wait until all threads are finish
-        try {
-            executor.awaitTermination(Constant.MAXEXECUTIONDAY, TimeUnit.DAYS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // read mapping summary report
-        MappingSummary mappingSummary = IO.readMappingSummary(constant.mappingResultPath);
-
-        // compress result folder
-        String zipFileName = constant.randomDir + "/mappingResult.zip";
-        Utilities.zipFolder(constant.mappingResultPath, zipFileName);
-
-        // passing JSTL parameters
-        constant.mappingSummary = mappingSummary;
-        constant.mappingTime = (System.currentTimeMillis() - start) / 1000;
-        constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
-        constant.finishedMapping = true;
-        // save constant object to file
-        Constant.writeConstant();
-        // send email to inform user
-        Utilities.sendEmail(constant.email, constant.runID, "Mapping has finished.\n" + "Your runID is " + constant.runID + "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
-        //redirect page
-        request.setAttribute("constant", constant);
-        request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
     }
 
     /**
@@ -224,10 +233,9 @@ public class mappingServlet extends HttpServlet {
      * initialize constant singleton
      *
      * @param request
-     * @return
      * @throws IOException
      */
-    private Constant initializeConstant(HttpServletRequest request) throws IOException {
+    private void initializeConstant(HttpServletRequest request) throws IOException {
         constant = Constant.getInstance();
         // DISKROOTPATH is absolute disk path.
         Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
@@ -251,7 +259,6 @@ public class mappingServlet extends HttpServlet {
         IO.createFolder(constant.toolsPath);
         URL domain = new URL(request.getRequestURL().toString());
         constant.host = domain.getHost() + ":" + domain.getPort();
-        return constant;
     }
 
     /**
@@ -282,7 +289,7 @@ public class mappingServlet extends HttpServlet {
         File rootDirectory = new File(Constant.DISKROOTPATH);
         long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024;
         long excess = rootFolderSize - Constant.SPACETHRESHOLD;
-        System.out.println("root folder space occupation:\t" + rootFolderSize);
+        System.out.println("root folder space occupation:\t" + rootFolderSize + "M");
         if (rootFolderSize >= Constant.SPACETHRESHOLD) { // if exceed threshold, clean
             File[] subFolders = rootDirectory.listFiles();
             Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
