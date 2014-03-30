@@ -75,7 +75,7 @@
                     </c:otherwise>
                 </c:choose>
                 <tr>
-                    <td>Mutation pattern threshold:</td>
+                    <td>Mutation threshold:</td>
                     <td><c:out value="${constant.mutationPatternThreshold}"/></td>
                 </tr>
                 <tr>

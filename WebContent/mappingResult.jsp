@@ -126,7 +126,7 @@
                                    name="minmethyltext" value=0.1 disabled="true"/></td>
                     </tr>
                     <tr>
-                        <td>Mutation pattern threshold<sup><a
+                        <td>Mutation threshold<sup><a
                                 href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
                         <td><input type="text" name="mutationpatternThreshold"
                                    value=0.3></td>

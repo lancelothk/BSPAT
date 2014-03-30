@@ -193,22 +193,22 @@
     <tr>
         <td>
             <p class="ptext">This threshold is the percentage of reads covered in
-                methylation pattern comparing to total number of reads. User can define a value to select
-                significant patterns. Patterns with a higher portion than this
+                methylation pattern comparing to total number of reads. Patterns with a higher portion than this
                 threshold will be shown in result.</p>
         </td>
     </tr>
     <tr id="mutationPatternThreshold">
         <td>
-            <h4>Mutation pattern threshold</h4>
+            <h4>Mutation threshold</h4>
         </td>
     </tr>
     <tr>
         <td>
-            <p class="ptext">This threshold is the percentage of reads covered in
-                mutation pattern comparing to total number of reads. User can define a value to select significant
-                patterns. Patterns with a higher portion than this threshold will be
-                shown in result.</p>
+            <p class="ptext">This threshold is used in both mutation pattern filtering and allele filtering.<br/> (a)
+                For mutation pattern filtering, it is the percentage of reads covered in mutation pattern comparing to
+                total number of reads. Patterns with a higher portion than this threshold will be shown in result.<br/>
+                (b) For allele filtering, it is the percentage of reads with specific mismatch comparing to total number
+                of reads. Mismatches with a higher portion than this threshold will be treated as an allele. </p>
         </td>
     </tr>
     <tr id="figureFormat">
