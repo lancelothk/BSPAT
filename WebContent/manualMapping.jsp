@@ -119,9 +119,7 @@
                                 href="http://sco.h-its.org/exelixis/web/software/pear/">PEAR</a>
                             to merge paired-end reads into single-end reads.<br/>(b) In the following analysis, only
                             sequences fully covering target region will be included. E.g:
-                            <textarea readonly rows="5">ref:CAACAACGTCTAGGG&#13;&#10; ACGCAACAACGTCTAGGGACT (included)&#13;&#10;
-                                ACGCAACAACGTC (excluded)&#13;&#10; ACAACGTCTAG (excluded)&#13;&#10; TAGGGACTGATC
-                                (excluded)</textarea>
+                            <textarea readonly rows="5">ref:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
 
                         </p>
                     </td>
