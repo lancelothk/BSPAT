@@ -7,7 +7,7 @@
           <element id="module-output" name="BSPAT" />
         </element>
       </element>
-      <element id="dir-copy" path="$PROJECT_DIR$/WebContent" />
+      <element id="javaee-facet-resources" facet="BSPAT/web/Web" />
     </root>
   </artifact>
 </component>

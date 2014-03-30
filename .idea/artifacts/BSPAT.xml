@@ -2,7 +2,12 @@
   <artifact type="war" name="BSPAT">
     <output-path>$PROJECT_DIR$/out/artifacts/BSPAT</output-path>
     <root id="archive" name="BSPAT.war">
-      <element id="artifact" artifact-name="BSPAT_exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="BSPAT" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="BSPAT/web/Web" />
     </root>
   </artifact>
 </component>
