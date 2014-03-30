@@ -27,7 +27,7 @@
                             <td><input type="text" name="email"/></td>
                         </tr>
                         <tr>
-                            <td>Reference Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
+                            <td>Target Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
                             <td><input type="file" name="ref"/></td>
                         </tr>
                         <tr>

@@ -36,14 +36,20 @@
                 </tr>
                 <tr id="refFile">
                     <td>
-                        <h4>Reference Sequence File:</h4>
+                        <h4>Target Sequence File:</h4>
 
-                        <p class="ptext">File contains designed amplicon references.
-                            It should be in fasta format with extension ".txt", "fasta",
-                            "fa". Multiple reference sequences in one file is allowed. Name
-                            of reference sequence should be a unique identifier in the
-                            reference file. The name should only be consist of character and
-                            digits.</p> <textarea readonly rows="5">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>GeneA&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
+                        <p class="ptext">File contains sequences which fully covered target genomic region. Those target
+                            sequences will be
+                            queried by <a href="http://genome.ucsc.edu/cgi-bin/hgBlat">Blat</a> for genomic coordinates.
+                            Only top result with
+                            equal 'score' and 'qsize' will be picked and used in following steps. In the mapping
+                            process, the target region will be extended 1000bp in both end as reference of mapping.
+                            The file should be in fasta format with extension ".txt", "fasta",
+                            "fa". Multiple target sequences in one file is supported. Name
+                            of target sequence should be a unique identifier in the
+                            target sequence file. The name should only be consist of character and
+                            digits.</p>
+                        <textarea readonly rows="5">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
                     </td>
                 </tr>
                 <tr id="refVersion">
@@ -107,19 +113,15 @@
                             fasta files to upload. The extension of fastq and fasta files
                             can be .fq, .fastq, .fa, .fasta .txt(.txt input is by default
                             treated as fastq file). The reads in sequence files will be
-                            automatically mapped to corresponding reference region. <br/>
-                            Notices: <br/> (a) Read length should be shorter or equal to
-                            reference length, otherwise can not be mapped. <br/> (b) All
-                            input sequence file should be single-end. For paired-end data
-                            with overlapping, you can use some tools like <a
+                            automatically mapped to corresponding target region. <br/>
+                            Notices: <br/> (a) All input sequence file should be single-end. For paired-end data
+                            with overlapping, user can use some tools like <a
                                 href="http://sco.h-its.org/exelixis/web/software/pear/">PEAR</a>
-                            to merge paired-end reads into single-end reads.<br/>(c) One
-                            assumption of our analysis is that all reads covering same
-                            region can be exact aligned. E.g:
-                            <textarea readonly rows="4">ref:ACGCAACAACGTCTAGGGACTGATCGAT
-                                CAACAACGTCTAGGG
-                                CAACAACGTCTAGGG
-                                CAACAACGTCTAGGG</textarea>
+                            to merge paired-end reads into single-end reads.<br/>(b) In the following analysis, only
+                            sequences fully covering target region will be included. E.g:
+                            <textarea readonly rows="5">ref:CAACAACGTCTAGGG&#13;&#10; ACGCAACAACGTCTAGGGACT (included)&#13;&#10;
+                                ACGCAACAACGTC (excluded)&#13;&#10; ACAACGTCTAG (excluded)&#13;&#10; TAGGGACTGATC
+                                (excluded)</textarea>
 
                         </p>
                     </td>
