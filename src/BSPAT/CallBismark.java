@@ -12,7 +12,7 @@ public class CallBismark {
     private File bowtiePathFile;
     private File refPathFile;
     private String qualsTypeParameter;
-    private String fastaq;
+
 
     //	public static void main(String[] args) throws IOException {
     //		String cellLine = "DU145";
@@ -26,14 +26,12 @@ public class CallBismark {
     public CallBismark(String refPath, String toolsPath, String qualsType,
                        int maxmis) throws IOException, InterruptedException {
         this.maxmis = maxmis;
-
         this.bismarkPath = toolsPath + "/bismark/";
         this.bowtiePath = toolsPath + "/bowtie/";
         this.bismarkPathFile = new File(bismarkPath);
         this.bowtiePathFile = new File(bowtiePath);
         this.refPathFile = new File(refPath);
 
-        this.fastaq = "-q"; // default is -q/--fastq
         this.qualsTypeParameter = "";
         if (qualsType.equals("phred33")) {
             this.qualsTypeParameter = "--phred33-quals";
@@ -57,6 +55,7 @@ public class CallBismark {
     }
 
     public void execute(String inputPath, String outputPath) throws IOException {
+        String fastaq = "-q"; // default is -q/--fastq
         File inputFile = new File(inputPath);
         File outputFile = new File(outputPath);
         File tempDir = new File(outputPath + "tmp/");
