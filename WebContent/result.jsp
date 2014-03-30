@@ -26,11 +26,15 @@
             <%
                 String runID = request.getParameter("runID");
                 if (runID != null) {
+                    if (runID.startsWith("Run") || runID.startsWith("run")) {
+                        runID = runID.substring(3);
+                    }
                     Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
                     Constant constant;
                     try {
                         constant = Constant.readConstant(runID);
                     } catch (IOException e) {
+                        e.printStackTrace();
                         Utilities.showAlertWindow(response, "can not find Result ID:\t" + runID);
                         return;
                     }
