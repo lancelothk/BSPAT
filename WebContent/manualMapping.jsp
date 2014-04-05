@@ -50,6 +50,11 @@
                             of target sequence should be a unique identifier in the
                             target sequence file. The name should only be consist of character and
                             digits.</p>
+                        Notice: In the following analysis, only sequences fully covering target region will be included.
+                        E.g:
+                        <label>
+                            <textarea readonly rows="5" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
+                        </label>
                         <label>
                             <textarea readonly rows="5" cols="">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
                         </label>
@@ -117,15 +122,10 @@
                             can be .fq, .fastq, .fa, .fasta .txt(.txt input is by default
                             treated as fastq file). The reads in sequence files will be
                             automatically mapped to corresponding target region. <br/>
-                            Notices: <br/> (a) All input sequence file should be single-end. For paired-end data
+                            Notice: <br/> All input sequence file should be single-end. For paired-end data
                             with overlapping, user can use some tools like <a
                                 href="http://sco.h-its.org/exelixis/web/software/pear/">PEAR</a>
-                            to merge paired-end reads into single-end reads.<br/>(b) In the following analysis, only
-                            sequences fully covering target region will be included. E.g:
-                            <label>
-                                <textarea readonly rows="5" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
-                            </label>
-
+                            to merge paired-end reads into single-end reads.<br/>
                         </p>
                     </td>
                 </tr>
