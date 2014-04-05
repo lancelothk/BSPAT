@@ -38,7 +38,8 @@
                     <td>
                         <h4>Target Sequence File:</h4>
 
-                        <p class="ptext">File contains sequences which fully covered target genomic region. Those target
+                        <p class="ptext">File contains sequences which exactly covered target genomic region. Those
+                            target
                             sequences will be
                             queried by <a href="http://genome.ucsc.edu/cgi-bin/hgBlat">Blat</a> for genomic coordinates.
                             Only top result with
@@ -122,7 +123,7 @@
                             to merge paired-end reads into single-end reads.<br/>(b) In the following analysis, only
                             sequences fully covering target region will be included. E.g:
                             <label>
-                                <textarea readonly rows="5" cols="">ref:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
+                                <textarea readonly rows="5" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
                             </label>
 
                         </p>
