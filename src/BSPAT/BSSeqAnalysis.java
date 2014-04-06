@@ -262,7 +262,7 @@ public class BSSeqAnalysis {
                     Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
                     while (cpGSiteIterator.hasNext()) {
                         CpGSite cpGSite = cpGSiteIterator.next();
-                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() <= refEnd) {
+                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
                             cpGSite.setPosition(cpGSite.getPosition() - refStart + 1);
                         } else {
                             cpGSiteIterator.remove();

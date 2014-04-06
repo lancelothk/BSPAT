@@ -22,8 +22,8 @@ public class ImportBismarkResult {
 
     private String inputFolder;
     private String refPath;
-    private Hashtable<String, String> referenceSeqs = new Hashtable<String, String>();
-    private Hashtable<String, Sequence> sequencesHashtable = new Hashtable<String, Sequence>();
+    private Hashtable<String, String> referenceSeqs = new Hashtable<>();
+    private Hashtable<String, Sequence> sequencesHashtable = new Hashtable<>();
 
     public ImportBismarkResult(String refPath, String inputFolder) throws IOException {
         this.inputFolder = inputFolder;
@@ -38,7 +38,7 @@ public class ImportBismarkResult {
     }
 
     public List<Sequence> getSequencesList() {
-        List<Sequence> sequencesList = new ArrayList<Sequence>();
+        List<Sequence> sequencesList = new ArrayList<>();
         for (Sequence seq : sequencesHashtable.values()) {
             sequencesList.add(seq);
         }
@@ -163,36 +163,5 @@ public class ImportBismarkResult {
             }
         }
     }
-
-    // private String removeMisChr(){
-    // Hashtable<String , Sequence> tempSeqTable = new Hashtable<String,
-    // Sequence>();
-    // // sum count of each mapped region
-    // Hashtable< String, Integer> majorHash = new Hashtable<String, Integer>();
-    // for (Sequence seq : sequencesHashtable.values()) {
-    // if (!majorHash.containsKey(seq.getRegion())){
-    // majorHash.put(seq.getRegion(), 1);
-    // }else {
-    // majorHash.put(seq.getRegion(), majorHash.get(seq.getRegion())+1);
-    // }
-    // }
-    // // get major region
-    // String major = null;
-    // int num = 0;
-    // for (String key : majorHash.keySet()) {
-    // if (majorHash.get(key) > num){
-    // major = key;
-    // num = majorHash.get(key);
-    // }
-    // }
-    // //exclude non-major ones.
-    // for (Sequence seq : sequencesHashtable.values()) {
-    // if (seq.getRegion().equals(major)){
-    // tempSeqTable.put(seq.getId(), seq);
-    // }
-    // }
-    // sequencesHashtable = tempSeqTable;
-    // return major;
-    // }
 
 }
