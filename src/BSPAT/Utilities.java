@@ -116,12 +116,12 @@ public class Utilities {
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
             // read the error from the command
             while ((progOutput = stdError.readLine()) != null) {
-                writer.write(progOutput);
+                writer.write(progOutput + "\n");
             }
 
             // read the output from the command
             while ((progOutput = stdInput.readLine()) != null) {
-                writer.write(progOutput);
+                writer.write(progOutput + "\n");
             }
             writer.close();
         } else {
