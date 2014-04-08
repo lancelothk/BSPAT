@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" showExcludedInSync="true">
+    <serverData>
+      <paths name="cbclinux">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/BSPAT" local="$PROJECT_DIR$/out/artifacts/BSPAT_exploded" web="/BSPAT" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
+
