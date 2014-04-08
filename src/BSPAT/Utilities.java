@@ -26,11 +26,11 @@ public class Utilities {
         HashMap<String, Coordinate> coorHashMap = new HashMap<>();
         for (String name : files) {
             BufferedReader reader = new BufferedReader(new FileReader(path + name));
-            for (int i = 0; i < 3; i++) {
-                reader.readLine();
-            }
             String line = null;
             while ((line = reader.readLine()) != null) {
+                if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-")) {
+                    continue;
+                }
                 String[] items = line.split("\\s+");
                 // items[0] -- query id, items[1] -- score, items[4] -- qsize,
                 // items[6] -- chrom, items[7] -- strand, items[8] -- start,

@@ -215,6 +215,7 @@ public class mappingServlet extends HttpServlet {
         for (String key : coordinatesMap.keySet()) {
             coordinateKeyList.add(key);
             Coordinate coordinate = coordinatesMap.get(key);
+            //TODO check if extended coordinates exceed chromosome end
             dasQuery.append(String.format("segment=%s:%d,%d;", coordinate.getChr(), coordinate.getStart() - refExtensionLength, coordinate.getEnd() + refExtensionLength));
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
