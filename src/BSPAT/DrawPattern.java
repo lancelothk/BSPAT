@@ -326,7 +326,7 @@ public class DrawPattern {
 
             // add average for pattern without allele
             bedWriter.write(
-                    String.format("track name=\"PatternB\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
+                    String.format("track name=\"PatternA\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
                                   sampleName, region)
                            );
             bedWriter.write(
@@ -334,7 +334,7 @@ public class DrawPattern {
                                   startPos)
                            );
             height += HEIGHTINTERVAL;
-            addAverage(graphWriter, fontChoice, patternWithoutAllele, chr, startPos, "PatternB", bedWriter, height);
+            addAverage(graphWriter, fontChoice, patternWithoutAllele, chr, startPos, "PatternA", bedWriter, height);
             height += HEIGHTINTERVAL;
             graphWriter.drawString(
                     patternWithoutAllele.getCount() + "(" + percent.format(patternWithoutAllele.getPercent()) + ")",
@@ -342,14 +342,14 @@ public class DrawPattern {
 
             // add average for pattern with allele
             bedWriter.write(
-                    String.format("track name=\"PatternA\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
+                    String.format("track name=\"PatternB\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
                                   sampleName, region));
             bedWriter.write(
                     String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
                                   startPos)
                            );
             height += 2 * HEIGHTINTERVAL;
-            addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternA", bedWriter, height);
+            addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternB", bedWriter, height);
             // set snp info
             if (patternWithAllele.hasAllele()) {
                 List<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg19",

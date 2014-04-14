@@ -6,7 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="change ASM pattern order.&#10;Increase line spacing.">
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="fix bed file missing newline.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" afterPath="$PROJECT_DIR$/src/BSPAT/DrawPattern.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -196,8 +196,8 @@
       <file leaf-file-name="DrawPattern.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.39721254" vertical-offset="5130" max-vertical-offset="10044">
-              <caret line="320" column="109" selection-start-line="320" selection-start-column="109" selection-end-line="320" selection-end-column="109" />
+            <state vertical-scroll-proportion="0.22503008" vertical-offset="5375" max-vertical-offset="10062">
+              <caret line="325" column="0" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -1242,7 +1242,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="fix read count before / after filtering" />
     <MESSAGE value="add constant reading illegal runid alert" />
     <MESSAGE value="add excluded patterns with allele into pattern without 'the allele' pattern" />
     <MESSAGE value="remove './' from page link in menu.jsp" />
@@ -1267,7 +1266,8 @@
     <MESSAGE value="fix blat query for short ref and more than 25 refs. blat query script split refs more than 50 to multiple queries. Ref shorter than 20 will not show in result." />
     <MESSAGE value="remote deployment setup" />
     <MESSAGE value="change ASM pattern order.&#10;Increase line spacing." />
-    <option name="LAST_COMMIT_MESSAGE" value="change ASM pattern order.&#10;Increase line spacing." />
+    <MESSAGE value="fix bed file missing newline." />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bed file missing newline." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1651,8 +1651,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/DrawPattern.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.39721254" vertical-offset="5130" max-vertical-offset="10044">
-          <caret line="320" column="109" selection-start-line="320" selection-start-column="109" selection-end-line="320" selection-end-column="109" />
+        <state vertical-scroll-proportion="0.22503008" vertical-offset="5375" max-vertical-offset="10062">
+          <caret line="325" column="0" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
           <folding />
         </state>
       </provider>
