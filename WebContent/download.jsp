@@ -43,6 +43,10 @@
                 <tr>
                     <td><p class="dottedline"></p></td>
                 </tr>
+                <tr>
+                    <td><a href="download/TS1_merge_SE.fastq.assembled.fastq_bismark.sorted.sam">TS1_merge_SE.fastq.assembled.fastq_bismark.sorted.sam</a>
+                    </td>
+                </tr>
             </table>
         </div>
         <div id="content_bottom"></div>

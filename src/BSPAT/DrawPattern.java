@@ -315,19 +315,39 @@ public class DrawPattern {
 
             String chr = beginCoor.split(":")[0];
             String startPos = beginCoor.split(":")[1];
+            DecimalFormat percent = new DecimalFormat("##.00%");
+
+
+            bedWriter.write(String.format("browser position chr%s-%s\nbrowser hide all\nbrowser full snp130", beginCoor,
+                                          endCoor));
+            height += 2.5 * HEIGHTINTERVAL;
+            graphWriter.drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX, height);
+
+            // add average for pattern without allele
+            bedWriter.write(
+                    String.format("track name=\"PatternB\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
+                                  sampleName, region)
+                           );
+            bedWriter.write(
+                    String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
+                                  startPos)
+                           );
+            height += HEIGHTINTERVAL;
+            addAverage(graphWriter, fontChoice, patternWithoutAllele, chr, startPos, "PatternB", bedWriter, height);
+            height += HEIGHTINTERVAL;
+            graphWriter.drawString(
+                    patternWithoutAllele.getCount() + "(" + percent.format(patternWithoutAllele.getPercent()) + ")",
+                    (refLength * WIDTH) + WIDTH + STARTX, height);
 
             // add average for pattern with allele
-            height += HEIGHTINTERVAL;
-            bedWriter.write("browser position " + "chr" + beginCoor + "-" + endCoor +
-                                    "\nbrowser hide all\nbrowser full snp130\ntrack name=\"PatternA\" description=\"" +
-                                    sampleName + "-" + region + "-ASM\" visibility=1 itemRgb=\"On\"\n");
             bedWriter.write(
-                    "chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
-                            "\t0,0,0\n"
+                    String.format("track name=\"PatternA\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
+                                  sampleName, region));
+            bedWriter.write(
+                    String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
+                                  startPos)
                            );
-            DecimalFormat percent = new DecimalFormat("##.00%");
-            height += HEIGHTINTERVAL;
-            graphWriter.drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX, height + HEIGHTINTERVAL);
+            height += 2 * HEIGHTINTERVAL;
             addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternA", bedWriter, height);
             // set snp info
             if (patternWithAllele.hasAllele()) {
@@ -341,21 +361,7 @@ public class DrawPattern {
             height += HEIGHTINTERVAL;
             graphWriter.drawString(
                     patternWithAllele.getCount() + "(" + percent.format(patternWithAllele.getPercent()) + ")",
-                    (refLength * WIDTH) + WIDTH + STARTX, height + HEIGHTINTERVAL);
-
-            // add average for pattern without allele
-            height += HEIGHTINTERVAL;
-            bedWriter.write("track name=\"PatternB\" description=\"" + sampleName + "-" + region +
-                                    "-ASM\" visibility=1 itemRgb=\"On\"\n");
-            bedWriter.write(
-                    "chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
-                            "\t0,0,0\n"
-                           );
-            addAverage(graphWriter, fontChoice, patternWithoutAllele, chr, startPos, "PatternB", bedWriter, height);
-            height += HEIGHTINTERVAL;
-            graphWriter.drawString(
-                    patternWithoutAllele.getCount() + "(" + percent.format(patternWithoutAllele.getPercent()) + ")",
-                    (refLength * WIDTH) + WIDTH + STARTX, height + HEIGHTINTERVAL);
+                    (refLength * WIDTH) + WIDTH + STARTX, height);
 
             if (figureFormat.equals(Constant.PNG)) {
                 // png output

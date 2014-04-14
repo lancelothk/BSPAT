@@ -28,7 +28,8 @@ public class Utilities {
             BufferedReader reader = new BufferedReader(new FileReader(path + name));
             String line = null;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-")) {
+                if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-") ||
+                        line.startsWith("BLAT")) {
                     continue;
                 }
                 String[] items = line.split("\\s+");
