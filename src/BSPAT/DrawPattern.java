@@ -318,7 +318,8 @@ public class DrawPattern {
             DecimalFormat percent = new DecimalFormat("##.00%");
 
 
-            bedWriter.write(String.format("browser position chr%s-%s\nbrowser hide all\nbrowser full snp130", beginCoor,
+            bedWriter.write(
+                    String.format("browser position chr%s-%s\nbrowser hide all\nbrowser full snp130\n", beginCoor,
                                           endCoor));
             height += 2.5 * HEIGHTINTERVAL;
             graphWriter.drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX, height);
