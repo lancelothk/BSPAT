@@ -4,6 +4,7 @@ import DataType.*;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -15,7 +16,7 @@ import java.util.*;
 public class BSSeqAnalysis {
 
 
-    private Hashtable<String, String> referenceSeqs = new Hashtable<>();
+    private Map<String, String> referenceSeqs = new Hashtable<>();
     private Constant constant;
 
     /**
@@ -38,12 +39,12 @@ public class BSSeqAnalysis {
             throw new Exception("mapping result is empty, please double check input!");
         }
 
-        // 1. read coordinates
-        HashMap<String, Coordinate> coordinates;
+        // 1. read refCoorMap
+        Map<String, Coordinate> refCoorMap;
         if (constant.coorReady) {
-            coordinates = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
+            refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
         } else {
-            throw new Exception("coordinates file is not ready!");
+            throw new Exception("refCoorMap file is not ready!");
         }
 
         // 2. group seqs by region
@@ -55,7 +56,7 @@ public class BSSeqAnalysis {
         });
 
         // 3. cut and filter sequences
-        cutAndFilterSequence(sequenceGroupMap);
+        cutAndFilterSequence(sequenceGroupMap, refCoorMap);
         // TODO handle case which no sequence remain after cut.
 
         // 4. generate report for each region
@@ -97,17 +98,17 @@ public class BSSeqAnalysis {
                                                               constant.toolsPath);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATION), experimentName,
-                                                  reportSummary, coordinates);
+                                                  refCoorMap);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATION), experimentName,
-                                                  reportSummary, coordinates);
+                                                  refCoorMap);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION),
-                                                  experimentName, reportSummary, coordinates);
+                                                  experimentName, refCoorMap);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
-                                                  experimentName, reportSummary, coordinates);
-                drawFigureLocal.drawASMPattern(region, outputFolder, experimentName, reportSummary, coordinates,
+                                                  experimentName, refCoorMap);
+                drawFigureLocal.drawASMPattern(region, outputFolder, experimentName, reportSummary, refCoorMap,
                                                allelePattern, nonAllelePattern, seqGroup.size());
 
             }
@@ -245,15 +246,23 @@ public class BSSeqAnalysis {
      *
      * @param sequenceGroupMap
      */
-    private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap) {
+    private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap,
+                                      Map<String, Coordinate> refCoorMap) throws IOException {
+        Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
         for (String region : sequenceGroupMap.keySet()) {
+            Coordinate targetCoor = targetCoorMap.get(region);
+            Coordinate refCoor = refCoorMap.get(region);
             List<Sequence> sequenceGroup = sequenceGroupMap.get(region);
             Iterator<Sequence> sequenceIterator = sequenceGroup.iterator();
+            // cut reference seq
+            referenceSeqs.put(region,
+                              referenceSeqs.get(region).substring((int) (targetCoor.getStart() - refCoor.getStart()),
+                                                                  (int) (targetCoor.getEnd() - refCoor.getStart())));
             while (sequenceIterator.hasNext()) {
                 Sequence sequence = sequenceIterator.next();
-                String refSeq = referenceSeqs.get(region);
-                int refStart = Constant.REFEXTENSIONLENGTH - 1, refEnd =
-                        Constant.REFEXTENSIONLENGTH + refSeq.length() - 2;
+                int refStart =
+                        Constant.REFEXTENSIONLENGTH - 1 + (int) (targetCoor.getStart() - refCoor.getStart()), refEnd =
+                        Constant.REFEXTENSIONLENGTH + (int) (targetCoor.getEnd() - refCoor.getStart()) - 2;
                 if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
                     // cut sequence to suit reference
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),

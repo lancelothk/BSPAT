@@ -8,10 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * Import reference and Bismark result to specific data structure
@@ -19,21 +16,16 @@ import java.util.List;
  * @author Ke
  */
 public class ImportBismarkResult {
-
-    private String inputFolder;
-    private String refPath;
-    private Hashtable<String, String> referenceSeqs = new Hashtable<>();
-    private Hashtable<String, Sequence> sequencesHashtable = new Hashtable<>();
+    private Map<String, String> referenceSeqs = new Hashtable<>();
+    private Map<String, Sequence> sequencesHashtable = new Hashtable<>();
 
     public ImportBismarkResult(String refPath, String inputFolder) throws IOException {
-        this.inputFolder = inputFolder;
-        this.refPath = refPath;
-        readReference();
-        readBismarkAlignmentResult();
-        readBismarkCpGResult();
+        readReference(refPath);
+        readBismarkAlignmentResult(inputFolder);
+        readBismarkCpGResult(inputFolder);
     }
 
-    public Hashtable<String, String> getReferenceSeqs() {
+    public Map<String, String> getReferenceSeqs() {
         return referenceSeqs;
     }
 
@@ -49,8 +41,9 @@ public class ImportBismarkResult {
      * readReference
      *
      * @throws IOException
+     * @param refPath
      */
-    private void readReference() throws IOException {
+    private void readReference(String refPath) throws IOException {
         File refPathFile = new File(refPath);
         String[] fileNames = null;
         fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
@@ -82,8 +75,9 @@ public class ImportBismarkResult {
      * readBismarkAlignmentResult
      *
      * @throws IOException
+     * @param inputFolder
      */
-    private void readBismarkAlignmentResult() throws IOException {
+    private void readBismarkAlignmentResult(String inputFolder) throws IOException {
         File inputFile = new File(inputFolder);
         String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam"}));
         Arrays.sort(names);
@@ -127,8 +121,9 @@ public class ImportBismarkResult {
      * readBismarkCpGResult
      *
      * @throws IOException
+     * @param inputFolder
      */
-    private void readBismarkCpGResult() throws IOException {
+    private void readBismarkCpGResult(String inputFolder) throws IOException {
         File inputFile = new File(inputFolder);
         String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.txt"}));
         Arrays.sort(names);

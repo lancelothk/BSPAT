@@ -83,12 +83,12 @@
                         <td><c:out value="${constant.mappingTime}"/>s</td>
                     </tr>
                     <tr>
-                        <td>Reference coordinates</td>
-                        <td><a href=<c:out value="${constant.coorFilePath + constant.coorFileName}"/>>coordinates</a>
+                        <td>Reference coordinates:</td>
+                        <td><a href=<c:out value="${constant.getAbsolutePathCoorFile()}"/>>coordinates</a>
                         </td>
                     </tr>
                     <tr>
-                    <td>Mapping result:</td>
+                        <td>Mapping result:</td>
                         <td><a href=<c:out value="${constant.mappingResultLink}"/>>mappingResult.zip</a></td>
                     </tr>
                 </table>
@@ -103,7 +103,7 @@
                         <td><input type="file" name="target" multiple/></td>
                     </tr>
                     <tr>
-                    <td>Bisulfite conversion rate<sup><a
+                        <td>Bisulfite conversion rate<sup><a
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
                         <td><label>
                             <input type="text" name="conversionRateThreshold"
@@ -120,10 +120,10 @@
                     </tr>
                     <tr>
                         <td><label for="minp0"></label><input type="radio" name="par" id="minp0" value="minp0"
-                                   checked="yes" onclick="check()"/>&alpha; threshold<sup><a
+                                                              checked="yes" onclick="check()"/>&alpha; threshold<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
                         <td><label for="minp0text"></label><input type="text" id="minp0text" name="minp0text"
-                                   value=0.02></td>
+                                                                  value=0.02></td>
                     </tr>
                     <tr>
                         <td>&nbsp;&nbsp;&nbsp;Critical Value<sup><a
@@ -133,11 +133,13 @@
                     </tr>
                     <tr>
                         <td><label for="minmethyl"></label><input type="radio" name="par" id="minmethyl"
-                                   value="minmethyl" onclick="check()"/>Methylation pattern
+                                                                  value="minmethyl" onclick="check()"/>Methylation
+                            pattern
                             threshold<sup><a
                                     href="manualAnalysis.jsp#methylPatternThreshold">?</a></sup></td>
                         <td><label for="minmethyltext"></label><input type="text" id="minmethyltext"
-                                   name="minmethyltext" value=0.1 disabled="true"/></td>
+                                                                      name="minmethyltext" value=0.1 disabled="true"/>
+                        </td>
                     </tr>
                     <tr>
                         <td>Mutation threshold<sup><a

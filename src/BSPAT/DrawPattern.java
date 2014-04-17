@@ -43,8 +43,7 @@ public class DrawPattern {
     }
 
     public void drawMethylPattern(String region, String patternResultPath, PatternLink patternLink, String sampleName,
-                                  ReportSummary reportSummary,
-                                  HashMap<String, Coordinate> coordinates) throws IOException {
+                                  Map<String, Coordinate> coordinates) throws IOException {
         System.out.println("readCoordinates -- DrawSingleFigure");
         ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, patternLink.getPatternType(), sampleName,
                                                          region, coordinates.get(region));
@@ -235,7 +234,7 @@ public class DrawPattern {
 
 
     public void drawASMPattern(String region, String patternResultPath, String sampleName, ReportSummary reportSummary,
-                               HashMap<String, Coordinate> coordinates, Pattern allelePattern, Pattern nonAllelePattern,
+                               Map<String, Coordinate> coordinates, Pattern allelePattern, Pattern nonAllelePattern,
                                int totalCount) throws IOException {
         File folder = new File(patternResultPath + "pics/");
         if (!folder.exists()) {

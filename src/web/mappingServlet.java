@@ -83,7 +83,7 @@ public class mappingServlet extends HttpServlet {
         long start = System.currentTimeMillis();
         // set other parameters
         constant.refVersion = request.getParameter("refVersion");
-        constant.coorFileName = "coordinates";
+        constant.coorFileName = "coordinates.coor";
         constant.qualsType = request.getParameter("qualsType");
         constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
         constant.experiments = experiments;

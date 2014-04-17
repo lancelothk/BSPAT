@@ -61,14 +61,15 @@ public class analysisServlet extends HttpServlet {
         for (Part part : parts) {
             String fieldName = Utilities.getField(part, "name");
             String fileName = Utilities.getField(part, "filename");
-            constant.targetFileName = fileName;
             if (fieldName.equals("target")) { // deal with uploaded target file
                 File targetFolder = new File(constant.targetPath);
                 if (!targetFolder.isDirectory()) { // if target directory do not exist, make one
                     targetFolder.mkdirs();
                 }
                 // save target file in target folder
-                if (!IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName)) {
+                if (IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName)) {
+                    constant.targetFileName = fileName;
+                } else {
                     Utilities.showAlertWindow(response, "target file is blank!");
                     return;
                 }
