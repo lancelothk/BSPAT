@@ -7,7 +7,7 @@ public class Constant implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final long SPACETHRESHOLD = 100000;// maximum allow 100000MB space (100GB)
     public static final int MAXEXECUTIONDAY = 10;
-    public static final int REFEXTENSIONLENGTH = 20;
+    public static final int REFEXTENSIONLENGTH = 1000;
     private static Constant constant = null;
     public static String DISKROOTPATH = "";
     public static final String PNG = "png";
@@ -27,12 +27,14 @@ public class Constant implements Serializable {
     public String originalRefPath;
     public String seqsPath;
     public String toolsPath;
+    public String targetPath;
 
     // parameters
     public String runID;
     public String host;
     public boolean coorReady = false;
     public String coorFileName;
+    public String targetFileName;
     public String refVersion;
     public String randomDir;
     public double mutationPatternThreshold;

@@ -52,7 +52,8 @@ public class mappingServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      * response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
     }
 
     /**
@@ -134,7 +135,8 @@ public class mappingServlet extends HttpServlet {
         // send email to inform user
         Utilities.sendEmail(constant.email, constant.runID,
                             "Mapping has finished.\n" + "Your runID is " + constant.runID +
-                                    "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+                                    "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result."
+                           );
         //redirect page
         request.setAttribute("constant", constant);
         request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
@@ -150,8 +152,7 @@ public class mappingServlet extends HttpServlet {
             String fileName = Utilities.getField(part, "filename");
             if (fieldName.equals("ref")) { // deal with uploaded ref file
                 File refFolder = new File(constant.originalRefPath);
-                if (!refFolder.isDirectory()) { // if ref directory do not
-                    // exist, make one
+                if (!refFolder.isDirectory()) { // if ref directory do not exist, make one
                     refFolder.mkdirs();
                 }
                 // save ref file in ref folder
@@ -161,18 +162,13 @@ public class mappingServlet extends HttpServlet {
                     Utilities.showAlertWindow(response, "reference file is blank!");
                     return;
                 }
-            } else if (fieldName.startsWith("seqFile")) { // deal with uploaded
-                // seq file
+            } else if (fieldName.startsWith("seqFile")) { // deal with uploaded seq file
                 int seqFileIndex = Integer.valueOf(part.getName().replace("seqFile", ""));
-                for (Experiment experiment : experiments) { // match file index
-                    // and seq file
-                    // index
+                for (Experiment experiment : experiments) { // match file index and seq file index
                     if (experiment.getIndex() == seqFileIndex) {
                         experiment.setSeqFile(fileName);
                         File seqFolder = new File(constant.seqsPath + experiment.getName());
-                        if (!seqFolder.isDirectory()) { // if sequence directory
-                            // do not exist, make
-                            // one
+                        if (!seqFolder.isDirectory()) { // if sequence directory do not exist, make one
                             seqFolder.mkdirs();
                         }
                         if (IO.saveFileToDisk(part, seqFolder.getAbsolutePath(), fileName)) {
@@ -202,6 +198,7 @@ public class mappingServlet extends HttpServlet {
 
     /**
      * fetch extended reference sequence from UCSC DAS server
+     *
      * @param refExtensionLength Extension length
      * @throws IOException
      * @throws ParserConfigurationException
@@ -209,14 +206,18 @@ public class mappingServlet extends HttpServlet {
      */
     private void fetchRefSeq(int refExtensionLength) throws IOException, ParserConfigurationException, SAXException {
         Map<String, Coordinate> coordinatesMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
-        StringBuilder dasQuery = new StringBuilder("http://genome.ucsc.edu/cgi-bin/das/" + constant.refVersion + "/dna?");
+        StringBuilder dasQuery = new StringBuilder(
+                "http://genome.ucsc.edu/cgi-bin/das/" + constant.refVersion + "/dna?");
         // build query url
         List<String> coordinateKeyList = new ArrayList<>();
         for (String key : coordinatesMap.keySet()) {
             coordinateKeyList.add(key);
             Coordinate coordinate = coordinatesMap.get(key);
             //TODO check if extended coordinates exceed chromosome end
-            dasQuery.append(String.format("segment=%s:%d,%d;", coordinate.getChr(), coordinate.getStart() - refExtensionLength, coordinate.getEnd() + refExtensionLength));
+            dasQuery.append(
+                    String.format("segment=%s:%d,%d;", coordinate.getChr(), coordinate.getStart() - refExtensionLength,
+                                  coordinate.getEnd() + refExtensionLength)
+                           );
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -225,7 +226,8 @@ public class mappingServlet extends HttpServlet {
         NodeList seqList = doc.getElementsByTagName("SEQUENCE");
         for (int i = 0; i < seqList.getLength(); i++) {
             Element item = (Element) seqList.item(i);
-            coordinatesMap.get(coordinateKeyList.get(i)).setRefSeq(item.getElementsByTagName("DNA").item(0).getTextContent().replace("\n", ""));
+            coordinatesMap.get(coordinateKeyList.get(i)).setRefSeq(
+                    item.getElementsByTagName("DNA").item(0).getTextContent().replace("\n", ""));
         }
         writeRef(coordinatesMap, constant.modifiedRefPath);
     }
@@ -250,6 +252,8 @@ public class mappingServlet extends HttpServlet {
         IO.createFolder(constant.patternResultPath);
         constant.coorFilePath = constant.randomDir + "/coor/";
         IO.createFolder(constant.coorFilePath);
+        constant.targetPath = constant.randomDir + "/target/";
+        IO.createFolder(constant.targetPath);
         constant.originalRefPath = constant.randomDir + "/origianlRef/";
         IO.createFolder(constant.originalRefPath);
         constant.modifiedRefPath = constant.randomDir + "/modifiedRef/";
@@ -264,7 +268,8 @@ public class mappingServlet extends HttpServlet {
 
     /**
      * write modified reference into file
-     * @param coordinateMap Key is ref seq ID, Value is Coordinate object
+     *
+     * @param coordinateMap   Key is ref seq ID, Value is Coordinate object
      * @param modifiedRefPath
      * @throws IOException
      */
@@ -296,7 +301,8 @@ public class mappingServlet extends HttpServlet {
             Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
             if (subFolders != null) {
                 for (File folder : subFolders) {
-                    if (folder.getName().startsWith("Run") && folder.isDirectory() && folder != subFolders[subFolders.length - 1]) {
+                    if (folder.getName().startsWith("Run") && folder.isDirectory() &&
+                            folder != subFolders[subFolders.length - 1]) {
                         if (excess >= 0) { // only clean exceed part
                             long length = FileUtils.sizeOfDirectory(folder) / 1024 / 1024;
                             // delete directory recursively
@@ -321,7 +327,8 @@ public class mappingServlet extends HttpServlet {
         for (String name : files) {
             try {
                 System.out.println("start blat query for " + name);
-                String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath, constant.refVersion, constant.originalRefPath, name);
+                String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath,
+                                                 constant.refVersion, constant.originalRefPath, name);
                 Utilities.callCMD(blatQuery, new File(constant.coorFilePath), null);
                 System.out.println("blat query is finished for " + name);
             } catch (Exception e) {

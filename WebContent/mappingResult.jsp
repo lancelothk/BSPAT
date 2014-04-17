@@ -94,7 +94,11 @@
                         <td>Values must be in (0,1)</td>
                     </tr>
                     <tr>
-                        <td>Bisulfite conversion rate<sup><a
+                        <td>Target Coordinates</td>
+                        <td><input type="file" name="target" multiple/></td>
+                    </tr>
+                    <tr>
+                    <td>Bisulfite conversion rate<sup><a
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
                         <td><label>
                             <input type="text" name="conversionRateThreshold"

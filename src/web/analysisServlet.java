@@ -1,5 +1,6 @@
 package web;
 
+import BSPAT.IO;
 import BSPAT.ReportSummary;
 import BSPAT.Utilities;
 import DataType.Constant;
@@ -12,9 +13,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -54,9 +57,24 @@ public class analysisServlet extends HttpServlet {
         response.setContentType("text/html");
         String runID = request.getParameter("runID");
         Constant constant = Constant.readConstant(runID);
-        constant.figureFormat = request.getParameter("figureFormat"); // set
-        // figure
-        // format
+        Collection<Part> parts = request.getParts(); // get submitted data
+        for (Part part : parts) {
+            String fieldName = Utilities.getField(part, "name");
+            String fileName = Utilities.getField(part, "filename");
+            constant.targetFileName = fileName;
+            if (fieldName.equals("target")) { // deal with uploaded target file
+                File targetFolder = new File(constant.targetPath);
+                if (!targetFolder.isDirectory()) { // if target directory do not exist, make one
+                    targetFolder.mkdirs();
+                }
+                // save target file in target folder
+                if (!IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName)) {
+                    Utilities.showAlertWindow(response, "target file is blank!");
+                    return;
+                }
+            }
+        }
+        constant.figureFormat = request.getParameter("figureFormat"); // set figure format
         if (request.getParameter("minp0text") != null) {
             constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
             constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
