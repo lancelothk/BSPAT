@@ -83,7 +83,12 @@
                         <td><c:out value="${constant.mappingTime}"/>s</td>
                     </tr>
                     <tr>
-                        <td>Mapping result:</td>
+                        <td>Reference coordinates</td>
+                        <td><a href=<c:out value="${constant.coorFilePath + constant.coorFileName}"/>>coordinates</a>
+                        </td>
+                    </tr>
+                    <tr>
+                    <td>Mapping result:</td>
                         <td><a href=<c:out value="${constant.mappingResultLink}"/>>mappingResult.zip</a></td>
                     </tr>
                 </table>

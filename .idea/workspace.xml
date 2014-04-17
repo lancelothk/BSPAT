@@ -6,11 +6,8 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="change pattern name in ASM pattern">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Constant.java" afterPath="$PROJECT_DIR$/src/DataType/Constant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/analysisServlet.java" afterPath="$PROJECT_DIR$/src/web/analysisServlet.java" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="add target coordinates file upload.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/mappingResult.jsp" afterPath="$PROJECT_DIR$/WebContent/mappingResult.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/mappingServlet.java" afterPath="$PROJECT_DIR$/src/web/mappingServlet.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -169,7 +166,7 @@
       <file leaf-file-name="mappingServlet.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2486" max-vertical-offset="6300">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2486" max-vertical-offset="6318">
               <caret line="157" column="46" selection-start-line="157" selection-start-column="46" selection-end-line="157" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -178,10 +175,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analysisServlet.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="analysisServlet.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.24742268" vertical-offset="1764" max-vertical-offset="2682">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1710" max-vertical-offset="2682">
               <caret line="134" column="57" selection-start-line="134" selection-start-column="57" selection-end-line="134" selection-end-column="57" />
               <folding />
             </state>
@@ -202,7 +199,7 @@
         <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="4554">
-              <caret line="36" column="33" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
+              <caret line="35" column="30" selection-start-line="35" selection-start-column="18" selection-end-line="35" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -238,11 +235,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mappingResult.jsp" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="mappingResult.jsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.185185" vertical-offset="1417" max-vertical-offset="3114">
-              <caret line="97" column="59" selection-start-line="97" selection-start-column="59" selection-end-line="97" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.7779112" vertical-offset="648" max-vertical-offset="3186">
+              <caret line="72" column="24" selection-start-line="72" selection-start-column="24" selection-end-line="72" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -325,8 +322,8 @@
         <option value="$PROJECT_DIR$/src/BSPAT/CallBismark.java" />
         <option value="$PROJECT_DIR$/src/DataType/Constant.java" />
         <option value="$PROJECT_DIR$/src/web/mappingServlet.java" />
-        <option value="$PROJECT_DIR$/WebContent/mappingResult.jsp" />
         <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
+        <option value="$PROJECT_DIR$/WebContent/mappingResult.jsp" />
       </list>
     </option>
   </component>
@@ -1243,7 +1240,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="add excluded patterns with allele into pattern without 'the allele' pattern" />
     <MESSAGE value="remove './' from page link in menu.jsp" />
     <MESSAGE value="refactor mappingServlet.java" />
     <MESSAGE value="add web facet configuration." />
@@ -1268,7 +1264,8 @@
     <MESSAGE value="change ASM pattern order.&#10;Increase line spacing." />
     <MESSAGE value="fix bed file missing newline." />
     <MESSAGE value="change pattern name in ASM pattern" />
-    <option name="LAST_COMMIT_MESSAGE" value="change pattern name in ASM pattern" />
+    <MESSAGE value="add target coordinates file upload." />
+    <option name="LAST_COMMIT_MESSAGE" value="add target coordinates file upload." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1620,10 +1617,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2486" max-vertical-offset="6300">
+          <caret line="157" column="46" selection-start-line="157" selection-start-column="46" selection-end-line="157" selection-end-column="46" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="4554">
-          <caret line="36" column="33" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
+          <caret line="35" column="30" selection-start-line="35" selection-start-column="18" selection-end-line="35" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1710" max-vertical-offset="2682">
+          <caret line="134" column="57" selection-start-line="134" selection-start-column="57" selection-end-line="134" selection-end-column="57" />
           <folding />
         </state>
       </provider>
@@ -1638,26 +1653,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.185185" vertical-offset="1417" max-vertical-offset="3114">
-          <caret line="97" column="59" selection-start-line="97" selection-start-column="59" selection-end-line="97" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2486" max-vertical-offset="6300">
-          <caret line="157" column="46" selection-start-line="157" selection-start-column="46" selection-end-line="157" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24742268" vertical-offset="1764" max-vertical-offset="2682">
-          <caret line="134" column="57" selection-start-line="134" selection-start-column="57" selection-end-line="134" selection-end-column="57" />
+        <state vertical-scroll-proportion="0.7779112" vertical-offset="648" max-vertical-offset="3186">
+          <caret line="72" column="24" selection-start-line="72" selection-start-column="24" selection-end-line="72" selection-end-column="24" />
           <folding />
         </state>
       </provider>
