@@ -47,6 +47,7 @@ public class BSSeqAnalysis {
             throw new Exception("refCoorMap file is not ready!");
         }
 
+        Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
         // 2. group seqs by region
         Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, new GetKeyFunction() {
             @Override
@@ -56,7 +57,7 @@ public class BSSeqAnalysis {
         });
 
         // 3. cut and filter sequences
-        cutAndFilterSequence(sequenceGroupMap, refCoorMap);
+        cutAndFilterSequence(sequenceGroupMap, refCoorMap, targetCoorMap);
         // TODO handle case which no sequence remain after cut.
 
         // 4. generate report for each region
@@ -98,17 +99,17 @@ public class BSSeqAnalysis {
                                                               constant.toolsPath);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATION), experimentName,
-                                                  refCoorMap);
+                                                  targetCoorMap);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATION), experimentName,
-                                                  refCoorMap);
+                                                  targetCoorMap);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION),
-                                                  experimentName, refCoorMap);
+                                                  experimentName, targetCoorMap);
                 drawFigureLocal.drawMethylPattern(region, outputFolder,
                                                   reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
-                                                  experimentName, refCoorMap);
-                drawFigureLocal.drawASMPattern(region, outputFolder, experimentName, reportSummary, refCoorMap,
+                                                  experimentName, targetCoorMap);
+                drawFigureLocal.drawASMPattern(region, outputFolder, experimentName, reportSummary, targetCoorMap,
                                                allelePattern, nonAllelePattern, seqGroup.size());
 
             }
@@ -246,9 +247,8 @@ public class BSSeqAnalysis {
      *
      * @param sequenceGroupMap
      */
-    private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap,
-                                      Map<String, Coordinate> refCoorMap) throws IOException {
-        Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
+    private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap, Map<String, Coordinate> refCoorMap,
+                                      Map<String, Coordinate> targetCoorMap) throws IOException {
         for (String region : sequenceGroupMap.keySet()) {
             Coordinate targetCoor = targetCoorMap.get(region);
             Coordinate refCoor = refCoorMap.get(region);
