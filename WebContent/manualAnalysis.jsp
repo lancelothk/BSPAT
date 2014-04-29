@@ -125,7 +125,19 @@
     </tr>
     <tr>
         <td>
-            <h4>Zipped mapping result</h4>
+            <h4>Reference coordinates:</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">The genomic coordinates of uploaded reference sequences. Queried by using <a
+                    href="http://genome.ucsc.edu/cgi-bin/hgBlat">Blat</a>. Only top result with equal 'score' and
+                'qsize' will be picked and used in following steps.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        <h4>Zipped mapping result</h4>
         </td>
     </tr>
     <tr>
@@ -143,6 +155,26 @@
 <table>
     <tr>
         <td><img src="images/AnalysisOptionsSection.png" border="1" alt=""/>
+        </td>
+    </tr>
+    <tr id="targetCoordinates">
+        <td>
+            <h4>Target Coordinates</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">User should to upload a file contains the coordinates which define the target region of
+                analysis. The file format is same to reference coordinates. It will be easier to modify coordinates in
+                reference coordinates file and upload it here.</p>
+            Notice: In the following analysis, only sequences fully covering target region will be included.
+            E.g:
+            <label>
+                <textarea readonly rows="5" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
+            </label>
+            <label>
+                <textarea readonly rows="5" cols="">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
+            </label>
         </td>
     </tr>
     <tr id="conversionRate">

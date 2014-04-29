@@ -29,7 +29,7 @@
                             </label></td>
                         </tr>
                         <tr>
-                            <td>Target Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
+                            <td>Reference Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
                             <td><input type="file" name="ref" multiple/></td>
                         </tr>
                         <tr>

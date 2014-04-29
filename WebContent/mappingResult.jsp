@@ -71,7 +71,7 @@
                         <td><c:out value="${constant.mappingSummary.getNotUnique()}"/></td>
                     </tr>
                     <tr>
-                        <td>Invalid sequences</td>
+                        <td>Invalid sequences:</td>
                         <td><c:out value="${constant.mappingSummary.getNotExtracted()}"/></td>
                     </tr>
                     <tr>
@@ -95,15 +95,14 @@
                 <p class="dottedline"></p>
                 <table id="parameters">
                     <tr>
-                        <td>Analysis Parameters:</td>
-                        <td>Values must be in (0,1)</td>
+                        <td>Analysis Parameters</td>
                     </tr>
                     <tr>
-                        <td>Target Coordinates</td>
+                        <td>Target Coordinates:<sup><a href="manualAnalysis.jsp#targetCoordinates">?</a></sup></td>
                         <td><input type="file" name="target" multiple/></td>
                     </tr>
                     <tr>
-                        <td>Bisulfite conversion rate<sup><a
+                        <td>Bisulfite conversion rate:<sup><a
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
                         <td><label>
                             <input type="text" name="conversionRateThreshold"
@@ -111,7 +110,7 @@
                         </label></td>
                     </tr>
                     <tr>
-                        <td>Sequence identity<sup><a
+                        <td>Sequence identity:<sup><a
                                 href="manualAnalysis.jsp#seqIdentity">?</a></sup></td>
                         <td><label>
                             <input type="text" name="sequenceIdentityThreshold"
@@ -120,13 +119,13 @@
                     </tr>
                     <tr>
                         <td><label for="minp0"></label><input type="radio" name="par" id="minp0" value="minp0"
-                                                              checked="yes" onclick="check()"/>&alpha; threshold<sup><a
+                                                              checked="yes" onclick="check()"/>&alpha; threshold:<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
                         <td><label for="minp0text"></label><input type="text" id="minp0text" name="minp0text"
                                                                   value=0.02></td>
                     </tr>
                     <tr>
-                        <td>&nbsp;&nbsp;&nbsp;Critical Value<sup><a
+                        <td>&nbsp;&nbsp;&nbsp;Critical Value:<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
                         <td><label for="criticalValue"></label><input type="text" id="criticalValue"
                                                                       name="criticalValue" value=0.05></td>
@@ -135,14 +134,14 @@
                         <td><label for="minmethyl"></label><input type="radio" name="par" id="minmethyl"
                                                                   value="minmethyl" onclick="check()"/>Methylation
                             pattern
-                            threshold<sup><a
+                            threshold:<sup><a
                                     href="manualAnalysis.jsp#methylPatternThreshold">?</a></sup></td>
                         <td><label for="minmethyltext"></label><input type="text" id="minmethyltext"
                                                                       name="minmethyltext" value=0.1 disabled="true"/>
                         </td>
                     </tr>
                     <tr>
-                        <td>Mutation threshold<sup><a
+                        <td>Mutation threshold:<sup><a
                                 href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
                         <td><label>
                             <input type="text" name="mutationpatternThreshold"
@@ -150,7 +149,7 @@
                         </label></td>
                     </tr>
                     <tr>
-                        <td>Figure Format<sup><a
+                        <td>Figure Format:<sup><a
                                 href="manualAnalysis.jsp#figureFormat">?</a></sup></td>
                         <td><label>
                             <select name="figureFormat">

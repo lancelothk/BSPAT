@@ -36,28 +36,14 @@
                 </tr>
                 <tr id="refFile">
                     <td>
-                        <h4>Target Sequence File:</h4>
+                        <h4>Reference Sequence File:</h4>
 
-                        <p class="ptext">File contains sequences which exactly covered target genomic region. Those
-                            target
-                            sequences will be
-                            queried by <a href="http://genome.ucsc.edu/cgi-bin/hgBlat">Blat</a> for genomic coordinates.
-                            Only top result with
-                            equal 'score' and 'qsize' will be picked and used in following steps. In the mapping
-                            process, the target region will be extended 1000bp in both end as reference of mapping.
-                            The file should be in fasta format with extension ".txt", "fasta",
-                            "fa". Multiple target sequences in one file is supported. Name
-                            of target sequence should be a unique identifier in the
-                            target sequence file. The name should only be consist of character and
+                        <p class="ptext">The file contains reference sequences of sequencing results.
+                            It should be in fasta format with extension ".txt", "fasta",
+                            "fa". Multiple reference sequences in one file is supported. Identifier
+                            of reference sequence should be unique in the file. The Identifier should only be consist of
+                            character and
                             digits.</p>
-                        Notice: In the following analysis, only sequences fully covering target region will be included.
-                        E.g:
-                        <label>
-                            <textarea readonly rows="5" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
-                        </label>
-                        <label>
-                            <textarea readonly rows="5" cols="">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
-                        </label>
                     </td>
                 </tr>
                 <tr id="refVersion">
@@ -121,7 +107,7 @@
                             fasta files to upload. The extension of fastq and fasta files
                             can be .fq, .fastq, .fa, .fasta .txt(.txt input is by default
                             treated as fastq file). The reads in sequence files will be
-                            automatically mapped to corresponding target region. <br/>
+                            automatically mapped to corresponding reference region. <br/>
                             Notice: <br/> All input sequence file should be single-end. For paired-end data
                             with overlapping, user can use some tools like <a
                                 href="http://sco.h-its.org/exelixis/web/software/pear/">PEAR</a>
