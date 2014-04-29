@@ -38,12 +38,14 @@
                     <td>
                         <h4>Reference Sequence File:</h4>
 
-                        <p class="ptext">The file contains reference sequences of sequencing results.
+                        <p class="ptext">The file contains reference sequences.
                             It should be in fasta format with extension ".txt", "fasta",
                             "fa". Multiple reference sequences in one file is supported. Identifier
                             of reference sequence should be unique in the file. The Identifier should only be consist of
-                            character and
-                            digits.</p>
+                            character and digits.</p>
+                        <label>
+                            <textarea readonly rows="5" cols="">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
+                        </label>
                     </td>
                 </tr>
                 <tr id="refVersion">
