@@ -6,9 +6,10 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="modified manual for adding target coordinates">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/manualAnalysis.jsp" afterPath="$PROJECT_DIR$/WebContent/manualAnalysis.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/manualMapping.jsp" afterPath="$PROJECT_DIR$/WebContent/manualMapping.jsp" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="modified manual for adding target coordinates.&#10;fix some mistakes.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/images/AnalysisOptionsSection.png" afterPath="$PROJECT_DIR$/WebContent/images/AnalysisOptionsSection.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/images/RefParSection.png" afterPath="$PROJECT_DIR$/WebContent/images/RefParSection.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/images/mappingSummary_sample.png" afterPath="$PROJECT_DIR$/WebContent/images/mappingSummary_sample.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -170,8 +171,8 @@
       <file leaf-file-name="manualMapping.jsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WebContent/manualMapping.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.23904383" vertical-offset="612" max-vertical-offset="2826">
-              <caret line="44" column="53" selection-start-line="44" selection-start-column="53" selection-end-line="44" selection-end-column="53" />
+            <state vertical-scroll-proportion="0.21513945" vertical-offset="612" max-vertical-offset="2826">
+              <caret line="43" column="64" selection-start-line="43" selection-start-column="64" selection-end-line="43" selection-end-column="64" />
               <folding />
             </state>
           </provider>
@@ -466,47 +467,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
+              <option name="myItemId" value="WebContent" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BSPAT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BSPAT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DataType" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BSPAT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BSPAT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BSPAT" />
+              <option name="myItemId" value="images" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -555,23 +520,23 @@
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="BSPAT" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="DataType" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/WebContent/images" />
       <recent name="$PROJECT_DIR$/WebContent/tools/bismark" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="DataType" />
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="BSPAT" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
       <recent name="BSPAT" />
     </key>
   </component>
@@ -1183,7 +1148,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="updated mapping manual" />
     <MESSAGE value="updated analysis manual" />
     <MESSAGE value="fix bug: allelePattern maybe null in drawASMPattern() method." />
     <MESSAGE value="delete unused figures" />
@@ -1208,7 +1172,8 @@
     <MESSAGE value="add reference coordinates download" />
     <MESSAGE value="finished upload target coordinates and cut sequence according to target." />
     <MESSAGE value="modified manual for adding target coordinates" />
-    <option name="LAST_COMMIT_MESSAGE" value="modified manual for adding target coordinates" />
+    <MESSAGE value="modified manual for adding target coordinates.&#10;fix some mistakes." />
+    <option name="LAST_COMMIT_MESSAGE" value="modified manual for adding target coordinates.&#10;fix some mistakes." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1329,11 +1294,6 @@
         <state vertical-scroll-proportion="0.28993288" vertical-offset="72" max-vertical-offset="882">
           <caret line="16" column="34" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/images/RefParSection.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/BSPAT/ReportSummary.java">
@@ -1595,8 +1555,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/manualMapping.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23904383" vertical-offset="612" max-vertical-offset="2826">
-          <caret line="44" column="53" selection-start-line="44" selection-start-column="53" selection-end-line="44" selection-end-column="53" />
+        <state vertical-scroll-proportion="0.21513945" vertical-offset="612" max-vertical-offset="2826">
+          <caret line="43" column="64" selection-start-line="43" selection-start-column="64" selection-end-line="43" selection-end-column="64" />
           <folding />
         </state>
       </provider>
