@@ -151,6 +151,8 @@ public class CallBismark {
             Utilities.callCMD(extractor, new File(outputPath), outputPath + "bismark_methylExtractor.log");
 
             System.out.println("Call bismark finished!!!");
+            //clean tmp files
+            tempDir.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
