@@ -276,8 +276,7 @@ public class DrawPattern {
             } else if (figureFormat.equals(Constant.EPS)) {
                 epsImage = new FileOutputStream(fileName + ".eps");
                 graphWriter = new EpsGraphics("title", epsImage, 0, 0, imageWidth, imageHeight,
-                                              ColorMode.COLOR_RGB); // eps
-                // writer
+                                              ColorMode.COLOR_RGB); // eps writer
             }
             reportSummary.setASMFigureLink(fileName);
 
@@ -463,14 +462,17 @@ public class DrawPattern {
     }
 
     private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
+        // use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
+        if (patternWithAllele.getPercent() < 0.2 || patternWithoutAllele.getPercent() < 0.2) {
+            return false;
+        }
         List<CpGSite> cglistWithAllele = patternWithAllele.getCpGList();
         List<CpGSite> cglistWithoutAllele = patternWithoutAllele.getCpGList();
-//		// use 20% threshold to filter ASM pattern
-//		if (patternWithAllele.getCount() / (double)(patternWithAllele.getCount() + patternWithoutAllele.getCount()) < 0.2){
-//			return false;
-//		}
+        // if there is at least one cpg site with different methyl type and the different bigger than 0.2, it is ASM
         for (int i = 0; i < cglistWithAllele.size(); i++) {
-            if (cglistWithAllele.get(i).getMethylType() != cglistWithoutAllele.get(i).getMethylType()) {
+            if (cglistWithAllele.get(i).getMethylType() != cglistWithoutAllele.get(i).getMethylType() &&
+                    Math.abs(cglistWithAllele.get(i).getMethylLevel() - cglistWithoutAllele.get(i).getMethylLevel()) >=
+                            0.2) {
                 return true;
             }
         }

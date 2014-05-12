@@ -84,7 +84,7 @@
                     </tr>
                     <tr>
                         <td>Reference coordinates:</td>
-                        <td><a href=<c:out value="${constant.getAbsolutePathCoorFile()}"/>>coordinates</a>
+                        <td><a href=<c:out value="${constant.getAbsolutePathCoorFile()}"/>>coordinates.coor</a>
                         </td>
                     </tr>
                     <tr>
