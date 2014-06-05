@@ -19,7 +19,7 @@
 <p class="dottedline"></p>
 <br/>
 
-<h3 id="mappingSummary">Mapping summary section:</h3>
+<h3 id="mappingSummary">Mapping Summary Section:</h3>
 <table>
     <tr>
         <td><img src="images/mappingSummary_sample.png" border="1" alt=""/>
@@ -32,7 +32,7 @@
     </tr>
     <tr>
         <td>
-            <p class="ptext">An unique ID is used to track and retrieve result.</p>
+            <p class="ptext">A unique ID is used to track and retrieve result.</p>
         </td>
     </tr>
     <tr>
@@ -42,7 +42,7 @@
     </tr>
     <tr>
         <td>
-            <p class="ptext">List experiments which executed in the mapping phase.</p>
+            <p class="ptext">List experiments executed in the mapping phase.</p>
         </td>
     </tr>
     <tr>
@@ -52,7 +52,7 @@
     </tr>
     <tr>
         <td>
-            <p class="ptext">The total number of sequence uploaded and analysed.</p>
+            <p class="ptext">The total number of sequences uploaded and analysed.</p>
         </td>
     </tr>
     <tr>
@@ -164,8 +164,9 @@
     </tr>
     <tr>
         <td>
-            <p class="ptext">User should to upload a file contains the coordinates which define the target region of
-                analysis. The file format is same to reference coordinates. It will be easier to modify coordinates in
+            <p class="ptext">User should upload a file contains the coordinates which define the target region of
+                analysis. The file format should be same to reference coordinates file. It will be easier to create one
+                based on
                 reference coordinates file and upload it here.</p>
             Notice: In the following analysis, only sequences fully covering target region will be included.
             E.g:
@@ -222,7 +223,7 @@
     <tr>
         <td>
             <p class="ptext">This threshold is the percentage of reads covered in
-                methylation pattern comparing to total number of reads. Patterns with a higher portion than this
+                methylation pattern comparing to total number of reads. Patterns with a percentage higher than this
                 threshold will be shown in result.</p>
         </td>
     </tr>
@@ -237,7 +238,7 @@
                 For mutation pattern filtering, it is the percentage of reads covered in mutation pattern comparing to
                 total number of reads. Patterns with a higher portion than this threshold will be shown in result.<br/>
                 (b) For allele filtering, it is the percentage of reads with specific mismatch comparing to total number
-                of reads. Mismatches with a higher portion than this threshold will be treated as an allele. </p>
+                of reads. Mismatches with a percentage higher than this threshold will be treated as an allele. </p>
         </td>
     </tr>
     <tr id="figureFormat">
@@ -247,7 +248,7 @@
     </tr>
     <tr>
         <td>
-            <p class="ptext">User can select the format of pattern figure. Currently
+            <p class="ptext">User can select the output format of pattern figure. Currently
                 support PNG and EPS.</p>
         </td>
     </tr>

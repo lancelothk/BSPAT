@@ -19,18 +19,18 @@
             <p class="dottedline"></p>
             <br/>
 
-            <h3>Reference and Parameter section:</h3>
+            <h3>Reference and Parameter Section:</h3>
             <table>
                 <tr>
                     <td><img src="images/RefParSection.png" border="1" alt=""/></td>
                 </tr>
                 <tr id="email">
                     <td>
-                        <h4>Email address(optional):</h4>
+                        <h4>Email Address(optional):</h4>
 
                         <p class="ptext">The email address is used to notice user
                             when the mapping or analysis procedure has finished. A unique
-                            execution ID is sent along with the email for retrieving the
+                            execution ID in the email is used for retrieving the
                             result.</p>
                     </td>
                 </tr>
@@ -39,8 +39,8 @@
                         <h4>Reference Sequence File:</h4>
 
                         <p class="ptext">The file contains reference sequences.
-                            It should be in fasta format with extension ".txt", "fasta",
-                            "fa". Multiple reference sequences in one file is supported. Identifier
+                            It should be in fasta format with extension ".txt", ".fasta",
+                            ".fa". Multiple reference sequences in one file is supported. Identifier
                             of reference sequence should be unique in the file. The Identifier should only be consist of
                             character and digits.</p>
                         <label>
@@ -52,15 +52,15 @@
                     <td>
                         <h4>Reference Genome Version:</h4>
 
-                        <p class="ptext">The reference genome version is used in
-                            following analysis. The result visualization is also based on
+                        <p class="ptext">It specify the reference genome version used in
+                            following analysis. The coordinates in result visualization is also based on
                             this selection. Currently support hg19, hg18, hg17 and hg16.</p>
                     </td>
                 </tr>
 
                 <tr id="quality">
                     <td>
-                        <h4>Quality Score type:</h4>
+                        <h4>Quality Score Type:</h4>
 
                         <p class="ptext">
                             Bismark parameter. User need to specify what kind of quality
@@ -95,7 +95,7 @@
             <table>
                 <tr id="experiment">
                     <td>
-                        <h4>Experiment section:</h4>
+                        <h4>Experiment Section:</h4>
                     </td>
                 </tr>
                 <tr>
@@ -104,9 +104,9 @@
                 <tr>
                     <td>
                         <p class="ptext">
-                            In this section,for each experiment, user need to enter an
-                            experiment name in textbox and select one or multiple fastq or
-                            fasta files to upload. The extension of fastq and fasta files
+                            In this section, for each experiment, user need to enter an
+                            experiment name(without space character) in textbox and select one or multiple fastq/fasta
+                            files to upload. The extension of fastq/fasta files
                             can be .fq, .fastq, .fa, .fasta .txt(.txt input is by default
                             treated as fastq file). The reads in sequence files will be
                             automatically mapped to corresponding reference region. <br/>
@@ -122,7 +122,7 @@
             <table>
                 <tr>
                     <td>
-                        <h4>Button section:</h4>
+                        <h4>Bottom Section:</h4>
                     </td>
                 </tr>
                 <tr>
@@ -131,9 +131,9 @@
                 <tr>
                     <td>
                         <p class="ptext">In the bottom of the page, "add experiment"
-                            and " delete experiment" buttons are used to add and delete
-                            experiment above. After finished set all parameters, user need
-                            to click "Execute" button to submit this page.</p>
+                            and "delete experiment" buttons are used to add and delete
+                            experiment above. After set all parameters, user need
+                            to click "Execute" button to start the mapping.</p>
                     </td>
                 </tr>
             </table>

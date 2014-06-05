@@ -20,7 +20,7 @@
 
             <p class="ptext">
                 Ke Hu &nbsp&nbsp Ph.D student
-                <br/>Advised by: &nbsp&nbsp <a href="http://engr.case.edu/li_jing/index.html">Dr. Jing Li </a>
+                <br/>Advisor: &nbsp&nbsp <a href="http://engr.case.edu/li_jing/index.html">Dr. Jing Li </a>
                 <br/>Computational Biology Lab @ EECS department
                 <br/>Case Western Reserve University<br/>
                 If you have any questions or suggestions, feel free to send an email to:

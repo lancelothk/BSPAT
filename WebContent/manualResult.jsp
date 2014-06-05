@@ -26,27 +26,27 @@
     </tr>
     <tr>
         <td>
-            <h4>Experiment</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p class="ptext">List experiments which executed in the mapping phase.</p>
-        </td>
-    </tr>
-    <tr>
-        <td>
             <h4>Result ID</h4>
         </td>
     </tr>
     <tr>
         <td>
-            <p class="ptext">An unique ID is used to track and retrieve result.</p>
+            <p class="ptext">A unique ID is used to track and retrieve result.</p>
         </td>
     </tr>
     <tr>
         <td>
-            <h4>Bisulfite Conversion rate</h4>
+            <h4>Experiment</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">List experiments executed in the mapping phase.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Bisulfite conversion rate</h4>
         </td>
     </tr>
     <tr>
@@ -87,7 +87,7 @@
     </tr>
     <tr>
         <td>
-            <p class="ptext">Number of sequences after filtering by bisulfite conversion rate and sequence
+            <p class="ptext">Number of sequences filtered by bisulfite conversion rate and sequence
                 identity.</p>
         </td>
     </tr>
@@ -133,44 +133,80 @@
         <td><img src="images/experimentResultSection.png" border="1" alt=""/></td>
     </tr>
     <tr>
-        <td><p class="ptext">The result of each experiment and each region is listed one by one. A link to download all
+        <td><p class="ptext">The result of each experiment and each region are listed one by one. A link to download all
             result files is provided in the bottom of the page.</p>
         </td>
     </tr>
     <tr>
-        <td><b>Methylation Pattern:</b>For each read, the methylation status at all CpG
-            sites covered by the read is regarded as its methylation signature or a
-            pattern. All reads have the same signature/pattern will be grouped together
-            and the number of all such reads is the support of the pattern.
+    <tr>
+        <td>
+            <h4>Methylation Pattern</h4>
         </td>
     </tr>
     <tr>
-        <td><b>MethylationWithMutation pattern:</b>Combination of methylation and mutation patterns. Sorted by
-            Methylation status first.
+        <td>
+            <p class="ptext">For each read, the methylation status at all CpG
+                sites covered by the read is regarded as its methylation signature or a
+                pattern. All reads have the same signature/pattern will be grouped together
+                and the number of all such reads is the support of the pattern.</p>
         </td>
     </tr>
     <tr>
-        <td><b>Mutation Pattern:</b> Same to methylation pattern, but use mutation status instead.
+        <td>
+            <h4>MethylationWithMutation pattern</h4>
         </td>
     </tr>
     <tr>
-        <td><b>MutationWithMethylation pattern:</b>Combination of methylation and mutation patterns. Sorted by Mutation
-            status first.
+        <td>
+            <p class="ptext">Combination of methylation and mutation patterns. Sorted by
+                Methylation status first.</p>
         </td>
     </tr>
     <tr>
-        <td><b>ASM pattern:</b> When an allele exists, BSPAT groups all reads according to their alleles at the variant
-            locus and according to methylation status of CpG sites. BSPAT separates all CpG sites
-            into three categories according to the proportion of their methylated reads:
-            low methylation level (<=20% reads are methylated), high methylation level
-            (>= 80% reads are methylated), and intermediate level (otherwise). When
-            there is at least one CpG site that the levels of methylation are different for
-            different alleles, BSPAT regards the region as an allele speciﬁc methylation region.
+        <td>
+            <h4>Mutation Pattern</h4>
         </td>
     </tr>
     <tr>
-        <td><b>Other information:</b> contains summary information such as methylation rate in each CpG site,
-            number of reads filtered by threshold.
+        <td>
+            <p class="ptext">Same to methylation pattern, but use mutation status instead.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>MutationWithMethylation pattern</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Combination of methylation and mutation patterns. Sorted by Mutation status first.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>ASM pattern</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">When an allele exists, BSPAT groups all reads according to their alleles at the variant
+                locus and according to methylation status of CpG sites. BSPAT separates all CpG sites
+                into three categories according to the proportion of their methylated reads:
+                low methylation level (<=20% reads are methylated), high methylation level
+                (>= 80% reads are methylated), and intermediate level (otherwise). When
+                there is at least one CpG site that the levels of methylation are different for
+                different alleles, BSPAT regards the region as an allele specific methylation region.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Other information</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Contains summary information such as methylation rate in each CpG site,
+                number of reads filtered by threshold.</p>
         </td>
     </tr>
 </table>
@@ -181,16 +217,17 @@
         <td><h3>Result types:</h3></td>
     </tr>
     <tr>
-        <td><h4>Text:</h4></td>
+        <td><h4>Text</h4></td>
     </tr>
     <tr>
         <td>
             <p class="ptext">In the text representation of pattern, "@@" means one methylated CpG site, "**"
-                means unmethylated CpG site. "-" means non-CpG site nucleotide, Mismatch comparing to reference is
+                means unmethylated CpG site. "-" means non-CpG site nucleotide. Mismatch comparing to reference is
                 represented by actual character of that position. Read count and percentage of each pattern is shown
                 at the end. Here the percentage of pattern is calculated as read count
-                of the pattern divided by total count of reads. Last two columns are methylation pattern ID and mutation
-                parent pattern ID.
+                of the pattern divided by total count of reads. Last one or two columns are pattern IDs.
+                In Methylation pattern and Mutation pattern files, the ID refers to current pattern.
+                In combination pattern files, the ID means the parent pattern ID which current pattern derives from.
             </p>
         </td>
     </tr>
@@ -200,7 +237,7 @@
                                                   width="620" alt=""/></a></td>
     </tr>
     <tr>
-        <td><h4>Figure:</h4></td>
+        <td><h4>Figure</h4></td>
     </tr>
     <tr>
         <td><p class="ptext">Currently support PNG and EPS format figure. For patterns, black circle refers to
@@ -210,7 +247,7 @@
             Red(100%) to Green (0%). Mutation(SNP) here is represented by a blue bar.</p>
 
             <p class="ptext">For ASM pattern, there are only two colorful patterns. Each of the pattern
-                represent an allele methylation pattern.</p></td>
+                represents an allele methylation pattern.</p></td>
     </tr>
     <tr>
         <td>Example:<br/> <a href="images/figure_example.png"
@@ -218,12 +255,14 @@
                                                   border="1" width="620" alt=""/></a></td>
     </tr>
     <tr>
-        <td><h4>Genome Browser Link:</h4></td>
+        <td><h4>Genome Browser Link</h4></td>
     </tr>
     <tr>
-        <td><p class="ptext">Those links point to UCSC genome browser with loading custom track. Target region
+        <td><p class="ptext">Those links point to UCSC genome browser with loaded custom track. Target region
             is covered with black bar. The layout and color scale is same to figure result. dbSNP track is
-            loaded by default. More help information can be found in UCSC genome browser website.</p></td>
+            loaded by default. More help information can be found in UCSC genome browser website. To add or remove
+            custom track,
+            please refer to UCSC genome browser manual. </p></td>
     </tr>
     <tr>
         <td>Example:<br/> <a href="images/gb_example.png"
@@ -231,7 +270,7 @@
                                                   width="620" alt=""/></a></td>
     </tr>
     <tr>
-        <td><h4>dbSNP link:</h4></td>
+        <td><h4>dbSNP link</h4></td>
     </tr>
     <tr>
         <td><p class="ptext">If the SNP associated with allele-specific methylation pattern is contained in
