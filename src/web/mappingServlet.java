@@ -58,20 +58,18 @@ public class mappingServlet extends HttpServlet {
 		initializeConstant(request); // initialize constant, which is a singleton
 		cleanRootFolder(); // release root folder space
 		List<Experiment> experiments = new ArrayList<>();
-		// add each experiment in list
-		String experimentName;
-		int index = 1;
-		while ((experimentName = request.getParameter("experiment" + index)) != null) {
-			if (experimentName.equals("")) {
-				response.setContentType("text/html");
-				Utilities.showAlertWindow(response, "Experiment " + index + " name is empty!");
-				return;
-			} else {
-				experiments.add(new Experiment(index, experimentName));
-				index++; // separate ++ operation makes code clear.
-			}
+		boolean isDemo = Boolean.parseBoolean(request.getParameter("demo"));
+
+		if (isDemo) {
+			experiments.add(new Experiment(1, "demoExperiment"));
+			FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoReference.fasta"),
+										  new File(constant.originalRefPath));
+			FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
+										  new File(constant.seqsPath + "demoExperiment"));
+		} else {
+			addExperiment(request, response, experiments);
+			handleUploadedFiles(request, response, experiments);
 		}
-		handleUploadedFiles(request, response, experiments);
 
 		long start = System.currentTimeMillis();
 		// set other parameters
@@ -134,6 +132,22 @@ public class mappingServlet extends HttpServlet {
 		request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
 	}
 
+	private void addExperiment(HttpServletRequest request, HttpServletResponse response, List<Experiment> experiments) {
+		// add each experiment in list
+		String experimentName;
+		int index = 1;
+		while ((experimentName = request.getParameter("experiment" + index)) != null) {
+			if (experimentName.equals("")) {
+				response.setContentType("text/html");
+				Utilities.showAlertWindow(response, "Experiment " + index + " name is empty!");
+				return;
+			} else {
+				experiments.add(new Experiment(index, experimentName));
+				index++; // separate ++ operation makes code clear.
+			}
+		}
+	}
+
 	private void handleUploadedFiles(HttpServletRequest request, HttpServletResponse response,
 									 List<Experiment> experiments) throws IOException, ServletException {
 		Collection<Part> parts = request.getParts(); // get submitted data
@@ -143,12 +157,8 @@ public class mappingServlet extends HttpServlet {
 			String fieldName = Utilities.getField(part, "name");
 			String fileName = Utilities.getField(part, "filename");
 			if (fieldName.equals("ref")) { // deal with uploaded ref file
-				File refFolder = new File(constant.originalRefPath);
-				if (!refFolder.isDirectory()) { // if ref directory do not exist, make one
-					refFolder.mkdirs();
-				}
 				// save ref file in ref folder
-				if (IO.saveFileToDisk(part, refFolder.getAbsolutePath(), fileName)) {
+				if (IO.saveFileToDisk(part, constant.originalRefPath, fileName)) {
 					refReady = true;
 				} else {
 					Utilities.showAlertWindow(response, "reference file is blank!");
@@ -159,11 +169,7 @@ public class mappingServlet extends HttpServlet {
 				for (Experiment experiment : experiments) { // match file index and seq file index
 					if (experiment.getIndex() == seqFileIndex) {
 						experiment.setSeqFile(fileName);
-						File seqFolder = new File(constant.seqsPath + experiment.getName());
-						if (!seqFolder.isDirectory()) { // if sequence directory do not exist, make one
-							seqFolder.mkdirs();
-						}
-						if (IO.saveFileToDisk(part, seqFolder.getAbsolutePath(), fileName)) {
+						if (IO.saveFileToDisk(part, constant.seqsPath + experiment.getName(), fileName)) {
 							experiment.setSeqReady(true);
 						} else {
 							Utilities.showAlertWindow(response, "seq file is blank!");
@@ -218,6 +224,7 @@ public class mappingServlet extends HttpServlet {
 		IO.createFolder(constant.seqsPath);
 		constant.toolsPath = Constant.DISKROOTPATH + "/tools/";
 		IO.createFolder(constant.toolsPath);
+		constant.demoPath = Constant.DISKROOTPATH + "/demo/";
 		URL domain = new URL(request.getRequestURL().toString());
 		constant.host = domain.getHost() + ":" + domain.getPort();
 	}

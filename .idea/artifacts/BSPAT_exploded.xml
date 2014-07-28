@@ -6,6 +6,9 @@
         <element id="directory" name="classes">
           <element id="module-output" name="BSPAT" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="application" name="commons-io-2.4-javadoc" />
+        </element>
       </element>
       <element id="javaee-facet-resources" facet="BSPAT/web/Web" />
     </root>

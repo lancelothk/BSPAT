@@ -60,7 +60,11 @@ public class IO {
     }
 
     public static boolean saveFileToDisk(Part part, String path, String fileName) throws IOException {
-        if (fileName != null && !fileName.isEmpty()) {
+		File dir = new File(path);
+		if (!dir.isDirectory()) { // if path directory do not exist, make one
+			dir.mkdirs();
+		}
+		if (fileName != null && !fileName.isEmpty()) {
             part.write(path + "/" + fileName);
             return true;
         } else {

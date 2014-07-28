@@ -28,6 +28,7 @@ public class Constant implements Serializable {
     public String seqsPath;
     public String toolsPath;
     public String targetPath;
+	public String demoPath;
 
     // parameters
     public String runID;
@@ -375,4 +376,28 @@ public class Constant implements Serializable {
     public void setSeqCountSummary(SeqCountSummary seqCountSummary) {
         this.seqCountSummary = seqCountSummary;
     }
+
+	public String getTargetPath() {
+		return targetPath;
+	}
+
+	public void setTargetPath(String targetPath) {
+		this.targetPath = targetPath;
+	}
+
+	public String getDemoPath() {
+		return demoPath;
+	}
+
+	public void setDemoPath(String demoPath) {
+		this.demoPath = demoPath;
+	}
+
+	public String getTargetFileName() {
+		return targetFileName;
+	}
+
+	public void setTargetFileName(String targetFileName) {
+		this.targetFileName = targetFileName;
+	}
 }
