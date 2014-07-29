@@ -6,21 +6,8 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="remove preprocessingServlet.java">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/demo.jsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/demo/demoReference.fasta" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/WebContent/demo/demoSequence.fastq" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-cli-1.2-javadoc.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-cli-1.2.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-io-1.4.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/WebContent/WEB-INF/lib/commons-io-2.4.jar" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BSPAT.iml" afterPath="$PROJECT_DIR$/BSPAT.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/BSPAT.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/BSPAT.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/BSPAT_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/BSPAT_exploded.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DataType/Constant.java" afterPath="$PROJECT_DIR$/src/DataType/Constant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BSPAT/IO.java" afterPath="$PROJECT_DIR$/src/BSPAT/IO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/mappingServlet.java" afterPath="$PROJECT_DIR$/src/web/mappingServlet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/WebContent/menu.html" afterPath="$PROJECT_DIR$/WebContent/menu.html" />
+    <list default="true" id="ce29eb8e-5cc8-4673-8601-190fed6c2d88" name="Default" comment="added one click demo test">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/web/analysisServlet.java" afterPath="$PROJECT_DIR$/src/web/analysisServlet.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="BSPAT.iws" />
@@ -112,21 +99,9 @@
       <file leaf-file-name="Constant.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3534" max-vertical-offset="5076">
-              <caret line="379" column="35" selection-start-line="379" selection-start-column="35" selection-end-line="379" selection-end-column="35" />
-              <folding>
-                <element signature="e#9834#9835#0" expanded="true" />
-                <element signature="e#9883#9884#0" expanded="true" />
-                <element signature="e#9918#9919#0" expanded="true" />
-                <element signature="e#9950#9951#0" expanded="true" />
-                <element signature="e#9972#9973#0" expanded="true" />
-                <element signature="e#10017#10018#0" expanded="true" />
-                <element signature="e#10048#10049#0" expanded="true" />
-                <element signature="e#10086#10087#0" expanded="true" />
-                <element signature="e#10114#10115#0" expanded="true" />
-                <element signature="e#10171#10172#0" expanded="true" />
-                <element signature="e#10214#10215#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0" vertical-offset="339" max-vertical-offset="4860">
+              <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="30" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -134,7 +109,7 @@
       <file leaf-file-name="menu.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebContent/menu.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.333333" vertical-offset="0" max-vertical-offset="612">
+            <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="612">
               <caret line="20" column="69" selection-start-line="20" selection-start-column="69" selection-end-line="20" selection-end-column="69" />
               <folding />
             </state>
@@ -144,7 +119,7 @@
       <file leaf-file-name="index.jsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebContent/index.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-29.333334" vertical-offset="1620" max-vertical-offset="2952">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1620" max-vertical-offset="2952">
               <caret line="134" column="20" selection-start-line="134" selection-start-column="8" selection-end-line="134" selection-end-column="20" />
               <folding />
             </state>
@@ -154,18 +129,48 @@
       <file leaf-file-name="demo.jsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WebContent/demo.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.490909" vertical-offset="1267" max-vertical-offset="1962">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1267" max-vertical-offset="1980">
               <caret line="78" column="80" selection-start-line="78" selection-start-column="66" selection-end-line="78" selection-end-column="80" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mappingServlet.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="mappingServlet.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18046358" vertical-offset="557" max-vertical-offset="5616">
-              <caret line="62" column="21" selection-start-line="62" selection-start-column="21" selection-end-line="62" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="763" max-vertical-offset="5652">
+              <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Experiment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/DataType/Experiment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="918">
+              <caret line="38" column="25" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mappingResult.jsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-16.0" vertical-offset="1386" max-vertical-offset="3222">
+              <caret line="101" column="59" selection-start-line="101" selection-start-column="53" selection-end-line="101" selection-end-column="59" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="analysisServlet.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.4958084" vertical-offset="216" max-vertical-offset="2718">
+              <caret line="60" column="74" selection-start-line="60" selection-start-column="74" selection-end-line="60" selection-end-column="74" />
               <folding />
             </state>
           </provider>
@@ -176,9 +181,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="808" max-vertical-offset="2826">
               <caret line="65" column="9" selection-start-line="65" selection-start-column="9" selection-end-line="65" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -235,7 +238,6 @@
         <option value="$PROJECT_DIR$/src/web/resultRetrieveServlet.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/Utilities.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/ReadAnalysisResult.java" />
-        <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/ImportBismarkResult.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/BSSeqAnalysis.java" />
         <option value="$PROJECT_DIR$/WebContent/download.jsp" />
@@ -252,6 +254,7 @@
         <option value="$PROJECT_DIR$/src/DataType/Constant.java" />
         <option value="$PROJECT_DIR$/src/BSPAT/IO.java" />
         <option value="$PROJECT_DIR$/src/web/mappingServlet.java" />
+        <option value="$PROJECT_DIR$/src/web/analysisServlet.java" />
       </list>
     </option>
   </component>
@@ -413,6 +416,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -479,7 +483,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -1092,14 +1095,15 @@
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32831" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28253615" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31573275" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28253615" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47608453" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32580644" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33728448" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44189382" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25444266" sideWeight="0.4992" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2584814" sideWeight="0.4992" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28388473" sideWeight="0.5008" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23419774" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31964484" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23344104" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4705228" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34491634" sideWeight="0.50064516" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1116,7 +1120,6 @@
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39046392" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32004312" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Time Tracking" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23294723" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1169,7 +1172,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="remove unused resources" />
     <MESSAGE value="delete workspace.xml from git repository" />
     <MESSAGE value="enable multiple upload for target reference files" />
     <MESSAGE value="updated example data file" />
@@ -1194,7 +1196,8 @@
     <MESSAGE value="fixed incorrect ASM pattern bug.&#10;Add two filtering threshold to filter out incorrect patterns." />
     <MESSAGE value="delete bismark tmp dir after execution" />
     <MESSAGE value="remove preprocessingServlet.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove preprocessingServlet.java" />
+    <MESSAGE value="added one click demo test" />
+    <option name="LAST_COMMIT_MESSAGE" value="added one click demo test" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1202,16 +1205,16 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/web/mappingServlet.java</url>
-          <line>64</line>
+          <url>file://$PROJECT_DIR$/src/web/analysisServlet.java</url>
+          <line>56</line>
           <properties />
-          <option name="timeStamp" value="114" />
+          <option name="timeStamp" value="119" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="115" />
+      <option name="time" value="120" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -1219,13 +1222,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/WebContent/manualMapping.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1975" max-vertical-offset="2952">
-          <caret line="122" column="0" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DataType/SequenceComparatorRegion.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0966443" vertical-offset="0" max-vertical-offset="918">
@@ -1433,14 +1429,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="882" max-vertical-offset="2700">
-          <caret line="67" column="17" selection-start-line="67" selection-start-column="17" selection-end-line="67" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/analysisResult.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="679" max-vertical-offset="2898">
@@ -1467,7 +1455,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="207" max-vertical-offset="810">
           <caret line="51" column="23" selection-start-line="51" selection-start-column="23" selection-end-line="51" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1491,7 +1478,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2484" max-vertical-offset="3618">
           <caret line="150" column="85" selection-start-line="150" selection-start-column="85" selection-end-line="150" selection-end-column="85" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1499,14 +1485,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.64444447" vertical-offset="0" max-vertical-offset="810">
           <caret line="29" column="33" selection-start-line="29" selection-start-column="33" selection-end-line="29" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1134" max-vertical-offset="3222">
-          <caret line="63" column="25" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1536,7 +1514,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/index.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-29.333334" vertical-offset="1620" max-vertical-offset="2952">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1620" max-vertical-offset="2952">
           <caret line="134" column="20" selection-start-line="134" selection-start-column="8" selection-end-line="134" selection-end-column="20" />
           <folding />
         </state>
@@ -1544,7 +1522,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/menu.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.333333" vertical-offset="0" max-vertical-offset="612">
+        <state vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="612">
           <caret line="20" column="69" selection-start-line="20" selection-start-column="69" selection-end-line="20" selection-end-column="69" />
           <folding />
         </state>
@@ -1554,27 +1532,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="72108">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3534" max-vertical-offset="5076">
-          <caret line="379" column="35" selection-start-line="379" selection-start-column="35" selection-end-line="379" selection-end-column="35" />
-          <folding>
-            <element signature="e#9834#9835#0" expanded="true" />
-            <element signature="e#9883#9884#0" expanded="true" />
-            <element signature="e#9918#9919#0" expanded="true" />
-            <element signature="e#9950#9951#0" expanded="true" />
-            <element signature="e#9972#9973#0" expanded="true" />
-            <element signature="e#10017#10018#0" expanded="true" />
-            <element signature="e#10048#10049#0" expanded="true" />
-            <element signature="e#10086#10087#0" expanded="true" />
-            <element signature="e#10114#10115#0" expanded="true" />
-            <element signature="e#10171#10172#0" expanded="true" />
-            <element signature="e#10214#10215#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1590,24 +1547,54 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="808" max-vertical-offset="2826">
           <caret line="65" column="9" selection-start-line="65" selection-start-column="9" selection-end-line="65" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/WebContent/demo.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.490909" vertical-offset="1267" max-vertical-offset="1962">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1267" max-vertical-offset="1980">
           <caret line="78" column="80" selection-start-line="78" selection-start-column="66" selection-end-line="78" selection-end-column="80" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WebContent/mappingResult.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.0" vertical-offset="1386" max-vertical-offset="3222">
+          <caret line="101" column="59" selection-start-line="101" selection-start-column="53" selection-end-line="101" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/Constant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="339" max-vertical-offset="4860">
+          <caret line="36" column="18" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataType/Experiment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="918">
+          <caret line="38" column="25" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/web/mappingServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18046358" vertical-offset="557" max-vertical-offset="5616">
-          <caret line="62" column="21" selection-start-line="62" selection-start-column="21" selection-end-line="62" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="763" max-vertical-offset="5652">
+          <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/web/analysisServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4958084" vertical-offset="216" max-vertical-offset="2718">
+          <caret line="60" column="74" selection-start-line="60" selection-start-column="74" selection-end-line="60" selection-end-column="74" />
           <folding />
         </state>
       </provider>

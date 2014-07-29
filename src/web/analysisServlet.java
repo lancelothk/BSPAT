@@ -6,6 +6,7 @@ import BSPAT.Utilities;
 import DataType.Constant;
 import DataType.Experiment;
 import DataType.SeqCountSummary;
+import org.apache.commons.io.FileUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -70,9 +71,10 @@ public class analysisServlet extends HttpServlet {
                 if (IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName)) {
                     constant.targetFileName = fileName;
                 } else {
-                    Utilities.showAlertWindow(response, "target file is blank!");
-                    return;
-                }
+					FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
+												  new File(constant.targetPath));
+					constant.targetFileName = constant.coorFileName;
+				}
             }
         }
         constant.figureFormat = request.getParameter("figureFormat"); // set figure format
