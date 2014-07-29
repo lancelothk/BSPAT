@@ -15,8 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -195,6 +194,32 @@ public class mappingServlet extends HttpServlet {
 		}
 	}
 
+	private final SecureRandom random = new SecureRandom();
+
+	/**
+	 * generate random suffix folder with given path and prefix.
+	 *
+	 * @param path
+	 * @param prefix
+	 * @return random folder
+	 */
+	private File generateRandomDirectory(String path, String prefix) {
+		if (!path.endsWith("/")) {
+			path = path + "/";
+		}
+		long n;
+		File dir;
+		do {
+			n = random.nextLong();
+			n = (n == Long.MIN_VALUE) ? 0 : Math.abs(n);
+			dir = new File(path + prefix + Long.toString(n));
+		} while (dir.exists());
+		if (!dir.mkdir()) {
+			throw new RuntimeException("failed to create random folder in " + path + " with prefix: " + prefix);
+		}
+		return dir;
+	}
+
 	/**
 	 * initialize constant singleton
 	 *
@@ -207,7 +232,7 @@ public class mappingServlet extends HttpServlet {
 		Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
 		// webPath is relative path to root
 		constant.webRootPath = request.getContextPath();
-		constant.randomDir = Files.createTempDirectory(Paths.get(Constant.DISKROOTPATH), "Run").toString();
+		constant.randomDir = generateRandomDirectory(Constant.DISKROOTPATH, "Run").getAbsolutePath();
 		constant.runID = constant.randomDir.split("Run")[1];
 		constant.mappingResultPath = constant.randomDir + "/bismark_result/";
 		IO.createFolder(constant.mappingResultPath);
