@@ -119,6 +119,7 @@ public class mappingServlet extends HttpServlet {
 		// passing JSTL parameters
 		constant.mappingSummary = mappingSummary;
 		constant.mappingTime = (System.currentTimeMillis() - start) / 1000;
+		constant.mappingTime = constant.mappingTime < 1 ? 1 : constant.mappingTime;
 		constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
 		constant.finishedMapping = true;
 		// save constant object to file
