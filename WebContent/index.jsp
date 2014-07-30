@@ -19,7 +19,7 @@
             <p class="dottedline"></p>
             <img id="loader" src="images/progress.gif" alt="progress" style="display: none;"/>
 
-            <form action="mapping" enctype="multipart/form-data" method="post">
+            <form action="mapping" onsubmit="return validateInput()" enctype="multipart/form-data" method="post">
                 <div id="tables">
                     <table id="refcoor">
                         <tr>
@@ -30,7 +30,7 @@
                         </tr>
                         <tr>
                             <td>Reference Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
-                            <td><input type="file" name="ref" multiple/></td>
+                            <td><input type="file" id="ref" name="ref" multiple/></td>
                         </tr>
                         <tr>
                             <td>Reference Genome Version:<sup><a href="manualMapping.jsp#refVersion">?</a></sup></td>
@@ -80,8 +80,7 @@
                                        onclick="addExperiment()"/></td>
                             <td><input name="delete" type="button"
                                        value="delete experiment" onclick="deleteExperiment()"/></td>
-                            <td><input type="submit" value="Execute"
-                                       onclick="document.getElementById('loader').style.display = 'block';document.getElementById('tables').style.display = 'none';setFooter();"/>
+                            <td><input type="submit" value="Execute"/>
                             </td>
                         </tr>
                     </table>
@@ -103,11 +102,13 @@
         var textInput = document.createElement("input");
         var fileInput = document.createElement("input");
         textInput.setAttribute("name", "experiment" + elementCount);
+        textInput.setAttribute("id", "experiment" + elementCount);
         textInput.setAttribute("type", "text");
         textInput.setAttribute("multiple", "multiple");
 
         // if access in JS, need use "ID" in stead of "name"
         fileInput.setAttribute("name", "seqFile" + elementCount);
+        fileInput.setAttribute("id", "seqFile" + elementCount);
         fileInput.setAttribute("type", "file");
         fileInput.setAttribute("multiple", "multiple");
         cellLineText.appendChild(index);
@@ -129,7 +130,9 @@
 
         // assign name, type and value of elements
         seqRow.setAttribute("id", "trseq" + elementCount);
+        seqRow.setAttribute("name", "trseq");
         checkBoxRow.setAttribute("id", "trcheckbox" + elementCount);
+        checkBoxRow.setAttribute("name", "trcheckbox");
 
         // add element in TR
         addColumnSeq(seqRow);
@@ -153,6 +156,36 @@
         }
         setFooter();
     }
+
+    function test() {
+        print("test");
+    }
+
+    function validateInput() {
+        if (document.getElementById("ref").value == "") {
+            window.alert("No reference file!");
+            return false;
+        }
+        for (var i = 1; i <= elementCount; i++) {
+            if (document.getElementById("experiment" + i).value == "") {
+                window.alert("Experiment " + i + " name is empty!");
+                return false;
+            }
+            if (document.getElementById("seqFile" + i).value == "") {
+                window.alert("Experiment " + i + " has no sequence file selected!");
+                return false;
+            }
+        }
+        resetPage();
+        return true;
+    }
+
+    function resetPage() {
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('tables').style.display = 'none';
+        setFooter();
+    }
+
     window.onload = addExperiment;
 </script>
 </html>
