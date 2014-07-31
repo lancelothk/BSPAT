@@ -1,4 +1,4 @@
-package web;
+package Servlet;
 
 import BSPAT.Utilities;
 import DataType.Constant;

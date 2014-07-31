@@ -1,4 +1,4 @@
-package web;
+package Servlet;
 
 import BSPAT.CallBismark;
 import BSPAT.IO;
@@ -52,7 +52,7 @@ public class mappingServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 * response)
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		response.setContentType("text/html");
 		initializeConstant(request); // initialize constant, which is a singleton
 		cleanRootFolder(); // release root folder space
@@ -81,20 +81,17 @@ public class mappingServlet extends HttpServlet {
 		// execute BLAT query
 		blatQuery();
 		// append xx to both end of reference
-		try {
-			modifyRef(constant.originalRefPath, constant.modifiedRefPath);
-		} catch (Exception e) {
-			Utilities.showAlertWindow(response, "error in modifying reference");
-			e.printStackTrace();
-		}
+		modifyRef(constant.originalRefPath, constant.modifiedRefPath);
+
 		// bismark indexing
 		CallBismark callBismark = null;
 		try {
 			callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType,
 										  constant.maxmis);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Thread execution error!");
 		}
+
 		// multiple threads to execute bismark mapping
 		ExecutorService executor = Executors.newCachedThreadPool();
 		for (Experiment experiment : constant.experiments) {
@@ -105,7 +102,7 @@ public class mappingServlet extends HttpServlet {
 		try {
 			executor.awaitTermination(Constant.MAXEXECUTIONDAY, TimeUnit.DAYS);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Thread execution error!");
 		}
 
 		// read mapping summary report
@@ -137,14 +134,8 @@ public class mappingServlet extends HttpServlet {
 		String experimentName;
 		int index = 1;
 		while ((experimentName = request.getParameter("experiment" + index)) != null) {
-			if (experimentName.equals("")) {
-				response.setContentType("text/html");
-				Utilities.showAlertWindow(response, "Experiment " + index + " name is empty!");
-				return;
-			} else {
-				experiments.add(new Experiment(index, experimentName));
-				index++; // separate ++ operation makes code clear.
-			}
+			experiments.add(new Experiment(index, experimentName));
+			index++; // separate ++ operation makes code clear.
 		}
 	}
 
@@ -152,45 +143,22 @@ public class mappingServlet extends HttpServlet {
 									 List<Experiment> experiments) throws IOException, ServletException {
 		Collection<Part> parts = request.getParts(); // get submitted data
 		// for each part, add it into corresponding experiment
-		boolean refReady = false;
 		for (Part part : parts) {
 			String fieldName = Utilities.getField(part, "name");
 			String fileName = Utilities.getField(part, "filename");
 			if (fieldName.equals("ref")) { // deal with uploaded ref file
 				// save ref file in ref folder
-				if (IO.saveFileToDisk(part, constant.originalRefPath, fileName)) {
-					refReady = true;
-				} else {
-					Utilities.showAlertWindow(response, "reference file is blank!");
-					return;
-				}
+				IO.saveFileToDisk(part, constant.originalRefPath, fileName);
 			} else if (fieldName.startsWith("seqFile")) { // deal with uploaded seq file
 				int seqFileIndex = Integer.valueOf(part.getName().replace("seqFile", ""));
 				for (Experiment experiment : experiments) { // match file index and seq file index
 					if (experiment.getIndex() == seqFileIndex) {
 						experiment.setSeqFile(fileName);
-						if (IO.saveFileToDisk(part, constant.seqsPath + experiment.getName(), fileName)) {
-							experiment.setSeqReady(true);
-						} else {
-							Utilities.showAlertWindow(response, "seq file is blank!");
-							return;
-						}
+						IO.saveFileToDisk(part, constant.seqsPath + experiment.getName(), fileName);
 						break;
 					}
 				}
 			}
-		}
-		// check file uploading status
-		if (refReady) {
-			for (Experiment expt : experiments) {
-				if (!expt.isSeqReady()) {
-					Utilities.showAlertWindow(response, "Experiment " + expt.getIndex() + " sequence file missing!");
-					return;
-				}
-			}
-		} else {
-			Utilities.showAlertWindow(response, "Reference file missing!");
-			return;
 		}
 	}
 

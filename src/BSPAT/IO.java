@@ -59,18 +59,17 @@ public class IO {
         }
     }
 
-    public static boolean saveFileToDisk(Part part, String path, String fileName) throws IOException {
+	public static void saveFileToDisk(Part part, String path, String fileName) {
 		File dir = new File(path);
 		if (!dir.isDirectory()) { // if path directory do not exist, make one
 			dir.mkdirs();
 		}
-		if (fileName != null && !fileName.isEmpty()) {
-            part.write(path + "/" + fileName);
-            return true;
-        } else {
-            return false;
-        }
-    }
+		try {
+			part.write(path + "/" + fileName);
+		} catch (IOException e) {
+			throw new RuntimeException(fileName + " failed to transmit to server!");
+		}
+	}
 
     // only add allowed files.
     public static List<File> visitFiles(File f) {

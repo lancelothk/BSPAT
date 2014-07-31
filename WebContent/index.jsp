@@ -157,10 +157,6 @@
         setFooter();
     }
 
-    function test() {
-        print("test");
-    }
-
     function checkEmptyValue(id, msg) {
         if (document.getElementById(id).value == "") {
             window.alert(msg);

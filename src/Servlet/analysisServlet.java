@@ -1,4 +1,4 @@
-package web;
+package Servlet;
 
 import BSPAT.IO;
 import BSPAT.ReportSummary;
@@ -68,9 +68,11 @@ public class analysisServlet extends HttpServlet {
 					targetFolder.mkdirs();
 				}
 				// save target file in target folder
-				if (IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName)) {
+				if (fileName != null && !fileName.isEmpty()) {
+					IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName);
 					constant.targetFileName = fileName;
 				} else {
+					// copy original coor file to target folder
 					FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
 												  new File(constant.targetPath));
 					constant.targetFileName = constant.coorFileName;
@@ -82,44 +84,15 @@ public class analysisServlet extends HttpServlet {
 			constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
 			constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
 			constant.minMethylThreshold = -1;
-			// value check
-			if (constant.minP0Threshold < 0 || constant.minP0Threshold > 1) {
-				Utilities.showAlertWindow(response, "alpha threshold invalid!!");
-				return;
-			}
-			// value check
-			if (constant.criticalValue < 0 || constant.criticalValue > 1) {
-				Utilities.showAlertWindow(response, "critical value invalid!!");
-				return;
-			}
 		} else if (request.getParameter("minmethyltext") != null) {
 			constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
 			constant.minP0Threshold = -1;
 			constant.criticalValue = -1;
-			// value check
-			if (constant.minMethylThreshold < 0 || constant.minMethylThreshold > 1) {
-				Utilities.showAlertWindow(response, "methylation pattern threshold invalid!!");
-				return;
-			}
 		}
 
 		constant.mutationPatternThreshold = Double.valueOf(request.getParameter("mutationpatternThreshold"));
 		constant.conversionRateThreshold = Double.valueOf(request.getParameter("conversionRateThreshold"));
 		constant.sequenceIdentityThreshold = Double.valueOf(request.getParameter("sequenceIdentityThreshold"));
-
-		// value check
-		if (constant.mutationPatternThreshold < 0 || constant.mutationPatternThreshold > 1) {
-			Utilities.showAlertWindow(response, "mutation pattern threshold invalid!!");
-			return;
-		}
-		if (constant.conversionRateThreshold < 0 || constant.conversionRateThreshold > 1) {
-			Utilities.showAlertWindow(response, "conversion rate threshold invalid!!");
-			return;
-		}
-		if (constant.sequenceIdentityThreshold < 0 || constant.sequenceIdentityThreshold > 1) {
-			Utilities.showAlertWindow(response, "sequence identity threshold invalid!!");
-			return;
-		}
 
 		// clean up result directory and result zip file
 		Utilities.deleteFolderContent(constant.patternResultPath);
@@ -145,7 +118,7 @@ public class analysisServlet extends HttpServlet {
 					constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqAfterFilter());
 				}
 			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
+				throw new RuntimeException("Thread execution error!");
 			}
 		}
 

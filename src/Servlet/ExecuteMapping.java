@@ -1,4 +1,4 @@
-package web;
+package Servlet;
 
 import BSPAT.CallBismark;
 import DataType.Constant;
@@ -19,15 +19,16 @@ public class ExecuteMapping implements Runnable {
 
 	public synchronized void run() {
 		try {
-            System.out.println("Start mapping-" + experimentName);
-            // run bismark and extract result
+			System.out.println("Start mapping-" + experimentName);
+			// run bismark and extract result
 			try {
-				callBismark.execute(constant.seqsPath + experimentName, constant.mappingResultPath + experimentName + "/");
+				callBismark.execute(constant.seqsPath + experimentName,
+									constant.mappingResultPath + experimentName + "/");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-            System.out.println("Finished mapping-" + experimentName);
-        } catch (Exception e) {
+			System.out.println("Finished mapping-" + experimentName);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}

@@ -6,65 +6,52 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Experiment implements Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private int index;
-    private String name;
-    private String seqFile;
-    private boolean seqReady;
-    private String inputType;
-    public List<ReportSummary> reportSummaries;
+	private static final long serialVersionUID = 1L;
+	private int index;
+	private String name;
+	private String seqFile;
+	private String inputType;
+	public List<ReportSummary> reportSummaries;
 
-    public Experiment(int index, String name) {
-        super();
-        this.index = index;
-        this.name = name;
-        this.seqReady = false;
-    }
+	public Experiment(int index, String name) {
+		super();
+		this.index = index;
+		this.name = name;
+	}
 
-    public void setInputType(String inputType) {
-        this.inputType = inputType;
-    }
+	public void setInputType(String inputType) {
+		this.inputType = inputType;
+	}
 
-    public String getInputType() {
-        return inputType;
-    }
+	public String getInputType() {
+		return inputType;
+	}
 
-    public void setSeqReady(boolean seqReady) {
-        this.seqReady = seqReady;
-    }
+	public int getIndex() {
+		return index;
+	}
 
-    public boolean isSeqReady() {
-        return seqReady;
-    }
+	public void setIndex(int index) {
+		this.index = index;
+	}
 
-    public int getIndex() {
-        return index;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getSeqFile() {
+		return seqFile;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setSeqFile(String seqFile) {
+		this.seqFile = seqFile;
+	}
 
-    public String getSeqFile() {
-        return seqFile;
-    }
-
-    public void setSeqFile(String seqFile) {
-        this.seqFile = seqFile;
-    }
-
-    public List<ReportSummary> getReportSummaries() {
-        return reportSummaries;
-    }
+	public List<ReportSummary> getReportSummaries() {
+		return reportSummaries;
+	}
 }
