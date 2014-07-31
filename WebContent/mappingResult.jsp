@@ -18,6 +18,35 @@
                 document.getElementById('minmethyltext').disabled = false;
             }
         }
+
+        function checkEmptyValue(id, msg) {
+            if (document.getElementById(id).value == "") {
+                window.alert(msg);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function validateInput() {
+            if (checkEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")
+                    || checkEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
+                    || checkEmptyValue("minp0text", "α threshold is empty!")
+                    || checkEmptyValue("criticalValue", "Critical Value is empty!")
+                    || checkEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
+                    || checkEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")) {
+                return false;
+            }
+            resetPage();
+            return true;
+        }
+
+        function resetPage() {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('analysisTable').style.display = 'none';
+            document.getElementById('parameters').style.display = 'none';
+            setFooter();
+        }
     </script>
     <title>BSPAT</title>
 </head>
@@ -34,7 +63,7 @@
             <img id="loader" src="images/progress.gif" alt="progress"
                  style="display: none;"/>
 
-            <form action="analysis" enctype="multipart/form-data" method="post">
+            <form action="analysis" onsubmit="return validateInput()" enctype="multipart/form-data" method="post">
                 <input type="hidden" name="runID"
                        value="<c:out value="${constant.runID}" />">
                 <table id="analysisTable">
@@ -105,7 +134,7 @@
                         <td>Bisulfite conversion rate:<sup><a
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
                         <td><label>
-                            <input type="text" name="conversionRateThreshold"
+                            <input type="text" id="conversionRateThreshold" name="conversionRateThreshold"
                                    value=0.95>
                         </label></td>
                     </tr>
@@ -113,7 +142,7 @@
                         <td>Sequence identity:<sup><a
                                 href="manualAnalysis.jsp#seqIdentity">?</a></sup></td>
                         <td><label>
-                            <input type="text" name="sequenceIdentityThreshold"
+                            <input type="text" id="sequenceIdentityThreshold" name="sequenceIdentityThreshold"
                                    value=0.9>
                         </label></td>
                     </tr>
@@ -121,8 +150,8 @@
                         <td><label for="minp0"></label><input type="radio" name="par" id="minp0" value="minp0"
                                                               checked="yes" onclick="check()"/>&alpha; threshold:<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
-                        <td><label for="minp0text"></label><input type="text" id="minp0text" name="minp0text"
-                                                                  value=0.02></td>
+                        <td><label for="minp0text"></label>
+                            <input type="text" id="minp0text" name="minp0text" value=0.02></td>
                     </tr>
                     <tr>
                         <td>&nbsp;&nbsp;&nbsp;Critical Value:<sup><a
@@ -144,7 +173,7 @@
                         <td>Mutation threshold:<sup><a
                                 href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
                         <td><label>
-                            <input type="text" name="mutationpatternThreshold"
+                            <input type="text" id="mutationpatternThreshold" name="mutationpatternThreshold"
                                    value=0.3>
                         </label></td>
                     </tr>
@@ -159,8 +188,7 @@
                         </label></td>
                     </tr>
                     <tr>
-                        <td><input type="submit" value="Execute"
-                                   onclick="document.getElementById('loader').style.display = 'block';document.getElementById('analysisTable').style.display = 'none';document.getElementById('parameters').style.display = 'none';setFooter();"/>
+                        <td><input type="submit" value="Execute"/>
                         </td>
                     </tr>
                 </table>

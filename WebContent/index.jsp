@@ -161,18 +161,22 @@
         print("test");
     }
 
+    function checkEmptyValue(id, msg) {
+        if (document.getElementById(id).value == "") {
+            window.alert(msg);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function validateInput() {
-        if (document.getElementById("ref").value == "") {
-            window.alert("No reference file!");
+        if (checkEmptyValue("ref", "No reference file!")) {
             return false;
         }
         for (var i = 1; i <= elementCount; i++) {
-            if (document.getElementById("experiment" + i).value == "") {
-                window.alert("Experiment " + i + " name is empty!");
-                return false;
-            }
-            if (document.getElementById("seqFile" + i).value == "") {
-                window.alert("Experiment " + i + " has no sequence file selected!");
+            if (checkEmptyValue("experiment" + i, "Experiment " + i + " name is empty!")
+                    || checkEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!")) {
                 return false;
             }
         }
