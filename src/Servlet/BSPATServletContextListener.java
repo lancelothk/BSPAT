@@ -23,7 +23,7 @@ public class BSPATServletContextListener implements ServletContextListener {
 			Utilities.callCMD(setFileExecution, new File(toolsPath), null);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
-			System.exit(-1);
+			throw new RuntimeException("chmod failed!");
 		}
 	}
 

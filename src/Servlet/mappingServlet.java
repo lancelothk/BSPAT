@@ -6,6 +6,7 @@ import BSPAT.Utilities;
 import DataType.*;
 import org.apache.commons.io.FileUtils;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -52,81 +53,82 @@ public class mappingServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 * response)
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		response.setContentType("text/html");
-		initializeConstant(request); // initialize constant, which is a singleton
-		cleanRootFolder(); // release root folder space
-		List<Experiment> experiments = new ArrayList<>();
-		boolean isDemo = Boolean.parseBoolean(request.getParameter("demo"));
-
-		if (isDemo) {
-			experiments.add(new Experiment(1, "demoExperiment"));
-			FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoReference.fasta"),
-										  new File(constant.originalRefPath));
-			FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
-										  new File(constant.seqsPath + "demoExperiment"));
-		} else {
-			addExperiment(request, response, experiments);
-			handleUploadedFiles(request, response, experiments);
-		}
-
-		long start = System.currentTimeMillis();
-		// set other parameters
-		constant.refVersion = request.getParameter("refVersion");
-		constant.coorFileName = "coordinates.coor";
-		constant.qualsType = request.getParameter("qualsType");
-		constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
-		constant.experiments = experiments;
-		constant.email = request.getParameter("email");
-		// execute BLAT query
-		blatQuery();
-		// append xx to both end of reference
-		modifyRef(constant.originalRefPath, constant.modifiedRefPath);
-
-		// bismark indexing
-		CallBismark callBismark = null;
+	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			response.setContentType("text/html");
+			initializeConstant(request); // initialize constant, which is a singleton
+			cleanRootFolder(); // release root folder space
+			List<Experiment> experiments = new ArrayList<>();
+			boolean isDemo = Boolean.parseBoolean(request.getParameter("demo"));
+
+			if (isDemo) {
+				experiments.add(new Experiment(1, "demoExperiment"));
+				FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoReference.fasta"),
+											  new File(constant.originalRefPath));
+				FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
+											  new File(constant.seqsPath + "demoExperiment"));
+			} else {
+				addExperiment(request, response, experiments);
+				handleUploadedFiles(request, response, experiments);
+			}
+
+			long start = System.currentTimeMillis();
+			// set other parameters
+			constant.refVersion = request.getParameter("refVersion");
+			constant.coorFileName = "coordinates.coor";
+			constant.qualsType = request.getParameter("qualsType");
+			constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
+			constant.experiments = experiments;
+			constant.email = request.getParameter("email");
+			// execute BLAT query
+			blatQuery();
+			// append xx to both end of reference
+			modifyRef(constant.originalRefPath, constant.modifiedRefPath);
+
+			// bismark indexing
+			CallBismark callBismark = null;
 			callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType,
 										  constant.maxmis);
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Thread execution error!");
-		}
 
-		// multiple threads to execute bismark mapping
-		ExecutorService executor = Executors.newCachedThreadPool();
-		for (Experiment experiment : constant.experiments) {
-			executor.execute(new ExecuteMapping(callBismark, experiment.getName(), constant));
-		}
-		executor.shutdown();
-		// Wait until all threads are finish
-		try {
+			// multiple threads to execute bismark mapping
+			ExecutorService executor = Executors.newCachedThreadPool();
+			for (Experiment experiment : constant.experiments) {
+				executor.execute(new ExecuteMapping(callBismark, experiment.getName(), constant));
+			}
+			executor.shutdown();
+			// Wait until all threads are finish
 			executor.awaitTermination(Constant.MAXEXECUTIONDAY, TimeUnit.DAYS);
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Thread execution error!");
+
+			// read mapping summary report
+			MappingSummary mappingSummary = IO.readMappingSummary(constant.mappingResultPath);
+
+			// compress result folder
+			String zipFileName = constant.randomDir + "/mappingResult.zip";
+			Utilities.zipFolder(constant.mappingResultPath, zipFileName);
+
+			// passing JSTL parameters
+			constant.mappingSummary = mappingSummary;
+			constant.mappingTime = (System.currentTimeMillis() - start) / 1000;
+			constant.mappingTime = constant.mappingTime < 1 ? 1 : constant.mappingTime;
+			constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
+			constant.finishedMapping = true;
+			// save constant object to file
+			Constant.writeConstant();
+			// send email to inform user
+			Utilities.sendEmail(constant.email, constant.jobID,
+								"Mapping has finished.\n" + "Your jobID is " + constant.jobID +
+										"\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+			//redirect page
+			request.setAttribute("constant", constant);
+			request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
+		} catch (UserNoticeException e) {
+			// TODO test if print twice
+			e.printStackTrace();
+			throw e;
+		} catch (InterruptedException | ServletException | IOException | MessagingException | RuntimeException e) {
+			e.printStackTrace();
+			throw new UserNoticeException("Server error!");
 		}
-
-		// read mapping summary report
-		MappingSummary mappingSummary = IO.readMappingSummary(constant.mappingResultPath);
-
-		// compress result folder
-		String zipFileName = constant.randomDir + "/mappingResult.zip";
-		Utilities.zipFolder(constant.mappingResultPath, zipFileName);
-
-		// passing JSTL parameters
-		constant.mappingSummary = mappingSummary;
-		constant.mappingTime = (System.currentTimeMillis() - start) / 1000;
-		constant.mappingTime = constant.mappingTime < 1 ? 1 : constant.mappingTime;
-		constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
-		constant.finishedMapping = true;
-		// save constant object to file
-		Constant.writeConstant();
-		// send email to inform user
-		Utilities.sendEmail(constant.email, constant.runID,
-							"Mapping has finished.\n" + "Your runID is " + constant.runID +
-									"\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
-		//redirect page
-		request.setAttribute("constant", constant);
-		request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
 	}
 
 	private void addExperiment(HttpServletRequest request, HttpServletResponse response, List<Experiment> experiments) {
@@ -140,8 +142,13 @@ public class mappingServlet extends HttpServlet {
 	}
 
 	private void handleUploadedFiles(HttpServletRequest request, HttpServletResponse response,
-									 List<Experiment> experiments) throws IOException, ServletException {
-		Collection<Part> parts = request.getParts(); // get submitted data
+									 List<Experiment> experiments) {
+		Collection<Part> parts = null; // get submitted data
+		try {
+			parts = request.getParts();
+		} catch (IOException | ServletException e) {
+			throw new UserNoticeException("Network error!");
+		}
 		// for each part, add it into corresponding experiment
 		for (Part part : parts) {
 			String fieldName = Utilities.getField(part, "name");
@@ -171,7 +178,7 @@ public class mappingServlet extends HttpServlet {
 	 * @param prefix
 	 * @return random folder
 	 */
-	private File generateRandomDirectory(String path, String prefix) {
+	private File generateRandomDirectory(String path, String prefix) throws IOException {
 		if (!path.endsWith("/")) {
 			path = path + "/";
 		}
@@ -183,7 +190,7 @@ public class mappingServlet extends HttpServlet {
 			dir = new File(path + prefix + Long.toString(n));
 		} while (dir.exists());
 		if (!dir.mkdir()) {
-			throw new RuntimeException("failed to create random folder in " + path + " with prefix: " + prefix);
+			throw new IOException("failed to create random folder in " + path + " with prefix: " + prefix);
 		}
 		return dir;
 	}
@@ -200,8 +207,9 @@ public class mappingServlet extends HttpServlet {
 		Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
 		// webPath is relative path to root
 		constant.webRootPath = request.getContextPath();
-		constant.randomDir = generateRandomDirectory(Constant.DISKROOTPATH, "Run").getAbsolutePath();
-		constant.runID = constant.randomDir.split("Run")[1];
+		constant.randomDir = generateRandomDirectory(Constant.DISKROOTPATH,
+													 Constant.JOB_FOLDER_PREFIX).getAbsolutePath();
+		constant.jobID = constant.randomDir.split(Constant.JOB_FOLDER_PREFIX)[1];
 		constant.mappingResultPath = constant.randomDir + "/bismark_result/";
 		IO.createFolder(constant.mappingResultPath);
 		constant.patternResultPath = constant.randomDir + "/pattern_result/";
@@ -233,36 +241,36 @@ public class mappingServlet extends HttpServlet {
 	 */
 	private void modifyRef(String originalRefPath, String modifiedRefPath) throws IOException {
 		File refFolder = new File(modifiedRefPath);
-		if (!refFolder.isDirectory()) {// if ref directory do not exist, make
-			// one
+		if (!refFolder.exists()) {// if ref directory do not exist, make one
 			refFolder.mkdirs();
 		}
 		File originalRefPathFile = new File(originalRefPath);
 		String[] fileNames;
 		fileNames = originalRefPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa"}));
 		for (String str : fileNames) {
-			BufferedReader reader = new BufferedReader(new FileReader(originalRefPath + str));
-			BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + str));
-			String line;
-			StringBuilder ref = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				if (line.startsWith(">")) {
-					if (ref.length() > 0) {
-						// append XX to both end of reference
-						writer.write("XX" + ref.toString() + "XX\n");
-						ref = new StringBuilder();
+			try (
+					BufferedReader reader = new BufferedReader(new FileReader(originalRefPath + str));
+					BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + str));
+			) {
+				String line;
+				StringBuilder ref = new StringBuilder();
+				while ((line = reader.readLine()) != null) {
+					if (line.startsWith(">")) {
+						if (ref.length() > 0) {
+							// append XX to both end of reference
+							writer.write("XX" + ref.toString() + "XX\n");
+							ref = new StringBuilder();
+						}
+						writer.write(line + "\n");
+					} else {
+						ref.append(line);
 					}
-					writer.write(line + "\n");
-				} else {
-					ref.append(line);
+				}
+				if (ref.length() > 0) {
+					// append XX to both end of reference
+					writer.write("XX" + ref.toString() + "XX\n");
 				}
 			}
-			if (ref.length() > 0) {
-				// append XX to both end of reference
-				writer.write("XX" + ref.toString() + "XX\n");
-			}
-			reader.close();
-			writer.close();
 		}
 	}
 
@@ -281,7 +289,7 @@ public class mappingServlet extends HttpServlet {
 			Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
 			if (subFolders != null) {
 				for (File folder : subFolders) {
-					if (folder.getName().startsWith("Run") && folder.isDirectory() &&
+					if (folder.getName().startsWith(Constant.JOB_FOLDER_PREFIX) && folder.isDirectory() &&
 							folder != subFolders[subFolders.length - 1]) {
 						if (excess >= 0) { // only clean exceed part
 							long length = FileUtils.sizeOfDirectory(folder) / 1024 / 1024;
@@ -300,27 +308,19 @@ public class mappingServlet extends HttpServlet {
 	/**
 	 * execute blat query
 	 */
-	private void blatQuery() {
+	private void blatQuery() throws IOException, InterruptedException {
 		File refFolder = new File(constant.originalRefPath);
 		String[] files = refFolder.list();
 		String blatQueryPath = constant.toolsPath + "BlatQuery/";
 		for (String name : files) {
-			try {
-				System.out.println("start blat query for " + name);
-				String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath,
-												 constant.refVersion, constant.originalRefPath, name);
-				Utilities.callCMD(blatQuery, new File(constant.coorFilePath), null);
-				System.out.println("blat query is finished for " + name);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			System.out.println("start blat query for " + name);
+			String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath,
+											 constant.refVersion, constant.originalRefPath, name);
+			Utilities.callCMD(blatQuery, new File(constant.coorFilePath), null);
+			System.out.println("blat query is finished for " + name);
 		}
-		try {
-			Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
-			constant.coorReady = true;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
+		constant.coorReady = true;
 		System.out.println("blat result converted");
 	}
 

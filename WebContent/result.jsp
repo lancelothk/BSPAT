@@ -7,9 +7,24 @@
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <title>BSPAT</title>
 </head>
+<script language="javascript">
+    function checkEmptyValue(id, msg) {
+        if (document.getElementById(id).value == "") {
+            window.alert(msg);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    function validateInput() {
+        if (checkEmptyValue("jobID", "Job id is empty!")) {
+            return false;
+        }
+        return true;
+    }
+</script>
 <%@ page import="BSPAT.Utilities, DataType.Constant" %>
-<%@ page import="java.io.IOException" %>
 
 <body>
 <div id="container">
@@ -17,43 +32,44 @@
     <div id="content">
         <div id="content_top"></div>
         <div id="content_main">
-            <form action="result.jsp" enctype="multipart/form-data" method="get">
-                Result ID: <label>
-                <input type="text" name="runID"/>
+            <form action="result.jsp" onsubmit="return validateInput()" enctype="multipart/form-data" method="get">
+                Job ID: <label>
+                <input type="text" id="jobID" name="jobID"/>
             </label> <input type="submit" value="Query"/>
             </form>
 
             <%
-                String runID = request.getParameter("runID");
-                if (runID != null) {
-                    if (runID.startsWith("Run") || runID.startsWith("run")) {
-                        runID = runID.substring(3);
+                String jobID = request.getParameter("jobID");
+                if (jobID != null) {
+                    if (jobID.toLowerCase().startsWith(Constant.JOB_FOLDER_PREFIX.toLowerCase())) {
+                        jobID = jobID.substring(3);
                     }
                     Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
                     Constant constant;
                     try {
-                        constant = Constant.readConstant(runID);
-                    } catch (IOException e) {
+                        constant = Constant.readConstant(jobID);
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        Utilities.showAlertWindow(response, "can not find Result ID:\t" + runID);
+                        Utilities.showAlertWindow(response, "can not find Result ID:\t" + jobID);
                         return;
                     }
                     if (constant == null) {
-                        Utilities.showAlertWindow(response, "Can not read result");
+                        System.err.println("Can not load Result ID:\t" + jobID);
+                        Utilities.showAlertWindow(response, "Can not load Result ID:\t" + jobID);
                         return;
                     }%>
             <table>
                 <% if (constant.finishedMapping) { %>
                 <tr>
-                    <td>Run ID:</td>
-                    <td><%=runID %>
+                    <td>Job ID:</td>
+                    <td><%=jobID %>
                     </td>
                 </tr>
                 <tr>
                     <td>Mapping Result</td>
                     <td>
                         <form action="resultRetrieve" enctype="multipart/form-data" method="post">
-                            <input type="hidden" name="runID" value="<%=runID %>"/>
+                            <input type="hidden" name="jobID" value="<%=jobID %>"/>
                             <input type="hidden" name="mPage" value="mappingResult.jsp"/>
                             <input type="submit" value="Check"/>
                         </form>
@@ -64,7 +80,7 @@
                     <td>Analysis Result</td>
                     <td>
                         <form action="resultRetrieve" enctype="multipart/form-data" method="post">
-                            <input type="hidden" name="runID" value="<%=runID %>"/>
+                            <input type="hidden" name="jobID" value="<%=jobID %>"/>
                             <input type="hidden" name="aPage" value="analysisResult.jsp"/>
                             <input type="submit" value="Check"/>
                         </form>

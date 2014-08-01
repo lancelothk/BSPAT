@@ -64,8 +64,8 @@
                  style="display: none;"/>
 
             <form action="analysis" onsubmit="return validateInput()" enctype="multipart/form-data" method="post">
-                <input type="hidden" name="runID"
-                       value="<c:out value="${constant.runID}" />">
+                <input type="hidden" name="jobID"
+                       value="<c:out value="${constant.jobID}" />">
                 <table id="analysisTable">
                     <tr>
                         <td>Mapping Summary<sup><a
@@ -73,7 +73,7 @@
                     </tr>
                     <tr>
                         <td>Result ID:</td>
-                        <td><c:out value="${constant.runID}"/></td>
+                        <td><c:out value="${constant.jobID}"/></td>
                     </tr>
                     <tr>
                         <td>Experiment(<c:out value="${constant.experiments.size()}"/>):

@@ -18,19 +18,14 @@ public class ExecuteMapping implements Runnable {
 	}
 
 	public synchronized void run() {
+		System.out.println("Start mapping-" + experimentName);
+		// run bismark and extract result
 		try {
-			System.out.println("Start mapping-" + experimentName);
-			// run bismark and extract result
-			try {
-				callBismark.execute(constant.seqsPath + experimentName,
-									constant.mappingResultPath + experimentName + "/");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println("Finished mapping-" + experimentName);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
+			callBismark.execute(constant.seqsPath + experimentName, constant.mappingResultPath + experimentName + "/");
+		} catch (IOException e) {
+			// TODO throw exception to main thread
+			throw new RuntimeException("");
 		}
+		System.out.println("Finished mapping-" + experimentName);
 	}
 }

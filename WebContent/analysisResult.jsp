@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <td>Result ID:</td>
-                    <td><c:out value="${constant.runID}"/></td>
+                    <td><c:out value="${constant.jobID}"/></td>
                 </tr>
                 <tr>
                     <td>Experiment(<c:out value="${constant.experiments.size()}"/>):

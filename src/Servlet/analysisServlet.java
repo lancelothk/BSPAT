@@ -6,8 +6,10 @@ import BSPAT.Utilities;
 import DataType.Constant;
 import DataType.Experiment;
 import DataType.SeqCountSummary;
+import DataType.UserNoticeException;
 import org.apache.commons.io.FileUtils;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -52,93 +54,102 @@ public class analysisServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 * response)
 	 */
-	protected void doPost(HttpServletRequest request,
-						  HttpServletResponse response) throws ServletException, IOException {
-		long start = System.currentTimeMillis();
-		response.setContentType("text/html");
-		String runID = request.getParameter("runID");
-		Constant constant = Constant.readConstant(runID);
-		Collection<Part> parts = request.getParts(); // get submitted data
-		for (Part part : parts) {
-			String fieldName = Utilities.getField(part, "name");
-			String fileName = Utilities.getField(part, "filename");
-			if (fieldName.equals("target")) { // deal with uploaded target file
-				File targetFolder = new File(constant.targetPath);
-				if (!targetFolder.isDirectory()) { // if target directory do not exist, make one
-					targetFolder.mkdirs();
-				}
-				// save target file in target folder
-				if (fileName != null && !fileName.isEmpty()) {
-					IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName);
-					constant.targetFileName = fileName;
-				} else {
-					// copy original coor file to target folder
-					FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
-												  new File(constant.targetPath));
-					constant.targetFileName = constant.coorFileName;
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			long start = System.currentTimeMillis();
+			response.setContentType("text/html");
+			String jobID = request.getParameter("jobID");
+			Constant constant = Constant.readConstant(jobID);
+			Collection<Part> parts = null; // get submitted data
+			try {
+				parts = request.getParts();
+			} catch (IOException | ServletException e) {
+				throw new UserNoticeException("Network error!");
+			}
+			for (Part part : parts) {
+				String fieldName = Utilities.getField(part, "name");
+				String fileName = Utilities.getField(part, "filename");
+				if (fieldName.equals("target")) { // deal with uploaded target file
+					File targetFolder = new File(constant.targetPath);
+					if (!targetFolder.isDirectory()) { // if target directory do not exist, make one
+						targetFolder.mkdirs();
+					}
+					// save target file in target folder
+					if (fileName != null && !fileName.isEmpty()) {
+						IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName);
+						constant.targetFileName = fileName;
+					} else {
+						// copy original coor file to target folder
+						FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
+													  new File(constant.targetPath));
+						constant.targetFileName = constant.coorFileName;
+					}
 				}
 			}
-		}
-		constant.figureFormat = request.getParameter("figureFormat"); // set figure format
-		if (request.getParameter("minp0text") != null) {
-			constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
-			constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
-			constant.minMethylThreshold = -1;
-		} else if (request.getParameter("minmethyltext") != null) {
-			constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
-			constant.minP0Threshold = -1;
-			constant.criticalValue = -1;
-		}
+			constant.figureFormat = request.getParameter("figureFormat"); // set figure format
+			if (request.getParameter("minp0text") != null) {
+				constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
+				constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
+				constant.minMethylThreshold = -1;
+			} else if (request.getParameter("minmethyltext") != null) {
+				constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
+				constant.minP0Threshold = -1;
+				constant.criticalValue = -1;
+			}
 
-		constant.mutationPatternThreshold = Double.valueOf(request.getParameter("mutationpatternThreshold"));
-		constant.conversionRateThreshold = Double.valueOf(request.getParameter("conversionRateThreshold"));
-		constant.sequenceIdentityThreshold = Double.valueOf(request.getParameter("sequenceIdentityThreshold"));
+			constant.mutationPatternThreshold = Double.valueOf(request.getParameter("mutationpatternThreshold"));
+			constant.conversionRateThreshold = Double.valueOf(request.getParameter("conversionRateThreshold"));
+			constant.sequenceIdentityThreshold = Double.valueOf(request.getParameter("sequenceIdentityThreshold"));
 
-		// clean up result directory and result zip file
-		Utilities.deleteFolderContent(constant.patternResultPath);
-		File resultZip = new File(constant.randomDir + "/" + "analysisResult.zip");
-		if (resultZip.exists()) {
-			resultZip.delete();
-		}
+			// clean up result directory and result zip file
+			Utilities.deleteFolderContent(constant.patternResultPath);
+			File resultZip = new File(constant.randomDir + "/" + "analysisResult.zip");
+			if (resultZip.exists()) {
+				resultZip.delete();
+			}
 
-		ExecutorService executor = Executors.newCachedThreadPool();
-		List<Future<List<ReportSummary>>> futureList = new ArrayList<>();
-		for (Experiment experiment : constant.experiments) {
-			Future<List<ReportSummary>> future = executor.submit(new ExecuteAnalysis(experiment.getName(), constant));
-			futureList.add(future);
-		}
+			ExecutorService executor = Executors.newCachedThreadPool();
+			List<Future<List<ReportSummary>>> futureList = new ArrayList<>();
+			for (Experiment experiment : constant.experiments) {
+				Future<List<ReportSummary>> future = executor.submit(
+						new ExecuteAnalysis(experiment.getName(), constant));
+				futureList.add(future);
+			}
 
-		constant.seqCountSummary = new SeqCountSummary();
-		for (int i = 0; i < constant.experiments.size(); i++) {
-			try {
+			constant.seqCountSummary = new SeqCountSummary();
+			for (int i = 0; i < constant.experiments.size(); i++) {
 				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
 				System.out.println(constant.experiments.get(i).getName() + "\tfinished!");
 				for (ReportSummary reportSummary : constant.experiments.get(i).reportSummaries) {
 					constant.seqCountSummary.addSeqBeforeFilter(reportSummary.getSeqBeforeFilter());
 					constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqAfterFilter());
 				}
-			} catch (InterruptedException | ExecutionException e) {
-				throw new RuntimeException("Thread execution error!");
 			}
+
+			// compress result folder
+			String zipFileName = constant.randomDir + "/" + "analysisResult.zip";
+			Utilities.zipFolder(constant.patternResultPath, zipFileName);
+			// send email to inform user
+			Utilities.sendEmail(constant.email, constant.jobID,
+								"Analysis has finished.\n" + "Your jobID is " + constant.jobID +
+										"\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+
+			// passing JSTL parameters
+			constant.analysisTime = (System.currentTimeMillis() - start) / 1000;
+			constant.analysisTime = constant.analysisTime < 1 ? 1 : constant.analysisTime;
+			constant.analysisResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
+			constant.finishedAnalysis = true;
+			// update constant file on disk
+			Constant.writeConstant();
+			request.setAttribute("constant", constant);
+			request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
+		} catch (UserNoticeException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (InterruptedException | ExecutionException | ServletException | IOException | MessagingException | RuntimeException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Server error!");
 		}
-
-		// compress result folder
-		String zipFileName = constant.randomDir + "/" + "analysisResult.zip";
-		Utilities.zipFolder(constant.patternResultPath, zipFileName);
-		// send email to inform user
-		Utilities.sendEmail(constant.email, constant.runID,
-							"Analysis has finished.\n" + "Your runID is " + constant.runID +
-									"\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
-
-		// passing JSTL parameters
-		constant.analysisTime = (System.currentTimeMillis() - start) / 1000;
-		constant.analysisTime = constant.analysisTime < 1 ? 1 : constant.analysisTime;
-		constant.analysisResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
-		constant.finishedAnalysis = true;
-		// update constant file on disk
-		Constant.writeConstant();
-		request.setAttribute("constant", constant);
-		request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
 	}
 
 }
