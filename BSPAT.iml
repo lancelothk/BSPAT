@@ -38,7 +38,9 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="Tomcat" level="application_server_libraries" />
-    <orderEntry type="library" name="commons-io-2.4-javadoc" level="application" />
+    <orderEntry type="library" name="commons-io" level="project" />
+    <orderEntry type="library" name="guava" level="project" />
+    <orderEntry type="library" name="super-csv" level="project" />
   </component>
 </module>
 

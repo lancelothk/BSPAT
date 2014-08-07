@@ -7,7 +7,9 @@
           <element id="module-output" name="BSPAT" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="application" name="commons-io-2.4-javadoc" />
+          <element id="library" level="project" name="commons-io" />
+          <element id="library" level="project" name="guava" />
+          <element id="library" level="project" name="super-csv" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="BSPAT/web/Web" />

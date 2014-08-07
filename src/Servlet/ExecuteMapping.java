@@ -25,6 +25,9 @@ public class ExecuteMapping implements Runnable {
 		} catch (IOException e) {
 			// TODO throw exception to main thread
 			throw new RuntimeException("");
+		} catch (InterruptedException e) {
+			// TODO double check
+			e.printStackTrace();
 		}
 		System.out.println("Finished mapping-" + experimentName);
 	}
