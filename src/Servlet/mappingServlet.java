@@ -55,6 +55,9 @@ public class mappingServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			if (true) {
+				throw new UserNoticeException("test");
+			}
 			response.setContentType("text/html");
 			initializeConstant(request); // initialize constant, which is a singleton
 			cleanRootFolder(); // release root folder space
@@ -122,7 +125,6 @@ public class mappingServlet extends HttpServlet {
 			request.setAttribute("constant", constant);
 			request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
 		} catch (UserNoticeException e) {
-			// TODO test if print twice
 			e.printStackTrace();
 			throw e;
 		} catch (InterruptedException | ServletException | IOException | MessagingException | RuntimeException e) {
