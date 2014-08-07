@@ -55,9 +55,6 @@ public class mappingServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			if (true) {
-				throw new UserNoticeException("test");
-			}
 			response.setContentType("text/html");
 			initializeConstant(request); // initialize constant, which is a singleton
 			cleanRootFolder(); // release root folder space
