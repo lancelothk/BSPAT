@@ -31,10 +31,8 @@ public class IO {
 		 */
 		HashMap<String, Coordinate> coordinateHash = new HashMap<>();
 		File coorFolder = new File(coorPath);
-		try (
-				FileReader coordinatesReader = new FileReader(coorFolder.getAbsolutePath() + "/" + coorFileName);
-				BufferedReader coordinatesBuffReader = new BufferedReader(coordinatesReader);
-		) {
+		try (BufferedReader coordinatesBuffReader = new BufferedReader(
+				new FileReader(coorFolder.getAbsolutePath() + "/" + coorFileName))) {
 			String line = coordinatesBuffReader.readLine();
 			String[] items;
 			while (line != null) {

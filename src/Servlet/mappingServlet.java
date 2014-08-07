@@ -249,7 +249,7 @@ public class mappingServlet extends HttpServlet {
 		for (String str : fileNames) {
 			try (
 					BufferedReader reader = new BufferedReader(new FileReader(originalRefPath + str));
-					BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + str));
+					BufferedWriter writer = new BufferedWriter(new FileWriter(modifiedRefPath + str))
 			) {
 				String line;
 				StringBuilder ref = new StringBuilder();

@@ -44,10 +44,8 @@ public class Report {
 	}
 
 	private void writeResult() throws IOException {
-		try (
-				FileWriter fileWriter = new FileWriter(outputFolder + region + "_bismark.analysis.txt");
-				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		) {
+		try (BufferedWriter bufferedWriter = new BufferedWriter(
+				new FileWriter(outputFolder + region + "_bismark.analysis.txt"))) {
 			bufferedWriter.write(
 					"methylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
 			bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
@@ -61,9 +59,8 @@ public class Report {
 
 	private void writeStatistics() throws IOException {
 		String reportFileName = outputFolder + region + "_bismark.analysis_report.txt";
-		try (FileWriter fileWriter = new FileWriter(reportFileName);) {
-			reportSummary.setStatTextLink(reportFileName);
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		reportSummary.setStatTextLink(reportFileName);
+		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
 			Hashtable<Integer, CpGStatistics> cpgStatHashtable = new Hashtable<>();
 
 			// collect information for calculating methylation rate for each CpG site.
@@ -107,7 +104,7 @@ public class Report {
 	private void writePatterns(List<Pattern> patternList, String patternType) throws IOException {
 		String patternFileName = String.format("%s%s_bismark.analysis_%s.txt", outputFolder, region, patternType);
 		reportSummary.getPatternLink(patternType).setTextResultLink(patternFileName);
-		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(patternFileName));) {
+		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(patternFileName))) {
 			switch (patternType) {
 				case PatternLink.METHYLATION:
 				case PatternLink.MUTATION:

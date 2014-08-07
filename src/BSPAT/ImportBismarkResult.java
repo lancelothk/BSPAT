@@ -48,9 +48,7 @@ public class ImportBismarkResult {
 		String[] fileNames = null;
 		fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
 		for (String str : fileNames) {
-			try (FileReader fileReader = new FileReader(refPathFile + "/" + str);
-				 BufferedReader buffReader = new BufferedReader(fileReader);
-			) {
+			try (BufferedReader buffReader = new BufferedReader(new FileReader(refPathFile + "/" + str))) {
 				String line, name = null;
 				StringBuilder ref = new StringBuilder();
 				while ((line = buffReader.readLine()) != null) {
@@ -84,9 +82,7 @@ public class ImportBismarkResult {
 		Arrays.sort(names);
 
 		for (String name : names) {
-			try (FileReader fileReader = new FileReader(inputFolder + name);
-				 BufferedReader buffReader = new BufferedReader(fileReader);
-			) {
+			try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
 				String line = buffReader.readLine();
 				String[] items = null;
 				while (line != null) {
@@ -132,9 +128,7 @@ public class ImportBismarkResult {
 		for (String name : names) {
 			// only read CpG context result
 			if (name.startsWith("CpG_context")) {
-				try (FileReader fileReader = new FileReader(inputFolder + name);
-					 BufferedReader buffReader = new BufferedReader(fileReader);
-				) {
+				try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
 					String line = buffReader.readLine();
 					String[] items;
 					boolean methylLabel;

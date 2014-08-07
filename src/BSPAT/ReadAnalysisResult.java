@@ -47,14 +47,15 @@ public class ReadAnalysisResult {
 	}
 
 	private void readStatFile(String ID) throws IOException {
-		try (
-				FileReader statReader = new FileReader(inputFolder + ID + "_bismark.analysis_report.txt");
-				BufferedReader statBuffReader = new BufferedReader(statReader);
-		) {
+		try (BufferedReader statBuffReader = new BufferedReader(
+				new FileReader(inputFolder + ID + "_bismark.analysis_report.txt"))) {
 			String line;
 			String[] items;
 			// read ref length
 			line = statBuffReader.readLine();
+			if (line == null) {
+				throw new RuntimeException("analysis report is empty!");
+			}
 			items = line.split("\t");
 			refLength = Integer.valueOf(items[1]);
 			// skip 6 lines
@@ -82,11 +83,8 @@ public class ReadAnalysisResult {
 	}
 
 	private void readPatternFile(String ID) throws IOException {
-		try (
-				FileReader patternReader = new FileReader(
-						inputFolder + ID + "_bismark.analysis_" + this.patternType + ".txt");
-				BufferedReader patternBuffReader = new BufferedReader(patternReader);
-		) {
+		try (BufferedReader patternBuffReader = new BufferedReader(
+				new FileReader(inputFolder + ID + "_bismark.analysis_" + this.patternType + ".txt"))) {
 			// skip column names and reference line
 			patternBuffReader.readLine();
 			patternBuffReader.readLine();

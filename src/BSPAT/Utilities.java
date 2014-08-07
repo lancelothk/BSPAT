@@ -26,7 +26,7 @@ public class Utilities {
 		HashMap<String, Coordinate> coorHashMap = new HashMap<>();
 
 		for (String name : files) {
-			try (BufferedReader reader = new BufferedReader(new FileReader(path + name));) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(path + name))) {
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-") ||
@@ -46,7 +46,7 @@ public class Utilities {
 				}
 			}
 		}
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + outFileName));) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + outFileName))) {
 			for (String key : coorHashMap.keySet()) {
 				Coordinate coor = coorHashMap.get(key);
 				writer.write(
@@ -143,7 +143,7 @@ public class Utilities {
 	public static void zipFolder(String folder, String zipFileName) throws IOException {
 		try (OutputStream os = new FileOutputStream(zipFileName);
 			 BufferedOutputStream bs = new BufferedOutputStream(os);
-			 ZipOutputStream zo = new ZipOutputStream(bs);
+			 ZipOutputStream zo = new ZipOutputStream(bs)
 		) {
 			zip(folder, new File(folder), zo, true, true);
 			zo.closeEntry();
@@ -185,7 +185,7 @@ public class Utilities {
 					zip(files[i].getPath(), basePath, zo, isRecursive, isOutBlankDir);
 				}
 			} else {
-				try (FileInputStream fin = new FileInputStream(files[i]);) {
+				try (FileInputStream fin = new FileInputStream(files[i])) {
 					zo.putNextEntry(new ZipEntry(pathName));
 					while ((len = fin.read(buf)) > 0) {
 						zo.write(buf, 0, len);
@@ -218,7 +218,7 @@ public class Utilities {
 				}
 
 				try (OutputStream outputStream = new FileOutputStream(loadFile);
-					 InputStream inputStream = zipFile.getInputStream(zipEntry);
+					 InputStream inputStream = zipFile.getInputStream(zipEntry)
 				) {
 					while ((length = inputStream.read(b)) > 0) {
 						outputStream.write(b, 0, length);
