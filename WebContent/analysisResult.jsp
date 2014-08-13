@@ -59,20 +59,18 @@
                     <td><c:out value="${constant.seqCountSummary.getSeqAfterFilter()}"/></td>
                 </tr>
                 <c:choose>
-                    <c:when test="${constant.minP0Threshold != -1}">
+                    <c:when test="${constant.minP0Threshold >= 0}">
                         <tr>
                             <td>&alpha; threshold:</td>
                             <td><c:out value="${constant.minP0Threshold}"/></td>
                         </tr>
                     </c:when>
-                    <c:otherwise>
-                        <c:when test="${constant.minMethylThreshold != -1}">
+                    <c:when test="${constant.minMethylThreshold >= 0}">
                             <tr>
                                 <td>methylation pattern threshold:</td>
                                 <td><c:out value="${constant.minMethylThreshold}"/></td>
                             </tr>
                         </c:when>
-                    </c:otherwise>
                 </c:choose>
                 <tr>
                     <td>Mutation threshold:</td>

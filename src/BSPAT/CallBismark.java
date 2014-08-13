@@ -51,9 +51,11 @@ public class CallBismark {
 										   bismarkPathFile.getAbsolutePath(), bowtiePathFile.getAbsolutePath(),
 										   refPathFile.getAbsolutePath());
 		System.out.println("Call preparation:");
-		Utilities.callCMD(preparation, new File(refPathFile.getAbsolutePath()),
-						  refPathFile.getAbsolutePath() + "bismark_prep.log");
-	}
+        System.out.println(refPathFile.getAbsolutePath());
+        Utilities.callCMD(preparation, new File(refPathFile.getAbsolutePath()),
+                          refPathFile.getAbsolutePath() + "/bismark_prep.log");
+        System.out.println(refPathFile.getAbsolutePath());
+    }
 
 	public void execute(String inputPath, String outputPath) throws IOException, InterruptedException {
 		String fastaq = "-q"; // default is -q/--fastq
