@@ -1,6 +1,7 @@
 package BSPAT;
 
 import DataType.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 
@@ -77,7 +78,8 @@ public class BSSeqAnalysis {
 			List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
 			List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 
-			methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size());
+			methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size(),
+															   referenceSeqs.get(region));
 			mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size());
 			Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size());
 			Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
@@ -207,36 +209,49 @@ public class BSSeqAnalysis {
 		return qualifiedMutationPatternList;
 	}
 
-	private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns,
-													double totalSeqCount) throws MathException {
+	private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
+													String refString) throws MathException {
 		List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
-		// use percentage pattern threshold
-		if (constant.minP0Threshold == -1) {
-			for (Pattern methylationPattern : methylationPatterns) {
-				double percentage = methylationPattern.getCount() / totalSeqCount;
-				if (percentage >= constant.minMethylThreshold) {
-					qualifiedMethylationPatternList.add(methylationPattern);
-				}
+		if (constant.minP0Threshold != -1 && StringUtils.countMatches(refString, "CG") >= 3) {
+			filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList);
+			if (qualifiedMethylationPatternList.size() == 0) {
+				filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
+													  qualifiedMethylationPatternList);
 			}
 		} else {
-			// calculate methylation rate for each CpG site.
-			double p = 0.5;// probability of CpG site to be methylated.
-			double z;
-			double ph, p0;
-			NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-			double criticalZ = 0;
-			criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
-			// significant pattern selection
-			for (Pattern methylationPattern : methylationPatterns) {
-				ph = methylationPattern.getCount() / totalSeqCount;
-				p0 = Math.max(constant.minP0Threshold, Math.pow(p, methylationPattern.getCGcount()));
-				z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
-				if (z > criticalZ) {
-					qualifiedMethylationPatternList.add(methylationPattern);
-				}
-			}
+			filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList);
 		}
 		return qualifiedMethylationPatternList;
+	}
+
+	private void filterMethylPatternsByMethylThreshold(List<Pattern> methylationPatterns, double totalSeqCount,
+													   List<Pattern> qualifiedMethylationPatternList) {
+		// use percentage pattern threshold
+		for (Pattern methylationPattern : methylationPatterns) {
+			double percentage = methylationPattern.getCount() / totalSeqCount;
+			if (percentage >= constant.minMethylThreshold) {
+				qualifiedMethylationPatternList.add(methylationPattern);
+			}
+		}
+	}
+
+	private void filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
+												   List<Pattern> qualifiedMethylationPatternList) throws MathException {
+		// calculate methylation rate for each CpG site.
+		double p = 0.5;// probability of CpG site to be methylated.
+		double z;
+		double ph, p0;
+		NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
+		double criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
+		// significant pattern selection
+		for (Pattern methylationPattern : methylationPatterns) {
+			ph = methylationPattern.getCount() / totalSeqCount;
+			p0 = Math.max(constant.minP0Threshold, Math.pow(p, methylationPattern.getCGcount()));
+			z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
+			if (z > criticalZ) {
+				qualifiedMethylationPatternList.add(methylationPattern);
+			}
+		}
 	}
 
 	/**
