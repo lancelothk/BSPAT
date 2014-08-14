@@ -214,16 +214,13 @@
         if (experimentName.search(" ") == -1) {  //don't have blank in name
             return false;
         }
-        window.alert("Error: "
-        id + " has blank in its name! Please remove the blank"
-    )
-        ;
+        window.alert("Error: " + id + " has blank in its name! Please remove the blank");
         return true;        //contain blank
     }
 
     function checkRfFile() {
         var fileName = document.getElementById("ref").value;
-        var ext = fileName.split(".")
+        var ext = fileName.split(".");
         if (ext[1] != "fa" && ext[1] != "fasta") {
             window.alert("Error: Invalid reference file! Only .fa and .fasta files are allowed.");
             return false;
