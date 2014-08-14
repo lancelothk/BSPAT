@@ -25,7 +25,7 @@
                         <tr>
                             <td>Email address(Optional):<sup><a href="manualMapping.jsp#email">?</a></sup></td>
                             <td><label>
-                                <input type="text" name="email"/>
+                                <input type="text" name="email" id="email"/>
                             </label></td>
                         </tr>
                         <tr>
@@ -157,7 +157,7 @@
         setFooter();
     }
 
-    function checkEmptyValue(id, msg) {
+    function isEmptyValue(id, msg) {
         if (document.getElementById(id).value == "") {
             window.alert(msg);
             return true;
@@ -167,12 +167,15 @@
     }
 
     function validateInput() {
-        if (checkEmptyValue("ref", "No reference file!")) {
+        if (!checkEmailAddress()) {
+            return false;
+        }
+        if (isEmptyValue("ref", "No reference file!")) {
             return false;
         }
         for (var i = 1; i <= elementCount; i++) {
-            if (checkEmptyValue("experiment" + i, "Experiment " + i + " name is empty!")
-                    || checkEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!")) {
+            if (isEmptyValue("experiment" + i, "Experiment " + i + " name is empty!")
+                    || isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!")) {
                 return false;
             }
         }
@@ -184,6 +187,20 @@
         document.getElementById('loader').style.display = 'block';
         document.getElementById('tables').style.display = 'none';
         setFooter();
+    }
+
+    function checkEmailAddress() {
+        var emailAddress = document.getElementById("email").value;
+        if (emailAddress != "" && !validateEmail(emailAddress)) {
+            window.alert("Invalid email address!");
+            return false;
+        }
+        return true;
+    }
+
+    function validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
     }
 
     window.onload = addExperiment;
