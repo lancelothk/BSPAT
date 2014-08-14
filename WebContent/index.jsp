@@ -178,6 +178,12 @@
                     || isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!")) {
                 return false;
             }
+            if (containBlank("experiment" + i)) {
+                return false;
+            }
+        }
+        if (!checkRfFile()) {
+            return false;
         }
         resetPage();
         return true;
@@ -192,7 +198,7 @@
     function checkEmailAddress() {
         var emailAddress = document.getElementById("email").value;
         if (emailAddress != "" && !validateEmail(emailAddress)) {
-            window.alert("Invalid email address!");
+            window.alert("Error: Invalid email address!");
             return false;
         }
         return true;
@@ -201,6 +207,28 @@
     function validateEmail(email) {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
+    }
+
+    function containBlank(id) {
+        var experimentName = document.getElementById(id).value;
+        if (experimentName.search(" ") == -1) {  //don't have blank in name
+            return false;
+        }
+        window.alert("Error: "
+        id + " has blank in its name! Please remove the blank"
+    )
+        ;
+        return true;        //contain blank
+    }
+
+    function checkRfFile() {
+        var fileName = document.getElementById("ref").value;
+        var ext = fileName.split(".")
+        if (ext[1] != "fa" && ext[1] != "fasta") {
+            window.alert("Error: Invalid reference file! Only .fa and .fasta files are allowed.");
+            return false;
+        }
+        return true;
     }
 
     window.onload = addExperiment;
