@@ -98,6 +98,26 @@ public class Report {
 				// bismark result is 1-based. Need change to 0-based
 				bufferedWriter.write(cpgStat.getPosition() - 1 + "\t" + cpgStat.getMethylationRate() + "\n");
 			}
+
+            bufferedWriter.write("mutation stat:\n");
+            int[] mutationStat;
+            mutationStat = new int[referenceSeq.length()];
+            // give mutationStat array zero value
+            for (int i : mutationStat) {
+                mutationStat[i] = 0;
+            }
+            for (Sequence seq : sequencesList) {
+                char[] mutationArray = seq.getMutationString().toCharArray();
+                for (int i = 0; i < mutationArray.length; i++) {
+                    if (mutationArray[i] == 'A' || mutationArray[i] == 'C' || mutationArray[i] == 'G' || mutationArray[i] == 'T') {
+                        mutationStat[i]++;
+                    }
+                }
+            }
+            for (int i = 0; i < mutationStat.length; i++) {
+                // 1 based position
+                bufferedWriter.write((i + 1) + "\t" + mutationStat[i] + "\n");
+            }
 		}
 	}
 

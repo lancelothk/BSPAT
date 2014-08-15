@@ -64,7 +64,7 @@ public class ReadAnalysisResult {
 			}
 			// get start position
 			line = statBuffReader.readLine();
-			while (line != null) {
+			while (line != null && !line.startsWith("mutation")) {
 				items = line.split("\t");
 				if (!Character.isDigit(items[0].charAt(0))) {
 					break;
