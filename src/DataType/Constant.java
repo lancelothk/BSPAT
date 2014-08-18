@@ -9,7 +9,6 @@ public class Constant implements Serializable {
 	public static final long SPACETHRESHOLD = 100000;// maximum allow 100000MB space (100GB)
 	public static final int MAXEXECUTIONDAY = 10;
 	public static final int REFEXTENSIONLENGTH = 2;
-	private static Constant constant = null;
 	public static String DISKROOTPATH = "";
 	public static final String PNG = "png";
 	public static final String EPS = "eps";
@@ -61,29 +60,15 @@ public class Constant implements Serializable {
 	public MappingSummary mappingSummary;
 	public SeqCountSummary seqCountSummary;
 
-	private Constant() {
-	}
-
-	public static Constant getInstance() {
-		if (constant == null) {
-			synchronized (Constant.class) {
-				if (constant == null) {
-					constant = new Constant();
-				}
-			}
-		}
-		return constant;
-	}
-
 	/**
 	 * write constant object to disk
 	 */
-	public static void writeConstant() throws IOException {
-		FileOutputStream constantOutputStream = new FileOutputStream(
-				DISKROOTPATH + "/" + JOB_FOLDER_PREFIX + constant.jobID + "/" + constant.jobID + ".data");
-		ObjectOutputStream constantObjectStream = new ObjectOutputStream(constantOutputStream);
-		constantObjectStream.writeObject(constant);
-		constantOutputStream.close();
+    public void writeConstant() throws IOException {
+        FileOutputStream constantOutputStream = new FileOutputStream(
+                DISKROOTPATH + "/" + JOB_FOLDER_PREFIX + this.jobID + "/" + this.jobID + ".data");
+        ObjectOutputStream constantObjectStream = new ObjectOutputStream(constantOutputStream);
+        constantObjectStream.writeObject(this);
+        constantOutputStream.close();
 	}
 
 	/**
@@ -101,14 +86,14 @@ public class Constant implements Serializable {
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Serialization error!");
 		}
-		constant = (Constant) obj;
-		constantObjectStream.close();
+        Constant constant = (Constant) obj;
+        constantObjectStream.close();
 		return constant;
 	}
 
 	public String getAbsolutePathCoorFile() {
-		return (coorFilePath + coorFileName).replace(Constant.DISKROOTPATH, constant.webRootPath);
-	}
+        return (coorFilePath + coorFileName).replace(Constant.DISKROOTPATH, this.webRootPath);
+    }
 
 	public String getWebRootPath() {
 		return webRootPath;

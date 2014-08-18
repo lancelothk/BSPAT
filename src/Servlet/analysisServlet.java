@@ -118,8 +118,8 @@ public class analysisServlet extends HttpServlet {
 			constant.seqCountSummary = new SeqCountSummary();
 			for (int i = 0; i < constant.experiments.size(); i++) {
 				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
-				System.out.println(constant.experiments.get(i).getName() + "\tfinished!");
-				for (ReportSummary reportSummary : constant.experiments.get(i).reportSummaries) {
+                System.out.println(constant.getJobID() + "\t" + constant.experiments.get(i).getName() + "\tfinished!");
+                for (ReportSummary reportSummary : constant.experiments.get(i).reportSummaries) {
 					constant.seqCountSummary.addSeqBeforeFilter(reportSummary.getSeqBeforeFilter());
 					constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqAfterFilter());
 				}
@@ -139,8 +139,8 @@ public class analysisServlet extends HttpServlet {
 			constant.analysisResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
 			constant.finishedAnalysis = true;
 			// update constant file on disk
-			Constant.writeConstant();
-			request.setAttribute("constant", constant);
+            constant.writeConstant();
+            request.setAttribute("constant", constant);
 			request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
 		} catch (UserNoticeException e) {
 			e.printStackTrace();

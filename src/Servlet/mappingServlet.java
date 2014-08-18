@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 @MultipartConfig
 public class mappingServlet extends HttpServlet {
 	private static final long serialVersionUID = 6078331324800268609L;
-	private Constant constant = null;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -55,10 +54,11 @@ public class mappingServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			response.setContentType("text/html");
-			initializeConstant(request); // initialize constant, which is a singleton
-			cleanRootFolder(); // release root folder space
-			List<Experiment> experiments = new ArrayList<>();
+            Constant constant = new Constant();
+            response.setContentType("text/html");
+            initializeConstant(constant, request); // initialize constant, which is a singleton
+            cleanRootFolder(constant.getJobID()); // release root folder space
+            List<Experiment> experiments = new ArrayList<>();
 			boolean isDemo = Boolean.parseBoolean(request.getParameter("demo"));
 
 			if (isDemo) {
@@ -69,8 +69,8 @@ public class mappingServlet extends HttpServlet {
 											  new File(constant.seqsPath + "demoExperiment"));
 			} else {
 				addExperiment(request, response, experiments);
-				handleUploadedFiles(request, response, experiments);
-			}
+                handleUploadedFiles(constant, request, response, experiments);
+            }
 
 			long start = System.currentTimeMillis();
 			// set other parameters
@@ -81,8 +81,8 @@ public class mappingServlet extends HttpServlet {
 			constant.experiments = experiments;
 			constant.email = request.getParameter("email");
 			// execute BLAT query
-			blatQuery();
-			// append xx to both end of reference
+            blatQuery(constant);
+            // append xx to both end of reference
 			modifyRef(constant.originalRefPath, constant.modifiedRefPath);
 
 			// bismark indexing
@@ -113,11 +113,11 @@ public class mappingServlet extends HttpServlet {
 			constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
 			constant.finishedMapping = true;
 			// save constant object to file
-			Constant.writeConstant();
-			// send email to inform user
+            constant.writeConstant();
+            // send email to inform user
 			Utilities.sendEmail(constant.email, constant.jobID,
-								"Mapping has finished.\n" + "Your jobID is " + constant.jobID +
-										"\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+                                "Mapping has finished.\n" + "Your jobID is " + constant.jobID +
+                                        "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
 			//redirect page
 			request.setAttribute("constant", constant);
 			request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
@@ -140,8 +140,7 @@ public class mappingServlet extends HttpServlet {
 		}
 	}
 
-	private void handleUploadedFiles(HttpServletRequest request, HttpServletResponse response,
-									 List<Experiment> experiments) {
+    private void handleUploadedFiles(Constant constant, HttpServletRequest request, HttpServletResponse response, List<Experiment> experiments) {
 		Collection<Part> parts = null; // get submitted data
 		try {
 			parts = request.getParts();
@@ -200,8 +199,7 @@ public class mappingServlet extends HttpServlet {
 	 * @param request
 	 * @throws IOException
 	 */
-	private void initializeConstant(HttpServletRequest request) throws IOException {
-		constant = Constant.getInstance();
+	private void initializeConstant(Constant constant, HttpServletRequest request) throws IOException {
 		// DISKROOTPATH is absolute disk path.
 		Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
 		// webPath is relative path to root
@@ -278,12 +276,12 @@ public class mappingServlet extends HttpServlet {
 	 *
 	 * @throws IOException
 	 */
-	private void cleanRootFolder() throws IOException {
-		File rootDirectory = new File(Constant.DISKROOTPATH);
+    private void cleanRootFolder(String jobId) throws IOException {
+        File rootDirectory = new File(Constant.DISKROOTPATH);
 		long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024;
 		long excess = rootFolderSize - Constant.SPACETHRESHOLD;
-		System.out.println("root folder space occupation:\t" + rootFolderSize + "M");
-		if (rootFolderSize >= Constant.SPACETHRESHOLD) { // if exceed threshold, clean
+        System.out.println(jobId + "\troot folder space occupation:\t" + rootFolderSize + "M");
+        if (rootFolderSize >= Constant.SPACETHRESHOLD) { // if exceed threshold, clean
 			File[] subFolders = rootDirectory.listFiles();
 			Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
 			if (subFolders != null) {
@@ -307,20 +305,20 @@ public class mappingServlet extends HttpServlet {
 	/**
 	 * execute blat query
 	 */
-	private void blatQuery() throws IOException, InterruptedException {
-		File refFolder = new File(constant.originalRefPath);
+    private void blatQuery(Constant constant) throws IOException, InterruptedException {
+        File refFolder = new File(constant.originalRefPath);
 		String[] files = refFolder.list();
 		String blatQueryPath = constant.toolsPath + "BlatQuery/";
 		for (String name : files) {
-			System.out.println("start blat query for " + name);
-			String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath,
+            System.out.println(constant.getJobID() + "\tstart blat query for " + name);
+            String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath,
 											 constant.refVersion, constant.originalRefPath, name);
 			Utilities.callCMD(blatQuery, new File(constant.coorFilePath), null);
-			System.out.println("blat query is finished for " + name);
-		}
+            System.out.println(constant.getJobID() + "\tblat query is finished for " + name);
+        }
 		Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
 		constant.coorReady = true;
-		System.out.println("blat result converted");
-	}
+        System.out.println(constant.getJobID() + "\tblat result converted");
+    }
 
 }

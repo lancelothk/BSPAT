@@ -21,8 +21,8 @@ import java.util.zip.ZipOutputStream;
 public class Utilities {
 
 	public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {
-		File folder = new File(path);
-		String[] files = folder.list(new ExtensionFilter(".psl"));
+        File folder = new File(path);
+        String[] files = folder.list(new ExtensionFilter(".psl"));
 		HashMap<String, Coordinate> coorHashMap = new HashMap<>();
 
 		for (String name : files) {
