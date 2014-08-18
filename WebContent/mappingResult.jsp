@@ -174,7 +174,7 @@
                                 href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
                         <td><label>
                             <input type="text" id="mutationpatternThreshold" name="mutationpatternThreshold"
-                                   value=0.3>
+                                   value=0.2>
                         </label></td>
                     </tr>
                     <tr>
