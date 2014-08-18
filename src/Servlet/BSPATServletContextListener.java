@@ -14,21 +14,21 @@ import java.io.IOException;
  */
 @WebListener
 public class BSPATServletContextListener implements ServletContextListener {
-	@Override
-	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		String toolsPath = servletContextEvent.getServletContext().getRealPath("") + "/tools/";
-		String setFileExecution = String.format("./setFileExecution.sh %s", toolsPath);
-		try {
-			Utilities.callCMD("chmod u+x setFileExecution.sh", new File(toolsPath), null);
-			Utilities.callCMD(setFileExecution, new File(toolsPath), null);
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-			throw new RuntimeException("chmod failed!");
-		}
-	}
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        String toolsPath = servletContextEvent.getServletContext().getRealPath("") + "/tools/";
+        String setFileExecution = String.format("./setFileExecution.sh %s", toolsPath);
+        try {
+            Utilities.callCMD("chmod u+x setFileExecution.sh", new File(toolsPath), null);
+            Utilities.callCMD(setFileExecution, new File(toolsPath), null);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("chmod failed!");
+        }
+    }
 
-	@Override
-	public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
-	}
+    }
 }

@@ -1,10 +1,13 @@
 package BSPAT;
 
+import DataType.Constant;
 import DataType.Coordinate;
 import DataType.ExtensionFilter;
 import DataType.UserNoticeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.zip.ZipFile;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.prefs.CsvPreference;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -14,6 +17,7 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -233,10 +237,28 @@ public class Utilities {
 		if (toAddress == null || toAddress.equals("") || jobID.equals("") || jobID == null) {
 			return;
 		}
-		String smtpServer = "IMAP.gmail.com";
-		String username = "bspatnotice";
-		String password = "bspatcwru";
-		String toMailAddress = toAddress;
+        String username, password;
+        try {
+            File rootFolder = new File(Constant.DISKROOTPATH);
+            CsvListReader csvListReader = new CsvListReader(
+                    new BufferedReader(new FileReader(rootFolder.getParent() + "/emailConf.csv")),
+                    CsvPreference.STANDARD_PREFERENCE);
+            List<String> results = csvListReader.read();
+//            String username = "bspatnotice";
+//            String password = "bspatcwru";
+            if (results.size() == 2) {
+                username = results.get(0);
+                password = results.get(1);
+            } else {
+                throw new RuntimeException("email conf file format error!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Can not read email conf file!");
+        }
+
+        String smtpServer = "IMAP.gmail.com";
+        String toMailAddress = toAddress;
 		String fromMailAddress = "bspatnotice@gmail.com";
 
 		Properties props = new Properties();
