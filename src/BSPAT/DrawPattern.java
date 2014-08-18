@@ -125,8 +125,9 @@ public class DrawPattern {
 				graphWriter.setPaint(Color.BLUE);
 				for (int j = 0; j < alleleList.size(); j++) {
 					graphWriter.fill(new Rectangle2D.Double(STARTX + (alleleList.get(j) * WIDTH) - WIDTH / 2,
-															height - HEIGHTINTERVAL / 2, RADIUS / 2, RADIUS * 2));
-					int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
+                                                            height - HEIGHTINTERVAL / 2 + RADIUS / 2, RADIUS / 2,
+                                                            RADIUS));
+                    int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
 					bedWriter.write(
 							"chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + j + "\t" + 1000 +
 									"\t+\t" + (allelePos - 1) + "\t"
@@ -397,8 +398,8 @@ public class DrawPattern {
 		if (patternResult.hasAllele()) {
 			gImage.setPaint(Color.BLUE);
 			gImage.fill(new Rectangle2D.Double(STARTX + (patternResult.getAlleleList().get(0) * WIDTH) - WIDTH / 2,
-											   height - HEIGHTINTERVAL / 2, RADIUS / 2, RADIUS * 2));
-			int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
+                                               height - HEIGHTINTERVAL / 2 + RADIUS / 2, RADIUS / 2, RADIUS));
+            int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
 			bedWriter.write(
 					"chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + patternName + "\t" + 1000 +
 							"\t+\t" + (allelePos - 1) + "\t" + allelePos + "\t0,0,255\n");
