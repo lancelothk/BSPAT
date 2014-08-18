@@ -124,8 +124,8 @@ public class DrawPattern {
 				List<Integer> alleleList = patternResult.getAlleleList();
 				graphWriter.setPaint(Color.BLUE);
 				for (int j = 0; j < alleleList.size(); j++) {
-					graphWriter.fill(new Rectangle2D.Double(STARTX + (alleleList.get(j) * WIDTH) - WIDTH / 2,
-                                                            height - HEIGHTINTERVAL / 2 + RADIUS / 2, RADIUS / 2,
+                    graphWriter.fill(new Rectangle2D.Double(STARTX + (alleleList.get(j) * WIDTH),
+                                                            height - HEIGHTINTERVAL / 2 + RADIUS, RADIUS / 2,
                                                             RADIUS));
                     int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
 					bedWriter.write(
@@ -329,8 +329,8 @@ public class DrawPattern {
 		addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternB", bedWriter, height);
 		// set snp info
 		if (patternWithAllele.hasAllele()) {
-			List<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg19",
-																	patternResultPath) +
+            List<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg38",
+                                                                    patternResultPath) +
 					patternWithAllele.getAlleleList().get(0), "1");
 			if (snpList != null && snpList.size() > 0) {
 				reportSummary.setASMsnp(snpList.get(0));
@@ -397,8 +397,8 @@ public class DrawPattern {
 		// + HEIGHTINTERVAL);
 		if (patternResult.hasAllele()) {
 			gImage.setPaint(Color.BLUE);
-			gImage.fill(new Rectangle2D.Double(STARTX + (patternResult.getAlleleList().get(0) * WIDTH) - WIDTH / 2,
-                                               height - HEIGHTINTERVAL / 2 + RADIUS / 2, RADIUS / 2, RADIUS));
+            gImage.fill(new Rectangle2D.Double(STARTX + (patternResult.getAlleleList().get(0) * WIDTH),
+                                               height - HEIGHTINTERVAL / 2 + RADIUS, RADIUS / 2, RADIUS));
             int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
 			bedWriter.write(
 					"chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + patternName + "\t" + 1000 +

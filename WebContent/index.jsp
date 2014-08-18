@@ -36,10 +36,9 @@
                             <td>Reference Genome Version:<sup><a href="manualMapping.jsp#refVersion">?</a></sup></td>
                             <td><label>
                                 <select name="refVersion">
+                                    <option value="hg38">hg38</option>
                                     <option value="hg19">hg19</option>
                                     <option value="hg18" selected="selected">hg18</option>
-                                    <option value="hg17">hg17</option>
-                                    <option value="hg16">hg16</option>
                                 </select>
                             </label></td>
                         </tr>
