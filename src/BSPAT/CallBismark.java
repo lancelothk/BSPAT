@@ -91,8 +91,7 @@ public class CallBismark {
 			fileList = IO.visitFiles(seqfolder);
 			//fileNames = folder.list(new ExtensionFilter(new String[] { ".txt", ".fq", "fastq", "fasta", "fa" }));
 			if (fileList.size() == 0) {
-				System.err.println("no sequencing data files in " + inputFile);
-				return;
+				throw new RuntimeException("no sequencing data files in " + inputFile.getAbsolutePath());
 			} else {
 				for (File file : fileList) {
 					// if contains at least one fasta file
