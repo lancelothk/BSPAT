@@ -397,9 +397,7 @@ public class BSSeqAnalysis {
 					mutationString[cpg.getPosition() - 1] = '-';
 				} else {
 					// un-methylated CpG site represent by **. Exclude mutation in CpG site.
-					if (cpg.getPosition() != mutationString.length &&
-							originalSeq.charAt(cpg.getPosition() - 1) == 'T' &&
-							originalSeq.charAt(cpg.getPosition()) == 'G') {
+					if (cpg.getPosition() != mutationString.length) {
 						methylationString[cpg.getPosition() - 1] = '*';
 						if (cpg.getPosition() + 1 <= methylationString.length) {
 							methylationString[cpg.getPosition()] = '*';
