@@ -1,49 +1,60 @@
 package DataType;
 
-public class CpGStatistics {
+public class CpGStatistics implements CpG {
 
-    private int countOfAllSites;
-    private double countOfmethylatedSites;
-    private double methylationRate;
+    // count of all CpG sites
+    private int countOfAll;
+    // count of methylated CpG sites
+    private int methylCount;
+    private double methylLevel;
     private int position;
 
 
     public CpGStatistics(int position) {
-        countOfAllSites = 0;
-        countOfmethylatedSites = 0;
-        methylationRate = 0;
+        countOfAll = 0;
+        methylCount = 0;
+        methylLevel = 0;
         this.position = position;
     }
 
-    public void setMethylationRate(double methylationRate) {
-        this.methylationRate = methylationRate;
+    public void setMethylLevel(double methylLevel) {
+        this.methylLevel = methylLevel;
     }
 
-    public void calcMethylRate() {
-        methylationRate = countOfmethylatedSites / countOfAllSites;
+    public void calcMethylLevel() {
+        methylLevel = methylCount / countOfAll;
     }
 
-    public double getMethylationRate() {
-        return methylationRate;
+    @Override
+    public double getMethylLevel() {
+        return methylLevel;
     }
 
+    @Override
     public int getPosition() {
         return position;
     }
 
     public void allSitePlus() {
-        countOfAllSites++;
+        countOfAll++;
     }
 
     public void methylSitePlus() {
-        countOfmethylatedSites++;
+        methylCount++;
     }
 
-    public int getCountOfAllSites() {
-        return countOfAllSites;
+    @Override
+    public int getCountOfAll() {
+        return countOfAll;
     }
 
-    public double getCountOfmethylatedSites() {
-        return countOfmethylatedSites;
+    @Override
+    public int getNonMethylCount() {
+        return countOfAll - methylCount;
+    }
+
+    @Override
+    public int getMethylCount() {
+        return methylCount;
     }
 }

@@ -69,15 +69,15 @@ public class Report {
 					if (!cpgStatHashtable.containsKey(cpg.getPosition())) {
 						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition());
 						cpgStat.allSitePlus();
-						if (cpg.getMethylLabel()) {
-							cpgStat.methylSitePlus();
+                        if (cpg.isMethylated()) {
+                            cpgStat.methylSitePlus();
 						}
 						cpgStatHashtable.put(cpg.getPosition(), cpgStat);
 					} else {
 						CpGStatistics cpgStat = cpgStatHashtable.get(cpg.getPosition());
 						cpgStat.allSitePlus();
-						if (cpg.getMethylLabel()) {
-							cpgStat.methylSitePlus();
+                        if (cpg.isMethylated()) {
+                            cpgStat.methylSitePlus();
 						}
 					}
 				}
@@ -94,10 +94,10 @@ public class Report {
 			bufferedWriter.write("pos\trate" + "\n");
 
 			for (CpGStatistics cpgStat : statList) {
-				cpgStat.calcMethylRate();
-				// bismark result is 1-based. Need change to 0-based
-				bufferedWriter.write(cpgStat.getPosition() - 1 + "\t" + cpgStat.getMethylationRate() + "\n");
-			}
+                cpgStat.calcMethylLevel();
+                // bismark result is 1-based. Need change to 0-based
+                bufferedWriter.write(cpgStat.getPosition() - 1 + "\t" + cpgStat.getMethylLevel() + "\n");
+            }
 
             bufferedWriter.write("mutation stat:\n");
             int[] mutationStat;

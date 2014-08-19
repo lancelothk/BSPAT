@@ -101,21 +101,13 @@ public class BSSeqAnalysis {
             if (constant.coorReady) {
                 System.out.println("start drawing -- BSSeqAnalysis -- execute");
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-                                                              constant.toolsPath);
-                drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                  reportSummary.getPatternLink(PatternLink.METHYLATION), experimentName,
-                                                  targetCoorMap);
-                drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                  reportSummary.getPatternLink(PatternLink.MUTATION), experimentName,
-                                                  targetCoorMap);
-                drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                  reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION),
-                                                  experimentName, targetCoorMap);
-                drawFigureLocal.drawMethylPattern(region, outputFolder,
-                                                  reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION),
-                                                  experimentName, targetCoorMap);
-                drawFigureLocal.drawASMPattern(region, outputFolder, experimentName, reportSummary, targetCoorMap,
-                                               allelePattern, nonAllelePattern, seqGroup.size());
+                                                              constant.toolsPath, region, outputFolder, experimentName,
+                                                              targetCoorMap);
+                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
+                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
+                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
+                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
+                drawFigureLocal.drawASMPattern(reportSummary, allelePattern, nonAllelePattern, seqGroup.size());
 
             }
             reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
@@ -389,7 +381,7 @@ public class BSSeqAnalysis {
                 }
             }
             for (CpGSite cpg : seq.getCpGSites()) {
-                if (cpg.getMethylLabel()) {
+                if (cpg.isMethylated()) {
                     countofMethylatedCpG++;
                     // methylated CpG site represent by @@
                     methylationString[cpg.getPosition() - 1] = '@';

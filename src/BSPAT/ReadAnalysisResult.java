@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReadAnalysisResult {
-	private List<PatternResult> patternResultLists = new ArrayList<>();
 	private List<Integer> refCpGs = new ArrayList<>();
 	private List<CpGStatistics> statList = new ArrayList<>();
 	private int refLength = 0;
@@ -18,31 +17,15 @@ public class ReadAnalysisResult {
 	private Coordinate coordinate;
 	private String beginCoor;
 	private String endCoor;
-	private String patternType;
 	private String cellLine;
 
-	public ReadAnalysisResult(String inputFolder, String patternType, String cellLine, String ID,
-							  Coordinate coordinate) throws IOException {
-		this.inputFolder = inputFolder;
-		this.coordinate = coordinate;
-		this.patternType = patternType;
-		this.cellLine = cellLine;
-		System.out.println("readStatFile");
-		readStatFile(ID);
-		System.out.println("readPatternFile");
-		readPatternFile(ID);
-		System.out.println("setCoordinate");
-		setCoordinate();
-	}
-
-	public ReadAnalysisResult(String inputFolder, String cellLine, String ID,
-							  Coordinate coordinate) throws IOException {
+    public ReadAnalysisResult(String inputFolder, String cellLine, String region, Coordinate coordinate) throws IOException {
 		this.inputFolder = inputFolder;
 		this.coordinate = coordinate;
 		this.cellLine = cellLine;
 		System.out.println("readStatFile");
-		readStatFile(ID);
-		System.out.println("setCoordinate");
+        readStatFile(region);
+        System.out.println("setCoordinate");
 		setCoordinate();
 	}
 
@@ -73,8 +56,8 @@ public class ReadAnalysisResult {
 				int pos = Integer.valueOf(items[0]);
 				refCpGs.add(pos);
 				cpgStat = new CpGStatistics(pos);
-				cpgStat.setMethylationRate(Double.valueOf(items[1]));
-				statList.add(cpgStat);
+                cpgStat.setMethylLevel(Double.valueOf(items[1]));
+                statList.add(cpgStat);
 
 				line = statBuffReader.readLine();
 			}
@@ -82,10 +65,11 @@ public class ReadAnalysisResult {
 		}
 	}
 
-	private void readPatternFile(String ID) throws IOException {
-		try (BufferedReader patternBuffReader = new BufferedReader(
-				new FileReader(inputFolder + ID + "_bismark.analysis_" + this.patternType + ".txt"))) {
-			// skip column names and reference line
+    public List<PatternResult> readPatternFile(String region, String patternType) throws IOException {
+        List<PatternResult> patternResultLists = new ArrayList<>();
+        try (BufferedReader patternBuffReader = new BufferedReader(
+                new FileReader(inputFolder + region + "_bismark.analysis_" + patternType + ".txt"))) {
+            // skip column names and reference line
 			patternBuffReader.readLine();
 			patternBuffReader.readLine();
 			// start to read content
@@ -98,12 +82,12 @@ public class ReadAnalysisResult {
 				CpGSite cpg;
 				patternResult = new PatternResult();
 				for (int i = 0; i < refLength; i++) {
-					if (items[0].charAt(i) == '*' && items[0].charAt(i + 1) == '*') {
-						// because each CpG consists of two nucleotide, i++
+                    if (items[0].charAt(i) == '*') {
+                        // because each CpG consists of two nucleotide, i++
 						cpg = new CpGSite(i++, false);
 						patternResult.addCpG(cpg);
-					} else if (items[0].charAt(i) == '@' && items[0].charAt(i + 1) == '@') {
-						// because each CpG consists of two nucleotide, i++
+                    } else if (items[0].charAt(i) == '@') {
+                        // because each CpG consists of two nucleotide, i++
 						cpg = new CpGSite(i++, true);
 						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
@@ -117,7 +101,8 @@ public class ReadAnalysisResult {
 				line = patternBuffReader.readLine();
 			}
 		}
-	}
+        return patternResultLists;
+    }
 
 	private void setCoordinate() {
 		beginCoor = coordinate.getChr() + ":" + coordinate.getStart();
@@ -134,10 +119,6 @@ public class ReadAnalysisResult {
 
 	public String getEndCoor() {
 		return endCoor;
-	}
-
-	public List<PatternResult> getPatternResultLists() {
-		return patternResultLists;
 	}
 
 	public List<Integer> getRefCpGs() {

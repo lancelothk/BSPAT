@@ -1,6 +1,6 @@
 package DataType;
 
-public class CpGSite {
+public class CpGSite implements CpG {
     private int position;
     private boolean methylLabel;
     private int methylCount = 0;
@@ -11,6 +11,7 @@ public class CpGSite {
         this.position = position;
     }
 
+    @Override
     public int getPosition() {
         return position;
     }
@@ -19,16 +20,23 @@ public class CpGSite {
         this.position = position;
     }
 
-    public boolean getMethylLabel() {
+    public boolean isMethylated() {
         return methylLabel;
     }
 
+    @Override
     public int getMethylCount() {
         return methylCount;
     }
 
+    @Override
     public int getNonMethylCount() {
         return nonMethylCount;
+    }
+
+    @Override
+    public int getCountOfAll() {
+        return methylCount + nonMethylCount;
     }
 
     public void addMethylCount(int count) {
@@ -39,6 +47,7 @@ public class CpGSite {
         this.nonMethylCount += count;
     }
 
+    @Override
     public double getMethylLevel() {
         return methylCount / (double) (methylCount + nonMethylCount);
     }

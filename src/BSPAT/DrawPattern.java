@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DrawPattern {
-	private final int WIDTH = 20;
+    private final String DEFAULTFONT = "Courier New";
+    private final int WIDTH = 20;
 	private final int STARTX = 120;
 	private final int STARTY = 20;
 	private final int LEFTSTART = 10;
@@ -30,40 +31,73 @@ public class DrawPattern {
 	private final double RGBinterval = 255 / 50.0;
 	private int styleChoice = 0;
 	private int commonSize = 24;
-	private int celllineSize = 30;
-	private int smallPercentSize = 16;
-	private String figureFormat;
+    private int smallPercentSize = 16;
+    private String figureFormat;
 	private String refVersion;
 	private String toolsPath;
+    private String region;
+    private String patternResultPath;
+    private String sampleName;
+    private Map<String, Coordinate> coordinateMap;
+    private ReadAnalysisResult data;
+    private String cellLine;
+    private List<Integer> refCpGs;
+    private List<CpGStatistics> statList;
+    private int refLength;
+    private String beginCoor;
+    private String endCoor;
 
-	public DrawPattern(String figureFormat, String refVersion, String toolsPath) {
-		super();
+    public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
+                       String patternResultPath, String sampleName,
+                       Map<String, Coordinate> coordinateMap) throws IOException {
+        super();
 		this.figureFormat = figureFormat;
 		this.refVersion = refVersion;
 		this.toolsPath = toolsPath;
-	}
+        this.region = region;
+        this.patternResultPath = patternResultPath;
+        this.sampleName = sampleName;
+        this.coordinateMap = coordinateMap;
+        this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region));
+        this.cellLine = data.getCellLine();
+        this.refCpGs = data.getRefCpGs();
+        this.statList = data.getStatList();
+        this.refLength = data.getRefLength();
+        this.beginCoor = data.getBeginCoor();
+        this.endCoor = data.getEndCoor();
+    }
 
-	public void drawMethylPattern(String region, String patternResultPath, PatternLink patternLink, String sampleName,
-								  Map<String, Coordinate> coordinates) throws IOException {
-		System.out.println("readCoordinates -- DrawSingleFigure");
-		ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, patternLink.getPatternType(), sampleName,
-														 region, coordinates.get(region));
-		System.out.println("start drawMethylPattern");
+    public void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height) {
+        // 1. add coordinates
+        graphWriter.setBackground(Color.WHITE);
+        graphWriter.clearRect(0, 0, imageWidth, imageHeight);
+        graphWriter.setPaint(Color.BLACK);
+        graphWriter.setFont(new Font(DEFAULTFONT, styleChoice, commonSize));
+        graphWriter.drawString("chr" + beginCoor, STARTX + WIDTH, height);
+        graphWriter.drawString(endCoor, STARTX + refLength * WIDTH - WIDTH, height);
+
+        // 2. add reference bar
+        graphWriter.setStroke(new BasicStroke(2.0f));
+        height += HEIGHTINTERVAL;
+        graphWriter.drawLine(STARTX, height, STARTX + refLength * WIDTH, height);
+        graphWriter.setStroke(new BasicStroke());
+
+        // 3. add refCpGSites
+        for (int i = 0; i < refCpGs.size(); i++) {
+            graphWriter.drawLine(STARTX + refCpGs.get(i) * WIDTH, height - BARHEIGHT / 2,
+                                 STARTX + refCpGs.get(i) * WIDTH, height + BARHEIGHT / 2);
+        }
+    }
+
+    public void drawMethylPattern(PatternLink patternLink) throws IOException {
+        System.out.println("start drawMethylPattern");
 		// set pattern result picture folder
 		File folder = new File(patternResultPath + "pics/");
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
 
-		// variable initialization
-		String cellLine = data.getCellLine();
-		List<Integer> refCpGs = data.getRefCpGs();
-		List<PatternResult> patternResultLists = data.getPatternResultLists();
-		List<CpGStatistics> statList = data.getStatList();
-		int refLength = data.getRefLength();
-		String beginCoor = data.getBeginCoor();
-		String endCoor = data.getEndCoor();
-		String fontChoice = "Courier New";
+        List<PatternResult> patternResultLists = data.readPatternFile(region, patternLink.getPatternType());
 
 		// set GB bed file link
 		String GBLinkFileName = patternResultPath + "pics/" + region + "-" + patternLink.getPatternType() + ".bed";
@@ -87,56 +121,24 @@ public class DrawPattern {
 		patternLink.setFigureResultLink(fileName);
 
 		int height = STARTY;
-		// 1. add coordinates
-		graphWriter.setBackground(Color.WHITE);
-		graphWriter.clearRect(0, 0, imageWidth, imageHeight);
-		graphWriter.setPaint(Color.BLACK);
-		graphWriter.setFont(new Font(fontChoice, styleChoice, commonSize));
-		graphWriter.drawString("chr" + beginCoor, STARTX + WIDTH, height);
-		graphWriter.drawString(endCoor, STARTX + refLength * WIDTH - WIDTH, height);
-
-		// 2. add reference bar
-		graphWriter.setStroke(new BasicStroke(2.0f));
-		height += HEIGHTINTERVAL;
-		graphWriter.drawLine(STARTX, height, STARTX + refLength * WIDTH, height);
-		graphWriter.setStroke(new BasicStroke());
-
-		// 3. add refCpGSites
-		for (int i = 0; i < refCpGs.size(); i++) {
-			graphWriter.drawLine(STARTX + refCpGs.get(i) * WIDTH, height - BARHEIGHT / 2,
-								 STARTX + refCpGs.get(i) * WIDTH, height + BARHEIGHT / 2);
-		}
+        buildFigureFrame(graphWriter, imageHeight, imageWidth, height);
 
 		// 4. add CpG sites
 		DecimalFormat percent = new DecimalFormat("##.00%");
 		height += HEIGHTINTERVAL;
 		graphWriter.drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX, height + HEIGHTINTERVAL);
 		height += HEIGHTINTERVAL;
-		graphWriter.setFont(new Font(fontChoice, styleChoice, celllineSize));
-		graphWriter.drawString(cellLine, LEFTSTART, height);
-		graphWriter.setFont(new Font(fontChoice, styleChoice, commonSize));
+        final int CELLLINEFONTSIZE = 30;
+        graphWriter.setFont(new Font(DEFAULTFONT, styleChoice, CELLLINEFONTSIZE));
+        graphWriter.drawString(cellLine, LEFTSTART, height);
+        graphWriter.setFont(new Font(DEFAULTFONT, styleChoice, commonSize));
 
 		String chr = beginCoor.split(":")[0];
 		String startPos = beginCoor.split(":")[1];
 		for (int i = 0; i < patternResultLists.size(); i++) {
 			PatternResult patternResult = patternResultLists.get(i);
-			if (patternResult.hasAllele() == true) {
-				List<Integer> alleleList = patternResult.getAlleleList();
-				graphWriter.setPaint(Color.BLUE);
-				for (int j = 0; j < alleleList.size(); j++) {
-                    graphWriter.fill(new Rectangle2D.Double(STARTX + (alleleList.get(j) * WIDTH),
-                                                            height - HEIGHTINTERVAL / 2 + RADIUS, RADIUS / 2,
-                                                            RADIUS));
-                    int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
-					bedWriter.write(
-							"chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + j + "\t" + 1000 +
-									"\t+\t" + (allelePos - 1) + "\t"
-
-									+ allelePos + "\t0,0,255\n");
-				}
-				graphWriter.setPaint(Color.BLACK);
-			}
-			bedWriter.write("browser position " + "chr" + beginCoor + "-" + endCoor +
+            addAllele(patternResult, graphWriter, bedWriter, chr, startPos, height);
+            bedWriter.write("browser position " + "chr" + beginCoor + "-" + endCoor +
 									"\nbrowser hide all\ntrack name=\"Pattern" + i + "\" description=\"" +
 									sampleName + "-" + region + "\" visibility=1 itemRgb=\"On\"\n");
 			bedWriter.write("chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" +
@@ -147,8 +149,8 @@ public class DrawPattern {
 				// end.So we substract 1 from start and add 1 to the end.
 				bedWriter.write("chr" + chr + "\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\tCG-Pattern" + i + "\t" +
 										cpg.getMethylCount() + "\t+\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\t");
-				if (cpg.getMethylLabel() == true) {
-					// fill black circle
+                if (cpg.isMethylated()) {
+                    // fill black circle
 					graphWriter.fill(
 							new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
 												 RADIUS));
@@ -168,47 +170,15 @@ public class DrawPattern {
 			height += HEIGHTINTERVAL;
 		}
 
-		// 5. add average
-		DecimalFormat percentSmall = new DecimalFormat("##%");
-		height += HEIGHTINTERVAL;
-		// g2.drawString("Average", (refLength * WIDTH) + WIDTH + STARTX,
-		// height + HEIGHTINTERVAL);
-		bedWriter.write("browser position " + "chr" + beginCoor + "-" + endCoor +
-								"\nbrowser hide all\ntrack name=\"Average" + "\" description=\"" + sampleName +
-								"-" + region + "\" visibility=1 itemRgb=\"On\"\n");
-		bedWriter.write(
-				"chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
-						"\t0,0,0\n");
-		for (CpGStatistics cpgStat : statList) {
-			int R = 0, G = 0, B = 0;
-			if (cpgStat.getMethylationRate() > 0.5) {
-				G = 255 - (int) ((cpgStat.getMethylationRate() - 0.5) * 100 * RGBinterval);
-				R = 255;
-			}
-			if (cpgStat.getMethylationRate() < 0.5) {
-				G = 255;
-				R = (int) (cpgStat.getMethylationRate() * 100 * RGBinterval);
-			}
-			if (cpgStat.getMethylationRate() == 0.5) {
-				R = 255;
-				G = 255;
-			}
-			graphWriter.setPaint(new Color(R, G, B));
-			graphWriter.fill(
-					new Ellipse2D.Double(STARTX + (cpgStat.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS, RADIUS));
-			graphWriter.setPaint(Color.BLACK);
-			// move percentage a little left and shink the font size
-			graphWriter.setFont(new Font(fontChoice, styleChoice, smallPercentSize));
-			graphWriter.drawString(percentSmall.format(cpgStat.getMethylationRate()).toString(),
-								   STARTX + (cpgStat.getPosition() * WIDTH) - WIDTH / 2, height + HEIGHTINTERVAL * 2);
-			int cgPos = Integer.parseInt(startPos) + cpgStat.getPosition();
-			// genome browser automatically add 1 to start, no change to
-			// end.So we substract 1 from start and add 1 to the end.
-			bedWriter.write("chr" + chr + "\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\tCG-Pattern-Average" + "\t" +
-									cpgStat.getCountOfmethylatedSites() + "\t+\t" + (cgPos - 1) + "\t" +
-									(cgPos + 1) + "\t" + R + "," + G + "," + B + "\n");
-		}
-		if (figureFormat.equals(Constant.PNG)) {
+        bedWriter.write("browser position " + "chr" + beginCoor + "-" + endCoor +
+                                "\nbrowser hide all\ntrack name=\"Average" + "\" description=\"" + sampleName +
+                                "-" + region + "\" visibility=1 itemRgb=\"On\"\n");
+        bedWriter.write(
+                "chr" + chr + "\t" + startPos + "\t" + endCoor + "\trefbar\t0\t+\t" + startPos + "\t" + startPos +
+                        "\t0,0,0\n");
+
+        addAverage(graphWriter, DEFAULTFONT, statList, chr, startPos, "Pattern-Average", bedWriter, height);
+        if (figureFormat.equals(Constant.PNG)) {
 			// png output
 			File outputPNG = new File(fileName + ".png");
 			ImageIO.write(pngImage, "png", outputPNG);
@@ -221,17 +191,11 @@ public class DrawPattern {
 	}
 
 
-	public void drawASMPattern(String region, String patternResultPath, String sampleName, ReportSummary reportSummary,
-							   Map<String, Coordinate> coordinates, Pattern allelePattern, Pattern nonAllelePattern,
-							   int totalCount) throws IOException, InterruptedException {
+    public void drawASMPattern(ReportSummary reportSummary, Pattern allelePattern, Pattern nonAllelePattern, int totalCount) throws IOException, InterruptedException {
 		File folder = new File(patternResultPath + "pics/");
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
-
-		ReadAnalysisResult data = new ReadAnalysisResult(patternResultPath, sampleName, region,
-														 coordinates.get(region));
-		List<Integer> refCpGs = data.getRefCpGs();
 
 		// set GB link
 		String ASMGBLinkFileName = patternResultPath + "pics/" + region + "_ASM.bed";
@@ -245,11 +209,6 @@ public class DrawPattern {
 		}
 		PatternResult patternWithAllele = patternToPatternResult(allelePattern, refCpGs, totalCount);
 		PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, refCpGs, totalCount);
-
-		int refLength = data.getRefLength();
-		String beginCoor = data.getBeginCoor();
-		String endCoor = data.getEndCoor();
-		String fontChoice = "Courier New";
 
 		int imageWidth = refLength * WIDTH + STARTX + 210;
 		int imageHeight = STARTY + 180 + 10 * HEIGHTINTERVAL;
@@ -276,27 +235,7 @@ public class DrawPattern {
 		}
 
 		int height = STARTY;
-		// 1. add coordinates
-		// gImage.setColor(Color.WHITE);
-		graphWriter.setBackground(Color.WHITE);
-		graphWriter.clearRect(0, 0, imageWidth, imageHeight);
-		// gImage.setBackground(Color.WHITE);
-		graphWriter.setPaint(Color.BLACK);
-		graphWriter.setFont(new Font(fontChoice, styleChoice, commonSize));
-		graphWriter.drawString("chr" + beginCoor, STARTX + WIDTH, height);
-		graphWriter.drawString(endCoor, STARTX + refLength * WIDTH - WIDTH, height);
-
-		// 2. add reference bar
-		graphWriter.setStroke(new BasicStroke(2.0f));
-		height += HEIGHTINTERVAL;
-		graphWriter.drawLine(STARTX, height, STARTX + refLength * WIDTH, height);
-		graphWriter.setStroke(new BasicStroke());
-
-		// 3. add refCpGSites
-		for (int i = 0; i < refCpGs.size(); i++) {
-			graphWriter.drawLine(STARTX + refCpGs.get(i) * WIDTH, height - BARHEIGHT / 2,
-								 STARTX + refCpGs.get(i) * WIDTH, height + BARHEIGHT / 2);
-		}
+        buildFigureFrame(graphWriter, imageHeight, imageWidth, height);
 
 		String chr = beginCoor.split(":")[0];
 		String startPos = beginCoor.split(":")[1];
@@ -314,8 +253,10 @@ public class DrawPattern {
 		bedWriter.write(String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
 									  startPos));
 		height += HEIGHTINTERVAL;
-		addAverage(graphWriter, fontChoice, patternWithoutAllele, chr, startPos, "PatternA", bedWriter, height);
-		height += HEIGHTINTERVAL;
+        addAllele(patternWithoutAllele, graphWriter, bedWriter, chr, startPos, height + HEIGHTINTERVAL);
+        addAverage(graphWriter, DEFAULTFONT, patternWithoutAllele.getCpGList(), chr, startPos, "PatternA", bedWriter,
+                   height);
+        height += HEIGHTINTERVAL;
 		graphWriter.drawString(
 				patternWithoutAllele.getCount() + "(" + percent.format(patternWithoutAllele.getPercent()) + ")",
 				(refLength * WIDTH) + WIDTH + STARTX, height);
@@ -326,13 +267,21 @@ public class DrawPattern {
 		bedWriter.write(String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
 									  startPos));
 		height += 2 * HEIGHTINTERVAL;
-		addAverage(graphWriter, fontChoice, patternWithAllele, chr, startPos, "PatternB", bedWriter, height);
-		// set snp info
+        addAllele(patternWithAllele, graphWriter, bedWriter, chr, startPos, height + HEIGHTINTERVAL);
+        addAverage(graphWriter, DEFAULTFONT, patternWithAllele.getCpGList(), chr, startPos, "PatternB", bedWriter,
+                   height);
+        // set snp info
 		if (patternWithAllele.hasAllele()) {
-            List<SNP> snpList = retreiveSNP(chr, convertCoordinates(chr, coordinates.get(region).getStart(), "hg38",
-                                                                    patternResultPath) +
-					patternWithAllele.getAlleleList().get(0), "1");
-			if (snpList != null && snpList.size() > 0) {
+            List<SNP> snpList;
+            try {
+                snpList = retreiveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
+                                                              patternResultPath) +
+                        patternWithAllele.getAlleleList().get(0), "1");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                snpList = null;
+            }
+            if (snpList != null && snpList.size() > 0) {
 				reportSummary.setASMsnp(snpList.get(0));
 			}
 		}
@@ -367,8 +316,8 @@ public class DrawPattern {
 			for (CpGSite cpGSite : sequence.getCpGSites()) {
 				int pos = cpGSite.getPosition() - 1;
 				if (cpGSiteMap.containsKey(pos)) {
-					if (cpGSite.getMethylLabel()) {
-						cpGSiteMap.get(pos).addMethylCount(1);
+                    if (cpGSite.isMethylated()) {
+                        cpGSiteMap.get(pos).addMethylCount(1);
 					} else {
 						cpGSiteMap.get(pos).addNonMethylCount(1);
 					}
@@ -388,24 +337,32 @@ public class DrawPattern {
 		return patternResult;
 	}
 
-	private void addAverage(Graphics2D gImage, String fontChoice, PatternResult patternResult, String chr,
-							String startPos, String patternName, BufferedWriter bedWriter,
+    private void addAllele(PatternResult patternResult, Graphics2D graphWriter, BufferedWriter bedWriter, String chr,
+                           String startPos, int height) throws IOException {
+        if (patternResult.hasAllele()) {
+            List<Integer> alleleList = patternResult.getAlleleList();
+            graphWriter.setPaint(Color.BLUE);
+            for (int j = 0; j < alleleList.size(); j++) {
+                graphWriter.fill(new Rectangle2D.Double(STARTX + ((alleleList.get(j) - 1) * WIDTH),
+                                                        height - HEIGHTINTERVAL / 2 + RADIUS, RADIUS / 2, RADIUS));
+                int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
+                bedWriter.write(
+                        "chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-Pattern" + j + "\t" + 1000 +
+                                "\t+\t" + (allelePos - 1) + "\t"
+
+                                + allelePos + "\t0,0,255\n");
+            }
+            graphWriter.setPaint(Color.BLACK);
+        }
+    }
+
+    private void addAverage(Graphics2D graphWriter, String fontChoice, List<? extends CpG> cpgList, String chr, String startPos, String patternName, BufferedWriter bedWriter,
 							int height) throws IOException {
 		// 5. add average
 		DecimalFormat percentSmall = new DecimalFormat("##%");
 		height += HEIGHTINTERVAL;
-		// + HEIGHTINTERVAL);
-		if (patternResult.hasAllele()) {
-			gImage.setPaint(Color.BLUE);
-            gImage.fill(new Rectangle2D.Double(STARTX + (patternResult.getAlleleList().get(0) * WIDTH),
-                                               height - HEIGHTINTERVAL / 2 + RADIUS, RADIUS / 2, RADIUS));
-            int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
-			bedWriter.write(
-					"chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-" + patternName + "\t" + 1000 +
-							"\t+\t" + (allelePos - 1) + "\t" + allelePos + "\t0,0,255\n");
-		}
-		for (CpGSite cpg : patternResult.getCpGList()) {
-			int R = 0, G = 0, B = 0;
+        for (CpG cpg : cpgList) {
+            int R = 0, G = 0, B = 0;
 			double methylLevel = cpg.getMethylLevel();
 			if (methylLevel > 0.5) {
 				G = (int) (255 - ((methylLevel - 0.5) * 100 * RGBinterval));
@@ -419,20 +376,23 @@ public class DrawPattern {
 				R = 255;
 				G = 255;
 			}
-			gImage.setPaint(new Color(R, G, B));
-			gImage.fill(new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS, RADIUS));
-			gImage.setPaint(Color.BLACK);
-			int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
-			// genome browser automatically add 1 to start, no change to end.So
+            graphWriter.setPaint(new Color(R, G, B));
+            graphWriter.fill(
+                    new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS, RADIUS));
+            graphWriter.setPaint(Color.BLACK);
+            // move percentage a little left and shink the font size
+            graphWriter.setFont(new Font(fontChoice, styleChoice, smallPercentSize));
+            graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()),
+                                   STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height + HEIGHTINTERVAL * 2);
+
+            int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
+            // genome browser automatically add 1 to start, no change to end.So
 			// we substract 1 from start and add 1 to the end.
 			bedWriter.write("chr" + chr + "\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\tCG-" + patternName + "\t" +
 									cpg.getMethylCount() + "\t+\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\t" + R + "," +
 									G + "," + B + "\n");
-			// move percentage a little left and shink the font size
-			gImage.setFont(new Font(fontChoice, styleChoice, smallPercentSize));
-			gImage.drawString(percentSmall.format(cpg.getMethylLevel()).toString(),
-							  STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height + HEIGHTINTERVAL * 2);
-		}
+
+        }
 	}
 
 	private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
@@ -489,7 +449,10 @@ public class DrawPattern {
 		EFetchSnpServiceStub.EFetchRequest reqF = new EFetchSnpServiceStub.EFetchRequest();
 		reqF.setId(fetchIds);
 		EFetchSnpServiceStub.EFetchResult resF = serviceF.run_eFetch(reqF);
-		// results output
+        if (resF.getExchangeSet() == null || resF.getExchangeSet().getRs() == null) {
+            return null;
+        }
+        // results output
 		for (int i = 0; i < resF.getExchangeSet().getRs().length; i++) {
 			EFetchSnpServiceStub.Rs_type0 obj = resF.getExchangeSet().getRs()[i];
 			SNP snp = new SNP(obj.getRsId(), obj.getSnpType(), obj.getMolType(), obj.getPhenotype(), obj.getAssembly(),
