@@ -39,15 +39,16 @@ public class Pattern {
     }
 
     public int getCGcount() {
-        if (patternType != PatternType.METHYLATION) {
+        if (patternType == PatternType.METHYLATION || patternType == PatternType.MEMU) {
+            // since patterns is grouped by hashmap, every pattern should contain at least one sequence.
+            if (sequenceList.size() == 0) {
+                throw new RuntimeException("pattern sequence list is empty!");
+            }
+            // all seqs in list share same pattern
+            return this.sequenceList.get(0).getCpGSites().size();
+        } else {
             throw new RuntimeException("getCGcount only available for methylation type");
         }
-        // since patterns is grouped by hashmap, every pattern should contain at least one sequence.
-        if (sequenceList.size() == 0) {
-            throw new RuntimeException("pattern sequence list is empty!");
-        }
-        // all seqs in list share same pattern
-        return this.sequenceList.get(0).getCpGSites().size();
     }
 
     public void addSequence(Sequence seq) {
