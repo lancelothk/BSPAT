@@ -25,9 +25,10 @@ public class DrawPattern {
 	private final int HEIGHTINTERVAL = 26;
 	private final int RADIUS = 20;
 	private final double RGBinterval = 255 / 50.0;
-	private int styleChoice = 0;
-	private int commonSize = 24;
-    private int smallPercentSize = 16;
+    private final int STYLECHOICE = 0;
+    private final int COMMONSIZE = 24;
+    private final int SMALLPERCENTSIZE = 16;
+
     private String figureFormat;
 	private String refVersion;
 	private String toolsPath;
@@ -68,7 +69,7 @@ public class DrawPattern {
         graphWriter.setBackground(Color.WHITE);
         graphWriter.clearRect(0, 0, imageWidth, imageHeight);
         graphWriter.setPaint(Color.BLACK);
-        graphWriter.setFont(new Font(DEFAULTFONT, styleChoice, commonSize));
+        graphWriter.setFont(new Font(DEFAULTFONT, STYLECHOICE, COMMONSIZE));
         graphWriter.drawString("chr" + beginCoor, STARTX + WIDTH, height);
         graphWriter.drawString(endCoor, STARTX + refLength * WIDTH - WIDTH, height);
 
@@ -79,9 +80,9 @@ public class DrawPattern {
         graphWriter.setStroke(new BasicStroke());
 
         // 3. add refCpGSites
-        for (int i = 0; i < refCpGs.size(); i++) {
-            graphWriter.drawLine(STARTX + refCpGs.get(i) * WIDTH, height - BARHEIGHT / 2,
-                                 STARTX + refCpGs.get(i) * WIDTH, height + BARHEIGHT / 2);
+        for (Integer cpgPos : refCpGs) {
+            graphWriter.drawLine(STARTX + cpgPos * WIDTH, height - BARHEIGHT / 2, STARTX + cpgPos * WIDTH,
+                                 height + BARHEIGHT / 2);
         }
     }
 
@@ -106,9 +107,9 @@ public class DrawPattern {
                                                  height + HEIGHTINTERVAL);
         height += HEIGHTINTERVAL;
         final int CELLLINEFONTSIZE = 30;
-        methylWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, styleChoice, CELLLINEFONTSIZE));
+        methylWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, STYLECHOICE, CELLLINEFONTSIZE));
         methylWriter.getGraphWriter().drawString(cellLine, LEFTSTART, height);
-        methylWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, styleChoice, commonSize));
+        methylWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, STYLECHOICE, COMMONSIZE));
 
 		String chr = beginCoor.split(":")[0];
 		String startPos = beginCoor.split(":")[1];
@@ -327,7 +328,7 @@ public class DrawPattern {
                     new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS, RADIUS));
             graphWriter.setPaint(Color.BLACK);
             // move percentage a little left and shink the font size
-            graphWriter.setFont(new Font(fontChoice, styleChoice, smallPercentSize));
+            graphWriter.setFont(new Font(fontChoice, STYLECHOICE, SMALLPERCENTSIZE));
             graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()),
                                    STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height + HEIGHTINTERVAL * 2);
 

@@ -11,6 +11,7 @@ import java.io.*;
 
 /**
  * Created by kehu on 8/20/14.
+ * Actually graph / bed writer wrapper.
  */
 public class FigureWriter {
     private String figureName;
