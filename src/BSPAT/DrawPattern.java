@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DrawPattern {
-    private final String DEFAULTFONT = "Courier New";
+    private final String DEFAULTFONT = "Arial";
+    private final int CELLLINEFONTSIZE = 32;
     private final int WIDTH = 20;
 	private final int STARTX = 120;
 	private final int STARTY = 20;
@@ -26,8 +27,8 @@ public class DrawPattern {
 	private final int RADIUS = 20;
 	private final double RGBinterval = 255 / 50.0;
     private final int STYLECHOICE = 0;
-    private final int COMMONSIZE = 24;
-    private final int SMALLPERCENTSIZE = 16;
+    private final int COMMONSIZE = 28;
+    private final int SMALLPERCENTSIZE = 20;
 
     private String figureFormat;
 	private String refVersion;
@@ -106,7 +107,6 @@ public class DrawPattern {
         methylWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX,
                                                  height + HEIGHTINTERVAL);
         height += HEIGHTINTERVAL;
-        final int CELLLINEFONTSIZE = 30;
         methylWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, STYLECHOICE, CELLLINEFONTSIZE));
         methylWriter.getGraphWriter().drawString(cellLine, LEFTSTART, height);
         methylWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, STYLECHOICE, COMMONSIZE));
@@ -115,7 +115,6 @@ public class DrawPattern {
 		String startPos = beginCoor.split(":")[1];
 		for (int i = 0; i < patternResultLists.size(); i++) {
 			PatternResult patternResult = patternResultLists.get(i);
-            addAllele(patternResult, methylWriter.getGraphWriter(), methylWriter.getBedWriter(), chr, startPos, height);
             methylWriter.getBedWriter().write("browser position " + "chr" + beginCoor + "-" + endCoor +
                                                       "\nbrowser hide all\ntrack name=\"Pattern" + i + "\" description=\"" +
 									sampleName + "-" + region + "\" visibility=1 itemRgb=\"On\"\n");
@@ -146,7 +145,8 @@ public class DrawPattern {
             methylWriter.getGraphWriter().drawString(
                     patternResult.getCount() + "(" + percent.format(patternResult.getPercent()) + ")",
                     (refLength * WIDTH) + WIDTH + STARTX, height + HEIGHTINTERVAL);
-			height += HEIGHTINTERVAL;
+            addAllele(patternResult, methylWriter.getGraphWriter(), methylWriter.getBedWriter(), chr, startPos, height);
+            height += HEIGHTINTERVAL;
 		}
 
         methylWriter.getBedWriter().write("browser position " + "chr" + beginCoor + "-" + endCoor +
@@ -222,11 +222,11 @@ public class DrawPattern {
         ASMWriter.getBedWriter().write(
                 String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos, startPos));
 		height += 2 * HEIGHTINTERVAL;
-        addAllele(patternWithAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
-                  height + HEIGHTINTERVAL);
         addAverage(ASMWriter.getGraphWriter(), DEFAULTFONT, patternWithAllele.getCpGList(), chr, startPos, "PatternB",
                    ASMWriter.getBedWriter(),
                    height);
+        addAllele(patternWithAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
+                  height + HEIGHTINTERVAL);
         // set snp info
 		if (patternWithAllele.hasAllele()) {
             List<SNP> snpList;
@@ -290,8 +290,8 @@ public class DrawPattern {
             List<Integer> alleleList = patternResult.getAlleleList();
             graphWriter.setPaint(Color.BLUE);
             for (int j = 0; j < alleleList.size(); j++) {
-                graphWriter.fill(new Rectangle2D.Double(STARTX + ((alleleList.get(j) - 1) * WIDTH),
-                                                        height - HEIGHTINTERVAL / 2 + RADIUS, RADIUS / 2, RADIUS));
+                graphWriter.fill(new Rectangle2D.Double(STARTX + ((alleleList.get(j) - 1) * WIDTH), height, RADIUS / 2,
+                                                        RADIUS));
                 int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
                 bedWriter.write(
                         "chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-Pattern" + j + "\t" + 1000 +
@@ -436,10 +436,14 @@ public class DrawPattern {
 		String[] items = coorReader.readLine().split(":");
 		coorReader.close();
 		File originPosFile = new File(patternResultPath + originPosFileName);
-		originPosFile.delete();
-		File targetPosFile = new File(patternResultPath + targetPosFileName);
-		targetPosFile.delete();
-		IO.deleteFiles(patternResultPath, new String[]{".bed", ".bedmapped", ".bedunmapped"});
+        if (!originPosFile.delete()) {
+            throw new RuntimeException("Failed to delete: " + originPosFile.getAbsolutePath());
+        }
+        File targetPosFile = new File(patternResultPath + targetPosFileName);
+        if (!targetPosFile.delete()) {
+            throw new RuntimeException("Failed to delete: " + originPosFile.getAbsolutePath());
+        }
+        IO.deleteFiles(patternResultPath, new String[]{".bed", ".bedmapped", ".bedunmapped"});
 		return Long.valueOf(items[1].split("-")[0]);
 	}
 

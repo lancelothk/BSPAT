@@ -22,7 +22,7 @@ public class CpGStatistics implements CpG {
     }
 
     public void calcMethylLevel() {
-        methylLevel = methylCount / countOfAll;
+        methylLevel = methylCount / (double) countOfAll;
     }
 
     @Override

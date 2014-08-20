@@ -83,14 +83,18 @@ public class ReadAnalysisResult {
 				patternResult = new PatternResult();
 				for (int i = 0; i < refLength; i++) {
                     if (items[0].charAt(i) == '*') {
-                        // because each CpG consists of two nucleotide, i++
-						cpg = new CpGSite(i++, false);
-						patternResult.addCpG(cpg);
+                        cpg = new CpGSite(i, false);
+                        patternResult.addCpG(cpg);
+                        if (i + 1 < refLength && items[0].charAt(i + 1) == '*') {
+                            i++;
+                        }
                     } else if (items[0].charAt(i) == '@') {
-                        // because each CpG consists of two nucleotide, i++
 						cpg = new CpGSite(i++, true);
 						patternResult.addCpG(cpg);
-					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
+                        if (i + 1 < refLength && items[0].charAt(i + 1) == '@') {
+                            i++;
+                        }
+                    } else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
 							items[0].charAt(i) == 'T') {
 						patternResult.addAllele(i);
 					}
