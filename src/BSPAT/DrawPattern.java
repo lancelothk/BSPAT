@@ -223,8 +223,7 @@ public class DrawPattern {
                 String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos, startPos));
 		height += 2 * HEIGHTINTERVAL;
         addAverage(ASMWriter.getGraphWriter(), DEFAULTFONT, patternWithAllele.getCpGList(), chr, startPos, "PatternB",
-                   ASMWriter.getBedWriter(),
-                   height);
+                   ASMWriter.getBedWriter(), height);
         addAllele(patternWithAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
                   height + HEIGHTINTERVAL);
         // set snp info

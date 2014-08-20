@@ -59,6 +59,7 @@ public class FigureWriter {
             File outputPNG = new File(figureName + ".png");
             ImageIO.write(pngImage, "png", outputPNG);
         } else if (figureFormat.equals(Constant.EPS)) {
+            ((EpsGraphics) graphWriter).close();
             epsImage.close();
         }
         graphWriter.dispose();
