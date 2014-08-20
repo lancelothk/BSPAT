@@ -64,6 +64,10 @@
                             <td>&alpha; threshold:</td>
                             <td><c:out value="${constant.minP0Threshold}"/></td>
                         </tr>
+                        <tr>
+                            <td>Critical Value:</td>
+                            <td><c:out value="${constant.criticalValue}"/></td>
+                        </tr>
                     </c:when>
                     <c:when test="${constant.minMethylThreshold >= 0}">
                             <tr>

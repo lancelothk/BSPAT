@@ -227,6 +227,6 @@
         return true;
     }
 
-    window.onload = addExperiment;
+    window.onload = addExperiment();
 </script>
 </html>

@@ -6,48 +6,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
-    <script language="javascript" type="">
-        function check() {
-            if (document.getElementById('minp0').checked) {
-                document.getElementById('minp0text').disabled = false;
-                document.getElementById('criticalValue').disabled = false;
-                document.getElementById('minmethyltext').disabled = true;
-            } else if (document.getElementById('minmethyl').checked) {
-                document.getElementById('minp0text').disabled = true;
-                document.getElementById('criticalValue').disabled = true;
-                document.getElementById('minmethyltext').disabled = false;
-            }
-        }
-
-        function checkEmptyValue(id, msg) {
-            if (document.getElementById(id).value == "") {
-                window.alert(msg);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function validateInput() {
-            if (checkEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")
-                    || checkEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
-                    || checkEmptyValue("minp0text", "α threshold is empty!")
-                    || checkEmptyValue("criticalValue", "Critical Value is empty!")
-                    || checkEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
-                    || checkEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")) {
-                return false;
-            }
-            resetPage();
-            return true;
-        }
-
-        function resetPage() {
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('analysisTable').style.display = 'none';
-            document.getElementById('parameters').style.display = 'none';
-            setFooter();
-        }
-    </script>
     <title>BSPAT</title>
 </head>
 
@@ -198,5 +156,50 @@
     </div>
     <%@ include file="footer.html" %>
 </div>
+<script language="javascript" type="">
+    function check() {
+        if (document.getElementById('minp0').checked) {
+            document.getElementById('minp0text').disabled = false;
+            document.getElementById('criticalValue').disabled = false;
+            document.getElementById('minmethyltext').disabled = true;
+        } else if (document.getElementById('minmethyl').checked) {
+            document.getElementById('minp0text').disabled = true;
+            document.getElementById('criticalValue').disabled = true;
+            document.getElementById('minmethyltext').disabled = false;
+        }
+    }
+
+    function checkEmptyValue(id, msg) {
+        if (document.getElementById(id).value == "") {
+            window.alert(msg);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function validateInput() {
+        if (checkEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")
+                || checkEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
+                || checkEmptyValue("minp0text", "α threshold is empty!")
+                || checkEmptyValue("criticalValue", "Critical Value is empty!")
+                || checkEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
+                || checkEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")) {
+            return false;
+        }
+        resetPage();
+        return true;
+    }
+
+    function resetPage() {
+        document.getElementById('loader').style.display = 'block';
+        document.getElementById('analysisTable').style.display = 'none';
+        document.getElementById('parameters').style.display = 'none';
+        setFooter();
+    }
+    window.onload = check();
+    window.onunload = function () {
+    };
+</script>
 </body>
 </html>
