@@ -66,7 +66,7 @@ public class BSSeqAnalysis {
             ReportSummary reportSummary = new ReportSummary(region);
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
 
-            processSequence(region, seqGroup);
+            processSequence(referenceSeqs.get(region), seqGroup);
             reportSummary.setSeqBeforeFilter(seqGroup.size());
             seqGroup = filterSequences(seqGroup);
             reportSummary.setSeqAfterFilter(seqGroup.size());
@@ -267,9 +267,8 @@ public class BSSeqAnalysis {
                                                                   (int) (targetCoor.getEnd() - refCoor.getStart())));
             while (sequenceIterator.hasNext()) {
                 Sequence sequence = sequenceIterator.next();
-                int refStart =
-                        Constant.REFEXTENSIONLENGTH - 1 + (int) (targetCoor.getStart() - refCoor.getStart()), refEnd =
-                        Constant.REFEXTENSIONLENGTH + (int) (targetCoor.getEnd() - refCoor.getStart()) - 2;
+                int refStart = Constant.REFEXTENSIONLENGTH - 1 + (int) (targetCoor.getStart() - refCoor.getStart());
+                int refEnd = Constant.REFEXTENSIONLENGTH + (int) (targetCoor.getEnd() - refCoor.getStart()) - 2;
                 if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
                     // cut sequence to suit reference
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
@@ -278,6 +277,7 @@ public class BSSeqAnalysis {
                     Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
                     while (cpGSiteIterator.hasNext()) {
                         CpGSite cpGSite = cpGSiteIterator.next();
+                        // only keep CpG site wholly sit in ref.
                         if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
                             cpGSite.setPosition(cpGSite.getPosition() - refStart + 1);
                         } else {
@@ -314,41 +314,39 @@ public class BSSeqAnalysis {
         return sequenceGroupMap;
     }
 
+    private boolean isFirstBPCpGSite(int pos, List<CpGSite> cpGSiteList) {
+        for (CpGSite cpGSite : cpGSiteList) {
+            if (pos == cpGSite.getPosition()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * generate methylation and mutation String; calculate
      * conversion rate, methylation rate
      */
     // TODO move to Sequence class
-    public void processSequence(String region, List<Sequence> seqList) {
-        char[] methylationString;
-        char[] mutationString;
-        String originalSeq;
-        double countofUnConvertedC;
-        double countofMethylatedCpG;
-        double unequalNucleotide;
-        String convertedReferenceSeq;
-        int countofCinRef;
-        String referenceSeq = referenceSeqs.get(region);
-
-        for (Sequence seq : seqList) {
-            // convert reference sequence and count C in non-CpG context.
-            convertedReferenceSeq = "";
-            countofCinRef = 0;// count C in non-CpG context.
-            for (int i = 0; i < referenceSeq.length(); i++) {
-                if (i != referenceSeq.length() - 1 && referenceSeq.charAt(i) == 'C' &&
-                        referenceSeq.charAt(i + 1) != 'G') {// non CpG context
-                    countofCinRef++;
-                }
-                if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {
-                    convertedReferenceSeq += 'T';
-                } else {
-                    convertedReferenceSeq += referenceSeq.charAt(i);
-                }
+    public void processSequence(String referenceSeq, List<Sequence> seqList) {
+        // convert reference sequence and count C in non-CpG context.
+        String convertedReferenceSeq = "";
+        // count C in non-CpG context.  Maybe not efficient enough since scan twice.
+        int countOfNonCpGC = StringUtils.countMatches(referenceSeq, "C") - StringUtils.countMatches(referenceSeq, "CG");
+        for (int i = 0; i < referenceSeq.length(); i++) {
+            if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {
+                convertedReferenceSeq += 'T';
+            } else {
+                convertedReferenceSeq += referenceSeq.charAt(i);
             }
+        }
+        for (Sequence seq : seqList) {
+            char[] methylationString;
+            char[] mutationString;
             // fill read to reference length
-            countofUnConvertedC = 0;
-            countofMethylatedCpG = 0;
-            unequalNucleotide = 0;
+            double countOfUnConvertedC = 0;
+            double countOfMethylatedCpG = 0;
+            double unequalNucleotide = 0;
             methylationString = new char[convertedReferenceSeq.length()];
             mutationString = new char[convertedReferenceSeq.length()];
 
@@ -356,33 +354,34 @@ public class BSSeqAnalysis {
                 methylationString[i] = ' ';
                 mutationString[i] = ' ';
             }
-            originalSeq = seq.getOriginalSeq();
-            for (int i = seq.getStartPos() - 1; i < seq.getStartPos() - 1 + originalSeq.length(); i++) {
+            for (int i = 0; i < +seq.getOriginalSeq().length(); i++) {
                 methylationString[i] = '-';
                 mutationString[i] = '-';
             }
-            for (int i = 0; i < originalSeq.length(); i++) {
+            for (int i = 0; i < seq.getOriginalSeq().length(); i++) {
                 // meet unequal element
-                if (originalSeq.charAt(i) != convertedReferenceSeq.charAt(i + seq.getStartPos() - 1)) {
-                    // unequal pair is 'C/T'. Two possible cases: 1. CpG context, methylation; 2. non-CpG context, unconverted C.
-                    if (originalSeq.charAt(i) == 'C' &&
-                            convertedReferenceSeq.charAt(i + seq.getStartPos() - 1) == 'T') {
-                        // next char is not 'G' --- non-CpG context
-                        if (i != originalSeq.length() - 1 && originalSeq.charAt(i + 1) != 'G') {
-                            countofUnConvertedC++;
+                if (seq.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
+                    if (isFirstBPCpGSite(i, seq.getCpGSites())) {
+                        if (seq.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') {
+                            // non methyl CpG site
+                        } else {
+                            unequalNucleotide++;
+                            mutationString[i] = seq.getOriginalSeq().charAt(i);
+                            seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
                         }
-                        // else: next char is 'G' --- CpG context. Do nothing.
                     } else {
-                        // non C/T inequality.
                         unequalNucleotide++;
-                        mutationString[i + seq.getStartPos() - 1] = originalSeq.charAt(i);
-                        seq.addAllele(String.format("%d-%s", i, originalSeq.charAt(i)));
+                        mutationString[i] = seq.getOriginalSeq().charAt(i);
+                        seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
+                        if (seq.getOriginalSeq().charAt(i) == 'C') {
+                            countOfUnConvertedC++;
+                        }
                     }
                 }
             }
             for (CpGSite cpg : seq.getCpGSites()) {
                 if (cpg.isMethylated()) {
-                    countofMethylatedCpG++;
+                    countOfMethylatedCpG++;
                     // methylated CpG site represent by @@
                     methylationString[cpg.getPosition() - 1] = '@';
                     if (cpg.getPosition() + 1 <= methylationString.length) {
@@ -402,9 +401,9 @@ public class BSSeqAnalysis {
             }
             // fill sequence content including calculation fo bisulfite
             // conversion rate and methylation rate for each sequence.
-            seq.setBisulConversionRate(1 - (countofUnConvertedC / countofCinRef));
-            seq.setMethylationRate(countofMethylatedCpG / seq.getCpGSites().size());
-            seq.setSequenceIdentity(1 - unequalNucleotide / (originalSeq.length() - seq.getCpGSites().size()));
+            seq.setBisulConversionRate(1 - (countOfUnConvertedC / countOfNonCpGC));
+            seq.setMethylationRate(countOfMethylatedCpG / seq.getCpGSites().size());
+            seq.setSequenceIdentity(1 - unequalNucleotide / (seq.getOriginalSeq().length() - seq.getCpGSites().size()));
             seq.setMethylationString(new String(methylationString));
             seq.setMutationString(new String(mutationString));
         }
@@ -419,11 +418,14 @@ public class BSSeqAnalysis {
     private List<Sequence> filterSequences(List<Sequence> seqList) {
         System.out.println("Filter Sequences: before filter count:\t" + seqList.size());
         List<Sequence> qualifiedSeqList = new ArrayList<>();
+        List<Sequence> unQualifiedSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
             // filter unqualified reads
             if (seq.getBisulConversionRate() >= constant.conversionRateThreshold &&
                     seq.getSequenceIdentity() >= constant.sequenceIdentityThreshold) {
                 qualifiedSeqList.add(seq);
+            } else {
+                unQualifiedSeqList.add(seq);
             }
         }
         System.out.println("Filter Sequences: after filter count:\t" + qualifiedSeqList.size());

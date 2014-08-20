@@ -17,7 +17,8 @@ import java.util.*;
  */
 public class ImportBismarkResult {
 	private Map<String, String> referenceSeqs = new Hashtable<>();
-	private Map<String, Sequence> sequencesHashtable = new Hashtable<>();
+    // use hashMap to remove duplicated seqs and match methyl calling result
+    private Map<String, Sequence> sequencesHashMap = new Hashtable<>();
 
 	public ImportBismarkResult(String refPath, String inputFolder) throws IOException {
 		readReference(refPath);
@@ -31,8 +32,8 @@ public class ImportBismarkResult {
 
 	public List<Sequence> getSequencesList() {
 		List<Sequence> sequencesList = new ArrayList<>();
-		for (Sequence seq : sequencesHashtable.values()) {
-			sequencesList.add(seq);
+        for (Sequence seq : sequencesHashMap.values()) {
+            sequencesList.add(seq);
 		}
 		return sequencesList;
 	}
@@ -97,8 +98,8 @@ public class ImportBismarkResult {
 					} else {
 						seq.setFRstate("R");
 					}
-					sequencesHashtable.put(seq.getId(), seq);
-					line = buffReader.readLine();
+                    sequencesHashMap.put(seq.getId(), seq);
+                    line = buffReader.readLine();
 				}
 			}
 		}
@@ -141,8 +142,8 @@ public class ImportBismarkResult {
 						} else {
 							methylLabel = false;
 						}
-						seq = sequencesHashtable.get(items[0]);
-						if (seq != null) {
+                        seq = sequencesHashMap.get(items[0]);
+                        if (seq != null) {
 							// substract two bps from the start position to match
 							// original reference
 							CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 2, methylLabel);
