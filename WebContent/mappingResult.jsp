@@ -93,7 +93,7 @@
                                 href="manualAnalysis.jsp#conversionRate">?</a></sup></td>
                         <td><label>
                             <input type="text" id="conversionRateThreshold" name="conversionRateThreshold"
-                                   value=0.95>
+                                   value=0.9>
                         </label></td>
                     </tr>
                     <tr>

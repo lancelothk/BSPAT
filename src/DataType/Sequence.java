@@ -1,5 +1,7 @@
 package DataType;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +45,100 @@ public class Sequence {
         this.CpGSites = new ArrayList<>();
         this.readConvState = readConvState;
         this.allelePosList = new ArrayList<>();
+    }
+
+    private static boolean isFirstBPCpGSite(int pos, List<CpGSite> cpGSiteList) {
+        for (CpGSite cpGSite : cpGSiteList) {
+            if (pos == cpGSite.getPosition()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * generate methylation and mutation String; calculate
+     * conversion rate, methylation rate
+     */
+    public static void processSequence(String referenceSeq, List<Sequence> seqList) {
+        // convert reference sequence and count C in non-CpG context.
+        String convertedReferenceSeq = "";
+        // count C in non-CpG context.  Maybe not efficient enough since scan twice.
+        int countOfNonCpGC = StringUtils.countMatches(referenceSeq, "C") - StringUtils.countMatches(referenceSeq, "CG");
+        for (int i = 0; i < referenceSeq.length(); i++) {
+            if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {
+                convertedReferenceSeq += 'T';
+            } else {
+                convertedReferenceSeq += referenceSeq.charAt(i);
+            }
+        }
+        for (Sequence seq : seqList) {
+            char[] methylationString;
+            char[] mutationString;
+            // fill read to reference length
+            double countOfUnConvertedC = 0;
+            double countOfMethylatedCpG = 0;
+            double unequalNucleotide = 0;
+            methylationString = new char[convertedReferenceSeq.length()];
+            mutationString = new char[convertedReferenceSeq.length()];
+
+            for (int i = 0; i < convertedReferenceSeq.length(); i++) {
+                methylationString[i] = ' ';
+                mutationString[i] = ' ';
+            }
+            for (int i = 0; i < +seq.getOriginalSeq().length(); i++) {
+                methylationString[i] = '-';
+                mutationString[i] = '-';
+            }
+            for (int i = 0; i < seq.getOriginalSeq().length(); i++) {
+                // meet unequal element
+                if (seq.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
+                    if (isFirstBPCpGSite(i + 1, seq.getCpGSites())) {
+                        if (!(seq.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') &&
+                                !(seq.getOriginalSeq().charAt(i) == 'C' && convertedReferenceSeq.charAt(i) == 'T')) {
+                            unequalNucleotide++;
+                            mutationString[i] = seq.getOriginalSeq().charAt(i);
+                            seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
+                        }
+                    } else {
+                        if (seq.getOriginalSeq().charAt(i) == 'C' && referenceSeq.charAt(i) == 'C') {
+                            countOfUnConvertedC++;
+                        } else {
+                            unequalNucleotide++;
+                            mutationString[i] = seq.getOriginalSeq().charAt(i);
+                            seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
+                        }
+                    }
+                }
+            }
+            for (CpGSite cpg : seq.getCpGSites()) {
+                if (cpg.isMethylated()) {
+                    countOfMethylatedCpG++;
+                    // methylated CpG site represent by @@
+                    methylationString[cpg.getPosition() - 1] = '@';
+                    if (cpg.getPosition() + 1 <= methylationString.length) {
+                        methylationString[cpg.getPosition()] = '@';
+                    }
+                    // mutation
+                    mutationString[cpg.getPosition() - 1] = '-';
+                } else {
+                    // un-methylated CpG site represent by **. Exclude mutation in CpG site.
+                    if (cpg.getPosition() != mutationString.length) {
+                        methylationString[cpg.getPosition() - 1] = '*';
+                        if (cpg.getPosition() + 1 <= methylationString.length) {
+                            methylationString[cpg.getPosition()] = '*';
+                        }
+                    }
+                }
+            }
+            // fill sequence content including calculation fo bisulfite
+            // conversion rate and methylation rate for each sequence.
+            seq.setBisulConversionRate(1 - (countOfUnConvertedC / countOfNonCpGC));
+            seq.setMethylationRate(countOfMethylatedCpG / seq.getCpGSites().size());
+            seq.setSequenceIdentity(1 - unequalNucleotide / (seq.getOriginalSeq().length() - seq.getCpGSites().size()));
+            seq.setMethylationString(new String(methylationString));
+            seq.setMutationString(new String(mutationString));
+        }
     }
 
     /**

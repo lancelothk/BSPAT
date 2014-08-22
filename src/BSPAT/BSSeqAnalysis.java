@@ -15,11 +15,6 @@ import java.util.*;
  * @author Ke
  */
 public class BSSeqAnalysis {
-
-
-    private Map<String, String> referenceSeqs = new Hashtable<>();
-    private Constant constant;
-
     /**
      * Execute analysis.
      *
@@ -28,13 +23,12 @@ public class BSSeqAnalysis {
      * @return List of ReportSummary
      */
     public List<ReportSummary> execute(String experimentName,
-                                       Constant constant) throws IOException, InterruptedException, MathException {
+                                       Constant constant) throws IOException, InterruptedException {
         List<ReportSummary> reportSummaries = new ArrayList<>();
-        this.constant = constant;
         String inputFolder = constant.mappingResultPath + experimentName + "/";
         String outputFolder = constant.patternResultPath + experimentName + "/";
         ImportBismarkResult importBismarkResult = new ImportBismarkResult(constant.originalRefPath, inputFolder);
-        referenceSeqs = importBismarkResult.getReferenceSeqs();
+        Map<String, String> referenceSeqs = importBismarkResult.getReferenceSeqs();
         List<Sequence> sequencesList = importBismarkResult.getSequencesList();
         if (sequencesList.size() == 0) {
             throw new RuntimeException("mapping result is empty, please double check input!");
@@ -58,7 +52,7 @@ public class BSSeqAnalysis {
         });
 
         // 3. cut and filter sequences
-        cutAndFilterSequence(sequenceGroupMap, refCoorMap, targetCoorMap);
+        cutAndFilterSequence(sequenceGroupMap, refCoorMap, targetCoorMap, referenceSeqs);
         // TODO handle case which no sequence remain after cut.
 
         // 4. generate report for each region
@@ -66,9 +60,9 @@ public class BSSeqAnalysis {
             ReportSummary reportSummary = new ReportSummary(region);
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
 
-            processSequence(referenceSeqs.get(region), seqGroup);
+            Sequence.processSequence(referenceSeqs.get(region), seqGroup);
             reportSummary.setSeqBeforeFilter(seqGroup.size());
-            seqGroup = filterSequences(seqGroup);
+            seqGroup = filterSequences(seqGroup, constant);
             reportSummary.setSeqAfterFilter(seqGroup.size());
             // if no sequence exist after filtering, return empty reportSummary
             if (seqGroup.size() == 0) {
@@ -80,9 +74,9 @@ public class BSSeqAnalysis {
 
             methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size(),
                                                                StringUtils.countMatches(referenceSeqs.get(region),
-                                                                                        "CG"));
-            mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size());
-            Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size());
+                                                                                        "CG"), constant);
+            mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size(), constant);
+            Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
             Pattern.resetPatternCount();
@@ -91,7 +85,8 @@ public class BSSeqAnalysis {
 
             List<Pattern> meMuPatternList = getMeMuPatern(methylationPatternList, mutationPatternList);
             meMuPatternList = filterMethylationPatterns(meMuPatternList, seqGroup.size(),
-                                                        StringUtils.countMatches(referenceSeqs.get(region), "CG"));
+                                                        StringUtils.countMatches(referenceSeqs.get(region), "CG"),
+                                                        constant);
 
 
             Report report = new Report(region, outputFolder, seqGroup, referenceSeqs.get(region), constant,
@@ -176,7 +171,7 @@ public class BSSeqAnalysis {
         return meMuPaternList;
     }
 
-    private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount) {
+    private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount, Constant constant) {
         List<Pattern> qualifiedAllelePAtternList = new ArrayList<>();
         for (Pattern pattern : allelePatternList) {
             double percentage = (double) pattern.getCount() / totalSeqCount;
@@ -193,7 +188,7 @@ public class BSSeqAnalysis {
         }
     }
 
-    private List<Pattern> filterMutationPatterns(List<Pattern> mutationPatterns, int totalSeqCount) {
+    private List<Pattern> filterMutationPatterns(List<Pattern> mutationPatterns, int totalSeqCount, Constant constant) {
         List<Pattern> qualifiedMutationPatternList = new ArrayList<>();
         for (Pattern mutationPattern : mutationPatterns) {
             double percentage = (double) mutationPattern.getCount() / totalSeqCount;
@@ -205,22 +200,25 @@ public class BSSeqAnalysis {
     }
 
     private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                    int cpgCount) throws MathException {
+                                                    int cpgCount, Constant constant) {
         List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
         if (constant.minP0Threshold != -1 && cpgCount >= 3) {
-            filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList);
+            filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList,
+                                              constant);
             if (qualifiedMethylationPatternList.size() == 0) {
                 filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
-                                                      qualifiedMethylationPatternList);
+                                                      qualifiedMethylationPatternList, constant);
             }
         } else {
-            filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList);
+            filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList,
+                                                  constant);
         }
         return qualifiedMethylationPatternList;
     }
 
     private void filterMethylPatternsByMethylThreshold(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                       List<Pattern> qualifiedMethylationPatternList) {
+                                                       List<Pattern> qualifiedMethylationPatternList,
+                                                       Constant constant) {
         // use percentage pattern threshold
         for (Pattern methylationPattern : methylationPatterns) {
             double percentage = methylationPattern.getCount() / totalSeqCount;
@@ -231,13 +229,19 @@ public class BSSeqAnalysis {
     }
 
     private void filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                   List<Pattern> qualifiedMethylationPatternList) throws MathException {
+                                                   List<Pattern> qualifiedMethylationPatternList, Constant constant) {
         // calculate methylation rate for each CpG site.
         double p = 0.5;// probability of CpG site to be methylated.
         double z;
         double ph, p0;
         NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-        double criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
+        double criticalZ = 0;
+        try {
+            criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
+        } catch (MathException e) {
+            e.printStackTrace();
+            throw new RuntimeException("MathException in calculating of critical level", e);
+        }
         // significant pattern selection
         for (Pattern methylationPattern : methylationPatterns) {
             ph = methylationPattern.getCount() / totalSeqCount;
@@ -255,7 +259,8 @@ public class BSSeqAnalysis {
      * @param sequenceGroupMap
      */
     private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap, Map<String, Coordinate> refCoorMap,
-                                      Map<String, Coordinate> targetCoorMap) throws IOException {
+                                      Map<String, Coordinate> targetCoorMap,
+                                      Map<String, String> referenceSeqs) throws IOException {
         for (String region : sequenceGroupMap.keySet()) {
             Coordinate targetCoor = targetCoorMap.get(region);
             Coordinate refCoor = refCoorMap.get(region);
@@ -314,108 +319,13 @@ public class BSSeqAnalysis {
         return sequenceGroupMap;
     }
 
-    private boolean isFirstBPCpGSite(int pos, List<CpGSite> cpGSiteList) {
-        for (CpGSite cpGSite : cpGSiteList) {
-            if (pos == cpGSite.getPosition()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * generate methylation and mutation String; calculate
-     * conversion rate, methylation rate
-     */
-    // TODO move to Sequence class
-    public void processSequence(String referenceSeq, List<Sequence> seqList) {
-        // convert reference sequence and count C in non-CpG context.
-        String convertedReferenceSeq = "";
-        // count C in non-CpG context.  Maybe not efficient enough since scan twice.
-        int countOfNonCpGC = StringUtils.countMatches(referenceSeq, "C") - StringUtils.countMatches(referenceSeq, "CG");
-        for (int i = 0; i < referenceSeq.length(); i++) {
-            if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {
-                convertedReferenceSeq += 'T';
-            } else {
-                convertedReferenceSeq += referenceSeq.charAt(i);
-            }
-        }
-        for (Sequence seq : seqList) {
-            char[] methylationString;
-            char[] mutationString;
-            // fill read to reference length
-            double countOfUnConvertedC = 0;
-            double countOfMethylatedCpG = 0;
-            double unequalNucleotide = 0;
-            methylationString = new char[convertedReferenceSeq.length()];
-            mutationString = new char[convertedReferenceSeq.length()];
-
-            for (int i = 0; i < convertedReferenceSeq.length(); i++) {
-                methylationString[i] = ' ';
-                mutationString[i] = ' ';
-            }
-            for (int i = 0; i < +seq.getOriginalSeq().length(); i++) {
-                methylationString[i] = '-';
-                mutationString[i] = '-';
-            }
-            for (int i = 0; i < seq.getOriginalSeq().length(); i++) {
-                // meet unequal element
-                if (seq.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
-                    if (isFirstBPCpGSite(i, seq.getCpGSites())) {
-                        if (seq.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') {
-                            // non methyl CpG site
-                        } else {
-                            unequalNucleotide++;
-                            mutationString[i] = seq.getOriginalSeq().charAt(i);
-                            seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
-                        }
-                    } else {
-                        unequalNucleotide++;
-                        mutationString[i] = seq.getOriginalSeq().charAt(i);
-                        seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
-                        if (seq.getOriginalSeq().charAt(i) == 'C') {
-                            countOfUnConvertedC++;
-                        }
-                    }
-                }
-            }
-            for (CpGSite cpg : seq.getCpGSites()) {
-                if (cpg.isMethylated()) {
-                    countOfMethylatedCpG++;
-                    // methylated CpG site represent by @@
-                    methylationString[cpg.getPosition() - 1] = '@';
-                    if (cpg.getPosition() + 1 <= methylationString.length) {
-                        methylationString[cpg.getPosition()] = '@';
-                    }
-                    // mutation
-                    mutationString[cpg.getPosition() - 1] = '-';
-                } else {
-                    // un-methylated CpG site represent by **. Exclude mutation in CpG site.
-                    if (cpg.getPosition() != mutationString.length) {
-                        methylationString[cpg.getPosition() - 1] = '*';
-                        if (cpg.getPosition() + 1 <= methylationString.length) {
-                            methylationString[cpg.getPosition()] = '*';
-                        }
-                    }
-                }
-            }
-            // fill sequence content including calculation fo bisulfite
-            // conversion rate and methylation rate for each sequence.
-            seq.setBisulConversionRate(1 - (countOfUnConvertedC / countOfNonCpGC));
-            seq.setMethylationRate(countOfMethylatedCpG / seq.getCpGSites().size());
-            seq.setSequenceIdentity(1 - unequalNucleotide / (seq.getOriginalSeq().length() - seq.getCpGSites().size()));
-            seq.setMethylationString(new String(methylationString));
-            seq.setMutationString(new String(mutationString));
-        }
-    }
-
     /**
      * fill sequence list filtered by threshold.
      *
      * @param seqList
      * @return
      */
-    private List<Sequence> filterSequences(List<Sequence> seqList) {
+    private List<Sequence> filterSequences(List<Sequence> seqList, Constant constant) {
         System.out.println("Filter Sequences: before filter count:\t" + seqList.size());
         List<Sequence> qualifiedSeqList = new ArrayList<>();
         List<Sequence> unQualifiedSeqList = new ArrayList<>();
@@ -432,7 +342,7 @@ public class BSSeqAnalysis {
         return qualifiedSeqList;
     }
 
-    public List<Pattern> getMethylPattern(List<Sequence> seqList) {
+    private List<Pattern> getMethylPattern(List<Sequence> seqList) {
         List<Pattern> methylationPatterns = new ArrayList<>();
         // group sequences by methylationString, distribute each seq into one pattern
         Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
@@ -453,7 +363,7 @@ public class BSSeqAnalysis {
         return methylationPatterns;
     }
 
-    public List<Pattern> getMutationPattern(List<Sequence> seqList) {
+    private List<Pattern> getMutationPattern(List<Sequence> seqList) {
         List<Pattern> mutationPatterns = new ArrayList<>();
         // group sequences by mutationString, distribute each seq into one pattern
         Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
