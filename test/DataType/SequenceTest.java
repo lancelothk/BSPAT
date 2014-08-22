@@ -25,9 +25,9 @@ public class SequenceTest {
                                  "", "", "", "", ""));
 
         for (Sequence sequence : seqList) {
-            sequence.addCpG(new CpGSite(27, true));
-            sequence.addCpG(new CpGSite(80, true));
-            sequence.addCpG(new CpGSite(89, true));
+            sequence.addCpG(new CpGSite(26, true));
+            sequence.addCpG(new CpGSite(79, true));
+            sequence.addCpG(new CpGSite(88, true));
         }
         Sequence.processSequence(ref, seqList);
 

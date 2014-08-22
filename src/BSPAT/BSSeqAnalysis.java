@@ -284,7 +284,7 @@ public class BSSeqAnalysis {
                     while (cpGSiteIterator.hasNext()) {
                         CpGSite cpGSite = cpGSiteIterator.next();
                         // only keep CpG site wholly sit in ref.
-                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() <= refEnd) {
+                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
                             cpGSite.setPosition(cpGSite.getPosition() - refStart);
                         } else {
                             cpGSiteIterator.remove();
