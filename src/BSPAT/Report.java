@@ -93,8 +93,7 @@ public class Report {
 
 			for (CpGStatistics cpgStat : statList) {
                 cpgStat.calcMethylLevel();
-                // bismark result is 1-based. Need change to 0-based
-                bufferedWriter.write(cpgStat.getPosition() - 1 + "\t" + cpgStat.getMethylLevel() + "\n");
+                bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
             }
 
             bufferedWriter.write("mutation stat:\n");

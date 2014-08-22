@@ -19,8 +19,8 @@ public class DrawPattern {
     private final String DEFAULTFONT = "Arial";
     private final int CELLLINEFONTSIZE = 32;
     private final int WIDTH = 20;
-	private final int STARTX = 120;
-	private final int STARTY = 20;
+    private final int STARTX = 180;
+    private final int STARTY = 20;
 	private final int LEFTSTART = 10;
 	private final int BARHEIGHT = 28;
 	private final int HEIGHTINTERVAL = 26;
@@ -126,8 +126,8 @@ public class DrawPattern {
 				// genome browser automatically add 1 to start, no change to
 				// end.So we substract 1 from start and add 1 to the end.
                 methylWriter.getBedWriter().write(
-                        "chr" + chr + "\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\tCG-Pattern" + i + "\t" +
-                                cpg.getMethylCount() + "\t+\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\t");
+                        "chr" + chr + "\t" + cgPos + "\t" + cgPos + "\tCG-Pattern" + i + "\t" +
+                                cpg.getMethylCount() + "\t+\t" + cgPos + "\t" + cgPos + "\t");
                 if (cpg.isMethylated()) {
                     // fill black circle
                     methylWriter.getGraphWriter().fill(new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
@@ -198,6 +198,10 @@ public class DrawPattern {
 		height += 2.5 * HEIGHTINTERVAL;
         ASMWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + STARTX, height);
 
+        ASMWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, STYLECHOICE, CELLLINEFONTSIZE));
+        ASMWriter.getGraphWriter().drawString(cellLine, LEFTSTART, height);
+        ASMWriter.getGraphWriter().setFont(new Font(DEFAULTFONT, STYLECHOICE, COMMONSIZE));
+
 		// add average for pattern without allele
         ASMWriter.getBedWriter().write(
                 String.format("track name=\"PatternA\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
@@ -260,8 +264,8 @@ public class DrawPattern {
 		}
 		for (Sequence sequence : pattern.sequenceList()) {
 			for (CpGSite cpGSite : sequence.getCpGSites()) {
-				int pos = cpGSite.getPosition() - 1;
-				if (cpGSiteMap.containsKey(pos)) {
+                int pos = cpGSite.getPosition();
+                if (cpGSiteMap.containsKey(pos)) {
                     if (cpGSite.isMethylated()) {
                         cpGSiteMap.get(pos).addMethylCount(1);
 					} else {

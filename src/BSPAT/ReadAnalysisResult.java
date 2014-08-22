@@ -79,9 +79,9 @@ public class ReadAnalysisResult {
 
 			while (line != null) {
 				items = line.split("\t");
-				CpGSite cpg;
 				patternResult = new PatternResult();
 				for (int i = 0; i < refLength; i++) {
+                    CpGSite cpg;
                     if (items[0].charAt(i) == '*') {
                         cpg = new CpGSite(i, false);
                         patternResult.addCpG(cpg);
@@ -110,12 +110,8 @@ public class ReadAnalysisResult {
 
 	private void setCoordinate() {
 		beginCoor = coordinate.getChr() + ":" + coordinate.getStart();
-		endCoor = String.valueOf(coordinate.getStart() + refLength);
-		if ((coordinate.getStart() + refLength) != coordinate.getEnd()) {
-			System.out.println(coordinate.getChr() + "\tEnd:" + coordinate.getEnd() + "\tNewEnd:" +
-									   (coordinate.getStart() + refLength));
-		}
-	}
+        endCoor = String.valueOf(coordinate.getStart() + refLength - 1);
+    }
 
 	public String getBeginCoor() {
 		return beginCoor;

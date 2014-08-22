@@ -270,13 +270,11 @@ public class BSSeqAnalysis {
             List<Sequence> sequenceGroup = sequenceGroupMap.get(region);
             Iterator<Sequence> sequenceIterator = sequenceGroup.iterator();
             // cut reference seq
-            referenceSeqs.put(region,
-                              referenceSeqs.get(region).substring((int) (targetCoor.getStart() - refCoor.getStart()),
-                                                                  (int) (targetCoor.getEnd() - refCoor.getStart())));
+            int refStart = (int) (targetCoor.getStart() - refCoor.getStart());
+            int refEnd = (int) (targetCoor.getEnd() - refCoor.getStart());
+            referenceSeqs.put(region, referenceSeqs.get(region).substring(refStart, refEnd + 1));
             while (sequenceIterator.hasNext()) {
                 Sequence sequence = sequenceIterator.next();
-                int refStart = Constant.REFEXTENSIONLENGTH - 1 + (int) (targetCoor.getStart() - refCoor.getStart());
-                int refEnd = Constant.REFEXTENSIONLENGTH + (int) (targetCoor.getEnd() - refCoor.getStart()) - 2;
                 if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
                     // cut sequence to suit reference
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
@@ -286,8 +284,8 @@ public class BSSeqAnalysis {
                     while (cpGSiteIterator.hasNext()) {
                         CpGSite cpGSite = cpGSiteIterator.next();
                         // only keep CpG site wholly sit in ref.
-                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
-                            cpGSite.setPosition(cpGSite.getPosition() - refStart + 1);
+                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() <= refEnd) {
+                            cpGSite.setPosition(cpGSite.getPosition() - refStart);
                         } else {
                             cpGSiteIterator.remove();
                         }

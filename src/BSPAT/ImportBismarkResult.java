@@ -88,10 +88,10 @@ public class ImportBismarkResult {
 				String[] items = null;
 				while (line != null) {
 					items = line.split("\t");
-					// substract two bps from the start position to match original
-					// reference
-					Sequence seq = new Sequence(items[0], items[1], items[2], Integer.valueOf(items[3]) - 2, items[9],
-												items[10], cutTag(items[11]), cutTag(items[12]), cutTag(items[13]),
+                    // substract two bps from the start position to match original reference
+                    // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
+                    Sequence seq = new Sequence(items[0], items[1], items[2], Integer.valueOf(items[3]) - 3, items[9],
+                                                items[10], cutTag(items[11]), cutTag(items[12]), cutTag(items[13]),
 												cutTag(items[14]));
 					if (cutTag(items[14]).equals("CT")) {
 						seq.setFRstate("F");
@@ -144,10 +144,10 @@ public class ImportBismarkResult {
 						}
                         seq = sequencesHashMap.get(items[0]);
                         if (seq != null) {
-							// substract two bps from the start position to match
-							// original reference
-							CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 2, methylLabel);
-							seq.addCpG(cpg);
+                            // substract two bps from the start position to match original reference
+                            // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
+                            CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 3, methylLabel);
+                            seq.addCpG(cpg);
 						}
 						line = buffReader.readLine();
 					}
