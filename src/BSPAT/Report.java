@@ -1,6 +1,7 @@
 package BSPAT;
 
 import DataType.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,19 +14,16 @@ import java.util.List;
 
 public class Report {
 	private String referenceSeq;
-	private List<Sequence> sequencesList;
 	private String outputFolder;
 	private String region;
 	private ReportSummary reportSummary;
 	private Constant constant;
 
-	public Report(String region, String outputPath, List<Sequence> sequencesList, String referenceSeq,
-				  Constant constant, ReportSummary reportSummary) {
+    public Report(String region, String outputPath, String referenceSeq, Constant constant, ReportSummary reportSummary) {
 		this.constant = constant;
 		this.reportSummary = reportSummary;
 		this.region = region;
 		this.outputFolder = outputPath;
-		this.sequencesList = sequencesList;
 		this.referenceSeq = referenceSeq;
 		File outputFolder = new File(outputPath);
 		if (!outputFolder.exists()) {
@@ -33,19 +31,19 @@ public class Report {
 		}
 	}
 
-	public void writeReport(List<Pattern> methylationPatternList, List<Pattern> mutationPatternList,
-							List<Pattern> meMuPatternList) throws IOException {
-		writeResult();
-		writeStatistics();
-		writePatterns(methylationPatternList, PatternLink.METHYLATION);
-		writePatterns(mutationPatternList, PatternLink.MUTATION);
-		writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION);
-		writePatterns(meMuPatternList, PatternLink.MUTATIONWITHMETHYLATION);
-	}
+    public void writeReport(Pair<List<Sequence>, List<Sequence>> filteredSequencePair,
+                            List<Pattern> methylationPatternList, List<Pattern> mutationPatternList, List<Pattern> meMuPatternList) throws IOException {
+        writeAnalysedSequences("_bismark.analysis.txt", filteredSequencePair.getLeft());
+        writeAnalysedSequences("_bismark.analysis.filtered.txt", filteredSequencePair.getRight());
+        writeStatistics(filteredSequencePair.getLeft());
+        writePatterns(methylationPatternList, PatternLink.METHYLATION, filteredSequencePair.getLeft());
+        writePatterns(mutationPatternList, PatternLink.MUTATION, filteredSequencePair.getLeft());
+        writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, filteredSequencePair.getLeft());
+        writePatterns(meMuPatternList, PatternLink.MUTATIONWITHMETHYLATION, filteredSequencePair.getLeft());
+    }
 
-	private void writeResult() throws IOException {
-		try (BufferedWriter bufferedWriter = new BufferedWriter(
-				new FileWriter(outputFolder + region + "_bismark.analysis.txt"))) {
+    private void writeAnalysedSequences(String fileName, List<Sequence> sequencesList) throws IOException {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFolder + region + fileName))) {
 			bufferedWriter.write(
 					"methylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
 			bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
@@ -57,8 +55,8 @@ public class Report {
 		}
 	}
 
-	private void writeStatistics() throws IOException {
-		String reportFileName = outputFolder + region + "_bismark.analysis_report.txt";
+    private void writeStatistics(List<Sequence> sequencesList) throws IOException {
+        String reportFileName = outputFolder + region + "_bismark.analysis_report.txt";
 		reportSummary.setStatTextLink(reportFileName);
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
 			Hashtable<Integer, CpGStatistics> cpgStatHashtable = new Hashtable<>();
@@ -121,8 +119,9 @@ public class Report {
 		}
 	}
 
-	private void writePatterns(List<Pattern> patternList, String patternType) throws IOException {
-		String patternFileName = String.format("%s%s_bismark.analysis_%s.txt", outputFolder, region, patternType);
+    private void writePatterns(List<Pattern> patternList, String patternType,
+                               List<Sequence> sequencesList) throws IOException {
+        String patternFileName = String.format("%s%s_bismark.analysis_%s.txt", outputFolder, region, patternType);
 		reportSummary.getPatternLink(patternType).setTextResultLink(patternFileName);
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(patternFileName))) {
 			switch (patternType) {

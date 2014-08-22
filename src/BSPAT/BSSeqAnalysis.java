@@ -2,6 +2,8 @@ package BSPAT;
 
 import DataType.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 
@@ -62,7 +64,8 @@ public class BSSeqAnalysis {
 
             Sequence.processSequence(referenceSeqs.get(region), seqGroup);
             reportSummary.setSeqBeforeFilter(seqGroup.size());
-            seqGroup = filterSequences(seqGroup, constant);
+            Pair<List<Sequence>, List<Sequence>> filteredSequencePair = filterSequences(seqGroup, constant);
+            seqGroup = filteredSequencePair.getLeft();
             reportSummary.setSeqAfterFilter(seqGroup.size());
             // if no sequence exist after filtering, return empty reportSummary
             if (seqGroup.size() == 0) {
@@ -89,9 +92,9 @@ public class BSSeqAnalysis {
                                                         constant);
 
 
-            Report report = new Report(region, outputFolder, seqGroup, referenceSeqs.get(region), constant,
+            Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant,
                                        reportSummary);
-            report.writeReport(methylationPatternList, mutationPatternList, meMuPatternList);
+            report.writeReport(filteredSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
 
             if (constant.coorReady) {
                 System.out.println("start drawing -- BSSeqAnalysis -- execute");
@@ -172,17 +175,17 @@ public class BSSeqAnalysis {
     }
 
     private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount, Constant constant) {
-        List<Pattern> qualifiedAllelePAtternList = new ArrayList<>();
+        List<Pattern> qualifiedAllelePatternList = new ArrayList<>();
         for (Pattern pattern : allelePatternList) {
             double percentage = (double) pattern.getCount() / totalSeqCount;
             if (percentage >= constant.mutationPatternThreshold) {
-                qualifiedAllelePAtternList.add(pattern);
+                qualifiedAllelePatternList.add(pattern);
             }
         }
-        Collections.sort(qualifiedAllelePAtternList, new PatternByCountComparator());
+        Collections.sort(qualifiedAllelePatternList, new PatternByCountComparator());
         // only keep most significant allele pattern
-        if (qualifiedAllelePAtternList.size() > 0) {
-            return qualifiedAllelePAtternList.get(0);
+        if (qualifiedAllelePatternList.size() > 0) {
+            return qualifiedAllelePatternList.get(0);
         } else {
             return null;
         }
@@ -235,7 +238,7 @@ public class BSSeqAnalysis {
         double z;
         double ph, p0;
         NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-        double criticalZ = 0;
+        double criticalZ;
         try {
             criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
         } catch (MathException e) {
@@ -325,7 +328,8 @@ public class BSSeqAnalysis {
      * @param seqList
      * @return
      */
-    private List<Sequence> filterSequences(List<Sequence> seqList, Constant constant) {
+    private Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
+                                                                 Constant constant) throws IOException {
         System.out.println("Filter Sequences: before filter count:\t" + seqList.size());
         List<Sequence> qualifiedSeqList = new ArrayList<>();
         List<Sequence> unQualifiedSeqList = new ArrayList<>();
@@ -339,7 +343,7 @@ public class BSSeqAnalysis {
             }
         }
         System.out.println("Filter Sequences: after filter count:\t" + qualifiedSeqList.size());
-        return qualifiedSeqList;
+        return new ImmutablePair<>(qualifiedSeqList, unQualifiedSeqList);
     }
 
     private List<Pattern> getMethylPattern(List<Sequence> seqList) {

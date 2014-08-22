@@ -36,12 +36,12 @@ public class ReportSummary implements Serializable {
         for (PatternLink patternLink : patternHash.values()) {
             patternLink.setTextResultLink(patternLink.getTextResultLink().replace(diskPath, webPath));
         }
-        if (hasFigure == true) {
+        if (hasFigure) {
             for (PatternLink patternLink : patternHash.values()) {
                 patternLink.setFigureResultLink(patternLink.getFigureResultLink().replace(diskPath, webPath));
                 patternLink.setGBResultLink(host + patternLink.getGBResultLink().replace(diskPath, webPath));
             }
-            if (hasASM == true) {
+            if (hasASM) {
                 ASMFigureLink = ASMFigureLink.replace(diskPath, webPath);
                 ASMGBLink = host + ASMGBLink.replace(diskPath, webPath);
             }
