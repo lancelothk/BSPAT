@@ -89,7 +89,7 @@ public class DrawPattern {
 
     public void drawMethylPattern(PatternLink patternLink) throws IOException {
         List<PatternResult> patternResultLists = data.readPatternFile(region, patternLink.getPatternType());
-        int imageWidth = refLength * WIDTH + STARTX + 210;
+        int imageWidth = refLength * WIDTH + STARTX + 230;
         int imageHeight = STARTY + 180 + patternResultLists.size() * HEIGHTINTERVAL;
 
         FigureWriter methylWriter = new FigureWriter(patternResultPath, figureFormat, region,
