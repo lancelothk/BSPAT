@@ -181,7 +181,7 @@
                 return false;
             }
         }
-        if (!checkRfFile()) {
+        if (!checkRefFile()) {
             return false;
         }
         resetPage();
@@ -217,7 +217,7 @@
         return true;        //contain blank
     }
 
-    function checkRfFile() {
+    function checkRefFile() {
         var fileName = document.getElementById("ref").value;
         var ext = fileName.split(".");
         if (ext[1] != "fa" && ext[1] != "fasta") {

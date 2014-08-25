@@ -169,7 +169,7 @@
         }
     }
 
-    function checkEmptyValue(id, msg) {
+    function isEmptyValue(id, msg) {
         if (document.getElementById(id).value == "") {
             window.alert(msg);
             return true;
@@ -179,16 +179,35 @@
     }
 
     function validateInput() {
-        if (checkEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")
-                || checkEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
-                || checkEmptyValue("minp0text", "α threshold is empty!")
-                || checkEmptyValue("criticalValue", "Critical Value is empty!")
-                || checkEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
-                || checkEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")) {
+        if (isEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")
+                || isEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
+                || isEmptyValue("minp0text", "α threshold is empty!")
+                || isEmptyValue("criticalValue", "Critical Value is empty!")
+                || isEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
+                || isEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")) {
+            return false;
+        }
+
+        if (isInvalidValue("conversionRateThreshold", "Bisulfite conversion rate is invalid!")
+                || isInvalidValue("sequenceIdentityThreshold", "Sequence identity is invalid!")
+                || isInvalidValue("minp0text", "α threshold is invalid!")
+                || isInvalidValue("criticalValue", "Critical Value is invalid!")
+                || isInvalidValue("minmethyltext", "Methylation pattern threshold is invalid!")
+                || isInvalidValue("mutationpatternThreshold", "Mutation threshold is invalid!")) {
             return false;
         }
         resetPage();
         return true;
+    }
+
+    function isInvalidValue(id, msg) {
+        var value = document.getElementById(id).value;
+        if (value < 0 || value > 1) {
+            window.alert(msg);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function resetPage() {
