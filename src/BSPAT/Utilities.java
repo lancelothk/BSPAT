@@ -107,13 +107,14 @@ public class Utilities {
     /**
      * cmd program caller wrapper.
      *
+     * @return exit value
      * @param cmd       command string.
      * @param directory execution directory
      * @param fileName  file name to write output. If leave null, write to stdout.
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void callCMD(String cmd, File directory, String fileName) throws IOException, InterruptedException {
+    public static int callCMD(String cmd, File directory, String fileName) throws IOException, InterruptedException {
         final Process process = Runtime.getRuntime().exec(cmd, null, directory);
         BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
         BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -142,6 +143,7 @@ public class Utilities {
             }
         }
         process.waitFor();
+        return process.exitValue();
     }
 
     public static void zipFolder(String folder, String zipFileName) throws IOException {
