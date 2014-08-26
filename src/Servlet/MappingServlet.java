@@ -31,13 +31,13 @@ import java.util.concurrent.Future;
  */
 @WebServlet(name = "/uploadServlet", urlPatterns = {"/mapping"})
 @MultipartConfig
-public class mappingServlet extends HttpServlet {
+public class MappingServlet extends HttpServlet {
     private static final long serialVersionUID = 6078331324800268609L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public mappingServlet() {
+    public MappingServlet() {
         super();
     }
 
@@ -70,8 +70,8 @@ public class mappingServlet extends HttpServlet {
                 FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
                                               new File(constant.seqsPath + "demoExperiment"));
             } else {
-                addExperiment(request, response, experiments);
-                handleUploadedFiles(constant, request, response, experiments);
+                addExperiment(request, experiments);
+                handleUploadedFiles(constant, request, experiments);
             }
 
             long start = System.currentTimeMillis();
@@ -132,7 +132,7 @@ public class mappingServlet extends HttpServlet {
         }
     }
 
-    private void addExperiment(HttpServletRequest request, HttpServletResponse response, List<Experiment> experiments) {
+    private void addExperiment(HttpServletRequest request, List<Experiment> experiments) {
         // add each experiment in list
         String experimentName;
         int index = 1;
@@ -142,7 +142,7 @@ public class mappingServlet extends HttpServlet {
         }
     }
 
-    private void handleUploadedFiles(Constant constant, HttpServletRequest request, HttpServletResponse response,
+    private void handleUploadedFiles(Constant constant, HttpServletRequest request,
                                      List<Experiment> experiments) {
         Collection<Part> parts = null; // get submitted data
         try {

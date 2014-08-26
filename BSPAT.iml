@@ -41,7 +41,7 @@
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" name="guava" level="project" />
     <orderEntry type="library" name="super-csv" level="project" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
         <CLASSES>
           <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.11.jar!/" />
@@ -54,6 +54,7 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="TEST" name="mockito-all-1.9.5" level="project" />
   </component>
 </module>
 

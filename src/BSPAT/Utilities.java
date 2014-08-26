@@ -26,20 +26,16 @@ public class Utilities {
 
     public static void handleServletException(Exception e, Constant constant) {
         e.printStackTrace();
-        Throwable cause = e.getCause();
-        if (cause == null) {
-            cause = e;
-        }
         if (constant != null && constant.email != null && constant.jobID != null) {
             try {
                 Utilities.sendEmail(constant.email, constant.jobID, String.format("%s failed:\n%s\n", constant.jobID,
-                                                                                  ExceptionUtils.getStackTrace(cause)));
+                                                                                  ExceptionUtils.getStackTrace(e)));
             } catch (MessagingException innerException) {
                 innerException.printStackTrace();
                 throw new RuntimeException("failed to send email!");
             }
         }
-        throw new RuntimeException(ExceptionUtils.getStackTrace(cause));
+        throw new RuntimeException(ExceptionUtils.getStackTrace(e));
     }
 
     public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {

@@ -31,14 +31,14 @@ import java.util.concurrent.Future;
  */
 @WebServlet(name = "/analysisServlet", urlPatterns = {"/analysis"})
 @MultipartConfig
-public class analysisServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class AnalysisServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public analysisServlet() {
-		super();
+    public AnalysisServlet() {
+        super();
 	}
 
 	/**
@@ -53,12 +53,13 @@ public class analysisServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 * response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
         Constant constant = null;
         try {
             long start = System.currentTimeMillis();
 			response.setContentType("text/html");
 			String jobID = request.getParameter("jobID");
+            Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
             constant = Constant.readConstant(jobID);
             Collection<Part> parts = null; // get submitted data
 			try {

@@ -10,6 +10,7 @@
           <element id="library" level="project" name="commons-io" />
           <element id="library" level="project" name="guava" />
           <element id="library" level="project" name="super-csv" />
+          <element id="library" level="module" name="JUnit4" module-name="BSPAT" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="BSPAT/web/Web" />
