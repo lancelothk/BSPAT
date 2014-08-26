@@ -27,6 +27,9 @@ public class Utilities {
     public static void handleServletException(Exception e, Constant constant) {
         e.printStackTrace();
         Throwable cause = e.getCause();
+        if (cause == null) {
+            cause = e;
+        }
         if (constant != null && constant.email != null && constant.jobID != null) {
             try {
                 Utilities.sendEmail(constant.email, constant.jobID, String.format("%s failed:\n%s\n", constant.jobID,
@@ -131,30 +134,31 @@ public class Utilities {
      */
     public static int callCMD(String cmd, File directory, String fileName) throws IOException, InterruptedException {
         final Process process = Runtime.getRuntime().exec(cmd, null, directory);
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String progOutput;
-        if (fileName != null) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+            String progOutput;
+            if (fileName != null) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                    // read the error from the command
+                    while ((progOutput = stdError.readLine()) != null) {
+                        writer.write(progOutput + "\n");
+                    }
+
+                    // read the output from the command
+                    while ((progOutput = stdInput.readLine()) != null) {
+                        writer.write(progOutput + "\n");
+                    }
+                }
+            } else {
                 // read the error from the command
                 while ((progOutput = stdError.readLine()) != null) {
-                    writer.write(progOutput + "\n");
+                    System.out.println(progOutput);
                 }
 
                 // read the output from the command
                 while ((progOutput = stdInput.readLine()) != null) {
-                    writer.write(progOutput + "\n");
+                    System.out.println(progOutput);
                 }
-            }
-        } else {
-            // read the error from the command
-            while ((progOutput = stdError.readLine()) != null) {
-                System.out.println(progOutput);
-            }
-
-            // read the output from the command
-            while ((progOutput = stdInput.readLine()) != null) {
-                System.out.println(progOutput);
             }
         }
         process.waitFor();
@@ -186,27 +190,30 @@ public class Utilities {
         byte[] buf = new byte[1024];
         int len;
         // System.out.println("baseFile: "+baseFile.getPath());
-        for (int i = 0; i < files.length; i++) {
-            String pathName = "";
+        if (files == null) {
+            throw new RuntimeException("no file to be compressed in given path!");
+        }
+        for (File file : files) {
+            String pathName;
             if (basePath != null) {
                 if (basePath.isDirectory()) {
-                    pathName = files[i].getPath().substring(basePath.getPath().length() + 1);
+                    pathName = file.getPath().substring(basePath.getPath().length() + 1);
                 } else {// file
-                    pathName = files[i].getPath().substring(basePath.getParent().length() + 1);
+                    pathName = file.getPath().substring(basePath.getParent().length() + 1);
                 }
             } else {
-                pathName = files[i].getName();
+                pathName = file.getName();
             }
             System.out.println(pathName);
-            if (files[i].isDirectory()) {
+            if (file.isDirectory()) {
                 if (isOutBlankDir && basePath != null) {
                     zo.putNextEntry(new ZipEntry(pathName + "/"));
                 }
                 if (isRecursive) {
-                    zip(files[i].getPath(), basePath, zo, isRecursive, isOutBlankDir);
+                    zip(file.getPath(), basePath, zo, true, isOutBlankDir);
                 }
             } else {
-                try (FileInputStream fin = new FileInputStream(files[i])) {
+                try (FileInputStream fin = new FileInputStream(file)) {
                     zo.putNextEntry(new ZipEntry(pathName));
                     while ((len = fin.read(buf)) > 0) {
                         zo.write(buf, 0, len);
@@ -231,9 +238,7 @@ public class Utilities {
             zipEntry = (org.apache.tools.zip.ZipEntry) enumeration.nextElement();
             File loadFile = new File(destDir + zipEntry.getName());
 
-            if (zipEntry.isDirectory()) {
-                // loadFile.mkdirs();
-            } else {
+            if (!zipEntry.isDirectory()) {
                 if (!loadFile.getParentFile().exists()) {
                     loadFile.getParentFile().mkdirs();
                 }
@@ -251,7 +256,7 @@ public class Utilities {
     }
 
     public static void sendEmail(String toAddress, String jobID, String text) throws MessagingException {
-        if (toAddress == null || toAddress.equals("") || jobID.equals("") || jobID == null) {
+        if (toAddress == null || toAddress.equals("") || jobID == null || jobID.equals("")) {
             return;
         }
         String username, password;
@@ -273,7 +278,6 @@ public class Utilities {
         }
 
         String smtpServer = "IMAP.gmail.com";
-        String toMailAddress = toAddress;
         String fromMailAddress = "bspatnotice@gmail.com";
 
         Properties props = new Properties();
@@ -285,7 +289,7 @@ public class Utilities {
         /** *************************************************** */
         MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom(new InternetAddress(fromMailAddress));
-        mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(toMailAddress));
+        mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
         mimeMessage.setSubject("BSPAT");
         mimeMessage.setText(text);
         Transport.send(mimeMessage);

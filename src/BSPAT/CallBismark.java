@@ -100,8 +100,8 @@ public class CallBismark {
 							file.getName().endsWith(".fas") || file.getName().endsWith(".faa") ||
 							file.getName().endsWith(".frn")) {
 						fastaq = "-f"; // for fasta file
-						fileList = multilineFastaToSingleLine(fileList);
-						qualsTypeParameter = "";
+                        fileList = multiLineFastaToSingleLine(fileList);
+                        qualsTypeParameter = "";
 						break;
 					}
 				}
@@ -154,38 +154,42 @@ public class CallBismark {
 	}
 
 	/**
-	 * Convert multiline fasta file to single line fasta file. delete original files.
-	 *
+     * Convert multi-line fasta file to single line fasta file. delete original files.
+     *
 	 * @param fileList original file list
 	 * @return converted file list
 	 * @throws IOException
 	 */
-	private List<File> multilineFastaToSingleLine(List<File> fileList) throws IOException {
-		List<File> newFileList = new ArrayList<>();
+    private List<File> multiLineFastaToSingleLine(List<File> fileList) {
+        List<File> newFileList = new ArrayList<>();
 		for (File file : fileList) {
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			File newFile = new File(file.getAbsoluteFile() + "_processed.fa");
-			BufferedWriter writer = new BufferedWriter(new FileWriter(newFile));
-			String line;
-			StringBuilder seq = new StringBuilder();
-			while ((line = reader.readLine()) != null) {
-				if (line.startsWith(">")) {
-					if (seq.length() > 0) {
-						writer.write(seq.toString() + "\n");
-						seq = new StringBuilder();
-					}
-					writer.write(line + "\n");
-				} else {
-					seq.append(line);
-				}
-			}
-			if (seq.length() > 0) {
-				writer.write(seq.toString());
-			}
-			reader.close();
-			writer.close();
-			file.delete();
-			newFileList.add(newFile);
+            File newFile = new File(file.getAbsoluteFile() + "_processed.fa");
+            try (BufferedReader reader = new BufferedReader(new FileReader(file));
+                 BufferedWriter writer = new BufferedWriter(new FileWriter(newFile))) {
+                String line;
+                StringBuilder seq = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    if (line.startsWith(">")) {
+                        if (seq.length() > 0) {
+                            writer.write(seq.toString() + "\n");
+                            seq = new StringBuilder();
+                        }
+                        writer.write(line + "\n");
+                    } else {
+                        seq.append(line);
+                    }
+                }
+                if (seq.length() > 0) {
+                    writer.write(seq.toString());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("IO error in converting multi-line fasta file to single line fasta file", e);
+            }
+            if (!file.delete()) {
+                throw new RuntimeException(
+                        "failed to delete old fasta file when merge multiple lines to single line: " + file.getPath());
+            }
+            newFileList.add(newFile);
 		}
 		return newFileList;
 	}

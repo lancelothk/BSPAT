@@ -430,9 +430,9 @@ public class DrawPattern {
         String targetPosFileName = "tmpCoordinate." + targetRefVersion;
         String chain = refVersion + "ToHg" + targetRefVersion.replace("hg", "") + ".over.chain.gz";
         // write pos into file
-        BufferedWriter coorWriter = new BufferedWriter(new FileWriter(patternResultPath + originPosFileName));
-        coorWriter.write("chr" + chr + ":" + pos + "-" + pos + "\n");
-        coorWriter.close();
+        try (BufferedWriter coorWriter = new BufferedWriter(new FileWriter(patternResultPath + originPosFileName))) {
+            coorWriter.write("chr" + chr + ":" + pos + "-" + pos + "\n");
+        }
 
         // call liftover
         File liftOverPathFile = new File(liftOverPath);
@@ -442,9 +442,10 @@ public class DrawPattern {
         Utilities.callCMD(callLiftOver, new File(patternResultPath), null);
 
         // read result
-        BufferedReader coorReader = new BufferedReader(new FileReader(patternResultPath + targetPosFileName));
-        String[] items = coorReader.readLine().split(":");
-        coorReader.close();
+        String[] items = null;
+        try (BufferedReader coorReader = new BufferedReader(new FileReader(patternResultPath + targetPosFileName))) {
+            items = coorReader.readLine().split(":");
+        }
         File originPosFile = new File(patternResultPath + originPosFileName);
         if (!originPosFile.delete()) {
             throw new RuntimeException("Failed to delete: " + originPosFile.getAbsolutePath());
