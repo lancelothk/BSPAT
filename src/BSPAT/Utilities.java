@@ -4,6 +4,7 @@ import DataType.Constant;
 import DataType.Coordinate;
 import DataType.ExtensionFilter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tools.zip.ZipFile;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
@@ -22,6 +23,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Utilities {
+
+    public static void handleServletException(Exception e, Constant constant) {
+        e.printStackTrace();
+        Throwable cause = e.getCause();
+        if (constant != null && constant.email != null && constant.jobID != null) {
+            try {
+                Utilities.sendEmail(constant.email, constant.jobID, String.format("%s failed:\n%s\n", constant.jobID,
+                                                                                  ExceptionUtils.getStackTrace(cause)));
+            } catch (MessagingException innerException) {
+                innerException.printStackTrace();
+                throw new RuntimeException("failed to send email!");
+            }
+        }
+        throw new RuntimeException(ExceptionUtils.getStackTrace(cause));
+    }
 
     public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {
         File folder = new File(path);

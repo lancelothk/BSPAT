@@ -7,7 +7,6 @@ import DataType.Constant;
 import DataType.Experiment;
 import DataType.SeqCountSummary;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -144,18 +143,7 @@ public class analysisServlet extends HttpServlet {
             request.setAttribute("constant", constant);
 			request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
         } catch (InterruptedException | ServletException | IOException | MessagingException | ExecutionException | RuntimeException e) {
-            e.printStackTrace();
-            if (constant != null && constant.email != null && constant.jobID != null) {
-                try {
-                    Utilities.sendEmail(constant.email, constant.jobID,
-                                        String.format("%s failed:\n%s\n", constant.jobID,
-                                                      ExceptionUtils.getStackTrace(e.getCause())));
-                } catch (MessagingException innerException) {
-                    innerException.printStackTrace();
-                    throw new RuntimeException("failed to send email!");
-                }
-            }
-            throw new RuntimeException(ExceptionUtils.getStackTrace(e.getCause()));
+            Utilities.handleServletException(e, constant);
         }
     }
 
