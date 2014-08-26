@@ -17,10 +17,7 @@
         <div id="content_main">
             <h2>Error!</h2>
 
-            <h3 style="color:red"><%= exception.getMessage() %>
-            </h3>
-
-            <p style="color:red"><%= exception.toString() %>
+            <p style="color:red"><%= exception.getMessage() %>
             </p>
         </div>
         <div id="content_bottom"></div>

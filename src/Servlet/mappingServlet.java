@@ -5,6 +5,7 @@ import BSPAT.IO;
 import BSPAT.Utilities;
 import DataType.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -53,8 +54,9 @@ public class mappingServlet extends HttpServlet {
 	 * response)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
-		try {
-            Constant constant = new Constant();
+        Constant constant = null;
+        try {
+            constant = new Constant();
             response.setContentType("text/html");
             initializeConstant(constant, request); // initialize constant, which is a singleton
             cleanRootFolder(constant.getJobID()); // release root folder space
@@ -121,13 +123,20 @@ public class mappingServlet extends HttpServlet {
 			//redirect page
 			request.setAttribute("constant", constant);
 			request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
-		} catch (UserNoticeException e) {
-			e.printStackTrace();
-			throw e;
 		} catch (InterruptedException | ServletException | IOException | MessagingException | RuntimeException e) {
 			e.printStackTrace();
-			throw new UserNoticeException("Server error!");
-		}
+            if (constant != null && constant.email != null && constant.jobID != null) {
+                try {
+                    Utilities.sendEmail(constant.email, constant.jobID,
+                                        String.format("%s failed:\n%s\n", constant.jobID,
+                                                      ExceptionUtils.getStackTrace(e)));
+                } catch (MessagingException innerException) {
+                    innerException.printStackTrace();
+                    throw new RuntimeException("failed to send email!");
+                }
+            }
+            throw new RuntimeException(ExceptionUtils.getStackTrace(e));
+        }
 	}
 
 	private void addExperiment(HttpServletRequest request, HttpServletResponse response, List<Experiment> experiments) {
@@ -145,8 +154,8 @@ public class mappingServlet extends HttpServlet {
 		try {
 			parts = request.getParts();
 		} catch (IOException | ServletException e) {
-			throw new UserNoticeException("Network error!");
-		}
+            throw new RuntimeException("Network error!");
+        }
 		// for each part, add it into corresponding experiment
 		for (Part part : parts) {
 			String fieldName = Utilities.getField(part, "name");

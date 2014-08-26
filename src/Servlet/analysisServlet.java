@@ -6,8 +6,8 @@ import BSPAT.Utilities;
 import DataType.Constant;
 import DataType.Experiment;
 import DataType.SeqCountSummary;
-import DataType.UserNoticeException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -55,17 +55,18 @@ public class analysisServlet extends HttpServlet {
 	 * response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			long start = System.currentTimeMillis();
+        Constant constant = null;
+        try {
+            long start = System.currentTimeMillis();
 			response.setContentType("text/html");
 			String jobID = request.getParameter("jobID");
-			Constant constant = Constant.readConstant(jobID);
-			Collection<Part> parts = null; // get submitted data
+            constant = Constant.readConstant(jobID);
+            Collection<Part> parts = null; // get submitted data
 			try {
 				parts = request.getParts();
 			} catch (IOException | ServletException e) {
-				throw new UserNoticeException("Network error!");
-			}
+                throw new RuntimeException("Network error!");
+            }
 			for (Part part : parts) {
 				String fieldName = Utilities.getField(part, "name");
 				String fileName = Utilities.getField(part, "filename");
@@ -142,13 +143,20 @@ public class analysisServlet extends HttpServlet {
             constant.writeConstant();
             request.setAttribute("constant", constant);
 			request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
-		} catch (UserNoticeException e) {
-			e.printStackTrace();
-			throw e;
-		} catch (InterruptedException | ExecutionException | ServletException | IOException | MessagingException | RuntimeException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Server error!");
-		}
-	}
+        } catch (InterruptedException | ServletException | IOException | MessagingException | ExecutionException | RuntimeException e) {
+            e.printStackTrace();
+            if (constant != null && constant.email != null && constant.jobID != null) {
+                try {
+                    Utilities.sendEmail(constant.email, constant.jobID,
+                                        String.format("%s failed:\n%s\n", constant.jobID,
+                                                      ExceptionUtils.getStackTrace(e.getCause())));
+                } catch (MessagingException innerException) {
+                    innerException.printStackTrace();
+                    throw new RuntimeException("failed to send email!");
+                }
+            }
+            throw new RuntimeException(ExceptionUtils.getStackTrace(e.getCause()));
+        }
+    }
 
 }

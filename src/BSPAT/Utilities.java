@@ -3,7 +3,6 @@ package BSPAT;
 import DataType.Constant;
 import DataType.Coordinate;
 import DataType.ExtensionFilter;
-import DataType.UserNoticeException;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.zip.ZipFile;
 import org.supercsv.io.CsvListReader;
@@ -59,7 +58,7 @@ public class Utilities {
             }
         }
         if (coorHashMap.size() == 0) {
-            throw new UserNoticeException("No correct coordinate found!");
+            throw new RuntimeException("No correct coordinate found!");
         }
     }
 

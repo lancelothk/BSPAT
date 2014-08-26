@@ -267,6 +267,9 @@ public class BSSeqAnalysis {
         for (String region : sequenceGroupMap.keySet()) {
             Coordinate targetCoor = targetCoorMap.get(region);
             Coordinate refCoor = refCoorMap.get(region);
+            if (targetCoor == null) {
+                throw new RuntimeException("can not find target coordinate for region " + region);
+            }
             List<Sequence> sequenceGroup = sequenceGroupMap.get(region);
             Iterator<Sequence> sequenceIterator = sequenceGroup.iterator();
             // cut reference seq

@@ -3,7 +3,6 @@ package BSPAT;
 import DataType.Coordinate;
 import DataType.ExtensionFilter;
 import DataType.MappingSummary;
-import DataType.UserNoticeException;
 
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
@@ -68,7 +67,7 @@ public class IO {
         try {
             part.write(path + "/" + fileName);
         } catch (IOException e) {
-            throw new UserNoticeException(fileName + " failed to transmit to server!");
+            throw new RuntimeException(fileName + " failed to transmit to server!");
         }
     }
 
