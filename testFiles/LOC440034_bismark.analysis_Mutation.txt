@@ -1,0 +1,4 @@
+Mutation	count	percentage	PatternID
+AAACATCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCTCG	ref
+---------------------------------------------------------------------------------------------------	286	0.371429	4
+-----------------------------------------------------------------------------------------A---------	278	0.361039	5

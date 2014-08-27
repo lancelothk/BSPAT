@@ -113,7 +113,7 @@ public class ReportSummary implements Serializable {
         this.ASMGBLink = ASMGBLink;
     }
 
-    public boolean isHasASM() {
+    public boolean hasASM() {
         return hasASM;
     }
 

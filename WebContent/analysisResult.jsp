@@ -43,20 +43,20 @@
                     </c:forEach></td>
                 </tr>
                 <tr>
-                    <td>Bisulfite conversion rate:</td>
-                    <td><c:out value="${constant.getConversionRateThreshold()}"/></td>
-                </tr>
-                <tr>
-                    <td>Sequence identity:</td>
-                    <td><c:out value="${constant.sequenceIdentityThreshold}"/></td>
-                </tr>
-                <tr>
                     <td>Sequence number cover target region:</td>
                     <td><c:out value="${constant.seqCountSummary.getSeqBeforeFilter()}"/></td>
                 </tr>
                 <tr>
                     <td>Sequence number after filtering:</td>
                     <td><c:out value="${constant.seqCountSummary.getSeqAfterFilter()}"/></td>
+                </tr>
+                <tr>
+                    <td>Bisulfite conversion rate:</td>
+                    <td><c:out value="${constant.getConversionRateThreshold()}"/></td>
+                </tr>
+                <tr>
+                    <td>Sequence identity:</td>
+                    <td><c:out value="${constant.sequenceIdentityThreshold}"/></td>
                 </tr>
                 <c:choose>
                     <c:when test="${constant.minP0Threshold >= 0}">
