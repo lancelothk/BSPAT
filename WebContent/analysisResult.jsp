@@ -123,7 +123,7 @@
                         <tr>
                             <c:choose>
                                 <c:when
-                                        test="${constant.coorReady == true && reportSummary.hasASM == true}">
+                                        test="${constant.coorReady == true && reportSummary.hasASM() == true}">
                                     <td>ASM pattern</td>
                                     <c:choose>
                                         <c:when test="${reportSummary.getASMsnp() != null}">

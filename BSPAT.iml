@@ -56,6 +56,7 @@
     </orderEntry>
     <orderEntry type="library" scope="TEST" name="mockito-all-1.9.5" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-addons-1.4" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
   </component>
 </module>
 

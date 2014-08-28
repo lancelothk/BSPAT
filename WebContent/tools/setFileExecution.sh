@@ -9,7 +9,7 @@ then
     cd $1/liftover
     chmod u+x liftOver
     cd $1/BlatQuery
-    chmod u+x *
+    chmod u+x BlatQuery.sh BlatBot_updated.pl parseBlatOutput_updated.pl
     echo "finished setting tools executable"
 else
     echo "first parameter is null!"
