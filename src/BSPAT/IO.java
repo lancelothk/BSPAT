@@ -35,9 +35,11 @@ public class IO {
             String line = coordinatesBuffReader.readLine();
             String[] items;
             while (line != null) {
-                items = line.split("\t");
-                coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Long.valueOf(items[3]),
-                                                            Long.valueOf(items[4])));
+                if (!line.equals("")) {
+                    items = line.split("\t");
+                    coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Long.valueOf(items[3]),
+                                                                Long.valueOf(items[4])));
+                }
                 line = coordinatesBuffReader.readLine();
             }
         }
