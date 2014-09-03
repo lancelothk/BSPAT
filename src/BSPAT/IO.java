@@ -102,7 +102,6 @@ public class IO {
      * @throws IOException
      */
     public static MappingSummary readMappingSummary(String mappingResultPath) throws IOException {
-        System.out.println("mapping result path:\t" + mappingResultPath);
         MappingSummary mappingSummary = new MappingSummary();
         File mappingResultPathFile = new File(mappingResultPath);
         File[] folders = mappingResultPathFile.listFiles();

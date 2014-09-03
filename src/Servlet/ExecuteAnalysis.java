@@ -6,21 +6,26 @@ import DataType.Constant;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 public class ExecuteAnalysis implements Callable<List<ReportSummary>> {
-	private Constant constant;
-	private String experimentName;
+    private final static Logger LOGGER = Logger.getLogger(ExecuteAnalysis.class.getName());
 
-	public ExecuteAnalysis(String experimentName, Constant constant) {
-		super();
-		this.constant = constant;
-		this.experimentName = experimentName;
-	}
+    private Constant constant;
+    private String experimentName;
 
-	@Override
-	public List<ReportSummary> call() throws Exception {
-		System.out.println("Pattern analysi begin:");
-		BSSeqAnalysis bsSeqAnalysis = new BSSeqAnalysis();
-		return bsSeqAnalysis.execute(experimentName, constant);
-	}
+    public ExecuteAnalysis(String experimentName, Constant constant) {
+        super();
+        this.constant = constant;
+        this.experimentName = experimentName;
+    }
+
+    @Override
+    public List<ReportSummary> call() throws Exception {
+        LOGGER.info("Pattern analysi begin\t" + experimentName);
+        BSSeqAnalysis bsSeqAnalysis = new BSSeqAnalysis();
+        List<ReportSummary> reportSummaryList = bsSeqAnalysis.execute(experimentName, constant);
+        LOGGER.info("Pattern analysi finished\t" + experimentName);
+        return reportSummaryList;
+    }
 }

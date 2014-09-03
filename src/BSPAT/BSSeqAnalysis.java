@@ -9,6 +9,7 @@ import org.apache.commons.math.distribution.NormalDistributionImpl;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Bisulfite sequences analysis. Include obtaining methylation string, mutation
@@ -17,6 +18,7 @@ import java.util.*;
  * @author Ke
  */
 public class BSSeqAnalysis {
+    private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
     /**
      * Execute analysis.
      *
@@ -96,7 +98,6 @@ public class BSSeqAnalysis {
             report.writeReport(filteredSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
 
             if (constant.coorReady) {
-                System.out.println("start drawing -- BSSeqAnalysis -- execute");
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
                                                               constant.toolsPath, region, outputFolder, experimentName,
                                                               targetCoorMap);
@@ -330,7 +331,7 @@ public class BSSeqAnalysis {
      */
     private Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
                                                                  Constant constant) throws IOException {
-        System.out.println("Filter Sequences: before filter count:\t" + seqList.size());
+        LOGGER.info("Filter Sequences: before filter count:\t" + seqList.size());
         List<Sequence> qualifiedSeqList = new ArrayList<>();
         List<Sequence> unQualifiedSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
@@ -342,7 +343,7 @@ public class BSSeqAnalysis {
                 unQualifiedSeqList.add(seq);
             }
         }
-        System.out.println("Filter Sequences: after filter count:\t" + qualifiedSeqList.size());
+        LOGGER.info("Filter Sequences: after filter count:\t" + qualifiedSeqList.size());
         return new ImmutablePair<>(qualifiedSeqList, unQualifiedSeqList);
     }
 

@@ -14,8 +14,10 @@ import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class DrawPattern {
+    private final static Logger LOGGER = Logger.getLogger(DrawPattern.class.getName());
     private final String DEFAULTFONT = "Arial";
     private final int CELLLINEFONTSIZE = 32;
     private final int WIDTH = 20;
@@ -375,14 +377,14 @@ public class DrawPattern {
         EUtilsServiceStub.ESearchRequest req = new EUtilsServiceStub.ESearchRequest();
         req.setDb("snp");
         String term = chr + "[CHR]+AND+\"Homo sapiens\"[Organism]+AND+" + pos + "[CHRPOS]";
-        System.out.println(term);
+        LOGGER.info(term);
         req.setTerm(term);
         req.setRetMax(maxRet);
         EUtilsServiceStub.ESearchResult res = service.run_eSearch(req);
         // results output
-        System.out.println("SNP range:");
-        System.out.println("Found ids: " + res.getCount());
-        System.out.print("First " + res.getRetMax() + " ids: ");
+        LOGGER.info("SNP range:");
+        LOGGER.info("Found ids: " + res.getCount());
+        LOGGER.info("First " + res.getRetMax() + " ids: ");
 
         if (res.getCount().equals("0")) {
             return snps;
@@ -393,7 +395,6 @@ public class DrawPattern {
             if (i > 0) fetchIds += ",";
             fetchIds += res.getIdList().getId()[i];
         }
-        System.out.println();
 
         // 3. fetch SNP
         EFetchSnpServiceStub serviceF = new EFetchSnpServiceStub();
@@ -431,14 +432,14 @@ public class DrawPattern {
 
         // call liftover
         String liftOverAbsPath = new File(liftOverPath).getAbsolutePath();
-        System.out.println("Call liftOver:");
+        LOGGER.info("Call liftOver:");
         List<String> cmdList = Arrays.asList(liftOverAbsPath + "/liftOver", "-positions", originPosFileName,
                                              liftOverAbsPath + "/" + chain, targetPosFileName, "/dev/null");
         if (Utilities.callCMD(cmdList, new File(patternResultPath), logPath + "/liftover.log") > 0) {
             throw new RuntimeException("liftover failed<br>" + "logs:<br>" +
                                                Files.toString(new File(logPath + "/liftover.log"), Charsets.UTF_8));
         }
-
+        LOGGER.info("liftOver finished");
         // read result
         String[] items = null;
         try (BufferedReader coorReader = new BufferedReader(new FileReader(patternResultPath + targetPosFileName))) {

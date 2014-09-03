@@ -20,12 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 
 public class IntegrationTest {
+    private final static Logger LOGGER = Logger.getLogger(IntegrationTest.class.getName());
     public final String testPath = "/home/kehu/IdeaProjects/BSPAT/out/artifacts/BSPAT_exploded";
     public String jobID;
 
@@ -149,6 +151,6 @@ public class IntegrationTest {
     public void cleanUp() throws IOException {
         File resultFolder = new File(testPath + "/Job" + jobID);
         FileUtils.deleteDirectory(resultFolder);
-        System.out.println("test result cleaned!");
+        LOGGER.info("test result cleaned!");
     }
 }

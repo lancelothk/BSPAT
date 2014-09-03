@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 /**
  * Servlet implementation class analysisServlet
@@ -33,9 +34,10 @@ import java.util.concurrent.Future;
 @MultipartConfig
 public class AnalysisServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private final static Logger LOGGER = Logger.getLogger(AnalysisServlet.class.getName());
 
-	/**
-	 * @see HttpServlet#HttpServlet()
+    /**
+     * @see HttpServlet#HttpServlet()
 	 */
     public AnalysisServlet() {
         super();
@@ -119,7 +121,7 @@ public class AnalysisServlet extends HttpServlet {
 			constant.seqCountSummary = new SeqCountSummary();
 			for (int i = 0; i < constant.experiments.size(); i++) {
 				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
-                System.out.println(constant.getJobID() + "\t" + constant.experiments.get(i).getName() + "\tfinished!");
+                LOGGER.info(constant.getJobID() + "\t" + constant.experiments.get(i).getName() + "\tfinished!");
                 for (ReportSummary reportSummary : constant.experiments.get(i).reportSummaries) {
 					constant.seqCountSummary.addSeqBeforeFilter(reportSummary.getSeqBeforeFilter());
 					constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqAfterFilter());

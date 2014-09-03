@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 /**
  * Servlet implementation class uploadServlet
@@ -35,6 +36,7 @@ import java.util.concurrent.Future;
 @MultipartConfig
 public class MappingServlet extends HttpServlet {
     private static final long serialVersionUID = 6078331324800268609L;
+    private final static Logger LOGGER = Logger.getLogger(MappingServlet.class.getName());
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -290,7 +292,7 @@ public class MappingServlet extends HttpServlet {
         File rootDirectory = new File(Constant.DISKROOTPATH);
         long rootFolderSize = FileUtils.sizeOfDirectory(rootDirectory) / 1024 / 1024;
         long excess = rootFolderSize - Constant.SPACETHRESHOLD;
-        System.out.println(jobId + "\troot folder space occupation:\t" + rootFolderSize + "M");
+        LOGGER.info(jobId + "\troot folder space occupation:\t" + rootFolderSize + "M");
         if (rootFolderSize >= Constant.SPACETHRESHOLD) { // if exceed threshold, clean
             File[] subFolders = rootDirectory.listFiles();
             Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
@@ -320,7 +322,7 @@ public class MappingServlet extends HttpServlet {
         String[] files = refFolder.list();
         String blatQueryPath = constant.toolsPath + "BlatQuery/";
         for (String name : files) {
-            System.out.println(constant.getJobID() + "\tstart blat query for " + name);
+            LOGGER.info(constant.getJobID() + "\tstart blat query for " + name);
             List<String> cmdList = Arrays.asList(blatQueryPath + "/BlatQuery.sh", blatQueryPath, constant.refVersion,
                                                  constant.originalRefPath, name);
             if (Utilities.callCMD(cmdList, new File(constant.coorFilePath), constant.logPath + "/blat.log") > 0) {
@@ -328,11 +330,11 @@ public class MappingServlet extends HttpServlet {
                                                    Files.toString(new File(constant.logPath + "/blat.log"),
                                                                   Charsets.UTF_8).replace("\n", "<br>"));
             }
-            System.out.println(constant.getJobID() + "\tblat query is finished for " + name);
+            LOGGER.info(constant.getJobID() + "\tblat query is finished for " + name);
         }
         Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
         constant.coorReady = true;
-        System.out.println(constant.getJobID() + "\tblat result converted");
+        LOGGER.info(constant.getJobID() + "\tblat result converted");
     }
 
 }

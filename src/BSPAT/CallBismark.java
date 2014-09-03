@@ -7,8 +7,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CallBismark {
+    private final static Logger LOGGER = Logger.getLogger(CallBismark.class.getName());
     private String bismarkPath;
     private String bowtiePath;
     private int maxmis;
@@ -51,8 +53,7 @@ public class CallBismark {
         /** 1. build index **/
         // add "--yes_to_all" to always overwrite index folder
         // add "--no" to always skip existing reference
-        System.out.println("Call preparation:");
-        System.out.println(refPathFile.getAbsolutePath());
+        LOGGER.info("Call preparation:");
         List<String> cmdList = Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark_genome_preparation",
                                              "--yes_to_all", "--path_to_bowtie", bowtiePathFile.getAbsolutePath(),
                                              refPathFile.getAbsolutePath());
@@ -60,7 +61,6 @@ public class CallBismark {
             throw new RuntimeException("bismark preparation fail!<br>logs:<br>" +
                                                Files.toString(new File(logPath + "/bismark_prep.log"), Charsets.UTF_8));
         }
-        System.out.println(refPathFile.getAbsolutePath());
     }
 
     public void execute(String inputPath, String outputPath, String logPath) throws IOException, InterruptedException {
@@ -69,7 +69,7 @@ public class CallBismark {
         File outputFile = new File(outputPath);
         File tempDir = new File(outputPath + "tmp/");
         List<File> fileList = null;
-        System.out.println("Call bismark for:\t" + inputPath);
+        LOGGER.info("Call bismark for:\t" + inputPath);
 
         // if the output path not exists, create it.
         if (!outputFile.exists()) {
@@ -125,7 +125,7 @@ public class CallBismark {
         }
 
         /** 3. extract information **/
-        System.out.println("Call extractor for:\t" + inputPath);
+        LOGGER.info("Call extractor for:\t" + inputPath);
         List<String> cmdList = new ArrayList<>(
                 Arrays.asList(bismarkPath + "/bismark_methylation_extractor", "-s", "-o", outputPath, "--comprehensive",
                               "--no_header", "--merge_non_CpG"));
@@ -138,7 +138,7 @@ public class CallBismark {
                                                               Charsets.UTF_8));
         }
 
-        System.out.println("Call bismark finished!!!");
+        LOGGER.info("Call bismark finished!!!");
         //clean tmp files
         tempDir.delete();
     }

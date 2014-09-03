@@ -19,10 +19,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Utilities {
+    private final static Logger LOGGER = Logger.getLogger(Utilities.class.getName());
 
     public static void handleServletException(Exception e, Constant constant) {
         e.printStackTrace();
@@ -159,7 +161,6 @@ public class Utilities {
         }
         byte[] buf = new byte[1024];
         int len;
-        // System.out.println("baseFile: "+baseFile.getPath());
         if (files == null) {
             throw new RuntimeException("no file to be compressed in given path!");
         }
@@ -174,7 +175,6 @@ public class Utilities {
             } else {
                 pathName = file.getName();
             }
-            System.out.println(pathName);
             if (file.isDirectory()) {
                 if (isOutBlankDir && basePath != null) {
                     zo.putNextEntry(new ZipEntry(pathName + "/"));
@@ -222,7 +222,7 @@ public class Utilities {
                 }
             }
         }
-        System.out.println(" File unzipped succesfully ");
+        LOGGER.info("File unzipped succesfully!");
     }
 
     public static void sendEmail(String toAddress, String jobID, String text) throws MessagingException {
@@ -262,7 +262,7 @@ public class Utilities {
         mimeMessage.setSubject("BSPAT");
         mimeMessage.setText(text);
         Transport.send(mimeMessage);
-        System.out.println("Sent message successfully....");
+        LOGGER.info("Sent message successfully....");
     }
 
 }
