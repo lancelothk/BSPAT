@@ -138,7 +138,7 @@ public class IntegrationTest {
             File[] files = testFileFolder.listFiles(new ExtensionFilter(".txt"));
             if (files != null) {
                 for (File file : files) {
-                    junitx.framework.FileAssert.assertEquals("", file, new File(
+                    junitx.framework.FileAssert.assertEquals(file.getName(), file, new File(
                             resultFolder.getAbsolutePath() + "/" + file.getName()));
                 }
             }

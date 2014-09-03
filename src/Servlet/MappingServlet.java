@@ -67,8 +67,10 @@ public class MappingServlet extends HttpServlet {
                 experiments.add(new Experiment(1, "demoExperiment"));
                 FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoReference.fasta"),
                                               new File(constant.originalRefPath));
-                FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
-                                              new File(constant.seqsPath + "demoExperiment"));
+                File[] seqs = new File(constant.demoPath).listFiles(new ExtensionFilter(".fastq"));
+                for (File seq : seqs) {
+                    FileUtils.copyFileToDirectory(seq, new File(constant.seqsPath + "demoExperiment"));
+                }
             } else {
                 addExperiment(request, experiments);
                 handleUploadedFiles(constant, request, experiments);
