@@ -69,7 +69,7 @@ public class IO {
         try {
             part.write(path + "/" + fileName);
         } catch (IOException e) {
-            throw new RuntimeException(fileName + " failed to transmit to server!");
+            throw new RuntimeException(fileName + " failed to transmit to server!", e);
         }
     }
 

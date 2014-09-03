@@ -84,7 +84,7 @@ public class Constant implements Serializable {
         try {
             obj = constantObjectStream.readObject();
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Serialization error!");
+            throw new RuntimeException("Serialization error!", e);
         }
         Constant constant = (Constant) obj;
         constantObjectStream.close();

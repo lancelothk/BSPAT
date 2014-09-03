@@ -32,10 +32,10 @@ public class Utilities {
                                                                                   ExceptionUtils.getStackTrace(e)));
             } catch (MessagingException innerException) {
                 innerException.printStackTrace();
-                throw new RuntimeException("failed to send email!");
+                throw new RuntimeException("failed to send email!", e);
             }
         }
-        throw new RuntimeException(ExceptionUtils.getStackTrace(e));
+        throw new RuntimeException(e);
     }
 
     public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {
@@ -127,31 +127,10 @@ public class Utilities {
                               String fileName) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(cmds).directory(directory);
         if (fileName != null) {
-            processBuilder.redirectOutput(new File(fileName + ".out"));
-            processBuilder.redirectError(new File(fileName + ".err"));
+            processBuilder.redirectOutput(new File(fileName));
+            processBuilder.redirectError(new File(fileName));
         }
         Process process = processBuilder.start(); // throws IOException
-//        final Process process = Runtime.getRuntime().exec(cmd, null, directory);
-//        try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-//            String progOutput;
-//            if (fileName != null) {
-//                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-//                    // read the error from the command
-//                    while ((progOutput = stdError.readLine()) != null) {
-//                        writer.write(progOutput + "\n");
-//                    }
-//
-//                    // read the output from the command
-//                    while ((progOutput = stdInput.readLine()) != null) {
-//                        writer.write(progOutput + "\n");
-//                    }
-//                }
-//            } else {
-//               throw new RuntimeException("no valid log file name!");
-//            }
-//        }
-//        process.waitFor();
         process.waitFor();
         return process.exitValue();
     }
@@ -264,8 +243,7 @@ public class Utilities {
                 throw new RuntimeException("email conf file format error!");
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Can not read email conf file!");
+            throw new RuntimeException("Can not read email conf file!", e);
         }
 
         String smtpServer = "IMAP.gmail.com";

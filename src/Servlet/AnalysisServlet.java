@@ -65,7 +65,7 @@ public class AnalysisServlet extends HttpServlet {
 			try {
 				parts = request.getParts();
 			} catch (IOException | ServletException e) {
-                throw new RuntimeException("Network error!");
+                throw new RuntimeException("Network error!", e);
             }
 			for (Part part : parts) {
 				String fieldName = Utilities.getField(part, "name");

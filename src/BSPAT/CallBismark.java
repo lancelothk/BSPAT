@@ -1,5 +1,8 @@
 package BSPAT;
 
+import com.google.common.io.Files;
+import org.apache.commons.io.Charsets;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +56,10 @@ public class CallBismark {
         List<String> cmdList = Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark_genome_preparation",
                                              "--yes_to_all", "--path_to_bowtie", bowtiePathFile.getAbsolutePath(),
                                              refPathFile.getAbsolutePath());
-        Utilities.callCMD(cmdList, new File(refPathFile.getAbsolutePath()), logPath + "/bismark_prep.log");
+        if (Utilities.callCMD(cmdList, new File(refPathFile.getAbsolutePath()), logPath + "/bismark_prep.log") > 0) {
+            throw new RuntimeException("bismark preparation fail!<br>logs:<br>" +
+                                               Files.toString(new File(logPath + "/bismark_prep.log"), Charsets.UTF_8));
+        }
         System.out.println(refPathFile.getAbsolutePath());
     }
 
@@ -110,7 +116,11 @@ public class CallBismark {
                 for (File file : fileList) {
                     cmdList.add(file.getAbsolutePath());
                 }
-                Utilities.callCMD(cmdList, new File(outputPath), logPath + "/bismark_.log");
+                if (Utilities.callCMD(cmdList, new File(outputPath), logPath + "/bismark_.log") > 0) {
+                    throw new RuntimeException("bismark failed<br>logs:<br>" +
+                                                       Files.toString(new File(logPath + "/bismark_.log"),
+                                                                      Charsets.UTF_8));
+                }
             }
         }
 
@@ -122,7 +132,11 @@ public class CallBismark {
         for (File f : fileList) {
             cmdList.add(outputFile.getAbsolutePath() + "/" + f.getName() + "_bismark.sam");
         }
-        Utilities.callCMD(cmdList, new File(outputPath), logPath + "/bismark_methylExtractor.log");
+        if (Utilities.callCMD(cmdList, new File(outputPath), logPath + "/bismark_methylExtractor.log") > 0) {
+            throw new RuntimeException("bismark methylExtractor failed<br>logs:<br>" +
+                                               Files.toString(new File(logPath + "/bismark_methylExtractor.log"),
+                                                              Charsets.UTF_8));
+        }
 
         System.out.println("Call bismark finished!!!");
         //clean tmp files

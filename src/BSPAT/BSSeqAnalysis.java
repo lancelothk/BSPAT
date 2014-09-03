@@ -242,7 +242,6 @@ public class BSSeqAnalysis {
         try {
             criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
         } catch (MathException e) {
-            e.printStackTrace();
             throw new RuntimeException("MathException in calculating of critical level", e);
         }
         // significant pattern selection

@@ -1,8 +1,10 @@
 package BSPAT;
 
 import DataType.*;
+import com.google.common.io.Files;
 import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceStub;
+import org.apache.commons.io.Charsets;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -164,8 +166,7 @@ public class DrawPattern {
     }
 
     public void drawASMPattern(ReportSummary reportSummary, Pattern allelePattern, Pattern nonAllelePattern,
-                               String logPath,
-                               int totalCount) throws IOException, InterruptedException {
+                               String logPath, int totalCount) throws IOException, InterruptedException {
         int imageWidth = refLength * WIDTH + STARTX + 210;
         int imageHeight = STARTY + 180 + 10 * HEIGHTINTERVAL;
 
@@ -238,14 +239,9 @@ public class DrawPattern {
         // set snp info
         if (patternWithAllele.hasAllele()) {
             List<SNP> snpList;
-            try {
-                snpList = retreiveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
-                                                              patternResultPath, logPath) +
-                        patternWithAllele.getAlleleList().get(0), "1");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                snpList = null;
-            }
+            snpList = retreiveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
+                                                          patternResultPath, logPath) +
+                    patternWithAllele.getAlleleList().get(0), "1");
             if (snpList != null && snpList.size() > 0) {
                 reportSummary.setASMsnp(snpList.get(0));
             }
@@ -438,7 +434,10 @@ public class DrawPattern {
         System.out.println("Call liftOver:");
         List<String> cmdList = Arrays.asList(liftOverAbsPath + "/liftOver", "-positions", originPosFileName,
                                              liftOverAbsPath + "/" + chain, targetPosFileName, "/dev/null");
-        Utilities.callCMD(cmdList, new File(patternResultPath), logPath + "/liftover.log");
+        if (Utilities.callCMD(cmdList, new File(patternResultPath), logPath + "/liftover.log") > 0) {
+            throw new RuntimeException("liftover failed<br>" + "logs:<br>" +
+                                               Files.toString(new File(logPath + "/liftover.log"), Charsets.UTF_8));
+        }
 
         // read result
         String[] items = null;

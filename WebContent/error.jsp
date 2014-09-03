@@ -15,9 +15,9 @@
     <div id="content">
         <div id="content_top"></div>
         <div id="content_main">
-            <h2>Error!</h2>
+            <h2 style="color:red">Error!</h2>
 
-            <p style="color:red"><%= exception.getMessage() %>
+            <p><%= exception.getMessage() %>
             </p>
         </div>
         <div id="content_bottom"></div>

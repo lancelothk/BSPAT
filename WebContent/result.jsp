@@ -8,7 +8,7 @@
     <title>BSPAT</title>
 </head>
 <script language="javascript" type="" src="inputValidation.js"></script>
-<script language="javascript" type="" >
+<script language="javascript" type="">
     function validateInput() {
         removeErrorMsg();
         return !isEmptyValue("jobID", "Job id is empty!");
@@ -39,7 +39,6 @@
                     try {
                         constant = Constant.readConstant(jobID);
                     } catch (Exception e) {
-                        e.printStackTrace();
                         Utilities.showAlertWindow(response, "can not find Result ID:\t" + jobID);
                         return;
                     }

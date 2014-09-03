@@ -19,11 +19,15 @@ public class BSPATServletContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         String toolsPath = servletContextEvent.getServletContext().getRealPath("") + "/tools/";
         try {
-            Utilities.callCMD(Arrays.asList("chmod u+x", "setFileExecution.sh"), new File(toolsPath), null);
-            Utilities.callCMD(Arrays.asList("./setFileExecution.sh", toolsPath), new File(toolsPath), null);
+            if (Utilities.callCMD(Arrays.asList("chmod", "u+x", "setFileExecution.sh"), new File(toolsPath), null) >
+                    0 ||
+                    Utilities.callCMD(Arrays.asList("./setFileExecution.sh", toolsPath), new File(toolsPath), null) >
+                            0) {
+                throw new RuntimeException();
+            }
+
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException("chmod failed!");
+            throw new RuntimeException("chmod failed!", e);
         }
     }
 

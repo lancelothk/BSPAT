@@ -4,6 +4,8 @@ import BSPAT.CallBismark;
 import BSPAT.IO;
 import BSPAT.Utilities;
 import DataType.*;
+import com.google.common.io.Files;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 
 import javax.mail.MessagingException;
@@ -149,7 +151,7 @@ public class MappingServlet extends HttpServlet {
         try {
             parts = request.getParts();
         } catch (IOException | ServletException e) {
-            throw new RuntimeException("Network error!");
+            throw new RuntimeException("Network error!", e);
         }
         // for each part, add it into corresponding experiment
         for (Part part : parts) {
@@ -321,7 +323,11 @@ public class MappingServlet extends HttpServlet {
             System.out.println(constant.getJobID() + "\tstart blat query for " + name);
             List<String> cmdList = Arrays.asList(blatQueryPath + "/BlatQuery.sh", blatQueryPath, constant.refVersion,
                                                  constant.originalRefPath, name);
-            Utilities.callCMD(cmdList, new File(constant.coorFilePath), constant.logPath + "/blat.log");
+            if (Utilities.callCMD(cmdList, new File(constant.coorFilePath), constant.logPath + "/blat.log") > 0) {
+                throw new RuntimeException("blat query error!<br> blat logs:<br>" +
+                                                   Files.toString(new File(constant.logPath + "/blat.log"),
+                                                                  Charsets.UTF_8).replace("\n", "<br>"));
+            }
             System.out.println(constant.getJobID() + "\tblat query is finished for " + name);
         }
         Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
