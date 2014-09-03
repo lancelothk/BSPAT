@@ -21,7 +21,8 @@ public class ExecuteMapping implements Callable<Object> {
     public Object call() throws Exception {
         System.out.println("Start mapping-" + experimentName);
         // run bismark and extract result
-        callBismark.execute(constant.seqsPath + experimentName, constant.mappingResultPath + experimentName + "/");
+        callBismark.execute(constant.seqsPath + experimentName, constant.mappingResultPath + experimentName + "/",
+                            constant.logPath);
         System.out.println("Finished mapping-" + experimentName);
         return null;
     }

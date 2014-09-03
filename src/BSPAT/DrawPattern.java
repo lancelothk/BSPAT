@@ -10,10 +10,8 @@ import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class DrawPattern {
     private final String DEFAULTFONT = "Arial";
@@ -166,6 +164,7 @@ public class DrawPattern {
     }
 
     public void drawASMPattern(ReportSummary reportSummary, Pattern allelePattern, Pattern nonAllelePattern,
+                               String logPath,
                                int totalCount) throws IOException, InterruptedException {
         int imageWidth = refLength * WIDTH + STARTX + 210;
         int imageHeight = STARTY + 180 + 10 * HEIGHTINTERVAL;
@@ -241,7 +240,7 @@ public class DrawPattern {
             List<SNP> snpList;
             try {
                 snpList = retreiveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
-                                                              patternResultPath) +
+                                                              patternResultPath, logPath) +
                         patternWithAllele.getAlleleList().get(0), "1");
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -420,8 +419,8 @@ public class DrawPattern {
         return snps;
     }
 
-    private long convertCoordinates(String chr, long pos, String targetRefVersion,
-                                    String patternResultPath) throws IOException, InterruptedException {
+    private long convertCoordinates(String chr, long pos, String targetRefVersion, String patternResultPath,
+                                    String logPath) throws IOException, InterruptedException {
         if (refVersion.equals(targetRefVersion)) {
             return pos;
         }
@@ -435,11 +434,11 @@ public class DrawPattern {
         }
 
         // call liftover
-        File liftOverPathFile = new File(liftOverPath);
-        String callLiftOver = liftOverPathFile.getAbsolutePath() + "/liftOver -positions " + originPosFileName + " " +
-                liftOverPathFile.getAbsolutePath() + "/" + chain + " " + targetPosFileName + " /dev/null";
+        String liftOverAbsPath = new File(liftOverPath).getAbsolutePath();
         System.out.println("Call liftOver:");
-        Utilities.callCMD(callLiftOver, new File(patternResultPath), null);
+        List<String> cmdList = Arrays.asList(liftOverAbsPath + "/liftOver", "-positions", originPosFileName,
+                                             liftOverAbsPath + "/" + chain, targetPosFileName, "/dev/null");
+        Utilities.callCMD(cmdList, new File(patternResultPath), logPath + "/liftover.log");
 
         // read result
         String[] items = null;

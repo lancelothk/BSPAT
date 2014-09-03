@@ -122,41 +122,36 @@ public class Utilities {
      * cmd program caller wrapper.
      *
      * @return exit value
-     * @param cmd       command string.
-     * @param directory execution directory
-     * @param fileName  file name to write output. If leave null, write to stdout.
-     * @throws IOException
-     * @throws InterruptedException
      */
-    public static int callCMD(String cmd, File directory, String fileName) throws IOException, InterruptedException {
-        final Process process = Runtime.getRuntime().exec(cmd, null, directory);
-        try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-            String progOutput;
-            if (fileName != null) {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                    // read the error from the command
-                    while ((progOutput = stdError.readLine()) != null) {
-                        writer.write(progOutput + "\n");
-                    }
-
-                    // read the output from the command
-                    while ((progOutput = stdInput.readLine()) != null) {
-                        writer.write(progOutput + "\n");
-                    }
-                }
-            } else {
-                // read the error from the command
-                while ((progOutput = stdError.readLine()) != null) {
-                    System.out.println(progOutput);
-                }
-
-                // read the output from the command
-                while ((progOutput = stdInput.readLine()) != null) {
-                    System.out.println(progOutput);
-                }
-            }
+    public static int callCMD(List<String> cmds, File directory,
+                              String fileName) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder(cmds).directory(directory);
+        if (fileName != null) {
+            processBuilder.redirectOutput(new File(fileName + ".out"));
+            processBuilder.redirectError(new File(fileName + ".err"));
         }
+        Process process = processBuilder.start(); // throws IOException
+//        final Process process = Runtime.getRuntime().exec(cmd, null, directory);
+//        try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+//            String progOutput;
+//            if (fileName != null) {
+//                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+//                    // read the error from the command
+//                    while ((progOutput = stdError.readLine()) != null) {
+//                        writer.write(progOutput + "\n");
+//                    }
+//
+//                    // read the output from the command
+//                    while ((progOutput = stdInput.readLine()) != null) {
+//                        writer.write(progOutput + "\n");
+//                    }
+//                }
+//            } else {
+//               throw new RuntimeException("no valid log file name!");
+//            }
+//        }
+//        process.waitFor();
         process.waitFor();
         return process.exitValue();
     }

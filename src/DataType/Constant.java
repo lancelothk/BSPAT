@@ -28,6 +28,7 @@ public class Constant implements Serializable {
     public String toolsPath;
     public String targetPath;
     public String demoPath;
+    public String logPath;
 
     // parameters
     public String jobID;

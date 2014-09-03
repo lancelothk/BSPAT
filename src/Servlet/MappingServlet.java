@@ -91,8 +91,8 @@ public class MappingServlet extends HttpServlet {
 
             // bismark indexing
             CallBismark callBismark = null;
-            callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.qualsType,
-                                          constant.maxmis);
+            callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.logPath,
+                                          constant.qualsType, constant.maxmis);
 
             // multiple threads to execute bismark mapping
             ExecutorService executor = Executors.newCachedThreadPool();
@@ -144,8 +144,7 @@ public class MappingServlet extends HttpServlet {
         }
     }
 
-    private void handleUploadedFiles(Constant constant, HttpServletRequest request,
-                                     List<Experiment> experiments) {
+    private void handleUploadedFiles(Constant constant, HttpServletRequest request, List<Experiment> experiments) {
         Collection<Part> parts = null; // get submitted data
         try {
             parts = request.getParts();
@@ -226,6 +225,10 @@ public class MappingServlet extends HttpServlet {
         IO.createFolder(constant.modifiedRefPath);
         constant.seqsPath = constant.randomDir + "/seqs/";
         IO.createFolder(constant.seqsPath);
+        constant.logPath = constant.randomDir + "/log/";
+        IO.createFolder(constant.logPath);
+
+        // under root path
         constant.toolsPath = Constant.DISKROOTPATH + "/tools/";
         IO.createFolder(constant.toolsPath);
         constant.demoPath = Constant.DISKROOTPATH + "/demo/";
@@ -316,9 +319,9 @@ public class MappingServlet extends HttpServlet {
         String blatQueryPath = constant.toolsPath + "BlatQuery/";
         for (String name : files) {
             System.out.println(constant.getJobID() + "\tstart blat query for " + name);
-            String blatQuery = String.format("%sBlatQuery.sh %s %s %s %s", blatQueryPath, blatQueryPath,
-                                             constant.refVersion, constant.originalRefPath, name);
-            Utilities.callCMD(blatQuery, new File(constant.coorFilePath), null);
+            List<String> cmdList = Arrays.asList(blatQueryPath + "/BlatQuery.sh", blatQueryPath, constant.refVersion,
+                                                 constant.originalRefPath, name);
+            Utilities.callCMD(cmdList, new File(constant.coorFilePath), constant.logPath + "/blat.log");
             System.out.println(constant.getJobID() + "\tblat query is finished for " + name);
         }
         Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);

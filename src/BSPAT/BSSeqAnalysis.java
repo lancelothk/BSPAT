@@ -92,8 +92,7 @@ public class BSSeqAnalysis {
                                                         constant);
 
 
-            Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant,
-                                       reportSummary);
+            Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant, reportSummary);
             report.writeReport(filteredSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
 
             if (constant.coorReady) {
@@ -105,7 +104,8 @@ public class BSSeqAnalysis {
                 drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
                 drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
                 drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
-                drawFigureLocal.drawASMPattern(reportSummary, allelePattern, nonAllelePattern, seqGroup.size());
+                drawFigureLocal.drawASMPattern(reportSummary, allelePattern, nonAllelePattern, constant.logPath,
+                                               seqGroup.size());
 
             }
             reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
