@@ -86,7 +86,7 @@
                     </tr>
                     <tr>
                         <td>Target Coordinates:<sup><a href="manualAnalysis.jsp#targetCoordinates">?</a></sup></td>
-                        <td><input type="file" name="target" multiple/></td>
+                        <td><input type="file" name="target" id="target" multiple/></td>
                     </tr>
                     <tr>
                         <td>Bisulfite conversion rate:<sup><a
@@ -156,6 +156,8 @@
     </div>
     <%@ include file="footer.html" %>
 </div>
+<script language="javascript" type="" src="inputValidation.js"></script>
+<script src="jquery-1.11.1.min.js"></script>
 <script language="javascript" type="">
     function check() {
         if (document.getElementById('minp0').checked) {
@@ -169,45 +171,40 @@
         }
     }
 
-    function isEmptyValue(id, msg) {
-        if (document.getElementById(id).value == "") {
-            window.alert(msg);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     function validateInput() {
+        removeErrorMsg();
+        var valid = true;
+        if (containBlank("target")) {
+            valid = false;
+        }
         if (isEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")
-                || isEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
-                || isEmptyValue("minp0text", "α threshold is empty!")
-                || isEmptyValue("criticalValue", "Critical Value is empty!")
-                || isEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
-                || isEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")) {
-            return false;
+                || isInvalidValue("conversionRateThreshold", "Bisulfite conversion rate is invalid!")) {
+            valid = false;
         }
-
-        if (isInvalidValue("conversionRateThreshold", "Bisulfite conversion rate is invalid!")
-                || isInvalidValue("sequenceIdentityThreshold", "Sequence identity is invalid!")
-                || isInvalidValue("minp0text", "α threshold is invalid!")
-                || isInvalidValue("criticalValue", "Critical Value is invalid!")
-                || isInvalidValue("minmethyltext", "Methylation pattern threshold is invalid!")
+        if (isEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
+                || isInvalidValue("sequenceIdentityThreshold", "Sequence identity is invalid!")) {
+            valid = false;
+        }
+        if (isEmptyValue("minp0text", "α threshold is empty!")
+                || isInvalidValue("minp0text", "α threshold is invalid!")) {
+            valid = false;
+        }
+        if (isEmptyValue("criticalValue", "Critical Value is empty!")
+                || isInvalidValue("criticalValue", "Critical Value is invalid!")) {
+            valid = false;
+        }
+        if (isEmptyValue("minmethyltext", "Methylation pattern threshold is empty!")
+                || isInvalidValue("minmethyltext", "Methylation pattern threshold is invalid!")) {
+            valid = false;
+        }
+        if (isEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")
                 || isInvalidValue("mutationpatternThreshold", "Mutation threshold is invalid!")) {
-            return false;
+            valid = false;
         }
-        resetPage();
-        return true;
-    }
-
-    function isInvalidValue(id, msg) {
-        var value = document.getElementById(id).value;
-        if (value < 0 || value > 1) {
-            window.alert(msg);
-            return true;
-        } else {
-            return false;
+        if (valid == true) {
+            resetPage();
         }
+        return valid;
     }
 
     function resetPage() {

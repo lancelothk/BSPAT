@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -24,13 +24,15 @@
                     <table id="refcoor">
                         <tr>
                             <td>Email address(Optional):<sup><a href="manualMapping.jsp#email">?</a></sup></td>
-                            <td><label>
-                                <input type="text" name="email" id="email"/>
-                            </label></td>
+                            <td>
+                                <label>
+                                    <input type="text" name="email" id="email"/>
+                                </label></td>
                         </tr>
                         <tr>
                             <td>Reference Sequence File:<sup><a href="manualMapping.jsp#refFile">?</a></sup></td>
-                            <td><input type="file" id="ref" name="ref" multiple/></td>
+                            <td>
+                                <input type="file" id="ref" name="ref" multiple/></td>
                         </tr>
                         <tr>
                             <td>Reference Genome Version:<sup><a href="manualMapping.jsp#refVersion">?</a></sup></td>
@@ -91,11 +93,11 @@
     <%@ include file="footer.html" %>
 </div>
 </body>
+<script src="inputValidation.js"></script>
 <script language="javascript">
     var elementCount = 0;
 
     function addColumnSeq(TR) {
-        var index = document.createTextNode(elementCount + '  ');
         var cellLineText = document.createElement("td");
         var fileText = document.createElement("td");
         var textInput = document.createElement("input");
@@ -110,7 +112,6 @@
         fileInput.setAttribute("id", "seqFile" + elementCount);
         fileInput.setAttribute("type", "file");
         fileInput.setAttribute("multiple", "multiple");
-        cellLineText.appendChild(index);
         cellLineText.appendChild(textInput);
         fileText.appendChild(fileInput);
         fileText.setAttribute("id", "seqFileUploadTD" + elementCount);
@@ -156,36 +157,27 @@
         setFooter();
     }
 
-    function isEmptyValue(id, msg) {
-        if (document.getElementById(id).value == "") {
-            window.alert(msg);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     function validateInput() {
-        if (!checkEmailAddress()) {
-            return false;
+        removeErrorMsg();
+        var valid = true;
+        if (isInvalidEmailAddress()) {
+            valid = false;
         }
-        if (isEmptyValue("ref", "No reference file!")) {
-            return false;
+        if (isEmptyValue("ref", "No reference file!") || isInvalidRefFile() || containBlank("ref")) {
+            valid = false;
         }
         for (var i = 1; i <= elementCount; i++) {
-            if (isEmptyValue("experiment" + i, "Experiment " + i + " name is empty!")
-                    || isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!")) {
-                return false;
+            if (isEmptyValue("experiment" + i, "Experiment " + i + " name is empty!") || containBlank("experiment" + i)) {
+                valid = false;
             }
-            if (containBlank("experiment" + i)) {
-                return false;
+            if (isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!") || isInvalidSeqFile("seqFile" + i) || containBlank("seqFile" + i)) {
+                valid = false;
             }
         }
-        if (!checkRefFile()) {
-            return false;
+        if (valid == true) {
+            resetPage();
         }
-        resetPage();
-        return true;
+        return valid;
     }
 
     function resetPage() {
@@ -194,38 +186,6 @@
         setFooter();
     }
 
-    function checkEmailAddress() {
-        var emailAddress = document.getElementById("email").value;
-        if (emailAddress != "" && !validateEmail(emailAddress)) {
-            window.alert("Error: Invalid email address!");
-            return false;
-        }
-        return true;
-    }
-
-    function validateEmail(email) {
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-    }
-
-    function containBlank(id) {
-        var experimentName = document.getElementById(id).value;
-        if (experimentName.search(" ") == -1) {  //don't have blank in name
-            return false;
-        }
-        window.alert("Error: " + id + " has blank in its name! Please remove the blank");
-        return true;        //contain blank
-    }
-
-    function checkRefFile() {
-        var fileName = document.getElementById("ref").value;
-        var ext = fileName.split(".");
-        if (ext[1] != "fa" && ext[1] != "fasta") {
-            window.alert("Error: Invalid reference file! Only .fa and .fasta files are allowed.");
-            return false;
-        }
-        return true;
-    }
 
     window.onload = addExperiment();
 </script>

@@ -185,3 +185,8 @@ p.dottedline {
     border-bottom: #BFC9AE dashed 1px;
     color: #232F01;
 }
+
+div.errorMsg {
+    color: #FF0000;
+    font-size: 11px;
+}

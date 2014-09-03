@@ -7,21 +7,11 @@
     <link rel="stylesheet" type="text/css" href="style.css"/>
     <title>BSPAT</title>
 </head>
-<script language="javascript">
-    function checkEmptyValue(id, msg) {
-        if (document.getElementById(id).value == "") {
-            window.alert(msg);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+<script language="javascript" type="" src="inputValidation.js"></script>
+<script language="javascript" type="" >
     function validateInput() {
-        if (checkEmptyValue("jobID", "Job id is empty!")) {
-            return false;
-        }
-        return true;
+        removeErrorMsg();
+        return !isEmptyValue("jobID", "Job id is empty!");
     }
 </script>
 <%@ page import="BSPAT.Utilities, DataType.Constant" %>
