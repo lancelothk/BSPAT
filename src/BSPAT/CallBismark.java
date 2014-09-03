@@ -89,17 +89,13 @@ public class CallBismark {
 			}
 			// recursive refresh file list
 			fileList = IO.visitFiles(seqfolder);
-			//fileNames = folder.list(new ExtensionFilter(new String[] { ".txt", ".fq", "fastq", "fasta", "fa" }));
 			if (fileList.size() == 0) {
 				throw new RuntimeException("no sequencing data files in " + inputFile.getAbsolutePath());
 			} else {
 				for (File file : fileList) {
 					// if contains at least one fasta file
-					if (file.getName().endsWith(".fa") || file.getName().endsWith(".fasta") ||
-							file.getName().endsWith(".fna") || file.getName().endsWith(".ffn") ||
-							file.getName().endsWith(".fas") || file.getName().endsWith(".faa") ||
-							file.getName().endsWith(".frn")) {
-						fastaq = "-f"; // for fasta file
+                    if (file.getName().endsWith(".fa") || file.getName().endsWith(".fasta")) {
+                        fastaq = "-f"; // for fasta file
                         fileList = multiLineFastaToSingleLine(fileList);
                         qualsTypeParameter = "";
 						break;

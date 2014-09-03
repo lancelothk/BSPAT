@@ -48,7 +48,7 @@ function isEmptyValue(id, msg) {
 
 function removeErrorMsg() {
     var errorMsgs = document.querySelectorAll('*[id^="errorMsg"]');
-    for (var index = 0; index < errorMsgs.length; ++index) {
+    for (var index = 0; index < errorMsgs.length; index++) {
         var element = errorMsgs[index];
         element.parentNode.removeChild(element);
     }
@@ -57,24 +57,28 @@ function removeErrorMsg() {
 
 function isInvalidRefFile() {
     var refFile = document.getElementById("ref");
-    var ext = refFile.value.split('.').pop();
-    if (ext != "fa" && ext != "fasta") {
-        createErrorMsg(refFile, "Only .fa and .fasta files are allowed");
-        return true;
-    } else {
-        return false;
+    var files = refFile.files;
+    for (var i = 0; i < files.length; i++) {
+        var ext = files[i].name.split('.').pop();
+        if (ext != "fa" && ext != "fasta") {
+            createErrorMsg(refFile, "Only .fa and .fasta files are allowed");
+            return true;
+        }
     }
+    return false;
 }
 
 function isInvalidSeqFile(id) {
     var seqFile = document.getElementById(id);
-    var ext = seqFile.value.split('.').pop();
-    if (ext != "fa" && ext != "fasta" && ext != "fq" && ext != "fastq" && ext != "txt") {
-        createErrorMsg(seqFile, "Only .fa .fasta .fq .fastq .txt files are allowed");
-        return true;
-    } else {
-        return false;
+    var files = seqFile.files;
+    for (var i = 0; i < files.length; i++) {
+        var ext = files[i].name.split('.').pop();
+        if (ext != "fa" && ext != "fasta" && ext != "fq" && ext != "fastq" && ext != "txt" && ext != "zip") {
+            createErrorMsg(seqFile, "Only .fa .fasta .fq .fastq .txt .zip files are allowed");
+            return true;
+        }
     }
+    return false;
 }
 
 function isInvalidValue(id, msg) {
