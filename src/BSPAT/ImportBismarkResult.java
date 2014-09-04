@@ -46,26 +46,24 @@ public class ImportBismarkResult {
 	 */
 	private void readReference(String refPath) throws IOException {
 		File refPathFile = new File(refPath);
-		String[] fileNames = null;
-		fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
-		for (String str : fileNames) {
+        String[] fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
+        for (String str : fileNames) {
 			try (BufferedReader buffReader = new BufferedReader(new FileReader(refPathFile + "/" + str))) {
 				String line, name = null;
 				StringBuilder ref = new StringBuilder();
 				while ((line = buffReader.readLine()) != null) {
-					if (line.startsWith(">")) {
-						if (ref.length() > 0) {
+                    if (line.charAt(0) == '>') {
+                        if (ref.length() > 0) {
 							referenceSeqs.put(name, ref.toString().toUpperCase());
 							ref = new StringBuilder();
 						}
-						name = line.replace(">", "");
-					} else {
+                        name = line.substring(1, line.length());
+                    } else {
 						ref.append(line);
 					}
 				}
 				if (ref.length() > 0) {
 					referenceSeqs.put(name, ref.toString().toUpperCase());
-					ref = new StringBuilder();
 				}
 			}
 		}
@@ -85,8 +83,8 @@ public class ImportBismarkResult {
 		for (String name : names) {
 			try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
 				String line = buffReader.readLine();
-				String[] items = null;
-				while (line != null) {
+                String[] items;
+                while (line != null) {
 					items = line.split("\t");
                     // substract two bps from the start position to match original reference
                     // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
@@ -132,21 +130,15 @@ public class ImportBismarkResult {
 				try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
 					String line = buffReader.readLine();
 					String[] items;
-					boolean methylLabel;
 					Sequence seq;
 
 					while (line != null) {
 						items = line.split("\t");
-						if (items[1].equals("+")) {
-							methylLabel = true;
-						} else {
-							methylLabel = false;
-						}
                         seq = sequencesHashMap.get(items[0]);
                         if (seq != null) {
                             // substract two bps from the start position to match original reference
                             // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-                            CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 3, methylLabel);
+                            CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 3, items[1].equals("+"));
                             seq.addCpG(cpg);
 						}
 						line = buffReader.readLine();
