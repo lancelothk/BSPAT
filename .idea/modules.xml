@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BSPAT/BSPAT.iml" filepath="$PROJECT_DIR$/BSPAT/BSPAT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BSPAT_analysis/BSPAT_analysis.iml" filepath="$PROJECT_DIR$/BSPAT_analysis/BSPAT_analysis.iml" />
     </modules>
   </component>
 </project>

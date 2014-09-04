@@ -1,5 +1,3 @@
-package tools;
-
 import org.apache.commons.lang3.StringUtils;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
@@ -11,6 +9,7 @@ import java.util.Map;
 
 /**
  * Created by kehu on 8/28/14.
+ *
  */
 public class AttachPrimer {
 

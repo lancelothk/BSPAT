@@ -1,11 +1,10 @@
-package tools;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by kehu on 9/2/14.
+ *
  */
 public class CorrectHeader {
 
