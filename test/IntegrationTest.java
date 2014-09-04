@@ -83,7 +83,8 @@ public class IntegrationTest {
 
         when(servletConfig.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRealPath("")).thenReturn(testPath);
-        when(request.getParameter("demo")).thenReturn("true");
+        when(request.getParameter("demo")).thenReturn("false");
+        when(request.getParameter("test")).thenReturn("true");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/BSPAT/mapping"));
         when(request.getParameter("refVersion")).thenReturn("hg18");
         when(request.getParameter("qualsType")).thenReturn("phred33");
@@ -156,7 +157,7 @@ public class IntegrationTest {
 
         // check pattern result files
         File testFileFolder = new File("/home/kehu/IdeaProjects/BSPAT/testFiles");
-        File resultFolder = new File(String.format("%s/Job%s/pattern_result/demoExperiment", testPath, jobID));
+        File resultFolder = new File(String.format("%s/Job%s/pattern_result/testExperiment", testPath, jobID));
         if (testFileFolder.exists() && resultFolder.exists()) {
             File[] files = testFileFolder.listFiles(new ExtensionFilter(".txt"));
             if (files != null) {

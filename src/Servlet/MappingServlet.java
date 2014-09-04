@@ -71,9 +71,15 @@ public class MappingServlet extends HttpServlet {
                 experiments.add(new Experiment(1, "demoExperiment"));
                 FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoReference.fasta"),
                                               new File(constant.originalRefPath));
-                File[] seqs = new File(constant.demoPath).listFiles(new ExtensionFilter(".fastq"));
+                FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
+                                              new File(constant.seqsPath + "demoExperiment"));
+            } else if (Boolean.parseBoolean(request.getParameter("test"))) {
+                experiments.add(new Experiment(1, "testExperiment"));
+                FileUtils.copyFileToDirectory(new File(constant.testPath + "testReference.fasta"),
+                                              new File(constant.originalRefPath));
+                File[] seqs = new File(constant.testPath).listFiles(new ExtensionFilter(".fastq"));
                 for (File seq : seqs) {
-                    FileUtils.copyFileToDirectory(seq, new File(constant.seqsPath + "demoExperiment"));
+                    FileUtils.copyFileToDirectory(seq, new File(constant.seqsPath + "testExperiment"));
                 }
             } else {
                 addExperiment(request, experiments);
@@ -236,6 +242,7 @@ public class MappingServlet extends HttpServlet {
         constant.toolsPath = Constant.DISKROOTPATH + "/tools/";
         IO.createFolder(constant.toolsPath);
         constant.demoPath = Constant.DISKROOTPATH + "/demo/";
+        constant.testPath = Constant.DISKROOTPATH + "/test/";
         URL domain = new URL(request.getRequestURL().toString());
         constant.host = domain.getHost() + ":" + domain.getPort();
     }
