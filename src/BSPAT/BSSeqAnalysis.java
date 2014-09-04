@@ -57,7 +57,6 @@ public class BSSeqAnalysis {
 
         // 3. cut and filter sequences
         cutAndFilterSequence(sequenceGroupMap, refCoorMap, targetCoorMap, referenceSeqs);
-        // TODO handle case which no sequence remain after cut.
 
         // 4. generate report for each region
         for (String region : sequenceGroupMap.keySet()) {
@@ -76,23 +75,18 @@ public class BSSeqAnalysis {
             List<Pattern> methylationPatternList = getMethylPattern(seqGroup);
             List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
             List<Pattern> allelePatternList = getAllelePattern(seqGroup);
+			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
 
             methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size(),
                                                                StringUtils.countMatches(referenceSeqs.get(region),
                                                                                         "CG"), constant);
             mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size(), constant);
+			meMuPatternList = filterMethylationPatterns(meMuPatternList, seqGroup.size(),
+														StringUtils.countMatches(referenceSeqs.get(region), "CG"),
+														constant);
+
             Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
-
-            Pattern.resetPatternCount();
-            sortAndAssignPatternID(methylationPatternList);
-            sortAndAssignPatternID(mutationPatternList);
-
-            List<Pattern> meMuPatternList = getMeMuPatern(methylationPatternList, mutationPatternList);
-            meMuPatternList = filterMethylationPatterns(meMuPatternList, seqGroup.size(),
-                                                        StringUtils.countMatches(referenceSeqs.get(region), "CG"),
-                                                        constant);
-
 
             Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant, reportSummary);
             report.writeReport(filteredSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
@@ -111,7 +105,6 @@ public class BSSeqAnalysis {
             }
             reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
             reportSummaries.add(reportSummary);
-
         }
         return reportSummaries;
     }
@@ -141,39 +134,72 @@ public class BSSeqAnalysis {
         return new ArrayList<>(allelePatternMap.values());
     }
 
-    private void sortAndAssignPatternID(List<Pattern> patternList) {
-        // sort methylation pattern.
-        Collections.sort(patternList, new PatternByCountComparator());
-        // assign pattern id after sorting. So id is associated with order. Smaller id has large count.
-        for (Pattern pattern : patternList) {
-            pattern.assignPatternID();
-        }
-    }
+//    // TODO replace list intersection with sequence parent id checking
+//    private List<Pattern> getMeMuPatern(List<Pattern> methylationPatternList, List<Pattern> mutationPatternList) {
+//        List<Pattern> meMuPaternList = new ArrayList<>();
+//        for (Pattern methylationPattern : methylationPatternList) {
+//            for (Pattern mutationPattern : mutationPatternList) {
+//                Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
+//                for (Sequence methylSeq : methylationPattern.sequenceList()) {
+//                    for (Sequence mutationSeq : mutationPattern.sequenceList()) {
+//                        // find intersection of two list
+//                        if (methylSeq == mutationSeq) {
+//                            memuPatern.addSequence(methylSeq);
+//                        }
+//                    }
+//                }
+//                if (memuPatern.sequenceList().size() != 0) {
+//                    memuPatern.setPatternString(memuPatern.sequenceList().get(0).getMeMuString());
+//                    memuPatern.setMethylationParentID(methylationPattern.getPatternID());
+//                    memuPatern.setMutationParentID(mutationPattern.getPatternID());
+//                    meMuPaternList.add(memuPatern);
+//                }
+//            }
+//        }
+//        return meMuPaternList;
+//    }
 
-    // TODO replace list intersection with sequence parent id checking
-    private List<Pattern> getMeMuPatern(List<Pattern> methylationPatternList, List<Pattern> mutationPatternList) {
-        List<Pattern> meMuPaternList = new ArrayList<>();
-        for (Pattern methylationPattern : methylationPatternList) {
-            for (Pattern mutationPattern : mutationPatternList) {
-                Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
-                for (Sequence methylSeq : methylationPattern.sequenceList()) {
-                    for (Sequence mutationSeq : mutationPattern.sequenceList()) {
-                        // find intersection of two list
-                        if (methylSeq == mutationSeq) {
-                            memuPatern.addSequence(methylSeq);
-                        }
-                    }
-                }
-                if (memuPatern.sequenceList().size() != 0) {
-                    memuPatern.setPatternString(memuPatern.sequenceList().get(0).getMeMuString());
-                    memuPatern.setMethylationParentID(methylationPattern.getPatternID());
-                    memuPatern.setMutationParentID(mutationPattern.getPatternID());
-                    meMuPaternList.add(memuPatern);
-                }
-            }
-        }
-        return meMuPaternList;
-    }
+	/**
+	 * generate memu pattern.
+	 *
+	 * @param seqGroup
+	 * @param methylationPatternList
+	 * @param mutationPatternList
+	 * @return
+	 */
+	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
+										List<Pattern> mutationPatternList) {
+		Map<String, Pattern> patternMap = new HashMap<>();
+		for (Sequence sequence : seqGroup) {
+			int meID = -1, muID = -1;
+			for (Pattern methylPattern : methylationPatternList) {
+				if (methylPattern.sequenceList().contains(sequence)) {
+					meID = methylPattern.getPatternID();
+				}
+			}
+			for (Pattern mutationPattern : mutationPatternList) {
+				if (mutationPattern.sequenceList().contains(sequence)) {
+					muID = mutationPattern.getPatternID();
+				}
+			}
+			if (meID == -1 || muID == -1) {
+				throw new RuntimeException("every sequence should match both methylation and mutation pattern");
+			}
+			String key = String.format("%d-%d", meID, muID);
+			if (patternMap.containsKey(key)) {
+				patternMap.get(key).addSequence(sequence);
+			} else {
+				// new memu pattern
+				Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
+				memuPatern.setPatternString(sequence.getMeMuString());
+				memuPatern.setMethylationParentID(meID);
+				memuPatern.setMutationParentID(muID);
+				memuPatern.addSequence(sequence);
+				patternMap.put(key, memuPatern);
+			}
+		}
+		return new ArrayList<>(patternMap.values());
+	}
 
     private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount, Constant constant) {
         List<Pattern> qualifiedAllelePatternList = new ArrayList<>();

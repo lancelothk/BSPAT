@@ -28,8 +28,9 @@ import static org.mockito.Mockito.*;
 
 public class IntegrationTest {
     private final static Logger LOGGER = Logger.getLogger(IntegrationTest.class.getName());
-    public final String testPath = "/home/kehu/IdeaProjects/BSPAT/out/artifacts/BSPAT_exploded";
-    public String jobID;
+	public String rootPath = new File(".").getAbsolutePath();
+	public final String testPath = rootPath + "/out/artifacts/BSPAT_exploded";
+	public String jobID;
 
     class MyAnswer implements Answer<Object> {
         public DataType.Constant resultConstant;

@@ -60,8 +60,8 @@ public class Sequence {
      * generate methylation and mutation String; calculate
      * conversion rate, methylation rate
      */
-    public static void processSequence(String referenceSeq, List<Sequence> seqList) {
-        // convert reference sequence and count C in non-CpG context.
+	public static void processSequence(String referenceSeq, final List<Sequence> seqList) {
+		// convert reference sequence and count C in non-CpG context.
         String convertedReferenceSeq = "";
         // count C in non-CpG context.  Maybe not efficient enough since scan twice.
         int countOfNonCpGC = StringUtils.countMatches(referenceSeq, "C") - StringUtils.countMatches(referenceSeq, "CG");
@@ -322,7 +322,8 @@ public class Sequence {
     }
 
     public String getMeMuString() {
-        StringBuilder meMuBuilder = new StringBuilder();
+		// TODO if we can make sure MeMuString won't change, then we can cache it.
+		StringBuilder meMuBuilder = new StringBuilder();
         for (int i = 0; i < originalSeq.length(); i++) {
             if (methylationString.charAt(i) != '-' && mutationString.charAt(i) != '-') {
                 // if both methyl and mutation occurs, use mutation first
