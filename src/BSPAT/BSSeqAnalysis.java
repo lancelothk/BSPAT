@@ -75,15 +75,22 @@ public class BSSeqAnalysis {
             List<Pattern> methylationPatternList = getMethylPattern(seqGroup);
             List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
             List<Pattern> allelePatternList = getAllelePattern(seqGroup);
-			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
 
             methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size(),
                                                                StringUtils.countMatches(referenceSeqs.get(region),
                                                                                         "CG"), constant);
             mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size(), constant);
-			meMuPatternList = filterMethylationPatterns(meMuPatternList, seqGroup.size(),
-														StringUtils.countMatches(referenceSeqs.get(region), "CG"),
-														constant);
+
+
+            Pattern.resetPatternCount();
+            sortAndAssignPatternID(methylationPatternList);
+            sortAndAssignPatternID(mutationPatternList);
+
+            // generate memu pattern after filtering me & mu pattern since filtered non-significant patterns won't contribute to memu result.
+            List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
+            meMuPatternList = filterMethylationPatterns(meMuPatternList, seqGroup.size(),
+                                                        StringUtils.countMatches(referenceSeqs.get(region), "CG"),
+                                                        constant);
 
             Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
@@ -159,6 +166,15 @@ public class BSSeqAnalysis {
 //        return meMuPaternList;
 //    }
 
+    private void sortAndAssignPatternID(List<Pattern> patternList) {
+        // sort methylation pattern.
+        Collections.sort(patternList, new PatternByCountComparator());
+        // assign pattern id after sorting. So id is associated with order. Smaller id has large count.
+        for (Pattern pattern : patternList) {
+            pattern.assignPatternID();
+        }
+    }
+
 	/**
 	 * generate memu pattern.
 	 *
@@ -183,8 +199,8 @@ public class BSSeqAnalysis {
 				}
 			}
 			if (meID == -1 || muID == -1) {
-				throw new RuntimeException("every sequence should match both methylation and mutation pattern");
-			}
+                continue;
+            }
 			String key = String.format("%d-%d", meID, muID);
 			if (patternMap.containsKey(key)) {
 				patternMap.get(key).addSequence(sequence);

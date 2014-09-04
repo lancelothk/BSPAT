@@ -6,8 +6,10 @@ import DataType.ExtensionFilter;
 import Servlet.AnalysisServlet;
 import Servlet.MappingServlet;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -31,6 +33,24 @@ public class IntegrationTest {
 	public String rootPath = new File(".").getAbsolutePath();
 	public final String testPath = rootPath + "/out/artifacts/BSPAT_exploded";
 	public String jobID;
+
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+        }
+
+        @Override
+        protected void succeeded(Description description) {
+            File resultFolder = new File(testPath + "/Job" + jobID);
+            try {
+                FileUtils.deleteDirectory(resultFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("test result cleaned!");
+        }
+    };
 
     class MyAnswer implements Answer<Object> {
         public DataType.Constant resultConstant;
@@ -146,12 +166,5 @@ public class IntegrationTest {
                 }
             }
         }
-    }
-
-    @After
-    public void cleanUp() throws IOException {
-        File resultFolder = new File(testPath + "/Job" + jobID);
-        FileUtils.deleteDirectory(resultFolder);
-        LOGGER.info("test result cleaned!");
     }
 }
