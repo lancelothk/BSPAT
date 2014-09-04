@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="junit-addons-1.4">
+  <library name="ant">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/BSPAT/lib/test/junit-addons-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BSPAT/lib/ant.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

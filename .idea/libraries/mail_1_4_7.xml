@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="junit-addons-1.4">
+  <library name="mail-1.4.7">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/BSPAT/lib/test/junit-addons-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BSPAT/lib/mail-1.4.7.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

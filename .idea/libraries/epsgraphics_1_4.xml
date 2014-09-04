@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="epsgraphics-1.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/BSPAT/lib/epsgraphics-1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/BSPAT/lib/epsgraphics-1.4-src.zip!/" />
+    </SOURCES>
+  </library>
+</component>

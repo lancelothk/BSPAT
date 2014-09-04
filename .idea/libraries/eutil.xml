@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="eutil">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/BSPAT/lib/eutil" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/BSPAT/lib/eutil" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/BSPAT/lib/eutil" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/BSPAT/lib/eutil" recursive="false" type="SOURCES" />
+  </library>
+</component>

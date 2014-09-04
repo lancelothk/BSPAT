@@ -1,0 +1,192 @@
+/* A Free Design by Bryant Smith (bryantsmith.com) */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font: 12px Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    background: #1c478e url(images/background.png) repeat-x;
+}
+
+* {
+    margin: 0 auto 0 auto;
+    text-align: left;
+}
+
+textarea {
+    width: 700px;
+    text-align: left;
+}
+
+#title {
+
+}
+
+#header {
+    width: 80%;
+    height: 85px;
+}
+
+#header h1 {
+    color: #FFFFFF;
+    font-size: 43px;
+    top: 18px;
+}
+
+#header h2 {
+    font-size: 18px;
+    color: #A9D1FA;
+}
+
+.headA {
+    color: #67A0F5;
+}
+
+.headBS {
+    color: #836FFF;
+}
+
+#mainpic {
+    background-repeat: no-repeat;
+    height: 354px;
+}
+
+.off1 {
+    color: #67A0F5;
+}
+
+#menu {
+    display: block;
+    height: 54px;
+    clear: both;
+    width: 82%;
+}
+
+#container {
+    min-height: 100%;
+    position: relative;
+    width: 960px;
+}
+
+#content {
+    display: block;
+    width: 790px;
+    height: auto;
+    padding: 15px 10px 5px;
+}
+
+#content_top {
+    background: url(images/main_top_790.png) no-repeat;
+    width: 760px;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 24px;
+}
+
+#content_main {
+    background: url(images/main_back_790.png) repeat-y;
+    width: 760px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 18px;
+}
+
+#content_bottom {
+    background: url(images/main_bottom_790.png) no-repeat;
+    width: 760px;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 25px;
+}
+
+/* #experiment,#refcoor,#buttons,#experiments { */
+table {
+    padding-top: 20px;
+    margin-left: 0;
+}
+
+td {
+    padding: 5px 20px 5px 5px;
+}
+
+tr {
+    padding: 10px;;
+}
+
+hr {
+    margin-top: 10px;
+}
+
+#submitButton {
+    height: 25px;
+    width: 100px;
+}
+
+#submitParagraph {
+    text-align: center;
+}
+
+#footer {
+    width: 100%;
+    text-align: center;
+}
+
+#footer h3 {
+    display: inline;
+    font-size: 14px;
+    text-decoration: none;
+    color: #7198E1;
+}
+
+#menu ul {
+    list-style: none;
+    padding: 0;
+    margin-left: auto;
+    width: 960px;
+}
+
+#menu li {
+    list-style: none;
+    padding: 0;
+    display: inline;
+}
+
+#menu a {
+    float: left;
+    height: 36px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    padding-top: 18px;
+    font-size: 15px;
+    padding-left: 13px;
+    padding-right: 13px;
+}
+
+#menu a:hover {
+    color: #86AEF9;
+    background: url(images/linkbackground.jpg) repeat-x;
+}
+
+p.phead {
+    font: bold 18px sans-serif;
+    line-height: 2;
+}
+
+p.ptext {
+    font: 16px sans-serif;
+}
+
+p.dottedline {
+    margin: 0;
+    padding: 0 0 5px 0;
+    border-bottom: #BFC9AE dashed 1px;
+    color: #232F01;
+}
+
+div.errorMsg {
+    color: #FF0000;
+    font-size: 11px;
+}

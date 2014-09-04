@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="junit-addons-1.4">
+  <library name="commons-math-2.2">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/BSPAT/lib/test/junit-addons-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/BSPAT/lib/commons/commons-math-2.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

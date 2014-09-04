@@ -1,12 +1,10 @@
-*.class
 .idea/workspace.xml
 
 # Package Files #
-*.war
 *.ear
 /bin
 /build
 /out
 
 testResult
-src/BSPAT/CallBismark.java
+BSPAT_web/src/BSPAT/CallBismark.java
