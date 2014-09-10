@@ -3,11 +3,13 @@ package BSPAT;
 import DataType.CpGSite;
 import DataType.ExtensionFilter;
 import DataType.Sequence;
+import DataType.StringInternPool;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -16,136 +18,144 @@ import java.util.*;
  * @author Ke
  */
 public class ImportBismarkResult {
-	private Map<String, String> referenceSeqs = new Hashtable<>();
+    private Map<String, String> referenceSeqs = new Hashtable<>();
     // use hashMap to remove duplicated seqs and match methyl calling result
     private Map<String, Sequence> sequencesHashMap = new Hashtable<>();
 
-	public ImportBismarkResult(String refPath, String inputFolder) throws IOException {
-		readReference(refPath);
-		readBismarkAlignmentResult(inputFolder);
-		readBismarkCpGResult(inputFolder);
-	}
+    public ImportBismarkResult(String refPath, String inputFolder) throws IOException {
+        readReference(refPath);
+        readBismarkAlignmentResult(inputFolder);
+        readBismarkCpGResult(inputFolder);
+    }
 
-	public Map<String, String> getReferenceSeqs() {
-		return referenceSeqs;
-	}
+    private static String intern(WeakHashMap<String, WeakReference<String>> pool, String str) {
+        final WeakReference<String> cached = pool.get(str);
+        if (cached != null) {
+            final String value = cached.get();
+            if (value != null) return value;
+        }
+        pool.put(str, new WeakReference<>(str));
+        return str;
+    }
 
-	public List<Sequence> getSequencesList() {
-		List<Sequence> sequencesList = new ArrayList<>();
+    public Map<String, String> getReferenceSeqs() {
+        return referenceSeqs;
+    }
+
+    public List<Sequence> getSequencesList() {
+        List<Sequence> sequencesList = new ArrayList<>();
         for (Sequence seq : sequencesHashMap.values()) {
             sequencesList.add(seq);
-		}
-		return sequencesList;
-	}
+        }
+        return sequencesList;
+    }
 
-	/**
-	 * readReference
-	 *
-	 * @param refPath
-	 * @throws IOException
-	 */
-	private void readReference(String refPath) throws IOException {
-		File refPathFile = new File(refPath);
+    /**
+     * readReference
+     *
+     * @param refPath
+     * @throws IOException
+     */
+    private void readReference(String refPath) throws IOException {
+        File refPathFile = new File(refPath);
         String[] fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
         for (String str : fileNames) {
-			try (BufferedReader buffReader = new BufferedReader(new FileReader(refPathFile + "/" + str))) {
-				String line, name = null;
-				StringBuilder ref = new StringBuilder();
-				while ((line = buffReader.readLine()) != null) {
+            try (BufferedReader buffReader = new BufferedReader(new FileReader(refPathFile + "/" + str))) {
+                String line, name = null;
+                StringBuilder ref = new StringBuilder();
+                while ((line = buffReader.readLine()) != null) {
                     if (line.charAt(0) == '>') {
                         if (ref.length() > 0) {
-							referenceSeqs.put(name, ref.toString().toUpperCase());
-							ref = new StringBuilder();
-						}
+                            referenceSeqs.put(name, ref.toString().toUpperCase());
+                            ref = new StringBuilder();
+                        }
                         name = line.substring(1, line.length());
                     } else {
-						ref.append(line);
-					}
-				}
-				if (ref.length() > 0) {
-					referenceSeqs.put(name, ref.toString().toUpperCase());
-				}
-			}
-		}
-	}
+                        ref.append(line);
+                    }
+                }
+                if (ref.length() > 0) {
+                    referenceSeqs.put(name, ref.toString().toUpperCase());
+                }
+            }
+        }
+    }
 
-	/**
-	 * readBismarkAlignmentResult
-	 *
-	 * @param inputFolder
-	 * @throws IOException
-	 */
-	private void readBismarkAlignmentResult(String inputFolder) throws IOException {
-		File inputFile = new File(inputFolder);
-		String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam"}));
-		Arrays.sort(names);
+    /**
+     * readBismarkAlignmentResult
+     *
+     * @param inputFolder
+     * @throws IOException
+     */
+    private void readBismarkAlignmentResult(String inputFolder) throws IOException {
+        File inputFile = new File(inputFolder);
+        String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam"}));
+        Arrays.sort(names);
 
-		for (String name : names) {
-			try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
-				String line = buffReader.readLine();
+        for (String name : names) {
+            try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
+                String line = buffReader.readLine();
                 String[] items;
                 while (line != null) {
-					items = line.split("\t");
+                    items = line.split("\t");
                     // substract two bps from the start position to match original reference
                     // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-                    Sequence seq = new Sequence(items[0], items[1], items[2], Integer.valueOf(items[3]) - 3, items[9],
-                                                items[10], cutTag(items[11]), cutTag(items[12]), cutTag(items[13]),
-												cutTag(items[14]));
-					if (cutTag(items[14]).equals("CT")) {
-						seq.setFRstate("F");
-					} else {
-						seq.setFRstate("R");
-					}
+                    Sequence seq = new Sequence(items[0], StringInternPool.intern(items[2]), Integer.valueOf(items[3]) - 3, StringInternPool.intern(items[9]));
+                    if (cutTag(items[14]).equals("CT")) {
+                        seq.setFRstate("F");
+                    } else {
+                        seq.setFRstate("R");
+                    }
                     sequencesHashMap.put(seq.getId(), seq);
                     line = buffReader.readLine();
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
-	/**
-	 * extract value from TAG:TYPE:VALUE, e.g. "XR:Z:GA"
-	 *
-	 * @param raw
-	 * @return extracted value string
-	 */
-	private String cutTag(String raw) {
-		return raw.split(":")[2];
-	}
+    /**
+     * extract value from TAG:TYPE:VALUE, e.g. "XR:Z:GA"
+     *
+     * @param raw
+     * @return extracted value string
+     */
+    private String cutTag(String raw) {
+        return raw.split(":")[2];
+    }
 
-	/**
-	 * readBismarkCpGResult
-	 *
-	 * @param inputFolder
-	 * @throws IOException
-	 */
-	private void readBismarkCpGResult(String inputFolder) throws IOException {
-		File inputFile = new File(inputFolder);
-		String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.txt"}));
-		Arrays.sort(names);
+    /**
+     * readBismarkCpGResult
+     *
+     * @param inputFolder
+     * @throws IOException
+     */
+    private void readBismarkCpGResult(String inputFolder) throws IOException {
+        File inputFile = new File(inputFolder);
+        String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.txt"}));
+        Arrays.sort(names);
 
-		for (String name : names) {
-			// only read CpG context result
-			if (name.startsWith("CpG_context")) {
-				try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
-					String line = buffReader.readLine();
-					String[] items;
-					Sequence seq;
+        for (String name : names) {
+            // only read CpG context result
+            if (name.startsWith("CpG_context")) {
+                try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
+                    String line = buffReader.readLine();
+                    String[] items;
+                    Sequence seq;
 
-					while (line != null) {
-						items = line.split("\t");
+                    while (line != null) {
+                        items = line.split("\t");
                         seq = sequencesHashMap.get(items[0]);
                         if (seq != null) {
                             // substract two bps from the start position to match original reference
                             // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
                             CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 3, items[1].equals("+"));
                             seq.addCpG(cpg);
-						}
-						line = buffReader.readLine();
-					}
-				}
-			}
-		}
-	}
+                        }
+                        line = buffReader.readLine();
+                    }
+                }
+            }
+        }
+    }
 
 }

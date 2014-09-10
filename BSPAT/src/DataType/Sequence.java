@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Sequence {
     private String id; // 1
-    private String flag; // 2
+//    private String flag; // 2
     private String region; // 3
     private int startPos; // 4
     // 5 MAPQ
@@ -16,11 +16,11 @@ public class Sequence {
     // 8 PNEXT
     // 9 TLEN
     private String originalSeq; // 10
-    private String qualityScore; // 11
-    private String editDist; // 12 edit distance to the reference
-    private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
-    private String methylCall; // 14 methylation call string
-    private String readConvState; // 15 read conversion state for the alignment
+//    private String qualityScore; // 11
+//    private String editDist; // 12 edit distance to the reference
+//    private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
+//    private String methylCall; // 14 methylation call string
+//    private String readConvState; // 15 read conversion state for the alignment
     //	private String XGtag; // 16 genome conversion state for the alignment
     private List<CpGSite> CpGSites;
     private String methylationString;
@@ -31,19 +31,12 @@ public class Sequence {
     private String FRstate = "";
     private List<String> allelePosList;
 
-    public Sequence(String id, String flag, String region, int startPos, String originalSeq, String qualityScore,
-                    String editDist, String mismatchString, String methylCall, String readConvState) {
+    public Sequence(String id, String region, int startPos, String originalSeq) {
         this.id = id;
-        this.flag = flag;
         this.region = region;
         this.startPos = startPos;
         this.originalSeq = originalSeq;
-        this.qualityScore = qualityScore;
-        this.editDist = editDist;
-        this.mismatchString = mismatchString;
-        this.methylCall = methylCall;
         this.CpGSites = new ArrayList<>();
-        this.readConvState = readConvState;
         this.allelePosList = new ArrayList<>();
     }
 
@@ -136,8 +129,8 @@ public class Sequence {
             seq.setBisulConversionRate(1 - (countOfUnConvertedC / countOfNonCpGC));
             seq.setMethylationRate(countOfMethylatedCpG / seq.getCpGSites().size());
             seq.setSequenceIdentity(1 - unequalNucleotide / (seq.getOriginalSeq().length() - seq.getCpGSites().size()));
-            seq.setMethylationString(new String(methylationString));
-            seq.setMutationString(new String(mutationString));
+            seq.setMethylationString(StringInternPool.intern(new String(methylationString)));
+            seq.setMutationString(StringInternPool.intern(new String(mutationString)));
         }
     }
 
@@ -183,10 +176,6 @@ public class Sequence {
         this.id = id;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag;
-    }
-
     public void setRegion(String region) {
         this.region = region;
     }
@@ -197,14 +186,6 @@ public class Sequence {
 
     public void setOriginalSeq(String originalSeq) {
         this.originalSeq = originalSeq;
-    }
-
-    public void setMethylCall(String methylCall) {
-        this.methylCall = methylCall;
-    }
-
-    public void setQualityScore(String qualityScore) {
-        this.qualityScore = qualityScore;
     }
 
     public void setMethylationString(String methylationString) {
@@ -223,19 +204,6 @@ public class Sequence {
         this.sequenceIdentity = sequenceIdentity;
     }
 
-
-    public void setEditDist(String editDist) {
-        this.editDist = editDist;
-    }
-
-    public void setMismatchString(String mismatchString) {
-        this.mismatchString = mismatchString;
-    }
-
-    public void setReadConvState(String readConvState) {
-        this.readConvState = readConvState;
-    }
-
     public void setMutationString(String mutationString) {
         this.mutationString = mutationString;
     }
@@ -243,19 +211,6 @@ public class Sequence {
     public String getMutationString() {
         return mutationString;
     }
-
-    public String getReadConvState() {
-        return readConvState;
-    }
-
-    public String getEditDist() {
-        return editDist;
-    }
-
-    public String getMismatchString() {
-        return mismatchString;
-    }
-
 
     public double getSequenceIdentity() {
         return sequenceIdentity;
@@ -269,24 +224,12 @@ public class Sequence {
         return bisulConversionRate;
     }
 
-    public String getMethylCall() {
-        return methylCall;
-    }
-
     public String getId() {
         return id;
     }
 
-    public String getFlag() {
-        return flag;
-    }
-
     public String getOriginalSeq() {
         return originalSeq;
-    }
-
-    public String getQualityScore() {
-        return qualityScore;
     }
 
     public String getRegion() {
