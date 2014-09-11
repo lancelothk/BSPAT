@@ -1,3 +1,5 @@
+package tools;
+
 import DataType.ExtensionFilter;
 
 import java.io.*;
