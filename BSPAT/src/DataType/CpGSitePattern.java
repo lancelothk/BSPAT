@@ -3,8 +3,8 @@ package DataType;
 public class CpGSitePattern implements CpG {
     private int position;
     private boolean methylLabel;
-    private short methylCount = 0;
-    private short nonMethylCount = 0;
+    private int methylCount = 0;
+    private int nonMethylCount = 0;
 
     public CpGSitePattern(int position, boolean methylLabel) {
         this.methylLabel = methylLabel;
