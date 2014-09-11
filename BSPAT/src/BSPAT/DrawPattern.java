@@ -125,7 +125,7 @@ public class DrawPattern {
             methylWriter.getBedWriter().write(
                     String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
                                   startPos));
-            for (CpGSite cpg : patternResult.getCpGList()) {
+            for (CpGSitePattern cpg : patternResult.getCpGList()) {
                 int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
                 // genome browser automatically add 1 to start, no change to
                 // end.So we substract 1 from start and add 1 to the end.
@@ -258,12 +258,12 @@ public class DrawPattern {
 
     private PatternResult patternToPatternResult(Pattern pattern, List<Integer> refCpGs, int totalCount) {
         PatternResult patternResult = new PatternResult();
-        Map<Integer, CpGSite> cpGSiteMap = new HashMap<>();
+        Map<Integer, CpGSitePattern> cpGSiteMap = new HashMap<>();
         for (Integer pos : refCpGs) {
             if (cpGSiteMap.containsKey(pos)) {
                 throw new RuntimeException("refCpG has duplicated CpGsites!");
             }
-            cpGSiteMap.put(pos, new CpGSite(pos, false));
+            cpGSiteMap.put(pos, new CpGSitePattern(pos, false));
         }
         for (Sequence sequence : pattern.sequenceList()) {
             for (CpGSite cpGSite : sequence.getCpGSites()) {
@@ -354,8 +354,8 @@ public class DrawPattern {
         if (patternWithAllele.getPercent() < 0.2 || patternWithoutAllele.getPercent() < 0.2) {
             return false;
         }
-        List<CpGSite> cglistWithAllele = patternWithAllele.getCpGList();
-        List<CpGSite> cglistWithoutAllele = patternWithoutAllele.getCpGList();
+        List<CpGSitePattern> cglistWithAllele = patternWithAllele.getCpGList();
+        List<CpGSitePattern> cglistWithoutAllele = patternWithoutAllele.getCpGList();
         // if there is at least one cpg site with different methyl type and the different bigger than 0.2, it is ASM
         for (int i = 0; i < cglistWithAllele.size(); i++) {
             if (cglistWithAllele.get(i).getMethylType() != cglistWithoutAllele.get(i).getMethylType() &&

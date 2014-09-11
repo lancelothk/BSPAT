@@ -80,15 +80,15 @@ public class ReadAnalysisResult {
                 items = line.split("\t");
                 patternResult = new PatternResult();
                 for (int i = 0; i < refLength; i++) {
-                    CpGSite cpg;
+                    CpGSitePattern cpg;
                     if (items[0].charAt(i) == '*') {
-                        cpg = new CpGSite(i, false);
+                        cpg = new CpGSitePattern(i, false);
                         patternResult.addCpG(cpg);
                         if (i + 1 < refLength && items[0].charAt(i + 1) == '*') {
                             i++;
                         }
                     } else if (items[0].charAt(i) == '@') {
-                        cpg = new CpGSite(i++, true);
+                        cpg = new CpGSitePattern(i++, true);
                         patternResult.addCpG(cpg);
                         if (i + 1 < refLength && items[0].charAt(i + 1) == '@') {
                             i++;

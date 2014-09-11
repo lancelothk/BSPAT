@@ -2,10 +2,10 @@ package DataType;
 
 import java.util.Comparator;
 
-public class CpGComparator implements Comparator<CpGSite> {
+public class CpGComparator implements Comparator<CpGSitePattern> {
 
     @Override
-    public int compare(CpGSite c1, CpGSite c2) {
+    public int compare(CpGSitePattern c1, CpGSitePattern c2) {
         if (c1.getPosition() > c2.getPosition()) {
             return 1;
         } else if (c1.getPosition() < c2.getPosition()) {
