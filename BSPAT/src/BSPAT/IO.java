@@ -22,7 +22,7 @@ public class IO {
      * @return coordinateHash
      * @throws IOException
      */
-    public static HashMap<String, Coordinate> readCoordinates(String coorPath, String coorFileName) throws IOException {
+    public static HashMap<String, Coordinate> readCoordinates(String coorPath, String coorFileName) {
         /**
          * coordinates file format:
          * <0:region ID - String> <1:chrom - String> <2:strand - String> <3:start position - long> <4:end position - long>
@@ -37,11 +37,16 @@ public class IO {
             while (line != null) {
                 if (!line.equals("")) {
                     items = line.split("\t");
+                    if (items.length != 5){
+                        throw new RuntimeException("invalid coordinate file! Please double check your uploaded coordinate file");
+                    }
                     coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Long.valueOf(items[3]),
                                                                 Long.valueOf(items[4])));
                 }
                 line = coordinatesBuffReader.readLine();
             }
+        } catch (IOException e) {
+            throw new RuntimeException("error in reading coordinate file! Please double check your uploaded coordinate file");
         }
         return coordinateHash;
     }

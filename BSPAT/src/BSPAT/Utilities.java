@@ -11,7 +11,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
-
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -31,14 +30,19 @@ public class Utilities {
         e.printStackTrace();
         if (constant != null && constant.email != null && constant.jobID != null) {
             try {
-                Utilities.sendEmail(constant.email, constant.jobID, String.format("%s failed:\n%s\n", constant.jobID,
-                                                                                  ExceptionUtils.getStackTrace(e)));
+                Utilities.sendEmail(constant.email, constant.jobID,
+                                    String.format("%s failed:\n%s\n", constant.jobID, ExceptionUtils.getStackTrace(e)));
             } catch (MessagingException innerException) {
                 innerException.printStackTrace();
                 throw new RuntimeException("failed to send email!", e);
             }
         }
         throw new RuntimeException(e);
+    }
+
+    public static Throwable getRootCause(Throwable throwable) {
+        if (throwable.getCause() != null) return getRootCause(throwable.getCause());
+        return throwable;
     }
 
     public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {
@@ -51,10 +55,14 @@ public class Utilities {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-") ||
-                            line.startsWith("BLAT")) {
+                            line.startsWith("BLAT") || line.startsWith("<H2>")) {
                         continue;
                     }
                     String[] items = line.split("\\s+");
+                    if (items.length != 11) {
+                        throw new RuntimeException(
+                                "Incorrect Blat query result. Please double check your reference file");
+                    }
                     // items[0] -- query id, items[1] -- score, items[4] -- qsize,
                     // items[6] -- chrom, items[7] -- strand, items[8] -- start,
                     // items[9] -- end
@@ -76,7 +84,8 @@ public class Utilities {
             }
         }
         if (coorHashMap.size() == 0) {
-            throw new RuntimeException("No correct coordinate found!");
+            throw new RuntimeException(
+                    "No correct coordinate found for given reference file. Please double check your reference file");
         }
     }
 
