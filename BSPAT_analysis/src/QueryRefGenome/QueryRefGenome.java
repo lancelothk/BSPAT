@@ -22,14 +22,15 @@ public class QueryRefGenome {
     private int regionLength;
 
     public static void main(String[] args) throws IOException {
-        QueryRefGenome queryRefGenome = new QueryRefGenome("/media/kehu/win-data/Dataset/cpgIslandExt_hg18_UCSCGB.txt", 100, 200);
+        QueryRefGenome queryRefGenome = new QueryRefGenome("/media/kehu/win-data/Dataset/cpgIslandExt_hg18_UCSCGB.txt",
+                                                           100, 200);
         Map<String, String> resultMap = queryRefGenome.query("/media/kehu/win-data/Dataset/hg18_UCSC_ref/chromFa");
         for (String key : resultMap.keySet()) {
             System.out.println('>' + key + "\n" + resultMap.get(key).toUpperCase());
         }
     }
 
-    public QueryRefGenome(String cpgIslandFileName, int regionNumber,  int regionLength) throws IOException {
+    public QueryRefGenome(String cpgIslandFileName, int regionNumber, int regionLength) throws IOException {
         this.regionNumber = regionNumber;
         this.regionLength = regionLength;
         List<CpGIsland> cpGIslandList = readCpGIsland(cpgIslandFileName);
@@ -53,21 +54,23 @@ public class QueryRefGenome {
     }
 
     private StringBuilder loadRefGenome(String refGenomePath, String chr) throws IOException {
-        return CharStreams.readLines(new FileReader(String.format("%s/%s.fa", refGenomePath, chr)), new LineProcessor<StringBuilder>() {
-            StringBuilder refChrBuilder = new StringBuilder(100000000);
-            @Override
-            public boolean processLine(String s) throws IOException {
-                if (!s.startsWith(">")){
-                    refChrBuilder.append(s);
-                }
-                return true;
-            }
+        return CharStreams.readLines(new FileReader(String.format("%s/%s.fa", refGenomePath, chr)),
+                                     new LineProcessor<StringBuilder>() {
+                                         StringBuilder refChrBuilder = new StringBuilder(100000000);
 
-            @Override
-            public StringBuilder getResult() {
-                return refChrBuilder;
-            }
-        });
+                                         @Override
+                                         public boolean processLine(String s) throws IOException {
+                                             if (!s.startsWith(">")) {
+                                                 refChrBuilder.append(s);
+                                             }
+                                             return true;
+                                         }
+
+                                         @Override
+                                         public StringBuilder getResult() {
+                                             return refChrBuilder;
+                                         }
+                                     });
     }
 
 
@@ -96,7 +99,8 @@ public class QueryRefGenome {
         Random rand = new Random();
         for (int i = 0; i < regionNumber; i++) {
             int r = rand.nextInt(cpgIslandList.size());
-            while (cpgIslandList.get(r).getCpgNum() <= MINCPGNUM || cpgIslandList.get(r).length() <= regionLength){
+            while (cpgIslandList.get(r).getCpgNum() <= MINCPGNUM || cpgIslandList.get(r).length() <= regionLength ||
+                    pickedList.contains(cpgIslandList.get(r))) {
                 r = rand.nextInt(cpgIslandList.size());
             }
             pickedList.add(cpgIslandList.get(r));
@@ -108,12 +112,11 @@ public class QueryRefGenome {
         List<CpGIsland> cpGIslandList = new ArrayList<>();
         ICsvBeanReader beanReader = new CsvBeanReader(new FileReader(fileName), CsvPreference.TAB_PREFERENCE);
         beanReader.getHeader(true);
-        final String[] header = new String[] {"chrom", "chromStart", "chromEnd", "name", null, "cpgNum", null, null, null, null};
-        final CellProcessor[] processors = new CellProcessor[]{
-                null, new ParseInt(), new ParseInt(), null, null, new ParseInt(), null, null, null, null};
+        final String[] header = new String[]{"chrom", "chromStart", "chromEnd", "name", null, "cpgNum", null, null, null, null};
+        final CellProcessor[] processors = new CellProcessor[]{null, new ParseInt(), new ParseInt(), null, null, new ParseInt(), null, null, null, null};
         CpGIsland cpgIsland;
         while ((cpgIsland = beanReader.read(CpGIsland.class, header, processors)) != null) {
-            if (!cpgIsland.getChrom().contains("_") && cpgIsland.getChrom().startsWith("chr")){
+            if (!cpgIsland.getChrom().contains("_") && cpgIsland.getChrom().startsWith("chr")) {
                 cpGIslandList.add(cpgIsland);
             }
         }
