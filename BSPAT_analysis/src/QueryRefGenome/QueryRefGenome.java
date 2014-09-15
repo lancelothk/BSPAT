@@ -22,10 +22,10 @@ public class QueryRefGenome {
     private int regionLength;
 
     public static void main(String[] args) throws IOException {
-        QueryRefGenome queryRefGenome = new QueryRefGenome("/media/kehu/win-data/Dataset/cpgIslandExt_hg18_UCSCGB.txt", 10, 200);
+        QueryRefGenome queryRefGenome = new QueryRefGenome("/media/kehu/win-data/Dataset/cpgIslandExt_hg18_UCSCGB.txt", 100, 200);
         Map<String, String> resultMap = queryRefGenome.query("/media/kehu/win-data/Dataset/hg18_UCSC_ref/chromFa");
         for (String key : resultMap.keySet()) {
-            System.out.println('>' + key + "\n" + resultMap.get(key));
+            System.out.println('>' + key + "\n" + resultMap.get(key).toUpperCase());
         }
     }
 
