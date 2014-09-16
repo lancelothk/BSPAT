@@ -3,13 +3,11 @@ package BSPAT;
 import DataType.CpGSite;
 import DataType.ExtensionFilter;
 import DataType.Sequence;
-import DataType.StringInternPool;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -26,16 +24,6 @@ public class ImportBismarkResult {
         readReference(refPath);
         readBismarkAlignmentResult(inputFolder);
         readBismarkCpGResult(inputFolder);
-    }
-
-    private static String intern(WeakHashMap<String, WeakReference<String>> pool, String str) {
-        final WeakReference<String> cached = pool.get(str);
-        if (cached != null) {
-            final String value = cached.get();
-            if (value != null) return value;
-        }
-        pool.put(str, new WeakReference<>(str));
-        return str;
     }
 
     public Map<String, String> getReferenceSeqs() {
@@ -100,7 +88,7 @@ public class ImportBismarkResult {
                     items = line.split("\t");
                     // substract two bps from the start position to match original reference
                     // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-                    Sequence seq = new Sequence(items[0], StringInternPool.intern(items[2]), Integer.valueOf(items[3]) - 3, StringInternPool.intern(items[9]));
+                    Sequence seq = new Sequence(items[0], items[2], Integer.valueOf(items[3]) - 3, items[9]);
                     if (cutTag(items[14]).equals("CT")) {
                         seq.setFRstate("F");
                     } else {

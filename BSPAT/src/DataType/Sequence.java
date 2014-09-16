@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Sequence {
     private String id; // 1
-//    private String flag; // 2
+    //    private String flag; // 2
     private String region; // 3
     private int startPos; // 4
     // 5 MAPQ
@@ -16,7 +16,7 @@ public class Sequence {
     // 8 PNEXT
     // 9 TLEN
     private String originalSeq; // 10
-//    private String qualityScore; // 11
+    //    private String qualityScore; // 11
 //    private String editDist; // 12 edit distance to the reference
 //    private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
 //    private String methylCall; // 14 methylation call string
@@ -53,8 +53,8 @@ public class Sequence {
      * generate methylation and mutation String; calculate
      * conversion rate, methylation rate
      */
-	public static void processSequence(String referenceSeq, final List<Sequence> seqList) {
-		// convert reference sequence and count C in non-CpG context.
+    public static void processSequence(String referenceSeq, final List<Sequence> seqList) {
+        // convert reference sequence and count C in non-CpG context.
         String convertedReferenceSeq = "";
         // count C in non-CpG context.  Maybe not efficient enough since scan twice.
         int countOfNonCpGC = StringUtils.countMatches(referenceSeq, "C") - StringUtils.countMatches(referenceSeq, "CG");
@@ -129,35 +129,9 @@ public class Sequence {
             seq.setBisulConversionRate(1 - (countOfUnConvertedC / countOfNonCpGC));
             seq.setMethylationRate(countOfMethylatedCpG / seq.getCpGSites().size());
             seq.setSequenceIdentity(1 - unequalNucleotide / (seq.getOriginalSeq().length() - seq.getCpGSites().size()));
-            seq.setMethylationString(StringInternPool.intern(new String(methylationString)));
-            seq.setMutationString(StringInternPool.intern(new String(mutationString)));
+            seq.setMethylationString(new String(methylationString));
+            seq.setMutationString(new String(mutationString));
         }
-    }
-
-    /**
-     * reverse and complement Sequence
-     *
-     * @param str
-     * @return
-     */
-    public String complementarySequence(String str) {
-        StringBuffer strBuff = new StringBuffer(str);
-        String result = "";
-        //strBuff.reverse(); // for reverse sequence
-        for (int i = 0; i < strBuff.length(); i++) {
-            if (strBuff.charAt(i) == 'A') {
-                result += 'T';
-            } else if (strBuff.charAt(i) == 'T') {
-                result += 'A';
-            } else if (strBuff.charAt(i) == 'C') {
-                result += 'G';
-            } else if (strBuff.charAt(i) == 'G') {
-                result += 'C';
-            } else {
-                result += strBuff.charAt(i);
-            }
-        }
-        return result;
     }
 
     public int getEndPos() {
@@ -265,8 +239,8 @@ public class Sequence {
     }
 
     public String getMeMuString() {
-		// TODO if we can make sure MeMuString won't change, then we can cache it.
-		StringBuilder meMuBuilder = new StringBuilder();
+        // TODO if we can make sure MeMuString won't change, then we can cache it.
+        StringBuilder meMuBuilder = new StringBuilder();
         for (int i = 0; i < originalSeq.length(); i++) {
             if (methylationString.charAt(i) != '-' && mutationString.charAt(i) != '-') {
                 // if both methyl and mutation occurs, use mutation first
