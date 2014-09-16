@@ -89,11 +89,6 @@ public class ImportBismarkResult {
                     // substract two bps from the start position to match original reference
                     // Since bismark use 1-based position, substract one more bp to convert to 0-based position.
                     Sequence seq = new Sequence(items[0], items[2], Integer.valueOf(items[3]) - 3, items[9]);
-                    if (cutTag(items[14]).equals("CT")) {
-                        seq.setFRstate("F");
-                    } else {
-                        seq.setFRstate("R");
-                    }
                     sequencesHashMap.put(seq.getId(), seq);
                     line = buffReader.readLine();
                 }

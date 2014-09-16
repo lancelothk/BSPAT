@@ -28,7 +28,6 @@ public class Sequence {
     private double methylationRate;
     private double bisulConversionRate;
     private double sequenceIdentity;
-    private String FRstate = "";
     private List<String> allelePosList;
 
     public Sequence(String id, String region, int startPos, String originalSeq) {
@@ -136,14 +135,6 @@ public class Sequence {
 
     public int getEndPos() {
         return startPos + length() - 1;
-    }
-
-    public void setFRstate(String fRstate) {
-        FRstate = fRstate;
-    }
-
-    public String getFRstate() {
-        return FRstate;
     }
 
     public void setId(String id) {
