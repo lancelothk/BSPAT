@@ -101,10 +101,10 @@ public class IntegrationTest {
 
         verify(request, Mockito.times(1)).getRequestDispatcher("mappingResult.jsp");
 
-        assertEquals("Sequences analysed in total", 838, myAnswer.resultConstant.mappingSummary.getSeqAnalysed());
-        assertEquals("Sequences with a unique best hit", 792,
+        assertEquals("Sequences analysed in total", 1676, myAnswer.resultConstant.mappingSummary.getSeqAnalysed());
+        assertEquals("Sequences with a unique best hit", 1584,
                      myAnswer.resultConstant.mappingSummary.getUniqueBestHit());
-        assertEquals("Sequences without any alignment", 46, myAnswer.resultConstant.mappingSummary.getNoAlignment());
+        assertEquals("Sequences without any alignment", 92, myAnswer.resultConstant.mappingSummary.getNoAlignment());
         assertEquals("Sequences did not map uniquely", 0, myAnswer.resultConstant.mappingSummary.getNotUnique());
         assertEquals("Invalid sequences", 0, myAnswer.resultConstant.mappingSummary.getNotExtracted());
         assertEquals("Mapping efficiency", "0.945",
@@ -143,21 +143,27 @@ public class IntegrationTest {
 
         verify(request, Mockito.times(1)).getRequestDispatcher("analysisResult.jsp");
 
-        assertEquals("Sequence number cover target region", 792,
+        assertEquals("Sequence number cover target region", 1584,
                      myAnswer.resultConstant.seqCountSummary.getSeqBeforeFilter());
-        assertEquals("Sequence number after filtering", 770,
+        assertEquals("Sequence number after filtering", 1540,
                      myAnswer.resultConstant.seqCountSummary.getSeqAfterFilter());
         assertTrue("Analysis phase running time", myAnswer.resultConstant.analysisTime >= 1);
 
         assertNotNull("Anslysis result", myAnswer.resultConstant.analysisResultLink);
 
-        assertEquals("Number of Experiments", 1, myAnswer.resultConstant.experiments.size());
+        assertEquals("Number of Experiments", 2, myAnswer.resultConstant.experiments.size());
         assertEquals("Number of Regions", 1, myAnswer.resultConstant.experiments.get(0).getReportSummaries().size());
         assertTrue("Has ASM pattern", myAnswer.resultConstant.experiments.get(0).getReportSummaries().get(0).hasASM());
+        assertEquals("Number of Regions", 1, myAnswer.resultConstant.experiments.get(1).getReportSummaries().size());
+        assertTrue("Has ASM pattern", myAnswer.resultConstant.experiments.get(1).getReportSummaries().get(0).hasASM());
 
         // check pattern result files
         File testFileFolder = new File("/home/kehu/IdeaProjects/BSPAT/testFiles");
-        File resultFolder = new File(String.format("%s/Job%s/pattern_result/testExperiment", testPath, jobID));
+        File resultFolder = new File(String.format("%s/Job%s/pattern_result/", testPath, jobID));
+        checkResultFiles(testFileFolder, resultFolder);
+    }
+
+    private void checkResultFiles(File testFileFolder, File resultFolder){
         if (testFileFolder.exists() && resultFolder.exists()) {
             File[] files = testFileFolder.listFiles(new ExtensionFilter(".txt"));
             if (files != null) {

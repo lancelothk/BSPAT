@@ -74,13 +74,10 @@ public class MappingServlet extends HttpServlet {
                 FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
                                               new File(constant.seqsPath + "demoExperiment"));
             } else if (Boolean.parseBoolean(request.getParameter("test"))) {
-                experiments.add(new Experiment(1, "testExperiment"));
                 FileUtils.copyFileToDirectory(new File(constant.testPath + "testReference.fasta"),
                                               new File(constant.originalRefPath));
-                File[] seqs = new File(constant.testPath).listFiles(new ExtensionFilter(".fastq"));
-                for (File seq : seqs) {
-                    FileUtils.copyFileToDirectory(seq, new File(constant.seqsPath + "testExperiment"));
-                }
+                addTestExperiment(constant, experiments, "experiment1", 1);
+                addTestExperiment(constant, experiments, "experiment2", 2);
             } else {
                 addExperiment(request, experiments);
                 handleUploadedFiles(constant, request, experiments);
@@ -141,6 +138,14 @@ public class MappingServlet extends HttpServlet {
             request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
         } catch (InterruptedException | ServletException | IOException | MessagingException | ExecutionException | RuntimeException e) {
             Utilities.handleServletException(e, constant);
+        }
+    }
+
+    private void addTestExperiment(Constant constant, List<Experiment> experiments, String experimentName, int experimentIndex) throws IOException {
+        experiments.add(new Experiment(experimentIndex, experimentName));
+        File[] seqs = new File(constant.testPath + experimentName).listFiles(new ExtensionFilter(".fastq"));
+        for (File seq : seqs) {
+            FileUtils.copyFileToDirectory(seq, new File(constant.seqsPath + "/" + experimentName));
         }
     }
 
