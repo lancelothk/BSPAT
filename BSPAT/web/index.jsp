@@ -166,6 +166,7 @@
         if (isEmptyValue("ref", "No reference file!") || isInvalidRefFile() || containBlank("ref")) {
             valid = false;
         }
+        var names = [];
         for (var i = 1; i <= elementCount; i++) {
             if (isEmptyValue("experiment" + i, "Experiment " + i + " name is empty!") || containBlank("experiment" + i)) {
                 valid = false;
@@ -173,11 +174,25 @@
             if (isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!") || isInvalidSeqFile("seqFile" + i) || containBlank("seqFile" + i)) {
                 valid = false;
             }
+            if (hasDuplicate("experiment" + i, names,"Experiment " + i + " name is duplicate!" )){
+                valid = false;
+            }
         }
         if (valid == true) {
             resetPage();
         }
         return valid;
+    }
+
+    function hasDuplicate(id, array, msg){
+        var element = document.getElementById(id);
+        if(array.indexOf(element.value) == -1)  {
+            array.push(element.value);
+            return false;
+        }else {
+            createErrorMsg(element, msg);
+            return true;
+        }
     }
 
     function resetPage() {
