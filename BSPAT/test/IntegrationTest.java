@@ -58,7 +58,8 @@ public class IntegrationTest {
         @Override
         public Object answer(InvocationOnMock invocation) throws Throwable {
             Object[] args = invocation.getArguments();
-            DataType.Constant constant = (DataType.Constant) args[1];
+            String jobID = (String) args[1];
+            DataType.Constant constant = DataType.Constant.readConstant(jobID);
             constant.targetFileName = constant.coorFileName;
             resultConstant = constant;
             FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
@@ -100,6 +101,7 @@ public class IntegrationTest {
         mappingServlet.doPost(request, response);
 
         verify(request, Mockito.times(1)).getRequestDispatcher("mappingResult.jsp");
+
 
         assertEquals("Sequences analysed in total", 1676, myAnswer.resultConstant.mappingSummary.getSeqAnalysed());
         assertEquals("Sequences with a unique best hit", 1584,
