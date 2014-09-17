@@ -143,7 +143,7 @@ public class AnalysisServlet extends HttpServlet {
 			constant.finishedAnalysis = true;
 			// update constant file on disk
             constant.writeConstant();
-            request.setAttribute("constant", constant);
+            request.setAttribute("jobID",constant.jobID);
 			request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
         } catch (InterruptedException | ServletException | IOException | MessagingException | ExecutionException | RuntimeException e) {
             Utilities.handleServletException(e, constant);

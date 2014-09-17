@@ -12,9 +12,33 @@
 <body>
 <div id="container">
     <%@ include file="menu.html" %>
+    <%@ page import="BSPAT.Utilities, DataType.Constant" %>
+    <%@ page import="DataType.Experiment" %>
     <div id="content">
         <div id="content_top"></div>
         <div id="content_main">
+            <%
+                Constant constant=null;
+                String jobID = (String) request.getAttribute("jobID");
+                if (jobID != null) {
+                    if (jobID.toLowerCase().startsWith(Constant.JOB_FOLDER_PREFIX.toLowerCase())) {
+                        jobID = jobID.substring(3);
+                    }
+                    Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
+                    try {
+                        constant = Constant.readConstant(jobID);
+                    } catch (Exception e) {
+                        Utilities.showAlertWindow(response, "can not find Result ID:\t" + jobID);
+                        return;
+                    }
+
+                }
+                if (constant == null) {
+                    System.err.println("Can not load Result ID:\t" + jobID);
+                    Utilities.showAlertWindow(response, "Can not load Result ID:\t" + jobID);
+                    return;
+                }
+            %>
             <h2>Step 2: Analysis:</h2>
 
             <p class="dottedline"></p>
@@ -23,7 +47,7 @@
 
             <form action="analysis" onsubmit="return validateInput()" enctype="multipart/form-data" method="post">
                 <input type="hidden" name="jobID"
-                       value="<c:out value="${constant.jobID}" />">
+                       value="<%=constant.jobID%>">
                 <table id="analysisTable">
                     <tr>
                         <td>Mapping Summary<sup><a
@@ -31,52 +55,57 @@
                     </tr>
                     <tr>
                         <td>Result ID:</td>
-                        <td><c:out value="${constant.jobID}"/></td>
+                        <td><%=constant.jobID%></td>
                     </tr>
                     <tr>
-                        <td>Experiment(<c:out value="${constant.experiments.size()}"/>):
+                        <td>Experiment(<%=constant.experiments.size()%>):
                         </td>
-                        <td><c:forEach items="${constant.experiments}"
-                                       var="experiment">
-                            <c:out value="${experiment.getName()}"/>&nbsp;&nbsp;
-                        </c:forEach></td>
+                        <td>
+                            <%
+                                for (Experiment experiment : constant.experiments) {
+                            %>
+                            <%=experiment.getName()%>&nbsp;&nbsp;
+                            <%
+                                }
+                            %>
+                        </td>
                     </tr>
                     <tr>
                         <td>Sequences analysed in total:</td>
-                        <td><c:out value="${constant.mappingSummary.getSeqAnalysed()}"/></td>
+                        <td><%=constant.mappingSummary.getSeqAnalysed()%></td>
                     </tr>
                     <tr>
                         <td>Sequences with a unique best hit:</td>
-                        <td><c:out value="${constant.mappingSummary.getUniqueBestHit()}"/></td>
+                        <td><%=constant.mappingSummary.getUniqueBestHit()%></td>
                     </tr>
                     <tr>
                         <td>Sequences without any alignment:</td>
-                        <td><c:out value="${constant.mappingSummary.getNoAlignment()}"/></td>
+                        <td><%=constant.mappingSummary.getNoAlignment()%></td>
                     </tr>
                     <tr>
                         <td>Sequences did not map uniquely:</td>
-                        <td><c:out value="${constant.mappingSummary.getNotUnique()}"/></td>
+                        <td><%=constant.mappingSummary.getNotUnique()%></td>
                     </tr>
                     <tr>
                         <td>Invalid sequences:</td>
-                        <td><c:out value="${constant.mappingSummary.getNotExtracted()}"/></td>
+                        <td><%=constant.mappingSummary.getNotExtracted()%></td>
                     </tr>
                     <tr>
                         <td>Mapping efficiency:</td>
-                        <td><c:out value="${constant.mappingSummary.getMappingEfficiencyString()}"/></td>
+                        <td><%=constant.mappingSummary.getMappingEfficiencyString()%></td>
                     </tr>
                     <tr>
                         <td>Mapping phase running time:</td>
-                        <td><c:out value="${constant.mappingTime}"/>s</td>
+                        <td><%=constant.mappingTime%>s</td>
                     </tr>
                     <tr>
                         <td>Reference coordinates:</td>
-                        <td><a href=<c:out value="${constant.getAbsolutePathCoorFile()}"/>>coordinates.coor</a>
+                        <td><a href=<%=constant.getAbsolutePathCoorFile()%>>coordinates.coor</a>
                         </td>
                     </tr>
                     <tr>
                         <td>Mapping result:</td>
-                        <td><a href=<c:out value="${constant.mappingResultLink}"/>>mappingResult.zip</a></td>
+                        <td><a href=<%=constant.mappingResultLink%>>mappingResult.zip</a></td>
                     </tr>
                 </table>
                 <p class="dottedline"></p>

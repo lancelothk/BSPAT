@@ -54,12 +54,12 @@ public class resultRetrieveServlet extends HttpServlet {
             String mPage = request.getParameter("mPage");
             String aPage = request.getParameter("aPage");
             if (mPage != null) {
-                request.setAttribute("constant", constant);
+                request.setAttribute("jobID",constant.jobID);
                 request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
                 return;
             }
             if (aPage != null) {
-                request.setAttribute("constant", constant);
+                request.setAttribute("jobID",constant.jobID);
                 request.getRequestDispatcher("analysisResult.jsp").forward(request, response);
                 return;
             }

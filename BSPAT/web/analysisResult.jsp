@@ -19,136 +19,199 @@
     </script>
     <title>BSPAT</title>
 </head>
-
+<%@ page import="BSPAT.ReportSummary, BSPAT.Utilities" %>
+<%@ page import="DataType.Constant" %>
+<%@ page import="DataType.Experiment" %>
+<%@ page import="DataType.PatternLink" %>
 <body>
 <div id="container">
     <%@ include file="menu.html" %>
     <div id="content">
         <div id="content_top"></div>
         <div id="content_main">
+            <%
+                Constant constant = null;
+                String jobID = (String) request.getAttribute("jobID");
+                if (jobID != null) {
+                    if (jobID.toLowerCase().startsWith(Constant.JOB_FOLDER_PREFIX.toLowerCase())) {
+                        jobID = jobID.substring(3);
+                    }
+                    Constant.DISKROOTPATH = this.getServletConfig().getServletContext().getRealPath("");
+                    try {
+                        constant = Constant.readConstant(jobID);
+                    } catch (Exception e) {
+                        Utilities.showAlertWindow(response, "can not find Result ID:\t" + jobID);
+                        return;
+                    }
+                }
+                if (constant == null) {
+                    System.err.println("Can not load Result ID:\t" + jobID);
+                    Utilities.showAlertWindow(response, "Can not load Result ID:\t" + jobID);
+                    return;
+                }
+            %>
             <table id="resultSummary">
                 <tr>
                     <td>Analysis Result Summary<sup><a href="manualResult.jsp#resultSummary">?</a></sup></td>
                 </tr>
                 <tr>
                     <td>Result ID:</td>
-                    <td><c:out value="${constant.jobID}"/></td>
+                    <td><%=constant.jobID %>
+                    </td>
                 </tr>
                 <tr>
-                    <td>Experiment(<c:out value="${constant.experiments.size()}"/>):
+                    <td>Experiment(<%=constant.experiments.size()%>):
                     </td>
-                    <td><c:forEach items="${constant.experiments}"
-                                   var="experiment">
-                        <c:out value="${experiment.getName()}"/>&nbsp;&nbsp;
-                    </c:forEach></td>
+                    <td>
+                        <%
+                            for (Experiment experiment : constant.experiments) {
+                        %>
+                        <%=experiment.getName()%>&nbsp;&nbsp;
+                        <%
+                            }
+                        %>
+                    </td>
                 </tr>
                 <tr>
                     <td>Sequence number cover target region:</td>
-                    <td><c:out value="${constant.seqCountSummary.getSeqBeforeFilter()}"/></td>
+                    <td><%=constant.seqCountSummary.getSeqBeforeFilter()%>
+                    </td>
                 </tr>
                 <tr>
                     <td>Sequence number after filtering:</td>
-                    <td><c:out value="${constant.seqCountSummary.getSeqAfterFilter()}"/></td>
+                    <td><%=constant.seqCountSummary.getSeqAfterFilter()%>
+                    </td>
                 </tr>
                 <tr>
                     <td>Bisulfite conversion rate:</td>
-                    <td><c:out value="${constant.getConversionRateThreshold()}"/></td>
+                    <td><%=constant.getConversionRateThreshold()%>
+                    </td>
                 </tr>
                 <tr>
                     <td>Sequence identity:</td>
-                    <td><c:out value="${constant.sequenceIdentityThreshold}"/></td>
+                    <td><%=constant.sequenceIdentityThreshold%>
+                    </td>
                 </tr>
-                <c:choose>
-                    <c:when test="${constant.minP0Threshold >= 0}">
-                        <tr>
-                            <td>&alpha; threshold:</td>
-                            <td><c:out value="${constant.minP0Threshold}"/></td>
-                        </tr>
-                        <tr>
-                            <td>Critical Value:</td>
-                            <td><c:out value="${constant.criticalValue}"/></td>
-                        </tr>
-                    </c:when>
-                    <c:when test="${constant.minMethylThreshold >= 0}">
-                            <tr>
-                                <td>methylation pattern threshold:</td>
-                                <td><c:out value="${constant.minMethylThreshold}"/></td>
-                            </tr>
-                        </c:when>
-                </c:choose>
+                <%
+                    if (constant.minP0Threshold >= 0) {
+                %>
+                <tr>
+                    <td>&alpha; threshold:</td>
+                    <td><%=constant.minP0Threshold%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Critical Value:</td>
+                    <td><%=constant.criticalValue%>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+                <%
+                    if (constant.minMethylThreshold >= 0) {
+                %>
+                <tr>
+                    <td>methylation pattern threshold:</td>
+                    <td><%=constant.minMethylThreshold%>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
                 <tr>
                     <td>Mutation threshold:</td>
-                    <td><c:out value="${constant.mutationPatternThreshold}"/></td>
+                    <td><%=constant.mutationPatternThreshold%>
+                    </td>
                 </tr>
                 <tr>
                     <td>Analysis running time:</td>
-                    <td><c:out value="${constant.analysisTime}"/>s</td>
+                    <td><%=constant.analysisTime%>s</td>
                 </tr>
                 <tr>
                     <td>Zipped analysis result:</td>
-                    <td><a href=<c:out value="${constant.analysisResultLink}"/>>analysisResult.zip</a></td>
+                    <td><a href=<%=constant.analysisResultLink%>>analysisResult.zip</a></td>
                 </tr>
             </table>
             <p class="dottedline"></p>
-            <c:forEach items="${constant.experiments}" var="experiment">
-                <table id="analysisResult">
-                    <tr>
-                        <td>Experiment:<sup><a href="manualResult.jsp#experimentResult">?</a></sup></td>
-                        <td><c:out value="${experiment.getName()}"/></td>
-                    </tr>
-                    <c:forEach items="${experiment.getReportSummaries()}"
-                               var="reportSummary">
-                        <tr>
-                            <td>Region:</td>
-                            <td><c:out value="${reportSummary.getId()}"/></td>
-                        </tr>
-                        <c:forEach items="${reportSummary.getPatternLinks()}"
-                                   var="patternLink">
-                            <tr>
-                                <td><c:out value="${patternLink.getPatternType()}"/></td>
-                                <td><a
-                                        href=<c:out value="${patternLink.getTextResultLink()}"/>>text</a></td>
-                                <c:choose>
-                                    <c:when test="${constant.coorReady == true}">
-                                        <td><a
-                                                href="<c:out value="${patternLink.getFigureResultLink()}"/>.<c:out value="${constant.figureFormat}" />"><c:out
-                                                value="${constant.figureFormat}"/></a></td>
-                                        <td><a
-                                                href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://<c:out value="${patternLink.getGBResultLink()}"/>">GenomeBrowser</a>
-                                        </td>
-                                    </c:when>
-                                </c:choose>
-                            </tr>
-                        </c:forEach>
-                        <tr>
-                            <c:choose>
-                                <c:when
-                                        test="${constant.coorReady == true && reportSummary.hasASM() == true}">
-                                    <td>ASM pattern</td>
-                                    <c:choose>
-                                        <c:when test="${reportSummary.getASMsnp() != null}">
-                                            <td><a
-                                                    href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs=<c:out value="${reportSummary.getASMsnp().getrsID()}"/>">SNP</a>
-                                            </td>
-                                        </c:when>
-                                    </c:choose>
-                                    <td><a
-                                            href="<c:out value="${reportSummary.getASMFigureLink()}"/>.<c:out value="${constant.figureFormat}"/>"><c:out
-                                            value="${constant.figureFormat}"/></a></td>
-                                    <td><a
-                                            href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://<c:out value="${reportSummary.getASMGBLink()}"/>">GenomeBrowser</a>
-                                    </td>
-                                </c:when>
-                            </c:choose>
-                        </tr>
-                        <tr>
-                            <td>Other Info</td>
-                            <td><a
-                                    href=<c:out value="${reportSummary.getStatTextLink()}"/>>text</a></td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </c:forEach>
+            <%
+                for (Experiment experiment : constant.experiments) {
+            %>
+            <table id="analysisResult">
+                <tr>
+                    <td>Experiment:<sup><a href="manualResult.jsp#experimentResult">?</a></sup></td>
+                    <td><%=experiment.getName()%>
+                    </td>
+                </tr>
+                <%
+                    for (ReportSummary reportSummary : experiment.getReportSummaries()) {
+                %>
+                <tr>
+                    <td>Region:</td>
+                    <td><%=reportSummary.getId()%>
+                    </td>
+                </tr>
+                <% for (PatternLink patternLink : reportSummary.getPatternLinks()) {
+                %>
+                <tr>
+                    <td><%=patternLink.getPatternType()%>
+                    </td>
+                    <td><a
+                            href=<%=patternLink.getTextResultLink()%>>text</a></td>
+                    <%
+                        if (constant.coorReady) {
+                    %>
+                    <td><a
+                            href="<%=patternLink.getFigureResultLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%></a>
+                    </td>
+                    <td><a
+                            href="
+                            http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://patternLink.getGBResultLink()
+                        ">GenomeBrowser</a>
+                    </td>
+                    <%
+                        }
+                    %>
+                </tr>
+                <%
+                    }
+                %>
+                <tr>
+                    <%
+                        if (constant.coorReady && reportSummary.hasASM()) {
+                    %>
+                    <td>ASM pattern</td>
+                    <%
+                        if (reportSummary.getASMsnp() != null) {
+                    %>
+                    <td><a
+                            href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs=<%=reportSummary.getASMsnp().getrsID()%>">SNP</a>
+                    </td>
+                    <%
+                        }
+                    %>
+                    <td><a
+                            href="<%=reportSummary.getASMFigureLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%></a>
+                    </td>
+                    <td><a
+                            href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://<%=reportSummary.getASMGBLink()%>">GenomeBrowser</a>
+                    </td>
+                    <%
+                        }
+                    %>
+                </tr>
+                <tr>
+                    <td>Other Info</td>
+                    <td><a
+                            href=<%=reportSummary.getStatTextLink()%>>text</a></td>
+                </tr>
+                <%
+                    }
+                %>
+            </table>
+            <%
+                }
+            %>
         </div>
         <div id="content_bottom"></div>
     </div>

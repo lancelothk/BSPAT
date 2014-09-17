@@ -134,7 +134,7 @@ public class MappingServlet extends HttpServlet {
                                 "Mapping has finished.\n" + "Your jobID is " + constant.jobID +
                                         "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
             //redirect page
-            request.setAttribute("constant", constant);
+            request.setAttribute("jobID",constant.jobID);
             request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
         } catch (InterruptedException | ServletException | IOException | MessagingException | ExecutionException | RuntimeException e) {
             Utilities.handleServletException(e, constant);
