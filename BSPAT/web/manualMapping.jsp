@@ -28,9 +28,9 @@
                     <td>
                         <h4>Email Address(optional):</h4>
 
-                        <p class="ptext">The email address is used to notice user
+                        <p class="ptext">Email address here is used to notify user
                             when the mapping or analysis procedure has finished. A unique
-                            execution ID in the email is used for retrieving the
+                            job ID send in the email is used for retrieving the
                             result.</p>
                     </td>
                 </tr>
@@ -54,7 +54,7 @@
 
                         <p class="ptext">It specify the reference genome version used in
                             following analysis. The coordinates in result visualization is also based on
-                            this selection. Currently support hg19, hg18, hg17 and hg16.</p>
+                            this selection. Currently support hg38, hg19 and hg18 .</p>
                     </td>
                 </tr>
 
@@ -64,7 +64,7 @@
 
                         <p class="ptext">
                             Bismark parameter. User need to specify what kind of quality
-                            type used in the sequence file. Only available for fastq input.
+                            type used in the sequence file. Only used for fastq input.
                             Currently support phred33, phred64, solexa and solexa1.3. More
                             details can be found in <a
                                 href="http://www.bioinformatics.babraham.ac.uk/projects/bismark/Bismark_User_Guide.pdf">Bismark
@@ -105,7 +105,7 @@
                     <td>
                         <p class="ptext">
                             In this section, for each experiment, user need to enter an
-                            experiment name(without space character) in textbox and select one or multiple fastq/fasta
+                            experiment name(without space character, no duplicated names) in textbox and select one or multiple fastq/fasta
                             files to upload. The extension of fastq/fasta files
                             can be .fq, .fastq, .fa, .fasta .txt(.txt input is by default
                             treated as fastq file). The reads in sequence files will be
@@ -132,7 +132,7 @@
                     <td>
                         <p class="ptext">In the bottom of the page, "add experiment"
                             and "delete experiment" buttons are used to add and delete
-                            experiment above. After set all parameters, user need
+                            experiment above. After set all parameters, user can
                             to click "Execute" button to start the mapping.</p>
                     </td>
                 </tr>

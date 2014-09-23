@@ -32,13 +32,13 @@
                     <td><p class="dottedline"></p></td>
                 </tr>
                 <tr>
-                    <td>2. Example input data</td>
+                    <td>2. demo data</td>
                 </tr>
                 <tr>
-                    <td>Including reference file and several sequence files</td>
+                    <td>Including reference file and demo sequence files</td>
                 </tr>
                 <tr>
-                    <td><a href="download/example.zip"> example.zip </a></td>
+                    <td><a href="download/demo_data.zip"> demo_data.zip </a></td>
                 </tr>
                 <tr>
                     <td><p class="dottedline"></p></td>

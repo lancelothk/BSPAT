@@ -166,12 +166,12 @@
         <td>
             <p class="ptext">User should upload a file contains the coordinates which define the target region of
                 analysis. The file format should be same to reference coordinates file. It will be easier to create one
-                based on
-                reference coordinates file and upload it here.</p>
+                based on reference coordinates file and upload it here. If no target coordinate file uploaded, by default
+                BSPAT will use the original coordinate file, in other word, use original reference coordinates as target coordinates.</p>
             Notice: In the following analysis, only sequences fully covering target region will be included.
             E.g:
             <label>
-                <textarea readonly rows="5" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
+                <textarea readonly rows="6" cols="">target:CAACAACGTCTAGGG&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTCTAGGGACT&nbsp;(included)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GCAACAACGTCTAGGGACTGT&nbsp;(included)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;ACGCAACAACGTC&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACAACGTCTAG&nbsp;(excluded)&#13;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TAGGGACTGATC&nbsp;(excluded)</textarea>
             </label>
         </td>
     </tr>

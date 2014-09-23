@@ -141,31 +141,6 @@ public class BSSeqAnalysis {
         return new ArrayList<>(allelePatternMap.values());
     }
 
-//    // TODO replace list intersection with sequence parent id checking
-//    private List<Pattern> getMeMuPatern(List<Pattern> methylationPatternList, List<Pattern> mutationPatternList) {
-//        List<Pattern> meMuPaternList = new ArrayList<>();
-//        for (Pattern methylationPattern : methylationPatternList) {
-//            for (Pattern mutationPattern : mutationPatternList) {
-//                Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
-//                for (Sequence methylSeq : methylationPattern.sequenceList()) {
-//                    for (Sequence mutationSeq : mutationPattern.sequenceList()) {
-//                        // find intersection of two list
-//                        if (methylSeq == mutationSeq) {
-//                            memuPatern.addSequence(methylSeq);
-//                        }
-//                    }
-//                }
-//                if (memuPatern.sequenceList().size() != 0) {
-//                    memuPatern.setPatternString(memuPatern.sequenceList().get(0).getMeMuString());
-//                    memuPatern.setMethylationParentID(methylationPattern.getPatternID());
-//                    memuPatern.setMutationParentID(mutationPattern.getPatternID());
-//                    meMuPaternList.add(memuPatern);
-//                }
-//            }
-//        }
-//        return meMuPaternList;
-//    }
-
     private void sortAndAssignPatternID(List<Pattern> patternList) {
         // sort methylation pattern.
         Collections.sort(patternList, new PatternByCountComparator());

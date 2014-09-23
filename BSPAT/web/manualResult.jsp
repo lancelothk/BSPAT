@@ -93,7 +93,7 @@
     </tr>
     <tr>
         <td>
-            <h4>&alpha; threshold and Mutation threshold</h4>
+            <h4>&alpha; threshold, critical value and Mutation threshold</h4>
         </td>
     </tr>
     <tr>

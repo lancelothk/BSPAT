@@ -230,7 +230,7 @@ public class Sequence {
     }
 
     public String getMeMuString() {
-        // TODO if we can make sure MeMuString won't change, then we can cache it.
+        // TODO if we can make sure MeMuString immutable, then we can cache it.
         StringBuilder meMuBuilder = new StringBuilder();
         for (int i = 0; i < originalSeq.length(); i++) {
             if (methylationString.charAt(i) != '-' && mutationString.charAt(i) != '-') {
