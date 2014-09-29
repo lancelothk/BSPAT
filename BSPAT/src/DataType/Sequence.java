@@ -17,10 +17,10 @@ public class Sequence {
     // 9 TLEN
     private String originalSeq; // 10
     //    private String qualityScore; // 11
-//    private String editDist; // 12 edit distance to the reference
-//    private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
-//    private String methylCall; // 14 methylation call string
-//    private String readConvState; // 15 read conversion state for the alignment
+    //    private String editDist; // 12 edit distance to the reference
+    //    private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
+    //    private String methylCall; // 14 methylation call string
+    //    private String readConvState; // 15 read conversion state for the alignment
     //	private String XGtag; // 16 genome conversion state for the alignment
     private List<CpGSite> CpGSites;
     private String methylationString;
