@@ -18,6 +18,7 @@ public class Report {
 	private String region;
 	private ReportSummary reportSummary;
 	private Constant constant;
+    private List<CpGStatistics> cpgStatList;
 
     public Report(String region, String outputPath, String referenceSeq, Constant constant, ReportSummary reportSummary) {
 		this.constant = constant;
@@ -81,8 +82,8 @@ public class Report {
 				}
 			}
 
-			List<CpGStatistics> statList = new ArrayList<>(cpgStatHashtable.values());
-			Collections.sort(statList, new CpGStatComparator());
+            cpgStatList = new ArrayList<>(cpgStatHashtable.values());
+			Collections.sort(cpgStatList, new CpGStatComparator());
 			bufferedWriter.write("reference seq length:\t" + referenceSeq.length() + "\n");
 			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
 			bufferedWriter.write("Sequence identity threshold:\t" + constant.sequenceIdentityThreshold + "\n");
@@ -91,7 +92,7 @@ public class Report {
 			bufferedWriter.write("methylation rate for each CpG site:\n");
 			bufferedWriter.write("pos\trate" + "\n");
 
-			for (CpGStatistics cpgStat : statList) {
+			for (CpGStatistics cpgStat : cpgStatList) {
                 cpgStat.calcMethylLevel();
                 bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
             }
@@ -164,4 +165,8 @@ public class Report {
 			}
 		}
 	}
+
+    public List<CpGStatistics> getCpgStatList() {
+        return cpgStatList;
+    }
 }

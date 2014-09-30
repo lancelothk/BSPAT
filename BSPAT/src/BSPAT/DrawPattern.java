@@ -12,8 +12,10 @@ import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class DrawPattern {
@@ -41,7 +43,6 @@ public class DrawPattern {
     private Map<String, Coordinate> coordinateMap;
     private ReadAnalysisResult data;
     private String cellLine;
-    private List<Integer> refCpGs;
     private List<CpGStatistics> statList;
     private int refLength;
     private String beginCoor;
@@ -60,7 +61,6 @@ public class DrawPattern {
         this.coordinateMap = coordinateMap;
         this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region));
         this.cellLine = data.getCellLine();
-        this.refCpGs = data.getRefCpGs();
         this.statList = data.getStatList();
         this.refLength = data.getRefLength();
         this.beginCoor = data.getBeginCoor();
@@ -83,8 +83,8 @@ public class DrawPattern {
         graphWriter.setStroke(new BasicStroke());
 
         // 3. add refCpGSites
-        for (Integer cpgPos : refCpGs) {
-            graphWriter.drawLine(STARTX + cpgPos * WIDTH, height - BARHEIGHT / 2, STARTX + cpgPos * WIDTH,
+        for (CpGStatistics cpgStat : statList) {
+            graphWriter.drawLine(STARTX + cpgStat.getPosition() * WIDTH, height - BARHEIGHT / 2, STARTX + cpgStat.getPosition() * WIDTH,
                                  height + BARHEIGHT / 2);
         }
     }
@@ -167,25 +167,10 @@ public class DrawPattern {
         methylWriter.close();
     }
 
-    public void drawASMPattern(ReportSummary reportSummary, Pattern allelePattern, Pattern nonAllelePattern,
-                               String logPath, int totalCount) throws IOException, InterruptedException {
+    public void drawASMPattern(ReportSummary reportSummary,  PatternResult patternWithAllele, PatternResult patternWithoutAllele,
+                               String logPath) throws IOException, InterruptedException {
         int imageWidth = refLength * WIDTH + STARTX + 210;
         int imageHeight = STARTY + 180 + 10 * HEIGHTINTERVAL;
-
-        if (allelePattern == null || allelePattern.sequenceList().size() == 0 ||
-                nonAllelePattern.sequenceList().size() == 0) {
-            return;
-        }
-
-        PatternResult patternWithAllele = patternToPatternResult(allelePattern, refCpGs, totalCount);
-        PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, refCpGs, totalCount);
-
-        if (!hasASM(patternWithAllele, patternWithoutAllele)) {
-            reportSummary.setHasASM(false);
-            return;
-        } else {
-            reportSummary.setHasASM(true);
-        }
 
         FigureWriter ASMWriter = new FigureWriter(patternResultPath, figureFormat, region, "ASM", imageWidth,
                                                   imageHeight);
@@ -256,40 +241,6 @@ public class DrawPattern {
         ASMWriter.close();
     }
 
-    private PatternResult patternToPatternResult(Pattern pattern, List<Integer> refCpGs, int totalCount) {
-        PatternResult patternResult = new PatternResult();
-        Map<Integer, CpGSitePattern> cpGSiteMap = new HashMap<>();
-        for (Integer pos : refCpGs) {
-            if (cpGSiteMap.containsKey(pos)) {
-                throw new RuntimeException("refCpG has duplicated CpGsites!");
-            }
-            cpGSiteMap.put(pos, new CpGSitePattern(pos, false));
-        }
-        for (Sequence sequence : pattern.sequenceList()) {
-            for (CpGSite cpGSite : sequence.getCpGSites()) {
-                int pos = cpGSite.getPosition();
-                if (cpGSiteMap.containsKey(pos)) {
-                    if (cpGSite.isMethylated()) {
-                        cpGSiteMap.get(pos).addMethylCount(1);
-                    } else {
-                        cpGSiteMap.get(pos).addNonMethylCount(1);
-                    }
-                } else {
-                    throw new RuntimeException("sequence contains cpgsite not in ref");
-                }
-            }
-        }
-        patternResult.setCpGList(new ArrayList<>(cpGSiteMap.values()));
-        patternResult.setCount(pattern.sequenceList().size());
-        patternResult.setPercent(pattern.sequenceList().size() / (double) totalCount);
-        if (pattern.getPatternType() == Pattern.PatternType.ALLELE) {
-            patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split("-")[0]));
-        } else if (pattern.getPatternType() != Pattern.PatternType.NONALLELE) {
-            throw new RuntimeException("only support convert allele and non-allele Pattern to PatternResult");
-        }
-        return patternResult;
-    }
-
     private void addAllele(PatternResult patternResult, Graphics2D graphWriter, BufferedWriter bedWriter, String chr,
                            String startPos, int height) throws IOException {
         if (patternResult.hasAllele()) {
@@ -347,24 +298,6 @@ public class DrawPattern {
                                     G + "," + B + "\n");
 
         }
-    }
-
-    private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
-        // use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
-        if (patternWithAllele.getPercent() < 0.2 || patternWithoutAllele.getPercent() < 0.2) {
-            return false;
-        }
-        List<CpGSitePattern> cglistWithAllele = patternWithAllele.getCpGList();
-        List<CpGSitePattern> cglistWithoutAllele = patternWithoutAllele.getCpGList();
-        // if there is at least one cpg site with different methyl type and the different bigger than 0.2, it is ASM
-        for (int i = 0; i < cglistWithAllele.size(); i++) {
-            if (cglistWithAllele.get(i).getMethylType() != cglistWithoutAllele.get(i).getMethylType() &&
-                    Math.abs(cglistWithAllele.get(i).getMethylLevel() - cglistWithoutAllele.get(i).getMethylLevel()) >=
-                            0.2) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private List<SNP> retreiveSNP(String chr, long pos, String maxRet) throws RemoteException {

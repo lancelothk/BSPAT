@@ -106,14 +106,78 @@ public class BSSeqAnalysis {
                 drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
                 drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
                 drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
-                drawFigureLocal.drawASMPattern(reportSummary, allelePattern, nonAllelePattern, constant.logPath,
-                                               seqGroup.size());
+
+                if (allelePattern != null && allelePattern.sequenceList().size() != 0 &&
+                        nonAllelePattern.sequenceList().size() != 0) {
+
+                    PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(), seqGroup.size());
+                    PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, report.getCpgStatList(), seqGroup.size());
+
+                    if (!hasASM(patternWithAllele, patternWithoutAllele)) {
+                        reportSummary.setHasASM(false);
+                    } else {
+                        reportSummary.setHasASM(true);
+                        drawFigureLocal.drawASMPattern(reportSummary, patternWithAllele, patternWithoutAllele, constant.logPath);
+                    }
+                }
 
             }
             reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
             reportSummaries.add(reportSummary);
         }
         return reportSummaries;
+    }
+
+    private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
+        // use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
+        if (patternWithAllele.getPercent() < 0.2 || patternWithoutAllele.getPercent() < 0.2) {
+            return false;
+        }
+        List<CpGSitePattern> cglistWithAllele = patternWithAllele.getCpGList();
+        List<CpGSitePattern> cglistWithoutAllele = patternWithoutAllele.getCpGList();
+        // if there is at least one cpg site with different methyl type and the different bigger than 0.2, it is ASM
+        for (int i = 0; i < cglistWithAllele.size(); i++) {
+            if (cglistWithAllele.get(i).getMethylType() != cglistWithoutAllele.get(i).getMethylType() &&
+                    Math.abs(cglistWithAllele.get(i).getMethylLevel() - cglistWithoutAllele.get(i).getMethylLevel()) >=
+                            0.2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private PatternResult patternToPatternResult(Pattern pattern, List<CpGStatistics> cpGStatisticsList, int totalCount) {
+        PatternResult patternResult = new PatternResult();
+        Map<Integer, CpGSitePattern> cpGSiteMap = new HashMap<>();
+        for (CpGStatistics cpg : cpGStatisticsList) {
+            if (cpGSiteMap.containsKey(cpg.getPosition())) {
+                throw new RuntimeException("refCpG has duplicated CpGsites!");
+            }
+            cpGSiteMap.put(cpg.getPosition(), new CpGSitePattern(cpg.getPosition(), false));
+        }
+        for (Sequence sequence : pattern.sequenceList()) {
+            for (CpGSite cpGSite : sequence.getCpGSites()) {
+                int pos = cpGSite.getPosition();
+                if (cpGSiteMap.containsKey(pos)) {
+                    if (cpGSite.isMethylated()) {
+                        cpGSiteMap.get(pos).addMethylCount(1);
+                    } else {
+                        cpGSiteMap.get(pos).addNonMethylCount(1);
+                    }
+                } else {
+                    throw new RuntimeException("sequence contains cpgsite not in ref");
+                }
+            }
+        }
+        patternResult.setCpGList(new ArrayList<>(cpGSiteMap.values()));
+        patternResult.setCount(pattern.sequenceList().size());
+        patternResult.setPercent(pattern.sequenceList().size() / (double) totalCount);
+        if (pattern.getPatternType() == Pattern.PatternType.ALLELE) {
+            patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split("-")[0]));
+        } else if (pattern.getPatternType() != Pattern.PatternType.NONALLELE) {
+            throw new RuntimeException("only support convert allele and non-allele Pattern to PatternResult");
+        }
+        return patternResult;
     }
 
     private Pattern generateNonAllelePattern(Pattern allelePattern, List<Sequence> seqGroup) {

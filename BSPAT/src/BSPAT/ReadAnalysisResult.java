@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReadAnalysisResult {
-    private List<Integer> refCpGs = new ArrayList<>();
     private List<CpGStatistics> statList = new ArrayList<>();
     private int refLength = 0;
     private String inputFolder;
@@ -53,7 +52,6 @@ public class ReadAnalysisResult {
                 }
                 CpGStatistics cpgStat = null;
                 int pos = Integer.valueOf(items[0]);
-                refCpGs.add(pos);
                 cpgStat = new CpGStatistics(pos);
                 cpgStat.setMethylLevel(Double.valueOf(items[1]));
                 statList.add(cpgStat);
@@ -118,10 +116,6 @@ public class ReadAnalysisResult {
 
     public String getEndCoor() {
         return endCoor;
-    }
-
-    public List<Integer> getRefCpGs() {
-        return refCpGs;
     }
 
     public int getRefLength() {
