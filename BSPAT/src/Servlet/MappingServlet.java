@@ -102,7 +102,8 @@ public class MappingServlet extends HttpServlet {
                                           constant.qualsType, constant.maxmis);
 
             // multiple threads to execute bismark mapping
-            ExecutorService executor = Executors.newSingleThreadExecutor();
+//            ExecutorService executor = Executors.newSingleThreadExecutor(); // single thread
+            ExecutorService executor = Executors.newCachedThreadPool(); // multiple threads
             List<Future<Object>> futureList = new ArrayList<>();
             for (Experiment experiment : constant.experiments) {
                 Future<Object> future = executor.submit(

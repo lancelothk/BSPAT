@@ -110,7 +110,8 @@ public class AnalysisServlet extends HttpServlet {
 				resultZip.delete();
 			}
 
-			ExecutorService executor = Executors.newSingleThreadExecutor();
+//			ExecutorService executor = Executors.newSingleThreadExecutor(); // single thread
+            ExecutorService executor = Executors.newCachedThreadPool();// multiple threads
 			List<Future<List<ReportSummary>>> futureList = new ArrayList<>();
 			for (Experiment experiment : constant.experiments) {
 				Future<List<ReportSummary>> future = executor.submit(
