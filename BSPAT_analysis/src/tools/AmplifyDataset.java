@@ -10,14 +10,18 @@ import java.io.*;
  */
 public class AmplifyDataset {
     public static void main(String[] args) throws IOException {
-        String celllineName = "PrEC";
-        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_2X/", 2);
-        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_5X/", 5);
-        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_10X/", 10);
-        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_70X/", 70);
+        String[] cellLineNames = {"PrEC", "DU145", "LNCaP"};
+//        String celllineName = "PrEC";
+//        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_2X/", 2);
+//        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_5X/", 5);
+//        amplify("/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + celllineName + "_remainPrimer_10X/", 10);
+        for (String cellLineName : cellLineNames) {
+            amplify("/home/kehu/experiments/BSPAT/Amplification/" + cellLineName + "_remainPrimer/", "/home/kehu/experiments/BSPAT/Amplification/" + cellLineName + "_remainPrimer", 50);
+        }
     }
 
     public static void amplify(String inputPath, String outputPath, int amplifier) throws IOException {
+        outputPath += "_" + amplifier + "X";
         File inputDir = new File(inputPath);
         File[] inputFiles = inputDir.listFiles(new ExtensionFilter(".txt"));
         File outputDir = new File(outputPath);
