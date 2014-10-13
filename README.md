@@ -5,8 +5,7 @@ BSPAT is a fast online service for analysing co-occurrence methylation patterns 
 
 Website: http://cbc.case.edu/BSPAT
 
-Deployment
-=====
+## Deployment
 
 Clone the project in your local directory. Use Intellij Idea to load the project and build the war file. Then just deploy the war inside Apache Tomcat. Upon deployment, BSPAT will automatically set up the integrated Bismark and other tools.
 
@@ -15,8 +14,7 @@ To switch between single thread or multiple threads, just comment and uncomment 
 //			ExecutorService executor = Executors.newSingleThreadExecutor(); // single thread
             ExecutorService executor = Executors.newCachedThreadPool();// multiple threads
 
-License
-=====
+## License
 
 Copyright 2014 © Computational Biology lab @ Case Western Reserve University.
 See the LICENSE file for license rights and limitations (GPL v3).
