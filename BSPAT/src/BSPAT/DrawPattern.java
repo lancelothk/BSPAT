@@ -169,7 +169,7 @@ public class DrawPattern {
 
     public void drawASMPattern(ReportSummary reportSummary,  PatternResult patternWithAllele, PatternResult patternWithoutAllele,
                                String logPath) throws IOException, InterruptedException {
-        int imageWidth = refLength * WIDTH + STARTX + 210;
+        int imageWidth = refLength * WIDTH + STARTX + 230;
         int imageHeight = STARTY + 180 + 10 * HEIGHTINTERVAL;
 
         FigureWriter ASMWriter = new FigureWriter(patternResultPath, figureFormat, region, "ASM", imageWidth,
