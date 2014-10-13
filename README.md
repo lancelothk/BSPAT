@@ -10,6 +10,10 @@ Deployment
 
 Clone the project in your local directory. Use Intellij Idea to load the project and build the war file. Then just deploy the war inside Apache Tomcat. Upon deployment, BSPAT will automatically set up the integrated Bismark and other tools.
 
+To switch between single thread or multiple threads, just comment and uncomment the code in MappingServlet.java and AnalysisServlet.java as follows:
+
+//			ExecutorService executor = Executors.newSingleThreadExecutor(); // single thread
+            ExecutorService executor = Executors.newCachedThreadPool();// multiple threads
 
 License
 =====
