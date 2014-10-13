@@ -12,8 +12,8 @@
 <body>
 <div id="container">
     <%@ include file="menu.html" %>
-    <%@ page import="BSPAT.Utilities, DataType.Constant" %>
-    <%@ page import="DataType.Experiment" %>
+    <%@ page import="edu.cwru.cbc.BSPAT.DataType.Constant, edu.cwru.cbc.BSPAT.DataType.Experiment" %>
+    <%@ page import="edu.cwru.cbc.BSPAT.core.Utilities" %>
     <div id="content">
         <div id="content_top"></div>
         <div id="content_main">

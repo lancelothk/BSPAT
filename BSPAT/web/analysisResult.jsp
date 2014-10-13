@@ -19,10 +19,10 @@
     </script>
     <title>BSPAT</title>
 </head>
-<%@ page import="BSPAT.ReportSummary, BSPAT.Utilities" %>
-<%@ page import="DataType.Constant" %>
-<%@ page import="DataType.Experiment" %>
-<%@ page import="DataType.PatternLink" %>
+<%@ page import="edu.cwru.cbc.BSPAT.DataType.Constant, edu.cwru.cbc.BSPAT.DataType.Experiment" %>
+<%@ page import="edu.cwru.cbc.BSPAT.DataType.PatternLink" %>
+<%@ page import="edu.cwru.cbc.BSPAT.core.ReportSummary" %>
+<%@ page import="edu.cwru.cbc.BSPAT.core.Utilities" %>
 <body>
 <div id="container">
     <%@ include file="menu.html" %>

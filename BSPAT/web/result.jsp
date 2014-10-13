@@ -14,7 +14,7 @@
         return !isEmptyValue("jobID", "Job id is empty!");
     }
 </script>
-<%@ page import="BSPAT.Utilities, DataType.Constant" %>
+<%@ page import="edu.cwru.cbc.BSPAT.DataType.Constant, edu.cwru.cbc.BSPAT.core.Utilities" %>
 
 <body>
 <div id="container">
