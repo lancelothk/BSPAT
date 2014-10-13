@@ -131,7 +131,7 @@
     <tr>
         <td>
             <p class="ptext">The genomic coordinates of uploaded reference sequences. Queried by using <a
-                    href="http://genome.ucsc.edu/cgi-bin/hgBlat">Blat</a>. Only top result with equal 'score' and
+                    href="http://genome.ucsc.edu/cgi-bin/hgBlat">Blat</a>. Only top results with equal 'score' and
                 'qsize' will be picked and used in following steps.</p>
         </td>
     </tr>
@@ -151,7 +151,7 @@
 </table>
 <p class="dottedline"></p>
 
-<h3>Analysis option section:</h3>
+<h3>Analysis option section:</h3>build
 <table>
     <tr>
         <td><img src="images/AnalysisOptionsSection.png" border="1" alt=""/>
