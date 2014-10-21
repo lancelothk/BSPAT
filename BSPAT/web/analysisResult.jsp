@@ -166,8 +166,7 @@
                     </td>
                     <td><a
                             href="
-                            http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://patternLink.getGBResultLink()
-                        ">GenomeBrowser</a>
+                            http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://<%=patternLink.getGBResultLink()%>">GenomeBrowser</a>
                     </td>
                     <%
                         }
