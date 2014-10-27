@@ -32,7 +32,7 @@ public class DrawPattern {
     private final double RGBinterval = 255 / 50.0;
     private final int STYLECHOICE = 0;
     private final int COMMONSIZE = 28;
-    private final int SMALLPERCENTSIZE = 20;
+    private final int SMALLPERCENTSIZE = 18;
 
     private String figureFormat;
     private String refVersion;
