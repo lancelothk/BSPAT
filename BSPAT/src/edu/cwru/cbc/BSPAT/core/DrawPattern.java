@@ -140,11 +140,9 @@ public class DrawPattern {
                     methylWriter.getBedWriter().write("0,0,0\n");
                 } else {
                     // draw empty circle
-                    methylWriter.getGraphWriter().setStroke(new BasicStroke(0.05f));
                     methylWriter.getGraphWriter().draw(
                             new Ellipse2D.Double(STARTX + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
                                                  RADIUS));
-                    methylWriter.getGraphWriter().setStroke(new BasicStroke());
                     methylWriter.getBedWriter().write("224,224,224\n");
                 }
             }

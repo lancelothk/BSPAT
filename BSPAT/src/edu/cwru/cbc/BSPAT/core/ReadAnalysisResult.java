@@ -86,7 +86,7 @@ public class ReadAnalysisResult {
                             i++;
                         }
                     } else if (items[0].charAt(i) == '@') {
-                        cpg = new CpGSitePattern(i++, true);
+                        cpg = new CpGSitePattern(i, true);
                         patternResult.addCpG(cpg);
                         if (i + 1 < refLength && items[0].charAt(i + 1) == '@') {
                             i++;
