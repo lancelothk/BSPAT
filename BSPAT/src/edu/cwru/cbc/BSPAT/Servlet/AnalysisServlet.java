@@ -6,7 +6,6 @@ import edu.cwru.cbc.BSPAT.DataType.SeqCountSummary;
 import edu.cwru.cbc.BSPAT.core.IO;
 import edu.cwru.cbc.BSPAT.core.ReportSummary;
 import edu.cwru.cbc.BSPAT.core.Utilities;
-import org.apache.commons.io.FileUtils;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -82,10 +81,7 @@ public class AnalysisServlet extends HttpServlet {
 						IO.saveFileToDisk(part, targetFolder.getAbsolutePath(), fileName);
 						constant.targetFileName = fileName;
 					} else {
-						// copy original coor file to target folder
-						FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
-													  new File(constant.targetPath));
-						constant.targetFileName = constant.coorFileName;
+						constant.targetFileName = null;
 					}
 				}
 			}

@@ -19,6 +19,8 @@ import java.util.logging.Logger;
  */
 public class BSSeqAnalysis {
     private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
+    private final int DEFAULTTARGETLENGTH = 50;
+
     /**
      * Execute analysis.
      *
@@ -46,7 +48,21 @@ public class BSSeqAnalysis {
             throw new RuntimeException("refCoorMap file is not ready!");
         }
 
-        Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
+        Map<String, Coordinate> targetCoorMap;
+        if (constant.targetFileName == null) {
+            // get position of first CpG and generate DEFAULTTARGETLENGTH bp region.
+            targetCoorMap = new HashMap<>();
+            for (String key : refCoorMap.keySet()) {
+                String refString = referenceSeqs.get(key);
+                long firstPos = refString.indexOf("CG");
+                targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
+                                                      refCoorMap.get(key).getStrand(),
+                                                      refCoorMap.get(key).getStart() + firstPos,
+                                                      refCoorMap.get(key).getStart() + firstPos + DEFAULTTARGETLENGTH));
+            }
+        } else {
+            targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
+        }
         // 2. group seqs by region
         Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, new GetKeyFunction() {
             @Override
@@ -110,14 +126,18 @@ public class BSSeqAnalysis {
                 if (allelePattern != null && allelePattern.sequenceList().size() != 0 &&
                         nonAllelePattern.sequenceList().size() != 0) {
 
-                    PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(), seqGroup.size());
-                    PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, report.getCpgStatList(), seqGroup.size());
+                    PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(),
+                                                                             seqGroup.size());
+                    PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern,
+                                                                                report.getCpgStatList(),
+                                                                                seqGroup.size());
 
                     if (!hasASM(patternWithAllele, patternWithoutAllele)) {
                         reportSummary.setHasASM(false);
                     } else {
                         reportSummary.setHasASM(true);
-                        drawFigureLocal.drawASMPattern(reportSummary, patternWithAllele, patternWithoutAllele, constant.logPath);
+                        drawFigureLocal.drawASMPattern(reportSummary, patternWithAllele, patternWithoutAllele,
+                                                       constant.logPath);
                     }
                 }
 
@@ -146,7 +166,8 @@ public class BSSeqAnalysis {
         return false;
     }
 
-    private PatternResult patternToPatternResult(Pattern pattern, List<CpGStatistics> cpGStatisticsList, int totalCount) {
+    private PatternResult patternToPatternResult(Pattern pattern, List<CpGStatistics> cpGStatisticsList,
+                                                 int totalCount) {
         PatternResult patternResult = new PatternResult();
         Map<Integer, CpGSitePattern> cpGSiteMap = new HashMap<>();
         for (CpGStatistics cpg : cpGStatisticsList) {
@@ -214,47 +235,47 @@ public class BSSeqAnalysis {
         }
     }
 
-	/**
-	 * generate memu pattern.
-	 *
-	 * @param seqGroup
-	 * @param methylationPatternList
-	 * @param mutationPatternList
-	 * @return
-	 */
-	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
-										List<Pattern> mutationPatternList) {
-		Map<String, Pattern> patternMap = new HashMap<>();
-		for (Sequence sequence : seqGroup) {
-			int meID = -1, muID = -1;
-			for (Pattern methylPattern : methylationPatternList) {
-				if (methylPattern.sequenceList().contains(sequence)) {
-					meID = methylPattern.getPatternID();
-				}
-			}
-			for (Pattern mutationPattern : mutationPatternList) {
-				if (mutationPattern.sequenceList().contains(sequence)) {
-					muID = mutationPattern.getPatternID();
-				}
-			}
-			if (meID == -1 || muID == -1) {
+    /**
+     * generate memu pattern.
+     *
+     * @param seqGroup
+     * @param methylationPatternList
+     * @param mutationPatternList
+     * @return
+     */
+    private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
+                                        List<Pattern> mutationPatternList) {
+        Map<String, Pattern> patternMap = new HashMap<>();
+        for (Sequence sequence : seqGroup) {
+            int meID = -1, muID = -1;
+            for (Pattern methylPattern : methylationPatternList) {
+                if (methylPattern.sequenceList().contains(sequence)) {
+                    meID = methylPattern.getPatternID();
+                }
+            }
+            for (Pattern mutationPattern : mutationPatternList) {
+                if (mutationPattern.sequenceList().contains(sequence)) {
+                    muID = mutationPattern.getPatternID();
+                }
+            }
+            if (meID == -1 || muID == -1) {
                 continue;
             }
-			String key = String.format("%d-%d", meID, muID);
-			if (patternMap.containsKey(key)) {
-				patternMap.get(key).addSequence(sequence);
-			} else {
-				// new memu pattern
-				Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
-				memuPatern.setPatternString(sequence.getMeMuString());
-				memuPatern.setMethylationParentID(meID);
-				memuPatern.setMutationParentID(muID);
-				memuPatern.addSequence(sequence);
-				patternMap.put(key, memuPatern);
-			}
-		}
-		return new ArrayList<>(patternMap.values());
-	}
+            String key = String.format("%d-%d", meID, muID);
+            if (patternMap.containsKey(key)) {
+                patternMap.get(key).addSequence(sequence);
+            } else {
+                // new memu pattern
+                Pattern memuPatern = new Pattern("", Pattern.PatternType.MEMU);
+                memuPatern.setPatternString(sequence.getMeMuString());
+                memuPatern.setMethylationParentID(meID);
+                memuPatern.setMutationParentID(muID);
+                memuPatern.addSequence(sequence);
+                patternMap.put(key, memuPatern);
+            }
+        }
+        return new ArrayList<>(patternMap.values());
+    }
 
     private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount, Constant constant) {
         List<Pattern> qualifiedAllelePatternList = new ArrayList<>();

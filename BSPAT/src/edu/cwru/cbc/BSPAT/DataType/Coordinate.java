@@ -6,7 +6,6 @@ public class Coordinate {
 	private long end;
 	private String chr;
 	private String strand;
-    private String refSeq;
 
     public Coordinate(String id, String chr, String strand, long start, long end) {
 		super();
@@ -37,11 +36,4 @@ public class Coordinate {
 		return id;
 	}
 
-    public String getRefSeq() {
-        return refSeq;
-    }
-
-    public void setRefSeq(String refSeq) {
-        this.refSeq = refSeq;
-    }
 }
