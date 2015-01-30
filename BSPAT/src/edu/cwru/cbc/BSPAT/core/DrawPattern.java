@@ -44,13 +44,10 @@ public class DrawPattern {
     private ReadAnalysisResult data;
     private String cellLine;
     private List<CpGStatistics> statList;
-    private int refLength;
-    private String beginCoor;
-    private String endCoor;
 
     public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
-                       String patternResultPath, String sampleName,
-                       Map<String, Coordinate> coordinateMap) throws IOException {
+                       String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap,
+                       String refSeq) throws IOException {
         super();
         this.figureFormat = figureFormat;
         this.refVersion = refVersion;
@@ -59,42 +56,46 @@ public class DrawPattern {
         this.patternResultPath = patternResultPath;
         this.sampleName = sampleName;
         this.coordinateMap = coordinateMap;
-        this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region));
+        this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region), refSeq);
         this.cellLine = data.getCellLine();
         this.statList = data.getStatList();
-        this.refLength = data.getRefLength();
-        this.beginCoor = data.getBeginCoor();
-        this.endCoor = data.getEndCoor();
     }
 
-    private void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height, int left) {
+    private void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height, int left,
+                                  String beginCoor, String endCoor, int refLength) {
         // 1. add coordinates
         graphWriter.setBackground(Color.WHITE);
         graphWriter.clearRect(0, 0, imageWidth, imageHeight);
         graphWriter.setPaint(Color.BLACK);
         graphWriter.setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, COMMON_FONT_SIZE));
-        graphWriter.drawString("chr" + beginCoor, left + WIDTH, height);
-        graphWriter.drawString(endCoor, left + refLength * WIDTH - WIDTH, height);
+        graphWriter.drawString("chr" + beginCoor, left, height);
+        int endCoorLeft = left + (refLength - 1) * WIDTH;
+        int beginCoorRight = left + (beginCoor.length() + 3) * 15 + WIDTH;
+        graphWriter.drawString(endCoor, endCoorLeft > beginCoorRight ? endCoorLeft : beginCoorRight, height);
 
         // 2. add reference bar
         graphWriter.setStroke(new BasicStroke(2.0f));
         height += HEIGHT_INTERVAL;
-        graphWriter.drawLine(left, height, left + refLength * WIDTH, height);
+        graphWriter.drawLine(left, height, left + (refLength - 1) * WIDTH, height);
         graphWriter.setStroke(new BasicStroke());
 
         // 3. add refCpGSites
         for (CpGStatistics cpgStat : statList) {
-            graphWriter.drawLine(left + cpgStat.getPosition() * WIDTH, height - BAR_HEIGHT / 2, left + cpgStat.getPosition() * WIDTH,
-                                 height + BAR_HEIGHT / 2);
+            graphWriter.drawLine(left + cpgStat.getPosition() * WIDTH + (int) (0.5 * WIDTH), height - BAR_HEIGHT / 2,
+                                 left + cpgStat.getPosition() * WIDTH + (int) (0.5 * WIDTH), height + BAR_HEIGHT / 2);
         }
     }
 
-    public void drawMethylPattern(PatternLink patternLink) throws IOException {
+    public void drawPattern(PatternLink patternLink) throws IOException {
+        List<PatternResult> patternResultLists = data.readPatternFile(region, patternLink.getPatternType());
+        int refLength = data.getRefLength();
+        String beginCoor = data.getBeginCoor();
+        String endCoor = data.getEndCoor();
+
         int height = FIGURE_STARTY;
         int left = FIGURE_STARTX + cellLine.length() * 5;
 
-        List<PatternResult> patternResultLists = data.readPatternFile(region, patternLink.getPatternType());
-        int imageWidth = refLength * WIDTH + left + 240;
+        int imageWidth = refLength * WIDTH + left + (beginCoor.length() + endCoor.length() + 3) * 15;
         int imageHeight = FIGURE_STARTY + 180 + patternResultLists.size() * HEIGHT_INTERVAL;
 
         FigureWriter methylWriter = new FigureWriter(patternResultPath, figureFormat, region,
@@ -103,7 +104,8 @@ public class DrawPattern {
         patternLink.setGBResultLink(methylWriter.getGBLinkFileName());
         patternLink.setFigureResultLink(methylWriter.getFigureName());
 
-        buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left);
+        buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left, beginCoor, endCoor,
+                         refLength);
 
         // 4. add CpG sites
         DecimalFormat percent = new DecimalFormat("##.00%");
@@ -137,21 +139,20 @@ public class DrawPattern {
                 if (cpg.isMethylated()) {
                     // fill black circle
                     methylWriter.getGraphWriter().fill(
-                            new Ellipse2D.Double(left + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
-                                                 RADIUS));
+                            new Ellipse2D.Double(left + cpg.getPosition() * WIDTH, height, RADIUS, RADIUS));
                     methylWriter.getBedWriter().write("0,0,0\n");
                 } else {
                     // draw empty circle
                     methylWriter.getGraphWriter().draw(
-                            new Ellipse2D.Double(left + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS,
-                                                 RADIUS));
+                            new Ellipse2D.Double(left + cpg.getPosition() * WIDTH, height, RADIUS, RADIUS));
                     methylWriter.getBedWriter().write("224,224,224\n");
                 }
             }
             methylWriter.getGraphWriter().drawString(
                     patternResult.getCount() + "(" + percent.format(patternResult.getPercent()) + ")",
-                    (refLength * WIDTH) + WIDTH + left, height + HEIGHT_INTERVAL);
-            addAllele(patternResult, methylWriter.getGraphWriter(), methylWriter.getBedWriter(), chr, startPos, height, left);
+                    (refLength + 1) * WIDTH + left, height + HEIGHT_INTERVAL);
+            addAllele(patternResult, methylWriter.getGraphWriter(), methylWriter.getBedWriter(), chr, startPos, height,
+                      left);
             height += HEIGHT_INTERVAL;
         }
 
@@ -167,8 +168,13 @@ public class DrawPattern {
         methylWriter.close();
     }
 
-    public void drawASMPattern(ReportSummary reportSummary,  PatternResult patternWithAllele, PatternResult patternWithoutAllele,
+    public void drawASMPattern(ReportSummary reportSummary, PatternResult patternWithAllele,
+                               PatternResult patternWithoutAllele,
                                String logPath) throws IOException, InterruptedException {
+        int refLength = data.getRefLength();
+        String beginCoor = data.getBeginCoor();
+        String endCoor = data.getEndCoor();
+
         int height = FIGURE_STARTY;
         int left = FIGURE_STARTX + cellLine.length() * 5;
         int imageWidth = refLength * WIDTH + left + 240;
@@ -179,7 +185,8 @@ public class DrawPattern {
         reportSummary.setASMGBLink(ASMWriter.getGBLinkFileName());
         reportSummary.setASMFigureLink(ASMWriter.getFigureName());
 
-        buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left);
+        buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left, beginCoor, endCoor,
+                         refLength);
 
         String chr = beginCoor.split(":")[0];
         String startPos = beginCoor.split(":")[1];
@@ -262,8 +269,8 @@ public class DrawPattern {
     }
 
     private void addAverage(Graphics2D graphWriter, String fontChoice, List<? extends CpG> cpgList, String chr,
-                            String startPos, String patternName, BufferedWriter bedWriter,
-                            int height, int left) throws IOException {
+                            String startPos, String patternName, BufferedWriter bedWriter, int height,
+                            int left) throws IOException {
         // 5. add average
         DecimalFormat percentSmall = new DecimalFormat("##%");
         height += HEIGHT_INTERVAL;
@@ -283,13 +290,12 @@ public class DrawPattern {
                 G = 255;
             }
             graphWriter.setPaint(new Color(R, G, B));
-            graphWriter.fill(
-                    new Ellipse2D.Double(left + (cpg.getPosition() * WIDTH) - WIDTH / 2, height, RADIUS, RADIUS));
+            graphWriter.fill(new Ellipse2D.Double(left + cpg.getPosition() * WIDTH, height, RADIUS, RADIUS));
             graphWriter.setPaint(Color.BLACK);
             // move percentage a little left and shink the font size
             graphWriter.setFont(new Font(fontChoice, STYLE_CHOICE, SMALL_PERCENT_FONT_SIZE));
-            graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()),
-                                   left + (cpg.getPosition() * WIDTH) - WIDTH / 2, height + HEIGHT_INTERVAL * 2);
+            graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()), left + cpg.getPosition() * WIDTH,
+                                   height + HEIGHT_INTERVAL * 2);
 
             int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
             // genome browser automatically add 1 to start, no change to end.So

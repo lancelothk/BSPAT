@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class BSSeqAnalysis {
     private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
-    private final int DEFAULTTARGETLENGTH = 50;
+    private final int DEFAULTTARGETLENGTH = 70;
 
     /**
      * Execute analysis.
@@ -55,10 +55,12 @@ public class BSSeqAnalysis {
             for (String key : refCoorMap.keySet()) {
                 String refString = referenceSeqs.get(key);
                 long firstPos = refString.indexOf("CG");
+                long endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULTTARGETLENGTH;
                 targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
                                                       refCoorMap.get(key).getStrand(),
                                                       refCoorMap.get(key).getStart() + firstPos,
-                                                      refCoorMap.get(key).getStart() + firstPos + DEFAULTTARGETLENGTH));
+                                                      endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(
+                                                              key).getEnd()));
             }
         } else {
             targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
@@ -71,28 +73,30 @@ public class BSSeqAnalysis {
             }
         });
 
-        // 3. cut and filter sequences
-        cutAndFilterSequence(sequenceGroupMap, refCoorMap, targetCoorMap, referenceSeqs);
-
-        // 4. generate report for each region
+        // 3. generate report for each region
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
+            List<Sequence> CpGBoundSequenceList = cutAndFilterSequence(region, sequenceGroupMap, refCoorMap,
+                                                                       targetCoorMap, referenceSeqs);
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
-
             Sequence.processSequence(referenceSeqs.get(region), seqGroup);
+            Sequence.processSequence(referenceSeqs.get(region), CpGBoundSequenceList);
+
             reportSummary.setSeqBeforeFilter(seqGroup.size());
             Pair<List<Sequence>, List<Sequence>> filteredSequencePair = filterSequences(seqGroup, constant);
             seqGroup = filteredSequencePair.getLeft();
             reportSummary.setSeqAfterFilter(seqGroup.size());
             // if no sequence exist after filtering, return empty reportSummary
-            if (seqGroup.size() == 0) {
+            if (seqGroup.size() == 0 && CpGBoundSequenceList.size() == 0) {
                 continue;
             }
-            List<Pattern> methylationPatternList = getMethylPattern(seqGroup);
+            List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList,
+                                                                    referenceSeqs.get(region));
             List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
             List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 
-            methylationPatternList = filterMethylationPatterns(methylationPatternList, seqGroup.size(),
+            methylationPatternList = filterMethylationPatterns(methylationPatternList,
+                                                               seqGroup.size() + CpGBoundSequenceList.size(),
                                                                StringUtils.countMatches(referenceSeqs.get(region),
                                                                                         "CG"), constant);
             mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size(), constant);
@@ -117,14 +121,14 @@ public class BSSeqAnalysis {
             if (constant.coorReady) {
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
                                                               constant.toolsPath, region, outputFolder, experimentName,
-                                                              targetCoorMap);
-                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
-                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
-                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
-                drawFigureLocal.drawMethylPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
+                                                              targetCoorMap, referenceSeqs.get(region));
+                drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
+                drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
+                drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
+                drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
 
-                if (allelePattern != null && allelePattern.sequenceList().size() != 0 &&
-                        nonAllelePattern.sequenceList().size() != 0) {
+                if (allelePattern != null && allelePattern.getSequenceMap().size() != 0 &&
+                        nonAllelePattern.getSequenceMap().size() != 0) {
 
                     PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(),
                                                                              seqGroup.size());
@@ -176,7 +180,7 @@ public class BSSeqAnalysis {
             }
             cpGSiteMap.put(cpg.getPosition(), new CpGSitePattern(cpg.getPosition(), false));
         }
-        for (Sequence sequence : pattern.sequenceList()) {
+        for (Sequence sequence : pattern.getSequenceMap().values()) {
             for (CpGSite cpGSite : sequence.getCpGSites()) {
                 int pos = cpGSite.getPosition();
                 if (cpGSiteMap.containsKey(pos)) {
@@ -191,8 +195,8 @@ public class BSSeqAnalysis {
             }
         }
         patternResult.setCpGList(new ArrayList<>(cpGSiteMap.values()));
-        patternResult.setCount(pattern.sequenceList().size());
-        patternResult.setPercent(pattern.sequenceList().size() / (double) totalCount);
+        patternResult.setCount(pattern.getSequenceMap().size());
+        patternResult.setPercent(pattern.getSequenceMap().size() / (double) totalCount);
         if (pattern.getPatternType() == Pattern.PatternType.ALLELE) {
             patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split("-")[0]));
         } else if (pattern.getPatternType() != Pattern.PatternType.NONALLELE) {
@@ -204,8 +208,12 @@ public class BSSeqAnalysis {
     private Pattern generateNonAllelePattern(Pattern allelePattern, List<Sequence> seqGroup) {
         Pattern nonAllelePattern = new Pattern("", Pattern.PatternType.NONALLELE);
         if (allelePattern != null) {
-            nonAllelePattern.sequenceList().addAll(seqGroup);
-            nonAllelePattern.sequenceList().removeAll(allelePattern.sequenceList());
+            for (Sequence sequence : seqGroup) {
+                nonAllelePattern.getSequenceMap().put(sequence.getId(), sequence);
+            }
+            for (String key : allelePattern.getSequenceMap().keySet()) {
+                nonAllelePattern.getSequenceMap().remove(key);
+            }
         }
         return nonAllelePattern;
     }
@@ -249,15 +257,16 @@ public class BSSeqAnalysis {
         for (Sequence sequence : seqGroup) {
             int meID = -1, muID = -1;
             for (Pattern methylPattern : methylationPatternList) {
-                if (methylPattern.sequenceList().contains(sequence)) {
+                if (methylPattern.getSequenceMap().containsKey(sequence.getId())) {
                     meID = methylPattern.getPatternID();
                 }
             }
             for (Pattern mutationPattern : mutationPatternList) {
-                if (mutationPattern.sequenceList().contains(sequence)) {
+                if (mutationPattern.getSequenceMap().containsKey(sequence.getId())) {
                     muID = mutationPattern.getPatternID();
                 }
             }
+            // seq not included in either MethylPattern or MutationPattern
             if (meID == -1 || muID == -1) {
                 continue;
             }
@@ -363,45 +372,53 @@ public class BSSeqAnalysis {
      *
      * @param sequenceGroupMap
      */
-    private void cutAndFilterSequence(Map<String, List<Sequence>> sequenceGroupMap, Map<String, Coordinate> refCoorMap,
-                                      Map<String, Coordinate> targetCoorMap,
-                                      Map<String, String> referenceSeqs) throws IOException {
-        for (String region : sequenceGroupMap.keySet()) {
-            Coordinate targetCoor = targetCoorMap.get(region);
-            Coordinate refCoor = refCoorMap.get(region);
-            if (targetCoor == null) {
-                throw new RuntimeException("can not find target coordinate for region " + region);
-            }
-            List<Sequence> sequenceGroup = sequenceGroupMap.get(region);
-            Iterator<Sequence> sequenceIterator = sequenceGroup.iterator();
-            // cut reference seq
-            int refStart = (int) (targetCoor.getStart() - refCoor.getStart());
-            int refEnd = (int) (targetCoor.getEnd() - refCoor.getStart());
-            referenceSeqs.put(region, referenceSeqs.get(region).substring(refStart, refEnd + 1));
-            while (sequenceIterator.hasNext()) {
-                Sequence sequence = sequenceIterator.next();
-                if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
-                    // cut sequence to suit reference
-                    sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
-                                                                                refEnd - sequence.getStartPos() + 1));
-                    // update CpG sites
-                    Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
-                    while (cpGSiteIterator.hasNext()) {
-                        CpGSite cpGSite = cpGSiteIterator.next();
-                        // only keep CpG site wholly sit in ref.
-                        if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
-                            cpGSite.setPosition(cpGSite.getPosition() - refStart);
-                        } else {
-                            cpGSiteIterator.remove();
-                        }
+    private List<Sequence> cutAndFilterSequence(String region, Map<String, List<Sequence>> sequenceGroupMap,
+                                                Map<String, Coordinate> refCoorMap,
+                                                Map<String, Coordinate> targetCoorMap,
+                                                Map<String, String> referenceSeqs) throws IOException {
+        List<Sequence> CpGBoundSequenceList = new ArrayList<>();
+        Coordinate targetCoor = targetCoorMap.get(region);
+        Coordinate refCoor = refCoorMap.get(region);
+        if (targetCoor == null) {
+            throw new RuntimeException("can not find target coordinate for region " + region);
+        }
+        List<Sequence> sequenceGroup = sequenceGroupMap.get(region);
+        Iterator<Sequence> sequenceIterator = sequenceGroup.iterator();
+        // cut reference seq
+        int refStart = (int) (targetCoor.getStart() - refCoor.getStart());
+        int refEnd = (int) (targetCoor.getEnd() - refCoor.getStart());
+        referenceSeqs.put(region, referenceSeqs.get(region).substring(refStart, refEnd + 1));
+        while (sequenceIterator.hasNext()) {
+            Sequence sequence = sequenceIterator.next();
+            if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
+                // cut sequence to suit reference
+                sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
+                                                                            refEnd - sequence.getStartPos() + 1));
+                // update CpG sites
+                Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
+                while (cpGSiteIterator.hasNext()) {
+                    CpGSite cpGSite = cpGSiteIterator.next();
+                    // only keep CpG site wholly sit in ref.
+                    if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
+                        cpGSite.setPosition(cpGSite.getPosition() - refStart);
+                    } else {
+                        cpGSiteIterator.remove();
                     }
-                    sequence.setStartPos(1);
-                } else {
-                    // filter out
-                    sequenceIterator.remove();
+                }
+                sequence.setStartPos(1);
+            } else {
+                // filter out
+                sequenceIterator.remove();
+                // recheck if sequence cover all CpGs in ref
+                // seqs here are uncutted. Should be cutted in getMethylPattern
+                int startCpGPos = referenceSeqs.get(region).indexOf("CG") + refStart;
+                int endCpGPos = referenceSeqs.get(region).lastIndexOf("CG") + refStart;
+                if (sequence.getStartPos() <= startCpGPos && sequence.getEndPos() >= (endCpGPos + 1)) {
+                    CpGBoundSequenceList.add(sequence);
                 }
             }
         }
+        return CpGBoundSequenceList;
     }
 
     /**
@@ -449,13 +466,22 @@ public class BSSeqAnalysis {
         return new ImmutablePair<>(qualifiedSeqList, unQualifiedSeqList);
     }
 
-    private List<Pattern> getMethylPattern(List<Sequence> seqList) {
+    private List<Pattern> getMethylPattern(List<Sequence> seqList, List<Sequence> CpGBoundSequenceList,
+                                           String referenceSeq) {
+        List<Sequence> combinedSequenceList = new ArrayList<>();
+        combinedSequenceList.addAll(seqList);
+        combinedSequenceList.addAll(CpGBoundSequenceList);
+
+        // only keep CpG bound methylation string
+        final int startCpGPos = referenceSeq.indexOf("CG");
+        final int endCpGPos = referenceSeq.lastIndexOf("CG");
+
         List<Pattern> methylationPatterns = new ArrayList<>();
         // group sequences by methylationString, distribute each seq into one pattern
-        Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
+        Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, new GetKeyFunction() {
             @Override
             public String apply(Sequence seq) {
-                return seq.getMethylationString();
+                return seq.getMethylationString().substring(startCpGPos, endCpGPos + 2);
             }
         });
 

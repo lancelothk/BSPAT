@@ -17,12 +17,14 @@ public class ReadAnalysisResult {
     private String beginCoor;
     private String endCoor;
     private String cellLine;
+    private String refSeq;
 
-    public ReadAnalysisResult(String inputFolder, String cellLine, String region,
-                              Coordinate coordinate) throws IOException {
+    public ReadAnalysisResult(String inputFolder, String cellLine, String region, Coordinate coordinate,
+                              String refSeq) throws IOException {
         this.inputFolder = inputFolder;
         this.coordinate = coordinate;
         this.cellLine = cellLine;
+        this.refSeq = refSeq;
         readStatFile(region);
         setCoordinate();
     }
@@ -66,11 +68,20 @@ public class ReadAnalysisResult {
         List<PatternResult> patternResultLists = new ArrayList<>();
         try (BufferedReader patternBuffReader = new BufferedReader(
                 new FileReader(inputFolder + region + "_bismark.analysis_" + patternType + ".txt"))) {
-            // skip column names and reference line
+            // skip column names
             patternBuffReader.readLine();
-            patternBuffReader.readLine();
-            // start to read content
+            // reference line
             String line = patternBuffReader.readLine();
+            refLength = line.split("\t")[0].length();
+            if (patternType.equals(PatternLink.METHYLATION)) {
+                beginCoor = String.format("%s:%s", coordinate.getChr(), coordinate.getStart() + refSeq.indexOf("CG"));
+                endCoor = String.valueOf(coordinate.getStart() + refSeq.lastIndexOf("CG") + 1);
+            } else {
+                setCoordinate();
+            }
+
+            // start to read content
+            line = patternBuffReader.readLine();
             String[] items;
             PatternResult patternResult;
 

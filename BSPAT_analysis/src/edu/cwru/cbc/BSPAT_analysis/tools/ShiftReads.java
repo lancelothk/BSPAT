@@ -21,11 +21,11 @@ public class ShiftReads {
             int shiftRight = rand.nextInt(5);
             writer.write(line + "\n");
             line = reader.readLine();
-            writer.write(line.substring(shiftLeft, line.length() - shiftRight) + "\n");
+            writer.write(line.substring(shiftLeft, line.length() - shiftRight + 1) + "\n");
             line = reader.readLine();
             writer.write(line + "\n");
             line = reader.readLine();
-            writer.write(line.substring(shiftLeft, line.length() - shiftRight) + "\n");
+            writer.write(line.substring(shiftLeft, line.length() - shiftRight + 1) + "\n");
         }
 
         reader.close();

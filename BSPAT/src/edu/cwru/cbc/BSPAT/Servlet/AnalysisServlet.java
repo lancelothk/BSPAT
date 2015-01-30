@@ -89,6 +89,7 @@ public class AnalysisServlet extends HttpServlet {
 			if (request.getParameter("minp0text") != null) {
 				constant.minP0Threshold = Double.valueOf(request.getParameter("minp0text"));
 				constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
+                constant.minMethylThreshold = 0.1;
 			} else if (request.getParameter("minmethyltext") != null) {
 				constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
 				constant.minP0Threshold = -1;
