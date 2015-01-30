@@ -126,6 +126,8 @@ public class IntegrationTest {
         ServletContext servletContext = mock(ServletContext.class);
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
 
+        // TODO using target coordinates, test CpG bounded methylation pattern
+
         when(servletConfig.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRealPath("")).thenReturn(testPath);
         when(request.getParameter("jobID")).thenReturn(jobID);

@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
+
 /**
  * Bisulfite sequences analysis. Include obtaining methylation string, mutation
  * string, methyl&mutation string. And group sequences by pattern.
@@ -24,8 +26,6 @@ public class BSSeqAnalysis {
     /**
      * Execute analysis.
      *
-     * @param experimentName
-     * @param constant
      * @return List of ReportSummary
      */
     public List<ReportSummary> execute(String experimentName,
@@ -80,7 +80,7 @@ public class BSSeqAnalysis {
                                                                        targetCoorMap, referenceSeqs);
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
             Sequence.processSequence(referenceSeqs.get(region), seqGroup);
-            Sequence.processSequence(referenceSeqs.get(region), CpGBoundSequenceList);
+            Sequence.processSequence(getBoundedSeq("CG", referenceSeqs.get(region)), CpGBoundSequenceList);
 
             reportSummary.setSeqBeforeFilter(seqGroup.size());
             Pair<List<Sequence>, List<Sequence>> filteredSequencePair = filterSequences(seqGroup, constant);
@@ -245,11 +245,6 @@ public class BSSeqAnalysis {
 
     /**
      * generate memu pattern.
-     *
-     * @param seqGroup
-     * @param methylationPatternList
-     * @param mutationPatternList
-     * @return
      */
     private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
                                         List<Pattern> mutationPatternList) {
@@ -370,7 +365,6 @@ public class BSSeqAnalysis {
     /**
      * cutting mapped sequences to reference region and filter reads without covering whole reference seq
      *
-     * @param sequenceGroupMap
      */
     private List<Sequence> cutAndFilterSequence(String region, Map<String, List<Sequence>> sequenceGroupMap,
                                                 Map<String, Coordinate> refCoorMap,
@@ -394,37 +388,45 @@ public class BSSeqAnalysis {
                 // cut sequence to suit reference
                 sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
                                                                             refEnd - sequence.getStartPos() + 1));
-                // update CpG sites
-                Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
-                while (cpGSiteIterator.hasNext()) {
-                    CpGSite cpGSite = cpGSiteIterator.next();
-                    // only keep CpG site wholly sit in ref.
-                    if (cpGSite.getPosition() >= refStart && cpGSite.getPosition() + 1 <= refEnd) {
-                        cpGSite.setPosition(cpGSite.getPosition() - refStart);
-                    } else {
-                        cpGSiteIterator.remove();
-                    }
-                }
+                updateCpGPosition(refStart, refStart, refEnd, sequence);
                 sequence.setStartPos(1);
             } else {
                 // filter out
                 sequenceIterator.remove();
                 // recheck if sequence cover all CpGs in ref
-                // seqs here are uncutted. Should be cutted in getMethylPattern
                 int startCpGPos = referenceSeqs.get(region).indexOf("CG") + refStart;
                 int endCpGPos = referenceSeqs.get(region).lastIndexOf("CG") + refStart;
                 if (sequence.getStartPos() <= startCpGPos && sequence.getEndPos() >= (endCpGPos + 1)) {
                     CpGBoundSequenceList.add(sequence);
+                    sequence.setOriginalSeq(sequence.getOriginalSeq().substring(startCpGPos - sequence.getStartPos(),
+                                                                                endCpGPos + 2 -
+                                                                                        sequence.getStartPos()));
+                    updateCpGPosition(refStart, startCpGPos, endCpGPos + 1, sequence);
                 }
             }
         }
         return CpGBoundSequenceList;
     }
 
+    private void updateCpGPosition(int refStart, int leftBound, int rightBound, Sequence sequence) {
+        // leftBound should be bigger than or equal to refStart
+        assert leftBound >= refStart;
+        // update CpG sites
+        Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
+        while (cpGSiteIterator.hasNext()) {
+            CpGSite cpGSite = cpGSiteIterator.next();
+            // only keep CpG site wholly sit in ref.
+            if (cpGSite.getPosition() >= leftBound && cpGSite.getPosition() + 1 <= rightBound) {
+                cpGSite.setPosition(cpGSite.getPosition() - refStart);
+            } else {
+                cpGSiteIterator.remove();
+            }
+        }
+    }
+
     /**
      * group sequences by given key function
      *
-     * @param sequencesList
      * @param getKey        function parameter to return String key.
      * @return HashMap contains <key function return value, grouped sequence list>
      */
@@ -445,8 +447,6 @@ public class BSSeqAnalysis {
     /**
      * fill sequence list filtered by threshold.
      *
-     * @param seqList
-     * @return
      */
     private Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
                                                                  Constant constant) throws IOException {
@@ -472,11 +472,9 @@ public class BSSeqAnalysis {
         combinedSequenceList.addAll(seqList);
         combinedSequenceList.addAll(CpGBoundSequenceList);
 
-        // only keep CpG bound methylation string
+        List<Pattern> methylationPatterns = new ArrayList<>();
         final int startCpGPos = referenceSeq.indexOf("CG");
         final int endCpGPos = referenceSeq.lastIndexOf("CG");
-
-        List<Pattern> methylationPatterns = new ArrayList<>();
         // group sequences by methylationString, distribute each seq into one pattern
         Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, new GetKeyFunction() {
             @Override

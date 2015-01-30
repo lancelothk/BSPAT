@@ -104,21 +104,23 @@ public class Sequence {
                 }
             }
             for (CpGSite cpg : seq.getCpGSites()) {
-                if (cpg.isMethylated()) {
-                    countOfMethylatedCpG++;
-                    // methylated CpG site represent by @@
-                    methylationString[cpg.getPosition()] = '@';
-                    if (cpg.getPosition() + 1 <= methylationString.length) {
-                        methylationString[cpg.getPosition() + 1] = '@';
-                    }
-                    // mutation
-                    mutationString[cpg.getPosition()] = '-';
-                } else {
-                    // un-methylated CpG site represent by **. Exclude mutation in CpG site.
-                    if (cpg.getPosition() != mutationString.length) {
-                        methylationString[cpg.getPosition()] = '*';
+                if (cpg.getPosition() < referenceSeq.length()) {
+                    if (cpg.isMethylated()) {
+                        countOfMethylatedCpG++;
+                        // methylated CpG site represent by @@
+                        methylationString[cpg.getPosition()] = '@';
                         if (cpg.getPosition() + 1 <= methylationString.length) {
-                            methylationString[cpg.getPosition() + 1] = '*';
+                            methylationString[cpg.getPosition() + 1] = '@';
+                        }
+                        // mutation
+                        mutationString[cpg.getPosition()] = '-';
+                    } else {
+                        // un-methylated CpG site represent by **. Exclude mutation in CpG site.
+                        if (cpg.getPosition() != mutationString.length) {
+                            methylationString[cpg.getPosition()] = '*';
+                            if (cpg.getPosition() + 1 <= methylationString.length) {
+                                methylationString[cpg.getPosition() + 1] = '*';
+                            }
                         }
                     }
                 }

@@ -26,6 +26,12 @@ import java.util.zip.ZipOutputStream;
 public class Utilities {
     private final static Logger LOGGER = Logger.getLogger(Utilities.class.getName());
 
+    public static String getBoundedSeq(String symbol, String seq){
+        int startCpGPos = seq.indexOf(symbol);
+        int endCpGPos = seq.lastIndexOf(symbol);
+        return seq.substring(startCpGPos, (endCpGPos+2)>seq.length()?seq.length():(endCpGPos+2));
+    }
+
     public static void handleServletException(Exception e, Constant constant) {
         e.printStackTrace();
         if (constant != null && constant.email != null && constant.jobID != null) {
