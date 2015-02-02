@@ -121,8 +121,11 @@ public class AnalysisServlet extends HttpServlet {
 				constant.experiments.get(i).reportSummaries = futureList.get(i).get();
                 LOGGER.info(constant.getJobID() + "\t" + constant.experiments.get(i).getName() + "\tfinished!");
                 for (ReportSummary reportSummary : constant.experiments.get(i).reportSummaries) {
-					constant.seqCountSummary.addSeqBeforeFilter(reportSummary.getSeqBeforeFilter());
-					constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqAfterFilter());
+					constant.seqCountSummary.addSeqBeforeFilter(reportSummary.getSeqTargetBounded());
+					constant.seqCountSummary.addSeqAfterFilter(reportSummary.getSeqTargetAfterFilter());
+                    constant.seqCountSummary.addSeqCpGBounded(reportSummary.getSeqCpGBounded());
+                    constant.seqCountSummary.addSeqCpGAfterFilter(reportSummary.getSeqCpGAfterFilter());
+                    constant.seqCountSummary.addSeqOthers(reportSummary.getSeqOthers());
 				}
 			}
 

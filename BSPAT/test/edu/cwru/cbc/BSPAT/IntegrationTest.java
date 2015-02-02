@@ -148,9 +148,9 @@ public class IntegrationTest {
         verify(request, Mockito.times(1)).getRequestDispatcher("analysisResult.jsp");
 
         assertEquals("Sequence number cover target region", 1584,
-                     myAnswer.resultConstant.seqCountSummary.getSeqBeforeFilter());
+                     myAnswer.resultConstant.seqCountSummary.getSeqTargetBounded());
         assertEquals("Sequence number after filtering", 1540,
-                     myAnswer.resultConstant.seqCountSummary.getSeqAfterFilter());
+                     myAnswer.resultConstant.seqCountSummary.getSeqTargetAfterFilter());
         assertTrue("Analysis phase running time", myAnswer.resultConstant.analysisTime >= 1);
 
         assertNotNull("Anslysis result", myAnswer.resultConstant.analysisResultLink);

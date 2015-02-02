@@ -73,13 +73,46 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Sequence number cover target region:</td>
-                    <td><%=constant.seqCountSummary.getSeqBeforeFilter()%>
+                    <td><%=ReportSummary.targetBoundedText%></td>
+                    <td><%=constant.seqCountSummary.getSeqTargetBounded()%>
                     </td>
                 </tr>
                 <tr>
-                    <td>Sequence number after filtering:</td>
-                    <td><%=constant.seqCountSummary.getSeqAfterFilter()%>
+                    <td><%=ReportSummary.targetAfterFilterText%></td>
+                    <td><%=constant.seqCountSummary.getSeqTargetAfterFilter()%>
+                    </td>
+                </tr>
+                <tr>
+                    <td><%=ReportSummary.cpgBoundedText%></td>
+                    <td><%=constant.seqCountSummary.getSeqCpGBounded()%>
+                    </td>
+                </tr>
+                <tr>
+                    <td><%=ReportSummary.cpgAfterFilterText%></td>
+                    <td><%=constant.seqCountSummary.getSeqCpGAfterFilter()%>
+                    </td>
+                </tr>
+                <tr>
+                    <td><%=ReportSummary.othersText%></td>
+                    <td><%=constant.seqCountSummary.getSeqOthers()%>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Analysis running time:</td>
+                    <td><%=constant.analysisTime%>s</td>
+                </tr>
+                <tr>
+                    <td>Zipped analysis result:</td>
+                    <td><a href=<%=constant.analysisResultLink%>>analysisResult.zip</a></td>
+                </tr>
+
+                <tr>
+                    <td><p class="dottedline"></p></td>
+                    <td><p class="dottedline"></p></td>
+                </tr>
+                <tr>
+                    <td>
+                        Thresholds used:
                     </td>
                 </tr>
                 <tr>
@@ -112,7 +145,7 @@
                     if (constant.minMethylThreshold >= 0) {
                 %>
                 <tr>
-                    <td>methylation pattern threshold:</td>
+                    <td>Methylation pattern threshold:</td>
                     <td><%=constant.minMethylThreshold%>
                     </td>
                 </tr>
@@ -123,14 +156,6 @@
                     <td>Mutation threshold:</td>
                     <td><%=constant.mutationPatternThreshold%>
                     </td>
-                </tr>
-                <tr>
-                    <td>Analysis running time:</td>
-                    <td><%=constant.analysisTime%>s</td>
-                </tr>
-                <tr>
-                    <td>Zipped analysis result:</td>
-                    <td><a href=<%=constant.analysisResultLink%>>analysisResult.zip</a></td>
                 </tr>
             </table>
             <p class="dottedline"></p>
@@ -162,7 +187,8 @@
                         if (constant.coorReady) {
                     %>
                     <td><a
-                            href="<%=patternLink.getFigureResultLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%></a>
+                            href="<%=patternLink.getFigureResultLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%>
+                    </a>
                     </td>
                     <td><a
                             href="
@@ -190,7 +216,8 @@
                         }
                     %>
                     <td><a
-                            href="<%=reportSummary.getASMFigureLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%></a>
+                            href="<%=reportSummary.getASMFigureLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%>
+                    </a>
                     </td>
                     <td><a
                             href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr7&hgt.customText=http://<%=reportSummary.getASMGBLink()%>">GenomeBrowser</a>

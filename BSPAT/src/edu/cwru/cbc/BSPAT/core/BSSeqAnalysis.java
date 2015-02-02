@@ -76,16 +76,25 @@ public class BSSeqAnalysis {
         // 3. generate report for each region
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
-            List<Sequence> CpGBoundSequenceList = cutAndFilterSequence(region, sequenceGroupMap, refCoorMap,
+            Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = cutAndFilterSequence(region, sequenceGroupMap, refCoorMap,
                                                                        targetCoorMap, referenceSeqs);
+            List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
+            List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
+            reportSummary.setSeqOthers(otherSequenceList.size());
+
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
             Sequence.processSequence(referenceSeqs.get(region), seqGroup);
             Sequence.processSequence(getBoundedSeq("CG", referenceSeqs.get(region)), CpGBoundSequenceList);
 
-            reportSummary.setSeqBeforeFilter(seqGroup.size());
-            Pair<List<Sequence>, List<Sequence>> filteredSequencePair = filterSequences(seqGroup, constant);
-            seqGroup = filteredSequencePair.getLeft();
-            reportSummary.setSeqAfterFilter(seqGroup.size());
+            reportSummary.setSeqCpGBounded(CpGBoundSequenceList.size());
+            Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair = filterSequences(CpGBoundSequenceList, constant);
+            CpGBoundSequenceList = filteredCpGSequencePair.getLeft();
+            reportSummary.setSeqCpGAfterFilter(CpGBoundSequenceList.size());
+
+            reportSummary.setSeqTargetBounded(seqGroup.size());
+            Pair<List<Sequence>, List<Sequence>> filteredTargetSequencePair = filterSequences(seqGroup, constant);
+            seqGroup = filteredTargetSequencePair.getLeft();
+            reportSummary.setSeqTargetAfterFilter(seqGroup.size());
             // if no sequence exist after filtering, return empty reportSummary
             if (seqGroup.size() == 0 && CpGBoundSequenceList.size() == 0) {
                 continue;
@@ -116,7 +125,7 @@ public class BSSeqAnalysis {
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
             Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant, reportSummary);
-            report.writeReport(filteredSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
+            report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
 
             if (constant.coorReady) {
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
@@ -366,11 +375,12 @@ public class BSSeqAnalysis {
      * cutting mapped sequences to reference region and filter reads without covering whole reference seq
      *
      */
-    private List<Sequence> cutAndFilterSequence(String region, Map<String, List<Sequence>> sequenceGroupMap,
+    private Pair<List<Sequence>, List<Sequence>> cutAndFilterSequence(String region, Map<String, List<Sequence>> sequenceGroupMap,
                                                 Map<String, Coordinate> refCoorMap,
                                                 Map<String, Coordinate> targetCoorMap,
                                                 Map<String, String> referenceSeqs) throws IOException {
         List<Sequence> CpGBoundSequenceList = new ArrayList<>();
+        List<Sequence> otherSequenceList = new ArrayList<>();
         Coordinate targetCoor = targetCoorMap.get(region);
         Coordinate refCoor = refCoorMap.get(region);
         if (targetCoor == null) {
@@ -402,10 +412,12 @@ public class BSSeqAnalysis {
                                                                                 endCpGPos + 2 -
                                                                                         sequence.getStartPos()));
                     updateCpGPosition(refStart, startCpGPos, endCpGPos + 1, sequence);
+                }else {
+                    otherSequenceList.add(sequence);
                 }
             }
         }
-        return CpGBoundSequenceList;
+        return new ImmutablePair<>(CpGBoundSequenceList, otherSequenceList);
     }
 
     private void updateCpGPosition(int refStart, int leftBound, int rightBound, Sequence sequence) {

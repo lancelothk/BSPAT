@@ -20,8 +20,16 @@ public class ReportSummary implements Serializable {
     private boolean hasASM;
     private SNP ASMsnp;
     private String id;
-    private int seqBeforeFilter;
-    private int seqAfterFilter;
+    public static final String targetBoundedText = "A. Sequences cover whole target region:";
+    private int seqTargetBounded;
+    public static final String targetAfterFilterText = "A. After quality control:";
+    private int seqTargetAfterFilter;
+    public static final String cpgBoundedText = "B. Sequences don't cover whole target but cover all CpGs:";
+    private int seqCpGBounded;
+    public static final String cpgAfterFilterText = "B. After quality control:";
+    private int seqCpGAfterFilter;
+    public static final String othersText = "C. Sequences cover neither target nor all CpGs:";
+    private int seqOthers;
 
     public ReportSummary(String id) {
         this.id = id;
@@ -73,20 +81,44 @@ public class ReportSummary implements Serializable {
         return Arrays.asList(patternLinks);
     }
 
-    public int getSeqBeforeFilter() {
-        return seqBeforeFilter;
+    public int getSeqCpGBounded() {
+        return seqCpGBounded;
     }
 
-    public void setSeqBeforeFilter(int seqBeforeFilter) {
-        this.seqBeforeFilter = seqBeforeFilter;
+    public void setSeqCpGBounded(int seqCpGBounded) {
+        this.seqCpGBounded = seqCpGBounded;
     }
 
-    public int getSeqAfterFilter() {
-        return seqAfterFilter;
+    public int getSeqCpGAfterFilter() {
+        return seqCpGAfterFilter;
     }
 
-    public void setSeqAfterFilter(int seqAfterFilter) {
-        this.seqAfterFilter = seqAfterFilter;
+    public void setSeqCpGAfterFilter(int seqCpGAfterFilter) {
+        this.seqCpGAfterFilter = seqCpGAfterFilter;
+    }
+
+    public int getSeqOthers() {
+        return seqOthers;
+    }
+
+    public void setSeqOthers(int seqOthers) {
+        this.seqOthers = seqOthers;
+    }
+
+    public int getSeqTargetBounded() {
+        return seqTargetBounded;
+    }
+
+    public void setSeqTargetBounded(int seqTargetBounded) {
+        this.seqTargetBounded = seqTargetBounded;
+    }
+
+    public int getSeqTargetAfterFilter() {
+        return seqTargetAfterFilter;
+    }
+
+    public void setSeqTargetAfterFilter(int seqTargetAfterFilter) {
+        this.seqTargetAfterFilter = seqTargetAfterFilter;
     }
 
     public String getStatTextLink() {

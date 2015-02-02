@@ -35,16 +35,22 @@ public class Report {
         }
     }
 
-    public void writeReport(Pair<List<Sequence>, List<Sequence>> filteredSequencePair,
+    public void writeReport(Pair<List<Sequence>, List<Sequence>> filteredTargetSequencePair,
+                            Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair,
                             List<Pattern> methylationPatternList, List<Pattern> mutationPatternList,
                             List<Pattern> meMuPatternList) throws IOException {
-        writeAnalysedSequences("_bismark.analysis.txt", filteredSequencePair.getLeft());
-        writeAnalysedSequences("_bismark.analysis.filtered.txt", filteredSequencePair.getRight());
-        writeStatistics(filteredSequencePair.getLeft());
-        writePatterns(methylationPatternList, PatternLink.METHYLATION, filteredSequencePair.getLeft());
-        writePatterns(mutationPatternList, PatternLink.MUTATION, filteredSequencePair.getLeft());
-        writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, filteredSequencePair.getLeft());
-        writePatterns(meMuPatternList, PatternLink.MUTATIONWITHMETHYLATION, filteredSequencePair.getLeft());
+        List<Sequence> combinedSequenceList = new ArrayList<>();
+        combinedSequenceList.addAll(filteredTargetSequencePair.getLeft());
+        combinedSequenceList.addAll(filteredCpGSequencePair.getLeft());
+        writeAnalysedSequences("_bismark.analysis.txt", filteredTargetSequencePair.getLeft());
+        writeAnalysedSequences("_bismark.analysis.filtered.txt", filteredTargetSequencePair.getRight());
+        writeAnalysedSequences("_bismark.analysis_CpGBounded.txt", filteredCpGSequencePair.getLeft());
+        writeAnalysedSequences("_bismark.analysis_CpGBounded.filtered.txt", filteredCpGSequencePair.getRight());
+        writeStatistics(filteredTargetSequencePair.getLeft(), combinedSequenceList);
+        writePatterns(methylationPatternList, PatternLink.METHYLATION, combinedSequenceList);
+        writePatterns(mutationPatternList, PatternLink.MUTATION, filteredTargetSequencePair.getLeft());
+        writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, filteredTargetSequencePair.getLeft());
+        writePatterns(meMuPatternList, PatternLink.MUTATIONWITHMETHYLATION, filteredTargetSequencePair.getLeft());
     }
 
     private void writeAnalysedSequences(String fileName, List<Sequence> sequencesList) throws IOException {
@@ -60,14 +66,14 @@ public class Report {
         }
     }
 
-    private void writeStatistics(List<Sequence> sequencesList) throws IOException {
+    private void writeStatistics(List<Sequence> targetSequencesList, List<Sequence> combinedSequencesList) throws IOException {
         String reportFileName = outputFolder + region + "_bismark.analysis_report.txt";
         reportSummary.setStatTextLink(reportFileName);
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
             Hashtable<Integer, CpGStatistics> cpgStatHashtable = new Hashtable<>();
 
             // collect information for calculating methylation rate for each CpG site.
-            for (Sequence seq : sequencesList) {
+            for (Sequence seq : combinedSequencesList) {
                 for (CpGSite cpg : seq.getCpGSites()) {
                     if (!cpgStatHashtable.containsKey(cpg.getPosition())) {
                         CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition());
@@ -88,11 +94,15 @@ public class Report {
 
             cpgStatList = new ArrayList<>(cpgStatHashtable.values());
             Collections.sort(cpgStatList, new CpGStatComparator());
-            bufferedWriter.write("reference seq length:\t" + referenceSeq.length() + "\n");
+            bufferedWriter.write("target region length:\t" + referenceSeq.length() + "\n");
             bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
             bufferedWriter.write("Sequence identity threshold:\t" + constant.sequenceIdentityThreshold + "\n");
-            bufferedWriter.write("Sequences before filter:\t" + reportSummary.getSeqBeforeFilter() + "\n");
-            bufferedWriter.write("Sequences after filter:\t" + reportSummary.getSeqAfterFilter() + "\n");
+            bufferedWriter.write(ReportSummary.targetBoundedText + "\t" + reportSummary.getSeqTargetBounded() + "\n");
+            bufferedWriter.write(
+                    ReportSummary.targetAfterFilterText + "\t" + reportSummary.getSeqTargetAfterFilter() + "\n");
+            bufferedWriter.write(ReportSummary.cpgBoundedText + "\t" + reportSummary.getSeqCpGBounded() + "\n");
+            bufferedWriter.write(ReportSummary.cpgAfterFilterText + "\t" + reportSummary.getSeqCpGAfterFilter() + "\n");
+            bufferedWriter.write(ReportSummary.othersText + "\t" + reportSummary.getSeqOthers() + "\n");
             bufferedWriter.write("methylation rate for each CpG site:\n");
             bufferedWriter.write("pos\trate" + "\n");
 
@@ -108,7 +118,7 @@ public class Report {
             for (int i : mutationStat) {
                 mutationStat[i] = 0;
             }
-            for (Sequence seq : sequencesList) {
+            for (Sequence seq : targetSequencesList) {
                 char[] mutationArray = seq.getMutationString().toCharArray();
                 for (int i = 0; i < mutationArray.length; i++) {
                     if (mutationArray[i] == 'A' || mutationArray[i] == 'C' || mutationArray[i] == 'G' ||
