@@ -163,15 +163,15 @@
         if (isInvalidEmailAddress()) {
             valid = false;
         }
-        if (isEmptyValue("ref", "No reference file!") || isInvalidRefFile() || containBlank("ref")) {
+        if (isEmptyValue("ref", "No reference file!") || isInvalidRefFile() || containIllegal("ref")) {
             valid = false;
         }
         var names = [];
         for (var i = 1; i <= elementCount; i++) {
-            if (isEmptyValue("experiment" + i, "Experiment " + i + " name is empty!") || containBlank("experiment" + i)) {
+            if (isEmptyValue("experiment" + i, "Experiment " + i + " name is empty!") || containIllegal("experiment" + i)) {
                 valid = false;
             }
-            if (isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!") || isInvalidSeqFile("seqFile" + i) || containBlank("seqFile" + i)) {
+            if (isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!") || isInvalidSeqFile("seqFile" + i) || containIllegal("seqFile" + i)) {
                 valid = false;
             }
             if (hasDuplicate("experiment" + i, names,"Experiment " + i + " name is duplicate!" )){

@@ -203,7 +203,7 @@
     function validateInput() {
         removeErrorMsg();
         var valid = true;
-        if (containBlank("target")) {
+        if (containIllegal("target")) {
             valid = false;
         }
         if (isEmptyValue("conversionRateThreshold", "Bisulfite conversion rate is empty!")

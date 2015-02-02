@@ -17,14 +17,19 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-function containBlank(id) {
+function containIllegal(id) {
     var experimentName = document.getElementById(id);
-    if (experimentName.value.search(" ") == -1) {  //don't have blank in name
-        return false;
-    } else {
+    if (experimentName.value.search(" ") != -1) {
+        //contain blank in name
         createErrorMsg(experimentName, id + " has blank in its name! Please remove the blank");
-        return true;        //contain blank
+        return true;
     }
+    if (experimentName.value.search("'") != -1){
+        // contain single quote in name
+        createErrorMsg(experimentName, id + " has single quote in its name! Please remove the quote");
+        return true;
+    }
+    return false;
 }
 
 
