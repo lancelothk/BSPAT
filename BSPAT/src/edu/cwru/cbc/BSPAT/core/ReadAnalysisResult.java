@@ -42,7 +42,7 @@ public class ReadAnalysisResult {
             items = line.split("\t");
             refLength = Integer.valueOf(items[1]);
             // skip 6 lines
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 9; i++) {
                 statBuffReader.readLine();
             }
             // get start position
