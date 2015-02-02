@@ -14,6 +14,11 @@ To switch between single thread or multiple threads, just comment and uncomment 
 //			ExecutorService executor = Executors.newSingleThreadExecutor(); // single thread
             ExecutorService executor = Executors.newCachedThreadPool();// multiple threads
 
+Please note that BSPAT use font "Arial" as default when generating text in figures. Without this font, the text in figure may align incorrectly.
+How to fix:
+1. Install "Arial" font in the deployed system.
+2. Change to another font in DrawPattern.java, but may need to change other parameters to align text in figure correctly.
+
 ## License
 
 Copyright 2014 © Computational Biology lab @ Case Western Reserve University.
