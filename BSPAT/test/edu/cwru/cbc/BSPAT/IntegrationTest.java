@@ -1,5 +1,6 @@
 package edu.cwru.cbc.BSPAT; /**
  * Created by kehu on 8/26/14.
+ *
  */
 
 import edu.cwru.cbc.BSPAT.DataType.ExtensionFilter;
@@ -125,8 +126,6 @@ public class IntegrationTest {
         ServletConfig servletConfig = mock(ServletConfig.class);
         ServletContext servletContext = mock(ServletContext.class);
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
-
-        // TODO using target coordinates, test CpG bounded methylation pattern
 
         when(servletConfig.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRealPath("")).thenReturn(testPath);
