@@ -20,19 +20,19 @@ import java.util.logging.Logger;
 
 public class DrawPattern {
     private final static Logger LOGGER = Logger.getLogger(DrawPattern.class.getName());
-    private final String DEFAULT_FONT = "Arial";
-    private final int CELLLINE_FONT_SIZE = 32;
-    private final int WIDTH = 20;
-    private final int FIGURE_STARTX = 185;
-    private final int FIGURE_STARTY = 20;
-    private final int REGION_NAME_LEFTSTART = 10;
-    private final int BAR_HEIGHT = 28;
-    private final int HEIGHT_INTERVAL = 26;
-    private final int RADIUS = 20;
-    private final double RGB_INTERVAL = 255 / 50.0;
-    private final int STYLE_CHOICE = 0;
-    private final int COMMON_FONT_SIZE = 28;
-    private final int SMALL_PERCENT_FONT_SIZE = 18;
+    private static final String DEFAULT_FONT = "Arial";
+    private static final int CELLLINE_FONT_SIZE = 32;
+    private static final int WIDTH = 20;
+    private static final int FIGURE_STARTX = 185;
+    private static final int FIGURE_STARTY = 20;
+    private static final int REGION_NAME_LEFTSTART = 10;
+    private static final int BAR_HEIGHT = 28;
+    private static final int HEIGHT_INTERVAL = 26;
+    private static final int RADIUS = 20;
+    private static final double RGB_INTERVAL = 255 / 50.0;
+    private static final int STYLE_CHOICE = 0;
+    private static final int COMMON_FONT_SIZE = 28;
+    private static final int SMALL_PERCENT_FONT_SIZE = 18;
 
     private String figureFormat;
     private String refVersion;

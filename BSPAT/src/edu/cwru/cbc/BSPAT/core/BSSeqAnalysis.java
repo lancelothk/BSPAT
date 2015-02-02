@@ -334,16 +334,18 @@ public class BSSeqAnalysis {
     private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
                                                     int cpgCount, Constant constant) {
         List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
-        if (constant.minP0Threshold != -1 && cpgCount >= 3) {
-            filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList,
-                                              constant);
-            if (qualifiedMethylationPatternList.size() == 0) {
+        if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
+            if (constant.minP0Threshold != -1 && cpgCount >= 3) {
+                filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList,
+                                                  constant);
+                if (qualifiedMethylationPatternList.size() == 0) {
+                    filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
+                                                          qualifiedMethylationPatternList, constant);
+                }
+            } else {
                 filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
                                                       qualifiedMethylationPatternList, constant);
             }
-        } else {
-            filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList,
-                                                  constant);
         }
         return qualifiedMethylationPatternList;
     }

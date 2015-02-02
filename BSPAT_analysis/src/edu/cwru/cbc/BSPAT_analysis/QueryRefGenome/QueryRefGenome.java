@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class QueryRefGenome {
     private Map<String, List<CpGIsland>> groupedCpGIsland;
-    private final int MINCPGNUM = 10;
+    private static final int MINCPGNUM = 10;
     private int regionNumber;
     private int regionLength;
 
