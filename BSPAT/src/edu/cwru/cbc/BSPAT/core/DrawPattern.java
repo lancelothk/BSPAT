@@ -256,7 +256,7 @@ public class DrawPattern {
             graphWriter.setPaint(Color.BLUE);
             for (int j = 0; j < alleleList.size(); j++) {
                 graphWriter.fill(
-                        new Rectangle2D.Double(left + ((alleleList.get(j) - 1) * WIDTH), height, RADIUS / 2, RADIUS));
+                        new Rectangle2D.Double(left + ((alleleList.get(j) - 1 + 0.5) * WIDTH), height, RADIUS / 2, RADIUS));
                 int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
                 bedWriter.write(
                         "chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-Pattern" + j + "\t" + 1000 +
