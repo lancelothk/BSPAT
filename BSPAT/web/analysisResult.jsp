@@ -112,7 +112,7 @@
                 </tr>
                 <tr>
                     <td>
-                        Thresholds used:
+                        Thresholds used in analysis:
                     </td>
                 </tr>
                 <tr>

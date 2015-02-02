@@ -21,7 +21,7 @@ import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
  */
 public class BSSeqAnalysis {
     private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
-    private final int DEFAULTTARGETLENGTH = 70;
+    public static final int DEFAULT_TARGET_LENGTH = 70;
 
     /**
      * Execute analysis.
@@ -50,17 +50,25 @@ public class BSSeqAnalysis {
 
         Map<String, Coordinate> targetCoorMap;
         if (constant.targetFileName == null) {
-            // get position of first CpG and generate DEFAULTTARGETLENGTH bp region.
+            // get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
             targetCoorMap = new HashMap<>();
             for (String key : refCoorMap.keySet()) {
                 String refString = referenceSeqs.get(key);
                 long firstPos = refString.indexOf("CG");
-                long endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULTTARGETLENGTH;
-                targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-                                                      refCoorMap.get(key).getStrand(),
-                                                      refCoorMap.get(key).getStart() + firstPos,
-                                                      endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(
-                                                              key).getEnd()));
+                // no CpG found in ref seq
+                if (firstPos == -1){
+                    targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
+                                                          refCoorMap.get(key).getStrand(),
+                                                          refCoorMap.get(key).getStart(),
+                                                         refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
+                }else {
+                    long endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
+                    targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
+                                                          refCoorMap.get(key).getStrand(),
+                                                          refCoorMap.get(key).getStart() + firstPos,
+                                                          endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(
+                                                                  key).getEnd()));
+                }
             }
         } else {
             targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
@@ -76,8 +84,11 @@ public class BSSeqAnalysis {
         // 3. generate report for each region
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
-            Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = cutAndFilterSequence(region, sequenceGroupMap, refCoorMap,
-                                                                       targetCoorMap, referenceSeqs);
+            Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = cutAndFilterSequence(region,
+                                                                                                  sequenceGroupMap,
+                                                                                                  refCoorMap,
+                                                                                                  targetCoorMap,
+                                                                                                  referenceSeqs);
             List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
             List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
             reportSummary.setSeqOthers(otherSequenceList.size());
@@ -87,7 +98,8 @@ public class BSSeqAnalysis {
             Sequence.processSequence(getBoundedSeq("CG", referenceSeqs.get(region)), CpGBoundSequenceList);
 
             reportSummary.setSeqCpGBounded(CpGBoundSequenceList.size());
-            Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair = filterSequences(CpGBoundSequenceList, constant);
+            Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair = filterSequences(CpGBoundSequenceList,
+                                                                                           constant);
             CpGBoundSequenceList = filteredCpGSequencePair.getLeft();
             reportSummary.setSeqCpGAfterFilter(CpGBoundSequenceList.size());
 
@@ -125,7 +137,8 @@ public class BSSeqAnalysis {
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
             Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant, reportSummary);
-            report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList, mutationPatternList, meMuPatternList);
+            report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList,
+                               mutationPatternList, meMuPatternList);
 
             if (constant.coorReady) {
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
@@ -373,12 +386,12 @@ public class BSSeqAnalysis {
 
     /**
      * cutting mapped sequences to reference region and filter reads without covering whole reference seq
-     *
      */
-    private Pair<List<Sequence>, List<Sequence>> cutAndFilterSequence(String region, Map<String, List<Sequence>> sequenceGroupMap,
-                                                Map<String, Coordinate> refCoorMap,
-                                                Map<String, Coordinate> targetCoorMap,
-                                                Map<String, String> referenceSeqs) throws IOException {
+    private Pair<List<Sequence>, List<Sequence>> cutAndFilterSequence(String region,
+                                                                      Map<String, List<Sequence>> sequenceGroupMap,
+                                                                      Map<String, Coordinate> refCoorMap,
+                                                                      Map<String, Coordinate> targetCoorMap,
+                                                                      Map<String, String> referenceSeqs) throws IOException {
         List<Sequence> CpGBoundSequenceList = new ArrayList<>();
         List<Sequence> otherSequenceList = new ArrayList<>();
         Coordinate targetCoor = targetCoorMap.get(region);
@@ -412,7 +425,7 @@ public class BSSeqAnalysis {
                                                                                 endCpGPos + 2 -
                                                                                         sequence.getStartPos()));
                     updateCpGPosition(refStart, startCpGPos, endCpGPos + 1, sequence);
-                }else {
+                } else {
                     otherSequenceList.add(sequence);
                 }
             }
@@ -439,7 +452,7 @@ public class BSSeqAnalysis {
     /**
      * group sequences by given key function
      *
-     * @param getKey        function parameter to return String key.
+     * @param getKey function parameter to return String key.
      * @return HashMap contains <key function return value, grouped sequence list>
      */
     private Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
@@ -458,7 +471,6 @@ public class BSSeqAnalysis {
 
     /**
      * fill sequence list filtered by threshold.
-     *
      */
     private Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
                                                                  Constant constant) throws IOException {

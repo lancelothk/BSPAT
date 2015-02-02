@@ -22,13 +22,13 @@
                     <td>This manual is divided into three parts:</td>
                 </tr>
                 <tr>
-                    <td>1. <a href="manualMapping.jsp">Mapping</a>;</td>
+                    <td>1. <a href="manualMapping.jsp">Mapping</a></td>
                 </tr>
                 <tr>
-                    <td>2. <a href="manualAnalysis.jsp">Analysis</a>;</td>
+                    <td>2. <a href="manualAnalysis.jsp">Analysis</a></td>
                 </tr>
                 <tr>
-                    <td>3. <a href="manualResult.jsp">Result</a>;</td>
+                    <td>3. <a href="manualResult.jsp">Result</a></td>
                 </tr>
                 <tr>
                     <td>Also we have a one-click <a href="demo.jsp">demo</a> to show the workflow of BSPAT. </td>

@@ -1,3 +1,4 @@
+<%@ page import="edu.cwru.cbc.BSPAT.core.ReportSummary" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -22,7 +23,7 @@
 <h3 id="resultSummary">Result summary section:</h3>
 <table>
     <tr>
-        <td><img src="images/resultSummarySection.png" border="1" alt=""/></td>
+        <td><img src="images/analysisResultSummarySection.png" border="1" alt=""/></td>
     </tr>
     <tr>
         <td>
@@ -44,6 +45,88 @@
             <p class="ptext">List experiments executed in the mapping phase.</p>
         </td>
     </tr>
+    <tr>
+        <td>
+            <h4><%=ReportSummary.targetBoundedText%></h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Number of sequences cover whole target region. Used for generating both methylation and mutation patterns.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4><%=ReportSummary.targetAfterFilterText%></h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Number of sequences filtered by bisulfite conversion rate and sequence
+                identity.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4><%=ReportSummary.cpgBoundedText%></h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Number of sequences cover all CpGs in target region. Used for generating methylation pattern.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4><%=ReportSummary.cpgAfterFilterText%></h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Number of sequences filtered by bisulfite conversion rate and sequence
+                identity.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4><%=ReportSummary.othersText%></h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Number of sequences cover neither whole target region nor all CpGs in target region.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Analysis phase running time</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Time cost of analysis in current execution.</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Zipped analysis result</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p class="ptext">Compressed analysis results, including all results shown in result page, such as
+                text pattern, figure and GenomeBrowser bed file.</p>
+        </td>
+    </tr>
+    </table>
+
+    <p class="dottedline"></p>
+    <table>
+        <tr><td><h3>Thresholds Section:</h3></td></tr>
+    <tr>
+        <td><img src="images/analysisUsedThresholdSection.png" border="1" alt=""/></td>
+    </tr>
+
     <tr>
         <td>
             <h4>Bisulfite conversion rate</h4>
@@ -72,54 +155,12 @@
     </tr>
     <tr>
         <td>
-            <h4>Sequence number before filtering</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p class="ptext">Number of all sequences mapped by Bisamrk.</p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Sequence number after filtering</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p class="ptext">Number of sequences filtered by bisulfite conversion rate and sequence
-                identity.</p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>&alpha; threshold, critical value and Mutation threshold</h4>
+            <h4>&alpha; threshold, critical value, Methylation and Mutation threshold</h4>
         </td>
     </tr>
     <tr>
         <td>
             <p class="ptext">Thresholds used in current execution to filter patterns and alleles.</p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Analysis phase running time</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p class="ptext">Time cost of analysis in current execution.</p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Zipped analysis result</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p class="ptext">Compressed analysis results, including all results shown in result page, such as
-                text pattern, figure and GenomeBrowser bed file.</p>
         </td>
     </tr>
 </table>
