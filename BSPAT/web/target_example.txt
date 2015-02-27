@@ -1,0 +1,8 @@
+   CAACAACGTCTACGG			(target region)
+AACCAACAACGTCTACGGACT 		(included for methylation and mutation pattern)
+   CAACAACGTCTACGG  		(included for methylation and mutation pattern)
+AACCAACAACGTC 				(excluded)
+     ACAACGTCTACG 			(included only for methylation pattern)
+     ACAACGTCTA				(excluded)
+             TACGGACTGATC 	(excluded)
+

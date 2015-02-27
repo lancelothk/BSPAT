@@ -120,15 +120,15 @@ public class DrawPattern {
         String chr = beginCoor.split(":")[0];
         String startPos = beginCoor.split(":")[1];
         methylWriter.getBedWriter().write(
-                String.format("browser position chr%s-%d\nbrowser hide all\n", beginCoor, Long.parseLong(endCoor) + 1));
+                String.format("browser position chr%s-%d\nbrowser hide all\n", beginCoor, Long.parseLong(endCoor)));
         for (int i = 0; i < patternResultLists.size(); i++) {
             PatternResult patternResult = patternResultLists.get(i);
             methylWriter.getBedWriter().write(
                     String.format("track name=\"Pattern%d\" description=\"%s-%s\" visibility=1 itemRgb=\"On\"\n", i,
                                   sampleName, region));
             methylWriter.getBedWriter().write(
-                    String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
-                                  startPos));
+                    String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos)+1, endCoor, Integer.valueOf(startPos)+1,
+                                  Integer.valueOf(startPos)+1));
             for (CpGSitePattern cpg : patternResult.getCpGList()) {
                 int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
                 // genome browser automatically add 1 to start, no change to
@@ -158,10 +158,10 @@ public class DrawPattern {
 
         methylWriter.getBedWriter().write(String.format(
                 "browser position chr%s-%d\nbrowser hide all\ntrack name=\"Average\" description=\"%s-%s\" visibility=1 itemRgb=\"On\"\n",
-                beginCoor, Long.parseLong(endCoor) + 1, sampleName, region));
+                beginCoor, Long.parseLong(endCoor), sampleName, region));
         methylWriter.getBedWriter().write(
-                String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
-                              startPos));
+                String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos)+1, endCoor, Integer.valueOf(startPos)+1,
+                              Integer.valueOf(startPos)+1));
 
         addAverage(methylWriter.getGraphWriter(), DEFAULT_FONT, statList, chr, startPos, "Pattern-Average",
                    methylWriter.getBedWriter(), height, left);
@@ -194,7 +194,7 @@ public class DrawPattern {
 
 
         ASMWriter.getBedWriter().write(
-                String.format("browser position chr%s-%d\nbrowser hide all\n", beginCoor, Long.parseLong(endCoor) + 1));
+                String.format("browser position chr%s-%d\nbrowser hide all\n", beginCoor, Long.parseLong(endCoor)));
         height += 2.5 * HEIGHT_INTERVAL;
         ASMWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + left, height);
 
@@ -207,8 +207,8 @@ public class DrawPattern {
                 String.format("track name=\"PatternA\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
                               sampleName, region));
         ASMWriter.getBedWriter().write(
-                String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
-                              startPos));
+                String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos)+1, endCoor, Integer.valueOf(startPos)+1,
+                              Integer.valueOf(startPos)+1));
         height += HEIGHT_INTERVAL;
         addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
                   height + HEIGHT_INTERVAL, left);
@@ -224,8 +224,8 @@ public class DrawPattern {
                 String.format("track name=\"PatternB\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
                               sampleName, region));
         ASMWriter.getBedWriter().write(
-                String.format("chr%s\t%s\t%s\trefbar\t0\t+\t%s\t%s\t0,0,0\n", chr, startPos, endCoor, startPos,
-                              startPos));
+                String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos)+1, endCoor, Integer.valueOf(startPos)+1,
+                              Integer.valueOf(startPos)+1));
         height += 2 * HEIGHT_INTERVAL;
         addAverage(ASMWriter.getGraphWriter(), DEFAULT_FONT, patternWithAllele.getCpGList(), chr, startPos, "PatternB",
                    ASMWriter.getBedWriter(), height, left);
