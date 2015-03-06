@@ -14,6 +14,7 @@ import java.util.*;
 
 /**
  * Created by kehu on 9/9/14.
+ * Get reference genome of given genomic regions.
  */
 public class QueryRefGenome {
     private Map<String, List<CpGIsland>> groupedCpGIsland;

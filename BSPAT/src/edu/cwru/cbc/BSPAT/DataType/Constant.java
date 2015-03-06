@@ -11,10 +11,6 @@ public class Constant implements Serializable {
     public static String DISKROOTPATH = "";
     public static final String PNG = "png";
     public static final String EPS = "eps";
-    public static final String HG16 = "hg16";
-    public static final String HG17 = "hg17";
-    public static final String HG18 = "hg18";
-    public static final String HG19 = "hg19";
 
 
     // paths
@@ -75,13 +71,12 @@ public class Constant implements Serializable {
     /**
      * read constant object from disk
      *
-     * @param jobID
      * @return singleton of constant
      */
     public static Constant readConstant(String jobID) throws IOException {
         ObjectInputStream constantObjectStream = new ObjectInputStream(
                 new FileInputStream(DISKROOTPATH + "/" + JOB_FOLDER_PREFIX + jobID + "/" + jobID + ".data"));
-        Object obj = null;
+        Object obj;
         try {
             obj = constantObjectStream.readObject();
         } catch (ClassNotFoundException e) {
