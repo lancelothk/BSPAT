@@ -15,6 +15,10 @@
         <div id="content_top"></div>
         <div id="content_main">
             <p class="phead">
+                Version: 1.0.0-beta<br/>
+            </p>
+
+            <p class="phead">
                 Developed and Maintained By: <br/>
             </p>
 
