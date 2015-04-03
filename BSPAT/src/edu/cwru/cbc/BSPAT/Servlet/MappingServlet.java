@@ -19,10 +19,7 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +47,7 @@ public class MappingServlet extends HttpServlet {
      * response)
      */
     protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+            HttpServletResponse response) throws ServletException, IOException {
     }
 
     /**
@@ -70,12 +67,12 @@ public class MappingServlet extends HttpServlet {
             if (isDemo) {
                 experiments.add(new Experiment(1, "demoExperiment"));
                 FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoReference.fasta"),
-                                              new File(constant.originalRefPath));
+                        new File(constant.originalRefPath));
                 FileUtils.copyFileToDirectory(new File(constant.demoPath + "demoSequence.fastq"),
-                                              new File(constant.seqsPath + "demoExperiment"));
+                        new File(constant.seqsPath + "demoExperiment"));
             } else if (Boolean.parseBoolean(request.getParameter("test"))) {
                 FileUtils.copyFileToDirectory(new File(constant.testPath + "testReference.fasta"),
-                                              new File(constant.originalRefPath));
+                        new File(constant.originalRefPath));
                 addTestExperiment(constant, experiments, "experiment1", 1);
                 addTestExperiment(constant, experiments, "experiment2", 2);
             } else {
@@ -96,14 +93,23 @@ public class MappingServlet extends HttpServlet {
             // append xx to both end of reference
             modifyRef(constant.originalRefPath, constant.modifiedRefPath);
 
+            // load configurations
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
+
             // bismark indexing
             CallBismark callBismark = null;
-            callBismark = new CallBismark(constant.modifiedRefPath, constant.toolsPath, constant.logPath,
-                                          constant.qualsType, constant.maxmis);
+            callBismark = new CallBismark(constant.modifiedRefPath, properties.getProperty("bismarkPath"),
+                    properties.getProperty("bowtiePath"), constant.logPath, constant.qualsType, constant.maxmis);
 
             // multiple threads to execute bismark mapping
-//            ExecutorService executor = Executors.newSingleThreadExecutor(); // single thread
-            ExecutorService executor = Executors.newCachedThreadPool(); // multiple threads
+            ExecutorService executor;
+            if (Boolean.valueOf(properties.getProperty("useSingleThread"))) {
+                executor = Executors.newSingleThreadExecutor(); // single thread
+            } else {
+                executor = Executors.newCachedThreadPool(); // multiple threads
+            }
+
             List<Future<Object>> futureList = new ArrayList<>();
             for (Experiment experiment : constant.experiments) {
                 Future<Object> future = executor.submit(
@@ -132,17 +138,18 @@ public class MappingServlet extends HttpServlet {
             constant.writeConstant();
             // send email to inform user
             Utilities.sendEmail(constant.email, constant.jobID,
-                                "Mapping has finished.\n" + "Your jobID is " + constant.jobID +
-                                        "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
+                    "Mapping has finished.\n" + "Your jobID is " + constant.jobID +
+                            "\nPlease go to cbc.case.edu/BSPAT/result.jsp to retrieve your result.");
             //redirect page
-            request.setAttribute("jobID",constant.jobID);
+            request.setAttribute("jobID", constant.jobID);
             request.getRequestDispatcher("mappingResult.jsp").forward(request, response);
         } catch (InterruptedException | ServletException | IOException | MessagingException | ExecutionException | RuntimeException e) {
             Utilities.handleServletException(e, constant);
         }
     }
 
-    private void addTestExperiment(Constant constant, List<Experiment> experiments, String experimentName, int experimentIndex) throws IOException {
+    private void addTestExperiment(Constant constant, List<Experiment> experiments, String experimentName,
+            int experimentIndex) throws IOException {
         experiments.add(new Experiment(experimentIndex, experimentName));
         File[] seqs = new File(constant.testPath + experimentName).listFiles(new ExtensionFilter(".fastq"));
         for (File seq : seqs) {
@@ -225,7 +232,7 @@ public class MappingServlet extends HttpServlet {
         // webPath is relative path to root
         constant.webRootPath = request.getContextPath();
         constant.randomDir = generateRandomDirectory(Constant.DISKROOTPATH,
-                                                     Constant.JOB_FOLDER_PREFIX).getAbsolutePath();
+                Constant.JOB_FOLDER_PREFIX).getAbsolutePath();
         constant.jobID = constant.randomDir.split(Constant.JOB_FOLDER_PREFIX)[1];
         constant.mappingResultPath = constant.randomDir + "/bismark_result/";
         IO.createFolder(constant.mappingResultPath);
@@ -337,11 +344,12 @@ public class MappingServlet extends HttpServlet {
         for (String name : files) {
             LOGGER.info(constant.getJobID() + "\tstart blat query for " + name);
             List<String> cmdList = Arrays.asList(blatQueryPath + "/BlatQuery.sh", blatQueryPath, constant.refVersion,
-                                                 constant.originalRefPath, name);
+                    constant.originalRefPath, name);
             if (Utilities.callCMD(cmdList, new File(constant.coorFilePath), constant.logPath + "/blat.log") > 0) {
-                throw new RuntimeException("blat query error! Please double check your reference file. <br> blat logs:<br>" +
-                                                   Files.toString(new File(constant.logPath + "/blat.log"),
-                                                                  Charsets.UTF_8).replace("\n", "<br>"));
+                throw new RuntimeException(
+                        "blat query error! Please double check your reference file. <br> blat logs:<br>" +
+                                Files.toString(new File(constant.logPath + "/blat.log"), Charsets.UTF_8)
+                                        .replace("\n", "<br>"));
             }
             LOGGER.info(constant.getJobID() + "\tblat query is finished for " + name);
         }

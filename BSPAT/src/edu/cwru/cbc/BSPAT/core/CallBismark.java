@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 
 public class CallBismark {
     private final static Logger LOGGER = Logger.getLogger(CallBismark.class.getName());
-    private String bismarkPath;
-    private String bowtiePath;
     private int maxmis;
     private File bismarkPathFile;
     private File bowtiePathFile;
@@ -29,11 +27,9 @@ public class CallBismark {
     //		CallBismark callBismark = new CallBismark(seqPath + seqFile, bismarkResultPath, refPath);
     //	}
 
-    public CallBismark(String refPath, String toolsPath, String logPath, String qualsType,
-                       int maxmis) throws IOException, InterruptedException {
+    public CallBismark(String refPath, String bismarkPath, String bowtiePath, String logPath, String qualsType,
+            int maxmis) throws IOException, InterruptedException {
         this.maxmis = maxmis;
-        this.bismarkPath = toolsPath + "/bismark/";
-        this.bowtiePath = toolsPath + "/bowtie/";
         this.bismarkPathFile = new File(bismarkPath);
         this.bowtiePathFile = new File(bowtiePath);
         this.refPathFile = new File(refPath);
@@ -55,11 +51,11 @@ public class CallBismark {
         // add "--no" to always skip existing reference
         LOGGER.info("Call preparation:");
         List<String> cmdList = Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark_genome_preparation",
-                                             "--yes_to_all", "--path_to_bowtie", bowtiePathFile.getAbsolutePath(),
-                                             refPathFile.getAbsolutePath());
+                "--yes_to_all", "--path_to_bowtie", bowtiePathFile.getAbsolutePath(), refPathFile.getAbsolutePath());
         if (Utilities.callCMD(cmdList, new File(refPathFile.getAbsolutePath()), logPath + "/bismark_prep.log") > 0) {
-            throw new RuntimeException("bismark preparation fail! Please double check your reference file<br>bismark logs:<br>" +
-                                               Files.toString(new File(logPath + "/bismark_prep.log"), Charsets.UTF_8));
+            throw new RuntimeException(
+                    "bismark preparation fail! Please double check your reference file<br>bismark logs:<br>" +
+                            Files.toString(new File(logPath + "/bismark_prep.log"), Charsets.UTF_8));
         }
     }
 
@@ -107,19 +103,20 @@ public class CallBismark {
                     }
                 }
                 List<String> cmdList;
-                if (fastaq.equals("-f")){
+                if (fastaq.equals("-f")) {
                     cmdList = new ArrayList<>(
-                            Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq,
-                                          "--path_to_bowtie", bowtiePathFile.getAbsolutePath(), "-n",
-                                          String.valueOf(maxmis), "-o", outputFile.getAbsolutePath(), "--non_directional",
-                                          "--quiet", "--un", "--ambiguous", "--sam-no-hd", "--temp_dir",
-                                          tempDir.getAbsolutePath(), refPathFile.getAbsolutePath()));
-                }else {
+                            Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq, "--path_to_bowtie",
+                                    bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis), "-o",
+                                    outputFile.getAbsolutePath(), "--non_directional", "--quiet", "--un", "--ambiguous",
+                                    "--sam", "--sam-no-hd", "--temp_dir", tempDir.getAbsolutePath(),
+                                    refPathFile.getAbsolutePath()));
+                } else {
                     cmdList = new ArrayList<>(
                             Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq, qualsTypeParameter,
-                                          "--path_to_bowtie", bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis), "-o", outputFile.getAbsolutePath(),
-                                          "--non_directional", "--quiet", "--un", "--ambiguous", "--sam-no-hd",
-                                          "--temp_dir", tempDir.getAbsolutePath(), refPathFile.getAbsolutePath()));
+                                    "--path_to_bowtie", bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis),
+                                    "-o", outputFile.getAbsolutePath(), "--non_directional", "--quiet", "--un",
+                                    "--ambiguous", "--sam", "--sam-no-hd", "--temp_dir", tempDir.getAbsolutePath(),
+                                    refPathFile.getAbsolutePath()));
                 }
                 for (File file : fileList) {
                     cmdList.add(file.getAbsolutePath());
@@ -135,15 +132,15 @@ public class CallBismark {
         /** 3. extract information **/
         LOGGER.info("Call extractor for:\t" + inputPath);
         List<String> cmdList = new ArrayList<>(
-                Arrays.asList(bismarkPath + "/bismark_methylation_extractor", "-s", "-o", outputPath, "--comprehensive",
-                              "--no_header", "--merge_non_CpG"));
+                Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark_methylation_extractor", "-s", "-o",
+                        outputPath, "--comprehensive", "--no_header", "--merge_non_CpG"));
         for (File f : fileList) {
             cmdList.add(outputFile.getAbsolutePath() + "/" + f.getName() + "_bismark.sam");
         }
         if (Utilities.callCMD(cmdList, new File(outputPath), logPath + "/bismark_methylExtractor.log") > 0) {
-            throw new RuntimeException("bismark methylExtractor failed. Please double check your reference and sequence files<br>bismark logs:<br>" +
-                                               Files.toString(new File(logPath + "/bismark_methylExtractor.log"),
-                                                              Charsets.UTF_8));
+            throw new RuntimeException(
+                    "bismark methylExtractor failed. Please double check your reference and sequence files<br>bismark logs:<br>" +
+                            Files.toString(new File(logPath + "/bismark_methylExtractor.log"), Charsets.UTF_8));
         }
 
         LOGGER.info("Call bismark finished!!!");

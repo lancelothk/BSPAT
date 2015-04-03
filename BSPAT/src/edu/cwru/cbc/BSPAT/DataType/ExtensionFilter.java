@@ -20,16 +20,15 @@ public class ExtensionFilter implements FilenameFilter {
 
     @Override
     public boolean accept(File dir, String name) {
+        // ignore case in name string
         String lowercaseName = name.toLowerCase();
         if (isSingle) {
-            if (lowercaseName.endsWith(extension)) {
-                return true;
-            } else {
-                return false;
-            }
+            // ignore case in extension string
+            return lowercaseName.endsWith(extension.toLowerCase());
         } else {
             for (String ext : exts) {
-                if (lowercaseName.endsWith(ext)) {
+                // ignore case in extension string
+                if (lowercaseName.endsWith(ext.toLowerCase())) {
                     return true;
                 }
             }

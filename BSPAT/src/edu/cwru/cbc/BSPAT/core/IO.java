@@ -37,16 +37,18 @@ public class IO {
             while (line != null) {
                 if (!line.equals("")) {
                     items = line.split("\t");
-                    if (items.length != 5){
-                        throw new RuntimeException("invalid coordinate file! Please double check your uploaded coordinate file");
+                    if (items.length != 5) {
+                        throw new RuntimeException(
+                                "invalid coordinate file! Please double check your uploaded coordinate file");
                     }
                     coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Long.valueOf(items[3]),
-                                                                Long.valueOf(items[4])));
+                            Long.valueOf(items[4])));
                 }
                 line = coordinatesBuffReader.readLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("error in reading coordinate file! Please double check your uploaded coordinate file");
+            throw new RuntimeException(
+                    "error in reading coordinate file! Please double check your uploaded coordinate file");
         }
         return coordinateHash;
     }
@@ -102,8 +104,6 @@ public class IO {
     /**
      * Read mapping report and generate mapping summary
      *
-     * @param mappingResultPath
-     * @return
      * @throws IOException
      */
     public static MappingSummary readMappingSummary(String mappingResultPath) throws IOException {
@@ -113,38 +113,23 @@ public class IO {
         for (File folder : folders) {
             // only check folder
             if (folder.isDirectory()) {
-                File[] files = folder.listFiles();
-                files = folder.listFiles(new ExtensionFilter(new String[]{"_report.txt"}));
+                File[] files = folder.listFiles(new ExtensionFilter(new String[]{"_SE_report.txt"}));
                 for (File file : files) {
                     try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));) {
-                        // ignore first 5 lines
-                        for (int i = 0; i < 5; i++) {
-                            bufferedReader.readLine();
-                        }
-                        // read following 6 lines
-                        for (int i = 0; i < 6; i++) {
-                            String line = bufferedReader.readLine();
-                            String value = line.split(":\t")[1];
-                            switch (i) {
-                                case 0:
-                                    mappingSummary.addSeqAnalysed(Long.parseLong(value));
-                                    break;
-                                case 1:
-                                    mappingSummary.addUniqueBestHit(Long.parseLong(value));
-                                    break;
-                                case 2:
-                                    break;
-                                case 3:
-                                    mappingSummary.addNoAlignment(Long.parseLong(value));
-                                    break;
-                                case 4:
-                                    mappingSummary.addNotUnique(Long.parseLong(value));
-                                    break;
-                                case 5:
-                                    mappingSummary.addNotExtracted(Long.parseLong(value));
-                                    break;
-                                default:
-                                    break;
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            if (line.startsWith("Sequences analysed in total")) {
+                                mappingSummary.addSeqAnalysed(Long.parseLong(line.split(":\t")[1]));
+                            } else if (line.startsWith(
+                                    "Number of alignments with a unique best hit from the different alignments")) {
+                                mappingSummary.addUniqueBestHit(Long.parseLong(line.split(":\t")[1]));
+                            } else if (line.startsWith("Sequences with no alignments under any condition")) {
+                                mappingSummary.addNoAlignment(Long.parseLong(line.split(":\t")[1]));
+                            } else if (line.startsWith("Sequences did not map uniquely")) {
+                                mappingSummary.addNotUnique(Long.parseLong(line.split(":\t")[1]));
+                            } else if (line.startsWith(
+                                    "Sequences which were discarded because genomic sequence could not be extracted")) {
+                                mappingSummary.addNotExtracted(Long.parseLong(line.split(":\t")[1]));
                             }
                         }
                     }

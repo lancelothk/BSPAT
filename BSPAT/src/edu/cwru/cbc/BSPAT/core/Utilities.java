@@ -6,8 +6,6 @@ import edu.cwru.cbc.BSPAT.DataType.ExtensionFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tools.zip.ZipFile;
-import org.supercsv.io.CsvListReader;
-import org.supercsv.prefs.CsvPreference;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -26,10 +24,10 @@ import java.util.zip.ZipOutputStream;
 public class Utilities {
     private final static Logger LOGGER = Logger.getLogger(Utilities.class.getName());
 
-    public static String getBoundedSeq(String symbol, String seq){
+    public static String getBoundedSeq(String symbol, String seq) {
         int startCpGPos = seq.indexOf(symbol);
         int endCpGPos = seq.lastIndexOf(symbol);
-        return seq.substring(startCpGPos, (endCpGPos+2)>seq.length()?seq.length():(endCpGPos+2));
+        return seq.substring(startCpGPos, (endCpGPos + 2) > seq.length() ? seq.length() : (endCpGPos + 2));
     }
 
     public static void handleServletException(Exception e, Constant constant) {
@@ -37,17 +35,21 @@ public class Utilities {
         if (constant != null && constant.email != null && constant.jobID != null) {
             try {
                 Utilities.sendEmail(constant.email, constant.jobID,
-                                    String.format("%s failed:\n%s\n", constant.jobID, ExceptionUtils.getStackTrace(e)));
+                        String.format("%s failed:\n%s\n", constant.jobID, ExceptionUtils.getStackTrace(e)));
             } catch (MessagingException innerException) {
                 innerException.printStackTrace();
                 throw new RuntimeException("failed to send email!", e);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+                throw new RuntimeException("failed to load property file when loading email account!", e);
             }
         }
         throw new RuntimeException(e);
     }
 
     public static Throwable getRootCause(Throwable throwable) {
-        if (throwable.getCause() != null) return getRootCause(throwable.getCause());
+        if (throwable.getCause() != null)
+            return getRootCause(throwable.getCause());
         return throwable;
     }
 
@@ -76,7 +78,7 @@ public class Utilities {
                     if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
                         // first query match, score equals query size
                         coorHashMap.put(items[0], new Coordinate(items[0], items[6], items[7], Long.valueOf(items[8]),
-                                                                 Long.valueOf(items[9])));
+                                Long.valueOf(items[9])));
                     }
                 }
             }
@@ -86,7 +88,7 @@ public class Utilities {
                 Coordinate coor = coorHashMap.get(key);
                 writer.write(
                         String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(),
-                                      coor.getEnd()));
+                                coor.getEnd()));
             }
         }
         if (coorHashMap.size() == 0) {
@@ -142,7 +144,7 @@ public class Utilities {
      * @return exit value
      */
     public static int callCMD(List<String> cmds, File directory,
-                              String fileName) throws IOException, InterruptedException {
+            String fileName) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(cmds).directory(directory);
         if (fileName != null) {
             processBuilder.redirectOutput(new File(fileName));
@@ -164,7 +166,7 @@ public class Utilities {
     }
 
     private static void zip(String path, File basePath, ZipOutputStream zo, boolean isRecursive,
-                            boolean isOutBlankDir) throws IOException {
+            boolean isOutBlankDir) throws IOException {
 
         File inFile = new File(path);
 
@@ -241,26 +243,15 @@ public class Utilities {
         LOGGER.info("File unzipped succesfully!");
     }
 
-    public static void sendEmail(String toAddress, String jobID, String text) throws MessagingException {
+    public static void sendEmail(String toAddress, String jobID, String text) throws MessagingException, IOException {
         if (toAddress == null || toAddress.equals("") || jobID == null || jobID.equals("")) {
             return;
         }
         String username, password;
-        try {
-            File rootFolder = new File(Constant.DISKROOTPATH);
-            CsvListReader csvListReader = new CsvListReader(
-                    new BufferedReader(new FileReader(rootFolder.getParent() + "/emailConf.csv")),
-                    CsvPreference.STANDARD_PREFERENCE);
-            List<String> results = csvListReader.read();
-            if (results.size() == 2) {
-                username = results.get(0);
-                password = results.get(1);
-            } else {
-                throw new RuntimeException("email conf file format error!");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Can not read email conf file!", e);
-        }
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
+        username = properties.getProperty("gmailUsername");
+        password = properties.getProperty("gmailPassword");
 
         String smtpServer = "IMAP.gmail.com";
         String fromMailAddress = "bspatnotice@gmail.com";

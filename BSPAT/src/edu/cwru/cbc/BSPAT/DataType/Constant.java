@@ -11,7 +11,7 @@ public class Constant implements Serializable {
     public static String DISKROOTPATH = "";
     public static final String PNG = "png";
     public static final String EPS = "eps";
-
+    public static final String propertiesFileName = "/WEB-INF/config.properties";
 
     // paths
     public String webRootPath;
