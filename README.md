@@ -8,7 +8,7 @@ Website: http://cbc.case.edu/BSPAT
 ## Deployment
 
 Download war file from releases. Then just deploy the war inside Apache Tomcat. 
-The configuration file "config.properties" locate in /WEB-INF. You can set server email account and bowtie and bismark paths. Also there is a switch for single/multiple thread mode here.
+The configuration file "config.properties" locate in BSPAT/web/WEB-INF. You can set server email account and bowtie and bismark paths. Also there is a switch for single/multiple thread mode here.
 
 ### Notice
 There are many sleep() calls in bismark code to increase the readability during run time, which can be safely commented. Since BSPAT call bismark a lot of times, those sleep() calls will tremendously increase the running time of BSPAT. It is stongly recommended to comment those sleep() calls in the bismark code which will be used by BSPAT.
