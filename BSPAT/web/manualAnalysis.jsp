@@ -218,7 +218,7 @@
                 formula is shown in figure below. They are default
                 pattern filter parameters, which are mutually exclusive with
                 Methylation pattern threshold. If the CpG site number smaller than 3, the program will use the below
-                methylation pattern threshold with value 0.1 instead. If there is no result to show
+                methylation pattern threshold instead. If there is no result to show
                 under assigned parameter, please try to use methylation
                 pattern threshold instead to generate result.</p> <img
                 src="images/formula.png" border="1" width="500" alt=""/>
