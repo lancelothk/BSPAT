@@ -20,8 +20,8 @@ import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
  * @author Ke
  */
 public class BSSeqAnalysis {
-    private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
     public static final int DEFAULT_TARGET_LENGTH = 70;
+    private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
 
     /**
      * Execute analysis.
@@ -29,7 +29,7 @@ public class BSSeqAnalysis {
      * @return List of ReportSummary
      */
     public List<ReportSummary> execute(String experimentName,
-                                       Constant constant) throws IOException, InterruptedException {
+            Constant constant) throws IOException, InterruptedException, MathException {
         List<ReportSummary> reportSummaries = new ArrayList<>();
         String inputFolder = constant.mappingResultPath + experimentName + "/";
         String outputFolder = constant.patternResultPath + experimentName + "/";
@@ -81,7 +81,7 @@ public class BSSeqAnalysis {
             }
         });
 
-        // 3. generate report for each region
+        // 3. generate report for each regioncriticalZ
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
             Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = cutAndFilterSequence(region,
@@ -332,7 +332,7 @@ public class BSSeqAnalysis {
     }
 
     private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                    int cpgCount, Constant constant) {
+            int cpgCount, Constant constant) throws MathException {
         List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
         if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
             if (constant.minP0Threshold != -1 && cpgCount >= 3) {
@@ -363,24 +363,18 @@ public class BSSeqAnalysis {
     }
 
     private void filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                   List<Pattern> qualifiedMethylationPatternList, Constant constant) {
-        // calculate methylation rate for each CpG site.
-        double p = 0.5;// probability of CpG site to be methylated.
-        double z;
-        double ph, p0;
+            List<Pattern> qualifiedMethylationPatternList, Constant constant) throws MathException {
         NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-        double criticalZ;
-        try {
-            criticalZ = nd.inverseCumulativeProbability(1 - constant.criticalValue / totalSeqCount);
-        } catch (MathException e) {
-            throw new RuntimeException("MathException in calculating of critical level", e);
-        }
         // significant pattern selection
         for (Pattern methylationPattern : methylationPatterns) {
-            ph = methylationPattern.getCount() / totalSeqCount;
-            p0 = Math.max(constant.minP0Threshold, Math.pow(p, methylationPattern.getCGcount()));
-            z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
-            if (z > criticalZ) {
+            double p = 0.5;// probability of CpG site to be methylated.
+            double ph = methylationPattern.getCount() / totalSeqCount;
+            double p0 = 1.0 / methylationPatterns.size();//Math.max(constant.minP0Threshold, Math.pow(p,
+            // methylationPattern
+            // .getCGcount()));
+            double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
+            double pZ = 1 - nd.cumulativeProbability(z);
+            if (pZ <= (constant.criticalValue / totalSeqCount)) {
                 qualifiedMethylationPatternList.add(methylationPattern);
             }
         }
