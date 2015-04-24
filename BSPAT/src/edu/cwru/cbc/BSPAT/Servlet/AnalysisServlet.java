@@ -62,7 +62,7 @@ public class AnalysisServlet extends HttpServlet {
             String jobID = request.getParameter("jobID");
             Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
             constant = Constant.readConstant(jobID);
-            Collection<Part> parts = null; // get submitted data
+            Collection<Part> parts; // get submitted data
             try {
                 parts = request.getParts();
             } catch (IOException | ServletException e) {
@@ -71,6 +71,7 @@ public class AnalysisServlet extends HttpServlet {
             for (Part part : parts) {
                 String fieldName = Utilities.getField(part, "name");
                 String fileName = Utilities.getField(part, "filename");
+                assert fieldName != null;
                 if (fieldName.equals("target")) { // deal with uploaded target file
                     File targetFolder = new File(constant.targetPath);
                     if (!targetFolder.isDirectory()) { // if target directory do not exist, make one

@@ -29,7 +29,7 @@ public class BSSeqAnalysis {
      * @return List of ReportSummary
      */
     public List<ReportSummary> execute(String experimentName,
-            Constant constant) throws IOException, InterruptedException, MathException {
+                                       Constant constant) throws IOException, InterruptedException, MathException {
         List<ReportSummary> reportSummaries = new ArrayList<>();
         String inputFolder = constant.mappingResultPath + experimentName + "/";
         String outputFolder = constant.patternResultPath + experimentName + "/";
@@ -56,18 +56,18 @@ public class BSSeqAnalysis {
                 String refString = referenceSeqs.get(key);
                 long firstPos = refString.indexOf("CG");
                 // no CpG found in ref seq
-                if (firstPos == -1){
+                if (firstPos == -1) {
                     targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-                                                          refCoorMap.get(key).getStrand(),
-                                                          refCoorMap.get(key).getStart(),
-                                                         refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
-                }else {
+                            refCoorMap.get(key).getStrand(),
+                            refCoorMap.get(key).getStart(),
+                            refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
+                } else {
                     long endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
                     targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-                                                          refCoorMap.get(key).getStrand(),
-                                                          refCoorMap.get(key).getStart() + firstPos,
-                                                          endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(
-                                                                  key).getEnd()));
+                            refCoorMap.get(key).getStrand(),
+                            refCoorMap.get(key).getStart() + firstPos,
+                            endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(
+                                    key).getEnd()));
                 }
             }
         } else {
@@ -85,10 +85,10 @@ public class BSSeqAnalysis {
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
             Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = cutAndFilterSequence(region,
-                                                                                                  sequenceGroupMap,
-                                                                                                  refCoorMap,
-                                                                                                  targetCoorMap,
-                                                                                                  referenceSeqs);
+                    sequenceGroupMap,
+                    refCoorMap,
+                    targetCoorMap,
+                    referenceSeqs);
             List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
             List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
             reportSummary.setSeqOthers(otherSequenceList.size());
@@ -99,7 +99,7 @@ public class BSSeqAnalysis {
 
             reportSummary.setSeqCpGBounded(CpGBoundSequenceList.size());
             Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair = filterSequences(CpGBoundSequenceList,
-                                                                                           constant);
+                    constant);
             CpGBoundSequenceList = filteredCpGSequencePair.getLeft();
             reportSummary.setSeqCpGAfterFilter(CpGBoundSequenceList.size());
 
@@ -112,14 +112,15 @@ public class BSSeqAnalysis {
                 continue;
             }
             List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList,
-                                                                    referenceSeqs.get(region));
+                    referenceSeqs.get(region));
             List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
             List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 
+            System.out.println(experimentName + "\t" + region);
             methylationPatternList = filterMethylationPatterns(methylationPatternList,
-                                                               seqGroup.size() + CpGBoundSequenceList.size(),
-                                                               StringUtils.countMatches(referenceSeqs.get(region),
-                                                                                        "CG"), constant);
+                    seqGroup.size() + CpGBoundSequenceList.size(),
+                    StringUtils.countMatches(referenceSeqs.get(region),
+                            "CG"), constant);
             mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size(), constant);
 
 
@@ -129,21 +130,20 @@ public class BSSeqAnalysis {
 
             // generate memu pattern after filtering me & mu pattern since filtered non-significant patterns won't contribute to memu result.
             List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
-            meMuPatternList = filterMethylationPatterns(meMuPatternList, seqGroup.size(),
-                                                        StringUtils.countMatches(referenceSeqs.get(region), "CG"),
-                                                        constant);
+            meMuPatternList = filterMeMuPatternsByP0Threshold(meMuPatternList, seqGroup.size(), StringUtils.countMatches(referenceSeqs.get(region),
+                    "CG"), constant);
 
             Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
             Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant, reportSummary);
             report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList,
-                               mutationPatternList, meMuPatternList);
+                    mutationPatternList, meMuPatternList);
 
             if (constant.coorReady) {
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-                                                              constant.toolsPath, region, outputFolder, experimentName,
-                                                              targetCoorMap, referenceSeqs.get(region));
+                        constant.toolsPath, region, outputFolder, experimentName,
+                        targetCoorMap, referenceSeqs.get(region));
                 drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
                 drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
                 drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
@@ -153,17 +153,17 @@ public class BSSeqAnalysis {
                         nonAllelePattern.getSequenceMap().size() != 0) {
 
                     PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(),
-                                                                             seqGroup.size());
+                            seqGroup.size());
                     PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern,
-                                                                                report.getCpgStatList(),
-                                                                                seqGroup.size());
+                            report.getCpgStatList(),
+                            seqGroup.size());
 
                     if (!hasASM(patternWithAllele, patternWithoutAllele)) {
                         reportSummary.setHasASM(false);
                     } else {
                         reportSummary.setHasASM(true);
                         drawFigureLocal.drawASMPattern(reportSummary, patternWithAllele, patternWithoutAllele,
-                                                       constant.logPath);
+                                constant.logPath);
                     }
                 }
 
@@ -332,27 +332,22 @@ public class BSSeqAnalysis {
     }
 
     private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
-            int cpgCount, Constant constant) throws MathException {
-        List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
+                                                    int refCpGCount, Constant constant) throws MathException {
         if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
-            if (constant.minP0Threshold != -1 && cpgCount >= 3) {
-                filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, qualifiedMethylationPatternList,
-                                                  constant);
-                if (qualifiedMethylationPatternList.size() == 0) {
-                    filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
-                                                          qualifiedMethylationPatternList, constant);
-                }
+            if (constant.minP0Threshold != -1 && refCpGCount > 3) {
+                return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, refCpGCount, constant);
             } else {
-                filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
-                                                      qualifiedMethylationPatternList, constant);
+                return filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount,
+                        constant);
             }
         }
-        return qualifiedMethylationPatternList;
+        // return empty list.
+        return new ArrayList<>();
     }
 
-    private void filterMethylPatternsByMethylThreshold(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                       List<Pattern> qualifiedMethylationPatternList,
-                                                       Constant constant) {
+    private List<Pattern> filterMethylPatternsByMethylThreshold(List<Pattern> methylationPatterns, double totalSeqCount,
+                                                                Constant constant) {
+        List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
         // use percentage pattern threshold
         for (Pattern methylationPattern : methylationPatterns) {
             double percentage = methylationPattern.getCount() / totalSeqCount;
@@ -360,24 +355,55 @@ public class BSSeqAnalysis {
                 qualifiedMethylationPatternList.add(methylationPattern);
             }
         }
+        return qualifiedMethylationPatternList;
     }
 
-    private void filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
-            List<Pattern> qualifiedMethylationPatternList, Constant constant) throws MathException {
+    private List<Pattern> filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount, double refCpGCount,
+                                                            Constant constant) throws MathException {
+        List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
         NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
+        // 2 means two states(M/N). The expected portion of each random pattern will be n/2^#CpG.
+        double avgPatternSeqCount = totalSeqCount / Math.pow(2, refCpGCount) / 100;
+        int nonNoisePatternCount = 0;
+        for (Pattern methylationPattern : methylationPatterns) {
+            // if the seq count of a pattern is bigger than or equal to avg pattern seq count, consider it as non-noise pattern
+            if (methylationPattern.getCount() >= avgPatternSeqCount) {
+                nonNoisePatternCount++;
+            }
+        }
         // significant pattern selection
         for (Pattern methylationPattern : methylationPatterns) {
-            double p = 0.5;// probability of CpG site to be methylated.
             double ph = methylationPattern.getCount() / totalSeqCount;
-            double p0 = 1.0 / methylationPatterns.size();//Math.max(constant.minP0Threshold, Math.pow(p,
-            // methylationPattern
-            // .getCGcount()));
+            double p0 = 1.0 / nonNoisePatternCount;
             double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
             double pZ = 1 - nd.cumulativeProbability(z);
             if (pZ <= (constant.criticalValue / totalSeqCount)) {
                 qualifiedMethylationPatternList.add(methylationPattern);
             }
         }
+        System.out.println("nonNoisePatternCount:\t" + nonNoisePatternCount);
+        System.out.println("methylationPattern count:\t" + methylationPatterns.size());
+        System.out.println("qualifiedMethylationPatternList:\t" + qualifiedMethylationPatternList.size());
+        return qualifiedMethylationPatternList;
+    }
+
+    private List<Pattern> filterMeMuPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
+                                                          int refCpGCount, Constant constant) throws MathException {
+        List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
+        NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
+        // significant pattern selection
+        for (Pattern methylationPattern : methylationPatterns) {
+            double ph = methylationPattern.getCount() / totalSeqCount;
+            double p0 = 1.0 / Math.pow(2, refCpGCount + 1); // with one more mismatch state
+            double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
+            double pZ = 1 - nd.cumulativeProbability(z);
+            if (pZ <= (constant.criticalValue / totalSeqCount)) {
+                qualifiedMethylationPatternList.add(methylationPattern);
+            }
+        }
+        System.out.println("memuPattern count:\t" + methylationPatterns.size());
+        System.out.println("qualifiedMemuPatternList:\t" + qualifiedMethylationPatternList.size());
+        return qualifiedMethylationPatternList;
     }
 
     /**
@@ -406,7 +432,7 @@ public class BSSeqAnalysis {
             if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
                 // cut sequence to suit reference
                 sequence.setOriginalSeq(sequence.getOriginalSeq().substring(refStart - sequence.getStartPos(),
-                                                                            refEnd - sequence.getStartPos() + 1));
+                        refEnd - sequence.getStartPos() + 1));
                 updateCpGPosition(refStart, refStart, refEnd, sequence);
                 sequence.setStartPos(1);
             } else {
@@ -418,8 +444,8 @@ public class BSSeqAnalysis {
                 if (sequence.getStartPos() <= startCpGPos && sequence.getEndPos() >= (endCpGPos + 1)) {
                     CpGBoundSequenceList.add(sequence);
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(startCpGPos - sequence.getStartPos(),
-                                                                                endCpGPos + 2 -
-                                                                                        sequence.getStartPos()));
+                            endCpGPos + 2 -
+                                    sequence.getStartPos()));
                     updateCpGPosition(refStart, startCpGPos, endCpGPos + 1, sequence);
                 } else {
                     otherSequenceList.add(sequence);
@@ -470,7 +496,6 @@ public class BSSeqAnalysis {
      */
     private Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
                                                                  Constant constant) throws IOException {
-        LOGGER.info("Filter Sequences: before filter count:\t" + seqList.size());
         List<Sequence> qualifiedSeqList = new ArrayList<>();
         List<Sequence> unQualifiedSeqList = new ArrayList<>();
         for (Sequence seq : seqList) {
@@ -482,7 +507,6 @@ public class BSSeqAnalysis {
                 unQualifiedSeqList.add(seq);
             }
         }
-        LOGGER.info("Filter Sequences: after filter count:\t" + qualifiedSeqList.size());
         return new ImmutablePair<>(qualifiedSeqList, unQualifiedSeqList);
     }
 
@@ -526,7 +550,7 @@ public class BSSeqAnalysis {
 
         for (String mutationString : patternMap.keySet()) {
             List<Sequence> patternSeqList = patternMap.get(mutationString);
-            Pattern mutationPattern = new Pattern(mutationString, Pattern.PatternType.METHYLATION);
+            Pattern mutationPattern = new Pattern(mutationString, Pattern.PatternType.MUTATION);
             for (Sequence seq : patternSeqList) {
                 mutationPattern.addSequence(seq);
             }

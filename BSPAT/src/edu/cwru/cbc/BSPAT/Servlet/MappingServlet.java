@@ -341,7 +341,7 @@ public class MappingServlet extends HttpServlet {
             }
             LOGGER.info(constant.getJobID() + "\tblat query is finished for " + name);
         }
-        Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName, constant.refVersion);
+        Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName);
         constant.coorReady = true;
         LOGGER.info(constant.getJobID() + "\tblat result converted");
     }

@@ -24,6 +24,9 @@ import java.util.zip.ZipOutputStream;
 public class Utilities {
     private final static Logger LOGGER = Logger.getLogger(Utilities.class.getName());
 
+    /**
+     * cut given seq to start and end with first/last give symbol.
+     */
     public static String getBoundedSeq(String symbol, String seq) {
         int startCpGPos = seq.indexOf(symbol);
         int endCpGPos = seq.lastIndexOf(symbol);
@@ -53,14 +56,14 @@ public class Utilities {
         return throwable;
     }
 
-    public static void convertPSLtoCoorPair(String path, String outFileName, String refVersion) throws IOException {
+    public static void convertPSLtoCoorPair(String path, String outFileName) throws IOException {
         File folder = new File(path);
         String[] files = folder.list(new ExtensionFilter(".psl"));
         HashMap<String, Coordinate> coorHashMap = new HashMap<>();
 
         for (String name : files) {
             try (BufferedReader reader = new BufferedReader(new FileReader(path + name))) {
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-") ||
                             line.startsWith("BLAT") || line.startsWith("<H2>")) {
@@ -101,6 +104,7 @@ public class Utilities {
     public static void deleteFolderContent(String folder) throws IOException {
         File folderFile = new File(folder);
         File[] contents = folderFile.listFiles();
+        assert contents != null;
         for (File file : contents) {
             if (file.isFile()) {
                 file.delete();
@@ -113,10 +117,6 @@ public class Utilities {
 
     /**
      * get field content start with given parameter 'field'
-     *
-     * @param part
-     * @param field
-     * @return
      */
     public static String getField(Part part, String field) {
         String contentDispositionHeader = part.getHeader("content-disposition");
@@ -220,7 +220,7 @@ public class Utilities {
         ZipFile zipFile;
         zipFile = new ZipFile(zipfile);
         @SuppressWarnings("rawtypes") Enumeration enumeration = zipFile.getEntries();
-        org.apache.tools.zip.ZipEntry zipEntry = null;
+        org.apache.tools.zip.ZipEntry zipEntry;
 
         while (enumeration.hasMoreElements()) {
             zipEntry = (org.apache.tools.zip.ZipEntry) enumeration.nextElement();

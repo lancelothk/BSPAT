@@ -5,14 +5,12 @@ import java.util.List;
 
 public class Constant implements Serializable {
     public static final String JOB_FOLDER_PREFIX = "Job";
-    private static final long serialVersionUID = 1L;
     public static final long SPACETHRESHOLD = 100000;// maximum allow 100000MB space (100GB)
-    public static final int REFEXTENSIONLENGTH = 2;
-    public static String DISKROOTPATH = "";
     public static final String PNG = "png";
     public static final String EPS = "eps";
     public static final String propertiesFileName = "/WEB-INF/config.properties";
-
+    private static final long serialVersionUID = 1L;
+    public static String DISKROOTPATH = "";
     // paths
     public String webRootPath;
     public String mappingResultPath;
@@ -58,17 +56,6 @@ public class Constant implements Serializable {
     public SeqCountSummary seqCountSummary;
 
     /**
-     * write constant object to disk
-     */
-    public void writeConstant() throws IOException {
-        FileOutputStream constantOutputStream = new FileOutputStream(
-                DISKROOTPATH + "/" + JOB_FOLDER_PREFIX + this.jobID + "/" + this.jobID + ".data");
-        ObjectOutputStream constantObjectStream = new ObjectOutputStream(constantOutputStream);
-        constantObjectStream.writeObject(this);
-        constantOutputStream.close();
-    }
-
-    /**
      * read constant object from disk
      *
      * @return singleton of constant
@@ -85,6 +72,17 @@ public class Constant implements Serializable {
         Constant constant = (Constant) obj;
         constantObjectStream.close();
         return constant;
+    }
+
+    /**
+     * write constant object to disk
+     */
+    public void writeConstant() throws IOException {
+        FileOutputStream constantOutputStream = new FileOutputStream(
+                DISKROOTPATH + "/" + JOB_FOLDER_PREFIX + this.jobID + "/" + this.jobID + ".data");
+        ObjectOutputStream constantObjectStream = new ObjectOutputStream(constantOutputStream);
+        constantObjectStream.writeObject(this);
+        constantOutputStream.close();
     }
 
     public String getAbsolutePathCoorFile() {
