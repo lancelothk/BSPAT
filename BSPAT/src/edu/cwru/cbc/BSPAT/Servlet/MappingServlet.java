@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 public class MappingServlet extends HttpServlet {
     private static final long serialVersionUID = 6078331324800268609L;
     private final static Logger LOGGER = Logger.getLogger(MappingServlet.class.getName());
+    private final SecureRandom random = new SecureRandom();
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -47,7 +48,7 @@ public class MappingServlet extends HttpServlet {
      * response)
      */
     protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+                         HttpServletResponse response) throws ServletException, IOException {
     }
 
     /**
@@ -98,7 +99,7 @@ public class MappingServlet extends HttpServlet {
             properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
 
             // bismark indexing
-            CallBismark callBismark = null;
+            CallBismark callBismark;
             callBismark = new CallBismark(constant.modifiedRefPath, properties.getProperty("bismarkPath"),
                     properties.getProperty("bowtiePath"), constant.logPath, constant.qualsType, constant.maxmis);
 
@@ -149,7 +150,7 @@ public class MappingServlet extends HttpServlet {
     }
 
     private void addTestExperiment(Constant constant, List<Experiment> experiments, String experimentName,
-            int experimentIndex) throws IOException {
+                                   int experimentIndex) throws IOException {
         experiments.add(new Experiment(experimentIndex, experimentName));
         File[] seqs = new File(constant.testPath + experimentName).listFiles(new ExtensionFilter(".fastq"));
         for (File seq : seqs) {
@@ -168,7 +169,7 @@ public class MappingServlet extends HttpServlet {
     }
 
     private void handleUploadedFiles(Constant constant, HttpServletRequest request, List<Experiment> experiments) {
-        Collection<Part> parts = null; // get submitted data
+        Collection<Part> parts; // get submitted data
         try {
             parts = request.getParts();
         } catch (IOException | ServletException e) {
@@ -178,6 +179,7 @@ public class MappingServlet extends HttpServlet {
         for (Part part : parts) {
             String fieldName = Utilities.getField(part, "name");
             String fileName = Utilities.getField(part, "filename");
+            assert fieldName != null;
             if (fieldName.equals("ref")) { // deal with uploaded ref file
                 // save ref file in ref folder
                 IO.saveFileToDisk(part, constant.originalRefPath, fileName);
@@ -194,14 +196,8 @@ public class MappingServlet extends HttpServlet {
         }
     }
 
-    private final SecureRandom random = new SecureRandom();
-
     /**
      * generate random suffix folder with given path and prefix.
-     *
-     * @param path
-     * @param prefix
-     * @return random folder
      */
     private File generateRandomDirectory(String path, String prefix) throws IOException {
         if (!path.endsWith("/")) {
@@ -222,15 +218,12 @@ public class MappingServlet extends HttpServlet {
 
     /**
      * initialize constant singleton
-     *
-     * @param request
-     * @throws IOException
      */
     private void initializeConstant(Constant constant, HttpServletRequest request) throws IOException {
         // DISKROOTPATH is absolute disk path.
         Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
         // webPath is relative path to root
-        constant.webRootPath = request.getContextPath();
+        constant.webRootPath = request.getContextPath().endsWith("\\") ? request.getContextPath() : request.getContextPath() + "\\";
         constant.randomDir = generateRandomDirectory(Constant.DISKROOTPATH,
                 Constant.JOB_FOLDER_PREFIX).getAbsolutePath();
         constant.jobID = constant.randomDir.split(Constant.JOB_FOLDER_PREFIX)[1];
@@ -263,10 +256,6 @@ public class MappingServlet extends HttpServlet {
     /**
      * append xx to both ends of original reference. Save result as modified
      * reference
-     *
-     * @param originalRefPath
-     * @param modifiedRefPath
-     * @throws IOException
      */
     private void modifyRef(String originalRefPath, String modifiedRefPath) throws IOException {
         File refFolder = new File(modifiedRefPath);
@@ -315,19 +304,18 @@ public class MappingServlet extends HttpServlet {
         LOGGER.info(jobId + "\troot folder space occupation:\t" + rootFolderSize + "M");
         if (rootFolderSize >= Constant.SPACETHRESHOLD) { // if exceed threshold, clean
             File[] subFolders = rootDirectory.listFiles();
+            assert subFolders != null;
             Arrays.sort(subFolders, new FileDateComparator()); // sort by date.
-            if (subFolders != null) {
-                for (File folder : subFolders) {
-                    if (folder.getName().startsWith(Constant.JOB_FOLDER_PREFIX) && folder.isDirectory() &&
-                            folder != subFolders[subFolders.length - 1]) {
-                        if (excess >= 0) { // only clean exceed part
-                            long length = FileUtils.sizeOfDirectory(folder) / 1024 / 1024;
-                            // delete directory recursively
-                            FileUtils.deleteDirectory(folder);
-                            excess -= length;
-                        } else {
-                            return;
-                        }
+            for (File folder : subFolders) {
+                if (folder.getName().startsWith(Constant.JOB_FOLDER_PREFIX) && folder.isDirectory() &&
+                        folder != subFolders[subFolders.length - 1]) {
+                    if (excess >= 0) { // only clean exceed part
+                        long length = FileUtils.sizeOfDirectory(folder) / 1024 / 1024;
+                        // delete directory recursively
+                        FileUtils.deleteDirectory(folder);
+                        excess -= length;
+                    } else {
+                        return;
                     }
                 }
             }
