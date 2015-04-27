@@ -9,7 +9,6 @@ import org.apache.commons.math.distribution.NormalDistributionImpl;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
 
@@ -21,7 +20,6 @@ import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
  */
 public class BSSeqAnalysis {
     public static final int DEFAULT_TARGET_LENGTH = 70;
-    private final static Logger LOGGER = Logger.getLogger(BSSeqAnalysis.class.getName());
 
     /**
      * Execute analysis.
@@ -130,8 +128,6 @@ public class BSSeqAnalysis {
 
             // generate memu pattern after filtering me & mu pattern since filtered non-significant patterns won't contribute to memu result.
             List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
-            meMuPatternList = filterMeMuPatternsByP0Threshold(meMuPatternList, seqGroup.size(), StringUtils.countMatches(referenceSeqs.get(region),
-                    "CG"), constant);
 
             Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
@@ -363,46 +359,32 @@ public class BSSeqAnalysis {
         List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
         NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
         // 2 means two states(M/N). The expected portion of each random pattern will be n/2^#CpG.
-        double avgPatternSeqCount = totalSeqCount / Math.pow(2, refCpGCount) / 100;
-        int nonNoisePatternCount = 0;
+        double avgPatternSeqCount = totalSeqCount / Math.pow(2, refCpGCount);
+        methylationPatterns.sort(new Comparator<Pattern>() {
+            @Override
+            public int compare(Pattern o1, Pattern o2) {
+                return o2.getCount() - o1.getCount();
+            }
+        });
+        double lowerBoundaryCount = 0;
         for (Pattern methylationPattern : methylationPatterns) {
-            // if the seq count of a pattern is bigger than or equal to avg pattern seq count, consider it as non-noise pattern
-            if (methylationPattern.getCount() >= avgPatternSeqCount) {
-                nonNoisePatternCount++;
+            if (methylationPattern.getCount() < avgPatternSeqCount) {
+                lowerBoundaryCount = methylationPattern.getCount();
+                break;
             }
         }
         // significant pattern selection
         for (Pattern methylationPattern : methylationPatterns) {
             double ph = methylationPattern.getCount() / totalSeqCount;
-            double p0 = 1.0 / nonNoisePatternCount;
+            double p0 = lowerBoundaryCount / totalSeqCount;
             double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
             double pZ = 1 - nd.cumulativeProbability(z);
             if (pZ <= (constant.criticalValue / totalSeqCount)) {
                 qualifiedMethylationPatternList.add(methylationPattern);
             }
         }
-        System.out.println("nonNoisePatternCount:\t" + nonNoisePatternCount);
         System.out.println("methylationPattern count:\t" + methylationPatterns.size());
         System.out.println("qualifiedMethylationPatternList:\t" + qualifiedMethylationPatternList.size());
-        return qualifiedMethylationPatternList;
-    }
-
-    private List<Pattern> filterMeMuPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
-                                                          int refCpGCount, Constant constant) throws MathException {
-        List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
-        NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
-        // significant pattern selection
-        for (Pattern methylationPattern : methylationPatterns) {
-            double ph = methylationPattern.getCount() / totalSeqCount;
-            double p0 = 1.0 / Math.pow(2, refCpGCount + 1); // with one more mismatch state
-            double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
-            double pZ = 1 - nd.cumulativeProbability(z);
-            if (pZ <= (constant.criticalValue / totalSeqCount)) {
-                qualifiedMethylationPatternList.add(methylationPattern);
-            }
-        }
-        System.out.println("memuPattern count:\t" + methylationPatterns.size());
-        System.out.println("qualifiedMemuPatternList:\t" + qualifiedMethylationPatternList.size());
         return qualifiedMethylationPatternList;
     }
 
