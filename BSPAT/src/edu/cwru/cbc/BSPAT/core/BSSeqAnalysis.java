@@ -375,7 +375,7 @@ public class BSSeqAnalysis {
         List<Pattern> qualifiedMutationPatternList = new ArrayList<>();
         for (Pattern memuPattern : memuPatterns) {
             double percentage = (double) memuPattern.getCount() / totalSeqCount;
-            if (percentage >= constant.mutationPatternThreshold) {
+            if (percentage >= 0.1) {
                 qualifiedMutationPatternList.add(memuPattern);
             }
         }
@@ -552,7 +552,7 @@ public class BSSeqAnalysis {
                                            String referenceSeq) {
         List<Sequence> combinedSequenceList = new ArrayList<>();
         combinedSequenceList.addAll(seqList);
-        combinedSequenceList.addAll(CpGBoundSequenceList);
+        //combinedSequenceList.addAll(CpGBoundSequenceList);
 
         List<Pattern> methylationPatterns = new ArrayList<>();
         final int startCpGPos = referenceSeq.indexOf("CG");
@@ -561,7 +561,7 @@ public class BSSeqAnalysis {
         Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, new GetKeyFunction() {
             @Override
             public String getKey(Sequence seq) {
-                return seq.getMethylationString().substring(startCpGPos, endCpGPos + 2);
+                return seq.getMethylationString();//.substring(startCpGPos, endCpGPos + 2);
             }
         });
 

@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
-import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
-
 public class Report {
     private String referenceSeq;
     private String outputFolder;
@@ -131,7 +129,7 @@ public class Report {
             switch (patternType) {
                 case PatternLink.METHYLATION:
                     bufferedWriter.write(String.format("%s\tcount\tpercentage\tPatternID\n", patternType));
-                    bufferedWriter.write(String.format("%s\tref\n", getBoundedSeq("CG", referenceSeq)));
+                    bufferedWriter.write(String.format("%s\tref\n", referenceSeq));//getBoundedSeq("CG", referenceSeq)));
                     for (Pattern pattern : patternList) {
                         bufferedWriter.write(
                                 String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),
