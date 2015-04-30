@@ -31,14 +31,16 @@ public class Report {
         this.referenceSeq = referenceSeq;
         File outputFolder = new File(outputPath);
         if (!outputFolder.exists()) {
-            outputFolder.mkdirs();
+            if (!outputFolder.mkdirs()) {
+                System.err.printf("failed to create folder: %s\n", outputFolder);
+            }
         }
     }
 
     public void writeReport(Pair<List<Sequence>, List<Sequence>> filteredTargetSequencePair,
                             Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair,
                             List<Pattern> methylationPatternList, List<Pattern> mutationPatternList,
-                            List<Pattern> meMuPatternList) throws IOException {
+                            List<Pattern> meMuPatternList, int[][] mutationStat) throws IOException {
         List<Sequence> combinedSequenceList = new ArrayList<>();
         combinedSequenceList.addAll(filteredTargetSequencePair.getLeft());
         combinedSequenceList.addAll(filteredCpGSequencePair.getLeft());
@@ -46,7 +48,7 @@ public class Report {
         writeAnalysedSequences("_bismark.analysis.filtered.txt", filteredTargetSequencePair.getRight());
         writeAnalysedSequences("_bismark.analysis_CpGBounded.txt", filteredCpGSequencePair.getLeft());
         writeAnalysedSequences("_bismark.analysis_CpGBounded.filtered.txt", filteredCpGSequencePair.getRight());
-        writeStatistics(filteredTargetSequencePair.getLeft(), combinedSequenceList);
+        writeStatistics(combinedSequenceList, mutationStat);
         writePatterns(methylationPatternList, PatternLink.METHYLATION, combinedSequenceList);
         writePatterns(mutationPatternList, PatternLink.MUTATION, filteredTargetSequencePair.getLeft());
         writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, filteredTargetSequencePair.getLeft());
@@ -60,30 +62,30 @@ public class Report {
             bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
             for (Sequence seq : sequencesList) {
                 bufferedWriter.write(seq.getMeMuString() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t" +
-                                             seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" +
-                                             seq.getSequenceIdentity() + "\n");
+                        seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" +
+                        seq.getSequenceIdentity() + "\n");
             }
         }
     }
 
-    private void writeStatistics(List<Sequence> targetSequencesList, List<Sequence> combinedSequencesList) throws IOException {
+    private void writeStatistics(List<Sequence> combinedSequencesList, int[][] mutationStat) throws IOException {
         String reportFileName = outputFolder + region + "_bismark.analysis_report.txt";
         reportSummary.setStatTextLink(reportFileName);
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
-            Hashtable<Integer, CpGStatistics> cpgStatHashtable = new Hashtable<>();
+            Hashtable<Integer, CpGStatistics> cpgStatHashTable = new Hashtable<>();
 
             // collect information for calculating methylation rate for each CpG site.
             for (Sequence seq : combinedSequencesList) {
                 for (CpGSite cpg : seq.getCpGSites()) {
-                    if (!cpgStatHashtable.containsKey(cpg.getPosition())) {
+                    if (!cpgStatHashTable.containsKey(cpg.getPosition())) {
                         CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition());
                         cpgStat.allSitePlus();
                         if (cpg.isMethylated()) {
                             cpgStat.methylSitePlus();
                         }
-                        cpgStatHashtable.put(cpg.getPosition(), cpgStat);
+                        cpgStatHashTable.put(cpg.getPosition(), cpgStat);
                     } else {
-                        CpGStatistics cpgStat = cpgStatHashtable.get(cpg.getPosition());
+                        CpGStatistics cpgStat = cpgStatHashTable.get(cpg.getPosition());
                         cpgStat.allSitePlus();
                         if (cpg.isMethylated()) {
                             cpgStat.methylSitePlus();
@@ -92,7 +94,7 @@ public class Report {
                 }
             }
 
-            cpgStatList = new ArrayList<>(cpgStatHashtable.values());
+            cpgStatList = new ArrayList<>(cpgStatHashTable.values());
             Collections.sort(cpgStatList, new CpGStatComparator());
             bufferedWriter.write("target region length:\t" + referenceSeq.length() + "\n");
             bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
@@ -112,24 +114,11 @@ public class Report {
             }
 
             bufferedWriter.write("mutation stat:\n");
-            int[] mutationStat;
-            mutationStat = new int[referenceSeq.length()];
-            // give mutationStat array zero value
-            for (int i : mutationStat) {
-                mutationStat[i] = 0;
-            }
-            for (Sequence seq : targetSequencesList) {
-                char[] mutationArray = seq.getMutationString().toCharArray();
-                for (int i = 0; i < mutationArray.length; i++) {
-                    if (mutationArray[i] == 'A' || mutationArray[i] == 'C' || mutationArray[i] == 'G' ||
-                            mutationArray[i] == 'T') {
-                        mutationStat[i]++;
-                    }
-                }
-            }
             for (int i = 0; i < mutationStat.length; i++) {
                 // 1 based position
-                bufferedWriter.write((i + 1) + "\t" + mutationStat[i] + "\n");
+                int total = mutationStat[i][0] + mutationStat[i][1] + mutationStat[i][2] + mutationStat[i][3] + mutationStat[i][4];
+                bufferedWriter.write(String.format("%d\tA:%d\tC:%d\tG:%d\tT:%d\tN:%d\ttotal:%d\n", i + 1,
+                        mutationStat[i][0], mutationStat[i][1], mutationStat[i][2], mutationStat[i][3], mutationStat[i][4], total));
             }
         }
     }
@@ -146,8 +135,8 @@ public class Report {
                     for (Pattern pattern : patternList) {
                         bufferedWriter.write(
                                 String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),
-                                              pattern.getCount() / (double) sequencesList.size(),
-                                              pattern.getPatternID()));
+                                        pattern.getCount() / (double) sequencesList.size(),
+                                        pattern.getPatternID()));
                     }
                     break;
                 case PatternLink.MUTATION:
@@ -156,32 +145,32 @@ public class Report {
                     for (Pattern pattern : patternList) {
                         bufferedWriter.write(
                                 String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),
-                                              pattern.getCount() / (double) sequencesList.size(),
-                                              pattern.getPatternID()));
+                                        pattern.getCount() / (double) sequencesList.size(),
+                                        pattern.getPatternID()));
                     }
                     break;
                 case PatternLink.METHYLATIONWITHMUTATION:
                     bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\tMutationParent\n",
-                                                       PatternLink.METHYLATIONWITHMUTATION));
+                            PatternLink.METHYLATIONWITHMUTATION));
                     bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
                     Collections.sort(patternList, new MeMuPatternComparator());
                     for (Pattern pattern : patternList) {
                         bufferedWriter.write(
                                 String.format("%s\t%d\t%f\t%d\t%d\n", pattern.getPatternString(), pattern.getCount(),
-                                              pattern.getCount() / (double) sequencesList.size(),
-                                              pattern.getMethylationParentID(), pattern.getMutationParentID()));
+                                        pattern.getCount() / (double) sequencesList.size(),
+                                        pattern.getMethylationParentID(), pattern.getMutationParentID()));
                     }
                     break;
                 case PatternLink.MUTATIONWITHMETHYLATION:
                     bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\tMutationParent\n",
-                                                       PatternLink.METHYLATIONWITHMUTATION));
+                            PatternLink.METHYLATIONWITHMUTATION));
                     bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
                     Collections.sort(patternList, new MuMePatternComparator());
                     for (Pattern pattern : patternList) {
                         bufferedWriter.write(
                                 String.format("%s\t%d\t%f\t%d\t%d\n", pattern.getPatternString(), pattern.getCount(),
-                                              pattern.getCount() / (double) sequencesList.size(),
-                                              pattern.getMethylationParentID(), pattern.getMutationParentID()));
+                                        pattern.getCount() / (double) sequencesList.size(),
+                                        pattern.getMethylationParentID(), pattern.getMutationParentID()));
                     }
                     break;
                 default:

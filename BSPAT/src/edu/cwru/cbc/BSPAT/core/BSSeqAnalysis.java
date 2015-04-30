@@ -74,12 +74,12 @@ public class BSSeqAnalysis {
         // 2. group seqs by region
         Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, new GetKeyFunction() {
             @Override
-            public String apply(Sequence seq) {
+            public String getKey(Sequence seq) {
                 return seq.getRegion();
             }
         });
 
-        // 3. generate report for each regioncriticalZ
+        // 3. generate report for each region criticalZ
         for (String region : sequenceGroupMap.keySet()) {
             ReportSummary reportSummary = new ReportSummary(region);
             Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = cutAndFilterSequence(region,
@@ -87,13 +87,15 @@ public class BSSeqAnalysis {
                     refCoorMap,
                     targetCoorMap,
                     referenceSeqs);
+            String refSeq = referenceSeqs.get(region);
+
             List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
             List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
             reportSummary.setSeqOthers(otherSequenceList.size());
 
             List<Sequence> seqGroup = sequenceGroupMap.get(region);
-            Sequence.processSequence(referenceSeqs.get(region), seqGroup);
-            Sequence.processSequence(getBoundedSeq("CG", referenceSeqs.get(region)), CpGBoundSequenceList);
+            Sequence.processSequence(refSeq, seqGroup);
+            Sequence.processSequence(getBoundedSeq("CG", refSeq), CpGBoundSequenceList);
 
             reportSummary.setSeqCpGBounded(CpGBoundSequenceList.size());
             Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair = filterSequences(CpGBoundSequenceList,
@@ -102,25 +104,32 @@ public class BSSeqAnalysis {
             reportSummary.setSeqCpGAfterFilter(CpGBoundSequenceList.size());
 
             reportSummary.setSeqTargetBounded(seqGroup.size());
+            // sequence quality filter
             Pair<List<Sequence>, List<Sequence>> filteredTargetSequencePair = filterSequences(seqGroup, constant);
             seqGroup = filteredTargetSequencePair.getLeft();
             reportSummary.setSeqTargetAfterFilter(seqGroup.size());
+
+            // calculate mutation stat
+            int[][] mutationStat = calculateMutationStat(refSeq, seqGroup);
+
+            // declare SNP and update mutationString
+            List<PotentialSNP> potentialSNPList = declareSNP(constant, seqGroup.size(), mutationStat);
+            updateMutationString(seqGroup, potentialSNPList);
+
             // if no sequence exist after filtering, return empty reportSummary
             if (seqGroup.size() == 0 && CpGBoundSequenceList.size() == 0) {
                 continue;
             }
             List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList,
-                    referenceSeqs.get(region));
+                    refSeq);
             List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
             List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 
             System.out.println(experimentName + "\t" + region);
             methylationPatternList = filterMethylationPatterns(methylationPatternList,
                     seqGroup.size() + CpGBoundSequenceList.size(),
-                    StringUtils.countMatches(referenceSeqs.get(region),
+                    StringUtils.countMatches(refSeq,
                             "CG"), constant);
-            mutationPatternList = filterMutationPatterns(mutationPatternList, seqGroup.size(), constant);
-
 
             Pattern.resetPatternCount();
             sortAndAssignPatternID(methylationPatternList);
@@ -128,18 +137,19 @@ public class BSSeqAnalysis {
 
             // generate memu pattern after filtering me & mu pattern since filtered non-significant patterns won't contribute to memu result.
             List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
+            meMuPatternList = filterMeMuPatterns(meMuPatternList, seqGroup.size(), constant);
 
             Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
             Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
-            Report report = new Report(region, outputFolder, referenceSeqs.get(region), constant, reportSummary);
+            Report report = new Report(region, outputFolder, refSeq, constant, reportSummary);
             report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList,
-                    mutationPatternList, meMuPatternList);
+                    mutationPatternList, meMuPatternList, mutationStat);
 
             if (constant.coorReady) {
                 DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
                         constant.toolsPath, region, outputFolder, experimentName,
-                        targetCoorMap, referenceSeqs.get(region));
+                        targetCoorMap, refSeq);
                 drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
                 drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
                 drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
@@ -168,6 +178,51 @@ public class BSSeqAnalysis {
             reportSummaries.add(reportSummary);
         }
         return reportSummaries;
+    }
+
+    private void updateMutationString(List<Sequence> seqGroup, List<PotentialSNP> potentialSNPList) {
+        for (Sequence sequence : seqGroup) {
+            char[] newMutationString = new char[sequence.length()];
+            Arrays.fill(newMutationString, '-');
+            for (PotentialSNP potentialSNP : potentialSNPList) {
+                if (sequence.getOriginalSeq().charAt(potentialSNP.getPosition()) == potentialSNP.getNucleotide()) {
+                    newMutationString[potentialSNP.getPosition()] = potentialSNP.getNucleotide();
+                }
+            }
+            sequence.setMutationString(new String(newMutationString));
+        }
+    }
+
+    private List<PotentialSNP> declareSNP(Constant constant, int totalSequenceCount, int[][] mutationStat) {
+        List<PotentialSNP> potentialSNPList = new ArrayList<>();
+        double threshold = totalSequenceCount * constant.mutationPatternThreshold;
+        for (int i = 0; i < mutationStat.length; i++) {
+            int count = 0;
+            if (mutationStat[i][0] >= threshold) {
+                potentialSNPList.add(new PotentialSNP(i, 'A'));
+                count++;
+            }
+            if (mutationStat[i][1] >= threshold) {
+                potentialSNPList.add(new PotentialSNP(i, 'C'));
+                count++;
+            }
+            if (mutationStat[i][2] >= threshold) {
+                potentialSNPList.add(new PotentialSNP(i, 'G'));
+                count++;
+            }
+            if (mutationStat[i][3] >= threshold) {
+                potentialSNPList.add(new PotentialSNP(i, 'T'));
+                count++;
+            }
+            if (mutationStat[i][4] >= threshold) {
+                potentialSNPList.add(new PotentialSNP(i, 'N'));
+                count++;
+            }
+            if (count >= 2) {
+                throw new RuntimeException("more than two SNP allele in same position!");
+            }
+        }
+        return potentialSNPList;
     }
 
     private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
@@ -316,12 +371,12 @@ public class BSSeqAnalysis {
         }
     }
 
-    private List<Pattern> filterMutationPatterns(List<Pattern> mutationPatterns, int totalSeqCount, Constant constant) {
+    private List<Pattern> filterMeMuPatterns(List<Pattern> memuPatterns, int totalSeqCount, Constant constant) {
         List<Pattern> qualifiedMutationPatternList = new ArrayList<>();
-        for (Pattern mutationPattern : mutationPatterns) {
-            double percentage = (double) mutationPattern.getCount() / totalSeqCount;
+        for (Pattern memuPattern : memuPatterns) {
+            double percentage = (double) memuPattern.getCount() / totalSeqCount;
             if (percentage >= constant.mutationPatternThreshold) {
-                qualifiedMutationPatternList.add(mutationPattern);
+                qualifiedMutationPatternList.add(memuPattern);
             }
         }
         return qualifiedMutationPatternList;
@@ -396,6 +451,7 @@ public class BSSeqAnalysis {
                                                                       Map<String, Coordinate> refCoorMap,
                                                                       Map<String, Coordinate> targetCoorMap,
                                                                       Map<String, String> referenceSeqs) throws IOException {
+        String refSeq = referenceSeqs.get(region);
         List<Sequence> CpGBoundSequenceList = new ArrayList<>();
         List<Sequence> otherSequenceList = new ArrayList<>();
         Coordinate targetCoor = targetCoorMap.get(region);
@@ -408,7 +464,7 @@ public class BSSeqAnalysis {
         // cut reference seq
         int refStart = (int) (targetCoor.getStart() - refCoor.getStart());
         int refEnd = (int) (targetCoor.getEnd() - refCoor.getStart());
-        referenceSeqs.put(region, referenceSeqs.get(region).substring(refStart, refEnd + 1));
+        referenceSeqs.put(region, refSeq.substring(refStart, refEnd + 1));
         while (sequenceIterator.hasNext()) {
             Sequence sequence = sequenceIterator.next();
             if (sequence.getStartPos() <= refStart && sequence.getEndPos() >= refEnd) {
@@ -421,8 +477,8 @@ public class BSSeqAnalysis {
                 // filter out
                 sequenceIterator.remove();
                 // recheck if sequence cover all CpGs in ref
-                int startCpGPos = referenceSeqs.get(region).indexOf("CG") + refStart;
-                int endCpGPos = referenceSeqs.get(region).lastIndexOf("CG") + refStart;
+                int startCpGPos = refSeq.indexOf("CG") + refStart;
+                int endCpGPos = refSeq.lastIndexOf("CG") + refStart;
                 if (sequence.getStartPos() <= startCpGPos && sequence.getEndPos() >= (endCpGPos + 1)) {
                     CpGBoundSequenceList.add(sequence);
                     sequence.setOriginalSeq(sequence.getOriginalSeq().substring(startCpGPos - sequence.getStartPos(),
@@ -462,12 +518,12 @@ public class BSSeqAnalysis {
     private Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
         Map<String, List<Sequence>> sequenceGroupMap = new HashMap<>();
         for (Sequence seq : sequencesList) {
-            if (sequenceGroupMap.containsKey(getKey.apply(seq))) {
-                sequenceGroupMap.get(getKey.apply(seq)).add(seq);
+            if (sequenceGroupMap.containsKey(getKey.getKey(seq))) {
+                sequenceGroupMap.get(getKey.getKey(seq)).add(seq);
             } else {
                 List<Sequence> sequenceGroup = new ArrayList<>();
                 sequenceGroup.add(seq);
-                sequenceGroupMap.put(getKey.apply(seq), sequenceGroup);
+                sequenceGroupMap.put(getKey.getKey(seq), sequenceGroup);
             }
         }
         return sequenceGroupMap;
@@ -504,7 +560,7 @@ public class BSSeqAnalysis {
         // group sequences by methylationString, distribute each seq into one pattern
         Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, new GetKeyFunction() {
             @Override
-            public String apply(Sequence seq) {
+            public String getKey(Sequence seq) {
                 return seq.getMethylationString().substring(startCpGPos, endCpGPos + 2);
             }
         });
@@ -525,7 +581,7 @@ public class BSSeqAnalysis {
         // group sequences by mutationString, distribute each seq into one pattern
         Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
             @Override
-            public String apply(Sequence seq) {
+            public String getKey(Sequence seq) {
                 return seq.getMutationString();
             }
         });
@@ -539,5 +595,38 @@ public class BSSeqAnalysis {
             mutationPatterns.add(mutationPattern);
         }
         return mutationPatterns;
+    }
+
+    private int[][] calculateMutationStat(String referenceSeq, List<Sequence> targetSequencesList) {
+        int[][] mutationStat;
+        mutationStat = new int[referenceSeq.length()][5]; // 5 possible values.
+        for (Sequence seq : targetSequencesList) {
+            char[] mutationArray = seq.getMutationString().toCharArray();
+            for (int i = 0; i < mutationArray.length; i++) {
+                switch (mutationArray[i]) {
+                    case 'A':
+                        mutationStat[i][0]++;
+                        break;
+                    case 'C':
+                        mutationStat[i][1]++;
+                        break;
+                    case 'G':
+                        mutationStat[i][2]++;
+                        break;
+                    case 'T':
+                        mutationStat[i][3]++;
+                        break;
+                    case 'N':
+                        mutationStat[i][4]++;
+                        break;
+                    case '-':
+                        // do nothing
+                        break;
+                    default:
+                        throw new RuntimeException("unknown nucleotide:" + mutationArray[i]);
+                }
+            }
+        }
+        return mutationStat;
     }
 }

@@ -5,9 +5,6 @@ import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub.*;
 import java.io.Serializable;
 
 public class SNP implements Serializable {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	// general info
 	private int rsID;

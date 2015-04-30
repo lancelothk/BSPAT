@@ -65,14 +65,12 @@ public class Sequence {
             }
         }
         for (Sequence seq : seqList) {
-            char[] methylationString;
-            char[] mutationString;
+            char[] methylationString = new char[convertedReferenceSeq.length()];
+            char[] mutationString = new char[convertedReferenceSeq.length()];
             // fill read to reference length
             double countOfUnConvertedC = 0;
             double countOfMethylatedCpG = 0;
             double unequalNucleotide = 0;
-            methylationString = new char[convertedReferenceSeq.length()];
-            mutationString = new char[convertedReferenceSeq.length()];
 
             for (int i = 0; i < convertedReferenceSeq.length(); i++) {
                 methylationString[i] = ' ';
@@ -139,72 +137,68 @@ public class Sequence {
         return startPos + length() - 1;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public void setStartPos(int startPos) {
-        this.startPos = startPos;
-    }
-
-    public void setOriginalSeq(String originalSeq) {
-        this.originalSeq = originalSeq;
-    }
-
-    public void setMethylationString(String methylationString) {
-        this.methylationString = methylationString;
-    }
-
-    public void setBisulConversionRate(double bisulConversionRate) {
-        this.bisulConversionRate = bisulConversionRate;
-    }
-
-    public void setMethylationRate(double methylationRate) {
-        this.methylationRate = methylationRate;
-    }
-
-    public void setSequenceIdentity(double sequenceIdentity) {
-        this.sequenceIdentity = sequenceIdentity;
+    public String getMutationString() {
+        return mutationString;
     }
 
     public void setMutationString(String mutationString) {
         this.mutationString = mutationString;
     }
 
-    public String getMutationString() {
-        return mutationString;
-    }
-
     public double getSequenceIdentity() {
         return sequenceIdentity;
+    }
+
+    public void setSequenceIdentity(double sequenceIdentity) {
+        this.sequenceIdentity = sequenceIdentity;
     }
 
     public double getMethylationRate() {
         return methylationRate;
     }
 
+    public void setMethylationRate(double methylationRate) {
+        this.methylationRate = methylationRate;
+    }
+
     public double getBisulConversionRate() {
         return bisulConversionRate;
+    }
+
+    public void setBisulConversionRate(double bisulConversionRate) {
+        this.bisulConversionRate = bisulConversionRate;
     }
 
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getOriginalSeq() {
         return originalSeq;
+    }
+
+    public void setOriginalSeq(String originalSeq) {
+        this.originalSeq = originalSeq;
     }
 
     public String getRegion() {
         return region;
     }
 
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
     public int getStartPos() {
         return startPos;
+    }
+
+    public void setStartPos(int startPos) {
+        this.startPos = startPos;
     }
 
     public void addCpG(CpGSite cpg) {
@@ -217,6 +211,10 @@ public class Sequence {
 
     public String getMethylationString() {
         return methylationString;
+    }
+
+    public void setMethylationString(String methylationString) {
+        this.methylationString = methylationString;
     }
 
     public int length() {
