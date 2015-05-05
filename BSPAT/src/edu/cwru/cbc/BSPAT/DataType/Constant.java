@@ -34,7 +34,6 @@ public class Constant implements Serializable {
     public String refVersion;
     public String randomDir;
     public double mutationPatternThreshold;
-    public double minP0Threshold;
     public double criticalValue;
     public double minMethylThreshold;
     public double conversionRateThreshold;
@@ -207,14 +206,6 @@ public class Constant implements Serializable {
 
     public void setMutationPatternThreshold(double mutationPatternThreshold) {
         this.mutationPatternThreshold = mutationPatternThreshold;
-    }
-
-    public double getMinP0Threshold() {
-        return minP0Threshold;
-    }
-
-    public void setMinP0Threshold(double minP0Threshold) {
-        this.minP0Threshold = minP0Threshold;
     }
 
     public double getCriticalValue() {

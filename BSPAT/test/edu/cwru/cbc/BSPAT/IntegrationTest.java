@@ -53,23 +53,6 @@ public class IntegrationTest {
         }
     };
 
-    class MyAnswer implements Answer<Object> {
-        public edu.cwru.cbc.BSPAT.DataType.Constant resultConstant;
-
-        @Override
-        public Object answer(InvocationOnMock invocation) throws Throwable {
-            Object[] args = invocation.getArguments();
-            String jobID = (String) args[1];
-            edu.cwru.cbc.BSPAT.DataType.Constant constant = edu.cwru.cbc.BSPAT.DataType.Constant.readConstant(jobID);
-            constant.targetFileName = constant.coorFileName;
-            resultConstant = constant;
-            FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
-                                          new File(constant.targetPath));
-            constant.writeConstant();
-            return args[1];
-        }
-    }
-
     @Test
     public void testBSPAT() throws IOException, ServletException {
         jobID = testMapping();
@@ -131,7 +114,6 @@ public class IntegrationTest {
         when(servletContext.getRealPath("")).thenReturn(testPath);
         when(request.getParameter("jobID")).thenReturn(jobID);
         when(request.getParameter("figureFormat")).thenReturn("png");
-        when(request.getParameter("minp0text")).thenReturn("0.02");
         when(request.getParameter("criticalValue")).thenReturn("0.05");
         when(request.getParameter("mutationpatternThreshold")).thenReturn("0.2");
         when(request.getParameter("conversionRateThreshold")).thenReturn("0.9");
@@ -175,6 +157,23 @@ public class IntegrationTest {
                             resultFolder.getAbsolutePath() + "/" + file.getName()));
                 }
             }
+        }
+    }
+
+    class MyAnswer implements Answer<Object> {
+        public edu.cwru.cbc.BSPAT.DataType.Constant resultConstant;
+
+        @Override
+        public Object answer(InvocationOnMock invocation) throws Throwable {
+            Object[] args = invocation.getArguments();
+            String jobID = (String) args[1];
+            edu.cwru.cbc.BSPAT.DataType.Constant constant = edu.cwru.cbc.BSPAT.DataType.Constant.readConstant(jobID);
+            constant.targetFileName = constant.coorFileName;
+            resultConstant = constant;
+            FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
+                    new File(constant.targetPath));
+            constant.writeConstant();
+            return args[1];
         }
     }
 }

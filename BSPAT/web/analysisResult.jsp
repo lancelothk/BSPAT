@@ -6,17 +6,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
-    <script language="javascript" type="">
-        function check() {
-            if (document.getElementById('minp0').checked) {
-                document.getElementById('minp0text').disabled = false;
-                document.getElementById('minmethyltext').disabled = true;
-            } else if (document.getElementById('minmethyl').checked) {
-                document.getElementById('minp0text').disabled = true;
-                document.getElementById('minmethyltext').disabled = false;
-            }
-        }
-    </script>
     <title>BSPAT</title>
 </head>
 <%@ page import="edu.cwru.cbc.BSPAT.DataType.Constant, edu.cwru.cbc.BSPAT.DataType.Experiment" %>
@@ -126,13 +115,8 @@
                     </td>
                 </tr>
                 <%
-                    if (constant.minP0Threshold >= 0) {
+                    if (constant.criticalValue >= 0) {
                 %>
-                <tr>
-                    <td>&alpha; threshold:</td>
-                    <td><%=constant.minP0Threshold%>
-                    </td>
-                </tr>
                 <tr>
                     <td>Critical Value:</td>
                     <td><%=constant.criticalValue%>

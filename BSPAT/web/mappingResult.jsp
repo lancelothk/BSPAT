@@ -135,13 +135,7 @@
                     </tr>
                     <tr>
                         <td><label for="minp0"></label><input type="radio" name="par" id="minp0" value="minp0"
-                                                              checked="yes" onclick="check()"/>&alpha; threshold:<sup><a
-                                href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
-                        <td><label for="minp0text"></label>
-                            <input type="text" id="minp0text" name="minp0text" value=0.02></td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;&nbsp;&nbsp;Critical Value:<sup><a
+                                                              checked="yes" onclick="check()"/>Critical Value:<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
                         <td><label for="criticalValue"></label><input type="text" id="criticalValue"
                                                                       name="criticalValue" value=0.05></td>
@@ -190,11 +184,9 @@
 <script language="javascript" type="">
     function check() {
         if (document.getElementById('minp0').checked) {
-            document.getElementById('minp0text').disabled = false;
             document.getElementById('criticalValue').disabled = false;
             document.getElementById('minmethyltext').disabled = true;
         } else if (document.getElementById('minmethyl').checked) {
-            document.getElementById('minp0text').disabled = true;
             document.getElementById('criticalValue').disabled = true;
             document.getElementById('minmethyltext').disabled = false;
         }
@@ -212,10 +204,6 @@
         }
         if (isEmptyValue("sequenceIdentityThreshold", "Sequence identity is empty!")
                 || isInvalidValue("sequenceIdentityThreshold", "Sequence identity is invalid!")) {
-            valid = false;
-        }
-        if (isEmptyValue("minp0text", "α threshold is empty!")
-                || isInvalidValue("minp0text", "α threshold is invalid!")) {
             valid = false;
         }
         if (isEmptyValue("criticalValue", "Critical Value is empty!")

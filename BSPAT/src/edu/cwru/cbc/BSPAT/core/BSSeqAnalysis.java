@@ -362,7 +362,7 @@ public class BSSeqAnalysis {
 	private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
 			int refCpGCount, Constant constant) throws MathException {
 		if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
-			if (constant.minP0Threshold != -1 && refCpGCount > 3) {
+			if (constant.criticalValue != -1 && refCpGCount > 3) {
 				return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, constant);
 			} else {
 				return filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, constant);
@@ -409,6 +409,7 @@ public class BSSeqAnalysis {
 			}
 		}
 		System.out.println("methylationPattern count:\t" + methylationPatterns.size());
+		System.out.println("nonNoisePatternCount\t" + nonNoisePatternCount);
 		System.out.println("qualifiedMethylationPatternList:\t" + qualifiedMethylationPatternList.size());
 		return qualifiedMethylationPatternList;
 	}
