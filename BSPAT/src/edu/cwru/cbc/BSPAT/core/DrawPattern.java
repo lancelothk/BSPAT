@@ -43,7 +43,6 @@ public class DrawPattern {
 	private Map<String, Coordinate> coordinateMap;
 	private ReadAnalysisResult data;
 	private String cellLine;
-	private List<CpGStatistics> statList;
 
 	public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
 	                   String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap,
@@ -58,11 +57,11 @@ public class DrawPattern {
 		this.coordinateMap = coordinateMap;
 		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region), refSeq);
 		this.cellLine = data.getCellLine();
-		this.statList = data.getStatList();
 	}
 
 	private void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height, int left,
-	                              String beginCoor, String endCoor, int refLength) {
+	                              String beginCoor, String endCoor, int refLength,
+	                              List<CpGStatistics> cpGStatisticsList) {
 		// 1. add coordinates
 		graphWriter.setBackground(Color.WHITE);
 		graphWriter.clearRect(0, 0, imageWidth, imageHeight);
@@ -80,7 +79,7 @@ public class DrawPattern {
 		graphWriter.setStroke(new BasicStroke());
 
 		// 3. add refCpGSites
-		for (CpGStatistics cpgStat : statList) {
+		for (CpGStatistics cpgStat : cpGStatisticsList) {
 			graphWriter.drawLine(left + cpgStat.getPosition() * WIDTH + (int) (0.5 * WIDTH), height - BAR_HEIGHT / 2,
 					left + cpgStat.getPosition() * WIDTH + (int) (0.5 * WIDTH), height + BAR_HEIGHT / 2);
 		}
@@ -88,9 +87,21 @@ public class DrawPattern {
 
 	public void drawPattern(PatternLink patternLink) throws IOException {
 		List<PatternResult> patternResultLists = data.readPatternFile(region, patternLink.getPatternType());
+		List<CpGStatistics> statList = data.getStatList();
 		int refLength = data.getRefLength();
 		String beginCoor = data.getBeginCoor();
 		String endCoor = data.getEndCoor();
+
+		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
+			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
+			int firstCpGPos = statList.get(0).getPosition();
+			for (CpGStatistics cpGStatistics : statList) {
+				CpGStatistics updatedCpG = new CpGStatistics(cpGStatistics);
+				updatedCpG.setPosition(cpGStatistics.getPosition() - firstCpGPos);
+				updatedStatList.add(updatedCpG);
+			}
+			statList = updatedStatList;
+		}
 
 		int height = FIGURE_STARTY;
 		int left = FIGURE_STARTX + cellLine.length() * 5;
@@ -105,7 +116,7 @@ public class DrawPattern {
 		patternLink.setFigureResultLink(methylWriter.getFigureName());
 
 		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left, beginCoor, endCoor,
-				refLength);
+				refLength, statList);
 
 		// 4. add CpG sites
 		DecimalFormat percent = new DecimalFormat("##.00%");
@@ -176,6 +187,7 @@ public class DrawPattern {
 		int refLength = data.getRefLength();
 		String beginCoor = data.getBeginCoor();
 		String endCoor = data.getEndCoor();
+		List<CpGStatistics> statList = data.getStatList();
 
 		int height = FIGURE_STARTY;
 		int left = FIGURE_STARTX + cellLine.length() * 5;
@@ -188,7 +200,7 @@ public class DrawPattern {
 		reportSummary.setASMFigureLink(ASMWriter.getFigureName());
 
 		buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left, beginCoor, endCoor,
-				refLength);
+				refLength, statList);
 
 		String chr = beginCoor.split(":")[0];
 		String startPos = beginCoor.split(":")[1];

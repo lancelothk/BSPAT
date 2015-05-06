@@ -11,10 +11,17 @@ public class CpGStatistics implements CpG {
 
 
 	public CpGStatistics(int position) {
-		countOfAll = 0;
-		methylCount = 0;
-		methylLevel = 0;
+		this.countOfAll = 0;
+		this.methylCount = 0;
+		this.methylLevel = 0;
 		this.position = position;
+	}
+
+	public CpGStatistics(CpGStatistics cpg) {
+		this.countOfAll = cpg.getCountOfAll();
+		this.methylCount = cpg.getMethylCount();
+		this.methylLevel = cpg.getMethylLevel();
+		this.position = cpg.getPosition();
 	}
 
 	public void calcMethylLevel() {
@@ -33,6 +40,10 @@ public class CpGStatistics implements CpG {
 	@Override
 	public int getPosition() {
 		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 	public void allSitePlus() {
