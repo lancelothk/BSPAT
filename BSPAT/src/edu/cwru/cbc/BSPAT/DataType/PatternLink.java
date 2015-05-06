@@ -3,16 +3,14 @@ package edu.cwru.cbc.BSPAT.DataType;
 import java.io.Serializable;
 
 public class PatternLink implements Serializable {
+	public static final String STAT = "Stat";
+	public static final String ASM = "ASM";
+	public static final String METHYLATION = "Methylation";
+	public static final String METHYLATIONWITHMUTATION = "MethylationWithMutation";
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String STAT = "Stat";
-	public static final String ASM = "ASM";
-	public static final String METHYLATION = "Methylation";
-	public static final String MUTATION = "Mutation";
-	public static final String METHYLATIONWITHMUTATION = "MethylationWithMutation";
-	public static final String MUTATIONWITHMETHYLATION = "MutationWithMethylation";
 	protected String patternType;
 	private String textResultLink;
 	private String figureResultLink;

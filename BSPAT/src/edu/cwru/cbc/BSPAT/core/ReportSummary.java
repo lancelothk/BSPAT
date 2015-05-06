@@ -9,6 +9,11 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class ReportSummary implements Serializable {
+    public static final String targetBoundedText = "A. Sequences cover whole target region:";
+    public static final String targetAfterFilterText = "A. After quality control:";
+    public static final String cpgBoundedText = "B. Sequences don't cover whole target but cover all CpGs:";
+    public static final String cpgAfterFilterText = "B. After quality control:";
+    public static final String othersText = "C. Sequences cover neither target nor all CpGs:";
     /**
      *
      */
@@ -20,23 +25,16 @@ public class ReportSummary implements Serializable {
     private boolean hasASM;
     private SNP ASMsnp;
     private String id;
-    public static final String targetBoundedText = "A. Sequences cover whole target region:";
     private int seqTargetBounded;
-    public static final String targetAfterFilterText = "A. After quality control:";
     private int seqTargetAfterFilter;
-    public static final String cpgBoundedText = "B. Sequences don't cover whole target but cover all CpGs:";
     private int seqCpGBounded;
-    public static final String cpgAfterFilterText = "B. After quality control:";
     private int seqCpGAfterFilter;
-    public static final String othersText = "C. Sequences cover neither target nor all CpGs:";
     private int seqOthers;
 
     public ReportSummary(String id) {
         this.id = id;
         patternHash.put(PatternLink.METHYLATION, new PatternLink(PatternLink.METHYLATION));
-        patternHash.put(PatternLink.MUTATION, new PatternLink(PatternLink.MUTATION));
         patternHash.put(PatternLink.METHYLATIONWITHMUTATION, new PatternLink(PatternLink.METHYLATIONWITHMUTATION));
-        patternHash.put(PatternLink.MUTATIONWITHMETHYLATION, new PatternLink(PatternLink.MUTATIONWITHMETHYLATION));
     }
 
     public void replacePath(String diskPath, String webPath, boolean hasFigure, String host) {
@@ -61,7 +59,7 @@ public class ReportSummary implements Serializable {
     }
 
     public Collection<PatternLink> getPatternLinks() {
-        PatternLink[] patternLinks = new PatternLink[4];
+        PatternLink[] patternLinks = new PatternLink[2];
         for (PatternLink patternLink : patternHash.values()) {
             switch (patternLink.getPatternType()) {
                 case PatternLink.METHYLATION:
@@ -70,12 +68,8 @@ public class ReportSummary implements Serializable {
                 case PatternLink.METHYLATIONWITHMUTATION:
                     patternLinks[1] = patternLink;
                     break;
-                case PatternLink.MUTATION:
-                    patternLinks[2] = patternLink;
-                    break;
-                case PatternLink.MUTATIONWITHMETHYLATION:
-                    patternLinks[3] = patternLink;
-                    break;
+                default:
+                    throw new RuntimeException("Unknown PatternLink type!");
             }
         }
         return Arrays.asList(patternLinks);

@@ -115,7 +115,6 @@ public class BSSeqAnalysis {
 				continue;
 			}
 			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, refSeq);
-			List<Pattern> mutationPatternList = getMutationPattern(seqGroup);
 			List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 
 			System.out.println(experimentName + "\t" + region);
@@ -124,24 +123,21 @@ public class BSSeqAnalysis {
 
 			Pattern.resetPatternCount();
 			sortAndAssignPatternID(methylationPatternList);
-			sortAndAssignPatternID(mutationPatternList);
 
 			// generate memu pattern after filtering me & mu pattern since filtered non-significant patterns won't contribute to memu result.
-			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, mutationPatternList);
+			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList);
 
 			Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
 			Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
 			Report report = new Report(region, outputFolder, refSeq, constant, reportSummary);
 			report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList,
-					mutationPatternList, meMuPatternList, mutationStat);
+					meMuPatternList, mutationStat);
 
 			if (constant.coorReady) {
 				DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
 						constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, refSeq);
 				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
-				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATION));
-				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.MUTATIONWITHMETHYLATION));
 				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
 
 				if (allelePattern != null && allelePattern.getSequenceMap().size() != 0 &&
@@ -307,8 +303,7 @@ public class BSSeqAnalysis {
 	/**
 	 * generate memu pattern.
 	 */
-	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
-			List<Pattern> mutationPatternList) {
+	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList) {
 		Map<String, Pattern> patternMap = new HashMap<>();
 		for (Sequence sequence : seqGroup) {
 			int meID = -1, muID = -1;
@@ -317,11 +312,11 @@ public class BSSeqAnalysis {
 					meID = methylPattern.getPatternID();
 				}
 			}
-			for (Pattern mutationPattern : mutationPatternList) {
-				if (mutationPattern.getSequenceMap().containsKey(sequence.getId())) {
-					muID = mutationPattern.getPatternID();
-				}
-			}
+//			for (Pattern mutationPattern : mutationPatternList) {
+//				if (mutationPattern.getSequenceMap().containsKey(sequence.getId())) {
+//					muID = mutationPattern.getPatternID();
+//				}
+//			}
 			// seq not included in either MethylPattern or MutationPattern
 			if (meID == -1 || muID == -1) {
 				continue;
@@ -542,27 +537,6 @@ public class BSSeqAnalysis {
 			methylationPatterns.add(methylationPattern);
 		}
 		return methylationPatterns;
-	}
-
-	private List<Pattern> getMutationPattern(List<Sequence> seqList) {
-		List<Pattern> mutationPatterns = new ArrayList<>();
-		// group sequences by mutationString, distribute each seq into one pattern
-		Map<String, List<Sequence>> patternMap = groupSeqsByKey(seqList, new GetKeyFunction() {
-			@Override
-			public String getKey(Sequence seq) {
-				return seq.getMutationString();
-			}
-		});
-
-		for (String mutationString : patternMap.keySet()) {
-			List<Sequence> patternSeqList = patternMap.get(mutationString);
-			Pattern mutationPattern = new Pattern(mutationString, Pattern.PatternType.MUTATION);
-			for (Sequence seq : patternSeqList) {
-				mutationPattern.addSequence(seq);
-			}
-			mutationPatterns.add(mutationPattern);
-		}
-		return mutationPatterns;
 	}
 
 	private int[][] calculateMutationStat(String referenceSeq, List<Sequence> targetSequencesList) {
