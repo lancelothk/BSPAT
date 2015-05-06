@@ -147,7 +147,7 @@ public class Report {
 				case PatternLink.METHYLATIONWITHMUTATION:
 					bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\n",
 							PatternLink.METHYLATIONWITHMUTATION));
-					bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
+					bufferedWriter.write(String.format("%s\tref\n", getBoundedSeq("CG", referenceSeq)));
 					Collections.sort(patternList, new MeMuPatternComparator());
 					for (Pattern pattern : patternList) {
 						bufferedWriter.write(

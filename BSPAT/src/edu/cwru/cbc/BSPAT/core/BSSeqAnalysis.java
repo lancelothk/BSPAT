@@ -19,6 +19,7 @@ import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
  */
 public class BSSeqAnalysis {
 	public static final int DEFAULT_TARGET_LENGTH = 70;
+	public static final double MEMU_THRESHOLD = 0.1;
 
 	/**
 	 * Execute analysis.
@@ -111,7 +112,9 @@ public class BSSeqAnalysis {
 			Pattern.resetPatternCount();
 			sortAndAssignPatternID(methylationPatternList);
 
-			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP);
+			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, CpGBoundSequenceList, methylationPatternList,
+					potentialSNP, targetRefSeq);
+			meMuPatternList = filterPatternsByPercentage(meMuPatternList, seqGroup.size(), MEMU_THRESHOLD);
 
 			List<Pattern> allelePatternList = getAllelePattern(seqGroup);
 			Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
@@ -317,14 +320,29 @@ public class BSSeqAnalysis {
 	/**
 	 * generate memu pattern.
 	 */
-	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
-	                                    PotentialSNP potentialSNP) {
+	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Sequence> cpGBoundSequenceList,
+	                                    List<Pattern> methylationPatternList,
+	                                    PotentialSNP potentialSNP, String targetRefSeq) {
 		// return no memu pattern if there is no snp
 		if (potentialSNP == null) {
 			return new ArrayList<>();
 		}
+
+		final int startCpGPos = targetRefSeq.indexOf("CG");
+		final int endCpGPos = targetRefSeq.lastIndexOf("CG");
+
+		List<Sequence> combinedSequenceList = new ArrayList<>();
+		combinedSequenceList.addAll(seqGroup);
+		// only if SNP is inside CPGBounded region, include CpGBounded sequences and update methylString
+		if (potentialSNP.getPosition() >= startCpGPos && potentialSNP.getPosition() <= endCpGPos) {
+			combinedSequenceList.addAll(cpGBoundSequenceList);
+			for (Sequence sequence : combinedSequenceList) {
+				sequence.setMethylationString(sequence.getMethylationString().substring(startCpGPos, endCpGPos + 2));
+			}
+		}
+
 		Map<String, Pattern> patternMap = new HashMap<>();
-		for (Sequence sequence : seqGroup) {
+		for (Sequence sequence : combinedSequenceList) {
 			int meID = -1;
 			for (Pattern methylPattern : methylationPatternList) {
 				if (methylPattern.getSequenceMap().containsKey(sequence.getId())) {
@@ -380,24 +398,24 @@ public class BSSeqAnalysis {
 			if (constant.criticalValue != -1 && refCpGCount > 3) {
 				return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, constant);
 			} else {
-				return filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, constant);
+				return filterPatternsByPercentage(methylationPatterns, totalSeqCount, constant.minMethylThreshold);
 			}
 		}
 		// return empty list.
 		return new ArrayList<>();
 	}
 
-	private List<Pattern> filterMethylPatternsByMethylThreshold(List<Pattern> methylationPatterns, double totalSeqCount,
-	                                                            Constant constant) {
-		List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
+	private List<Pattern> filterPatternsByPercentage(List<Pattern> patterns, double totalSeqCount,
+	                                                 double threshold) {
+		List<Pattern> qualifiedPatternList = new ArrayList<>();
 		// use percentage pattern threshold
-		for (Pattern methylationPattern : methylationPatterns) {
-			double percentage = methylationPattern.getCount() / totalSeqCount;
-			if (percentage >= constant.minMethylThreshold) {
-				qualifiedMethylationPatternList.add(methylationPattern);
+		for (Pattern pattern : patterns) {
+			double percentage = pattern.getCount() / totalSeqCount;
+			if (percentage >= threshold) {
+				qualifiedPatternList.add(pattern);
 			}
 		}
-		return qualifiedMethylationPatternList;
+		return qualifiedPatternList;
 	}
 
 	private List<Pattern> filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
