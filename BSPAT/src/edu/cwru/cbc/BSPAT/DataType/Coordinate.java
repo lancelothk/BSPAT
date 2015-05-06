@@ -7,7 +7,7 @@ public class Coordinate {
 	private String chr;
 	private String strand;
 
-    public Coordinate(String id, String chr, String strand, long start, long end) {
+	public Coordinate(String id, String chr, String strand, long start, long end) {
 		super();
 		this.id = id;
 		this.start = start;

@@ -105,7 +105,8 @@
                     <td>
                         <p class="ptext">
                             In this section, for each experiment, user need to enter an
-                            experiment name(without space character, no duplicated names) in textbox and select one or multiple fastq/fasta
+                            experiment name(without space character, no duplicated names) in textbox and select one or
+                            multiple fastq/fasta
                             files to upload. The extension of fastq/fasta files
                             can be .fq, .fastq, .fa, .fasta .txt(.txt input is by default
                             treated as fastq file). The reads in sequence files will be

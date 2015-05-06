@@ -18,7 +18,7 @@
         <div id="content_top"></div>
         <div id="content_main">
             <%
-                Constant constant=null;
+                Constant constant = null;
                 String jobID = (String) request.getAttribute("jobID");
                 if (jobID != null) {
                     if (jobID.toLowerCase().startsWith(Constant.JOB_FOLDER_PREFIX.toLowerCase())) {
@@ -55,7 +55,8 @@
                     </tr>
                     <tr>
                         <td>Result ID:</td>
-                        <td><%=constant.jobID%></td>
+                        <td><%=constant.jobID%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Experiment(<%=constant.experiments.size()%>):
@@ -72,27 +73,33 @@
                     </tr>
                     <tr>
                         <td>Sequences analysed in total:</td>
-                        <td><%=constant.mappingSummary.getSeqAnalysed()%></td>
+                        <td><%=constant.mappingSummary.getSeqAnalysed()%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Sequences with a unique best hit:</td>
-                        <td><%=constant.mappingSummary.getUniqueBestHit()%></td>
+                        <td><%=constant.mappingSummary.getUniqueBestHit()%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Sequences without any alignment:</td>
-                        <td><%=constant.mappingSummary.getNoAlignment()%></td>
+                        <td><%=constant.mappingSummary.getNoAlignment()%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Sequences did not map uniquely:</td>
-                        <td><%=constant.mappingSummary.getNotUnique()%></td>
+                        <td><%=constant.mappingSummary.getNotUnique()%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Invalid sequences:</td>
-                        <td><%=constant.mappingSummary.getNotExtracted()%></td>
+                        <td><%=constant.mappingSummary.getNotExtracted()%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Mapping efficiency:</td>
-                        <td><%=constant.mappingSummary.getMappingEfficiencyString()%></td>
+                        <td><%=constant.mappingSummary.getMappingEfficiencyString()%>
+                        </td>
                     </tr>
                     <tr>
                         <td>Mapping phase running time:</td>

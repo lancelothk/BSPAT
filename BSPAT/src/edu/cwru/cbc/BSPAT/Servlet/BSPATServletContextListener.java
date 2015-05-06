@@ -15,24 +15,24 @@ import java.util.Arrays;
  */
 @WebListener
 public class BSPATServletContextListener implements ServletContextListener {
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        String toolsPath = servletContextEvent.getServletContext().getRealPath("") + "/tools/";
-        try {
-            if (Utilities.callCMD(Arrays.asList("chmod", "u+x", "setFileExecution.sh"), new File(toolsPath), null) >
-                    0 ||
-                    Utilities.callCMD(Arrays.asList("./setFileExecution.sh", toolsPath), new File(toolsPath), null) >
-                            0) {
-                throw new RuntimeException();
-            }
+	@Override
+	public void contextInitialized(ServletContextEvent servletContextEvent) {
+		String toolsPath = servletContextEvent.getServletContext().getRealPath("") + "/tools/";
+		try {
+			if (Utilities.callCMD(Arrays.asList("chmod", "u+x", "setFileExecution.sh"), new File(toolsPath), null) >
+					0 ||
+					Utilities.callCMD(Arrays.asList("./setFileExecution.sh", toolsPath), new File(toolsPath), null) >
+							0) {
+				throw new RuntimeException();
+			}
 
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("chmod failed!", e);
-        }
-    }
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException("chmod failed!", e);
+		}
+	}
 
-    @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+	@Override
+	public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
-    }
+	}
 }

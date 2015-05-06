@@ -149,7 +149,7 @@
         if (elementCount >= 2) {
             var seqRow = document.getElementById("trseq" + elementCount);
             var checkBoxRow = document.getElementById("trcheckbox"
-                    + elementCount);
+            + elementCount);
             table.removeChild(seqRow);
             table.removeChild(checkBoxRow);
             elementCount = elementCount - 1;
@@ -174,7 +174,7 @@
             if (isEmptyValue("seqFile" + i, "Experiment " + i + " has no sequence file selected!") || isInvalidSeqFile("seqFile" + i) || containIllegal("seqFile" + i)) {
                 valid = false;
             }
-            if (hasDuplicate("experiment" + i, names,"Experiment " + i + " name is duplicate!" )){
+            if (hasDuplicate("experiment" + i, names, "Experiment " + i + " name is duplicate!")) {
                 valid = false;
             }
         }
@@ -184,12 +184,12 @@
         return valid;
     }
 
-    function hasDuplicate(id, array, msg){
+    function hasDuplicate(id, array, msg) {
         var element = document.getElementById(id);
-        if(array.indexOf(element.value) == -1)  {
+        if (array.indexOf(element.value) == -1) {
             array.push(element.value);
             return false;
-        }else {
+        } else {
             createErrorMsg(element, msg);
             return true;
         }

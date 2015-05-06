@@ -7,11 +7,11 @@ import java.util.List;
 
 public class Experiment implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public List<ReportSummary> reportSummaries;
 	private int index;
 	private String name;
 	private String seqFile;
 	private String inputType;
-	public List<ReportSummary> reportSummaries;
 
 	public Experiment(int index, String name) {
 		super();
@@ -19,12 +19,12 @@ public class Experiment implements Serializable {
 		this.name = name;
 	}
 
-	public void setInputType(String inputType) {
-		this.inputType = inputType;
-	}
-
 	public String getInputType() {
 		return inputType;
+	}
+
+	public void setInputType(String inputType) {
+		this.inputType = inputType;
 	}
 
 	public int getIndex() {

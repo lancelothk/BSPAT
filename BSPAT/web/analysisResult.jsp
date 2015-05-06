@@ -62,27 +62,32 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><%=ReportSummary.targetBoundedText%></td>
+                    <td><%=ReportSummary.targetBoundedText%>
+                    </td>
                     <td><%=constant.seqCountSummary.getSeqTargetBounded()%>
                     </td>
                 </tr>
                 <tr>
-                    <td><%=ReportSummary.targetAfterFilterText%></td>
+                    <td><%=ReportSummary.targetAfterFilterText%>
+                    </td>
                     <td><%=constant.seqCountSummary.getSeqTargetAfterFilter()%>
                     </td>
                 </tr>
                 <tr>
-                    <td><%=ReportSummary.cpgBoundedText%></td>
+                    <td><%=ReportSummary.cpgBoundedText%>
+                    </td>
                     <td><%=constant.seqCountSummary.getSeqCpGBounded()%>
                     </td>
                 </tr>
                 <tr>
-                    <td><%=ReportSummary.cpgAfterFilterText%></td>
+                    <td><%=ReportSummary.cpgAfterFilterText%>
+                    </td>
                     <td><%=constant.seqCountSummary.getSeqCpGAfterFilter()%>
                     </td>
                 </tr>
                 <tr>
-                    <td><%=ReportSummary.othersText%></td>
+                    <td><%=ReportSummary.othersText%>
+                    </td>
                     <td><%=constant.seqCountSummary.getSeqOthers()%>
                     </td>
                 </tr>

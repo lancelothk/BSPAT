@@ -31,7 +31,7 @@
                     <td>3. <a href="manualResult.jsp">Result</a></td>
                 </tr>
                 <tr>
-                    <td>Also we have a one-click <a href="demo.jsp">demo</a> to show the workflow of BSPAT. </td>
+                    <td>Also we have a one-click <a href="demo.jsp">demo</a> to show the workflow of BSPAT.</td>
                 </tr>
             </table>
         </div>

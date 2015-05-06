@@ -4,13 +4,13 @@ package edu.cwru.cbc.BSPAT.DataType;
  * Created by kehu on 8/19/14.
  */
 public interface CpG {
-    public int getPosition();
+	int getPosition();
 
-    public int getMethylCount();
+	int getMethylCount();
 
-    public int getNonMethylCount();
+	int getNonMethylCount();
 
-    public int getCountOfAll();
+	int getCountOfAll();
 
-    public double getMethylLevel();
+	double getMethylLevel();
 }

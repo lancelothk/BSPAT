@@ -4,63 +4,64 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Pattern {
-    private static int patternCount = 1;
-    private String patternString;
-    private Map<String, Sequence> sequenceMap;
-    private int patternID;
-    private int methylationParentID;
-    private PatternType patternType;
-    public Pattern(String patternString, PatternType patternType) {
-        this.patternString = patternString;
-        this.patternType = patternType;
-        sequenceMap = new HashMap<>();
-    }
+	private static int patternCount = 1;
+	private String patternString;
+	private Map<String, Sequence> sequenceMap;
+	private int patternID;
+	private int methylationParentID;
+	private PatternType patternType;
 
-    public static void resetPatternCount() {
-        patternCount = 1;
-    }
+	public Pattern(String patternString, PatternType patternType) {
+		this.patternString = patternString;
+		this.patternType = patternType;
+		sequenceMap = new HashMap<>();
+	}
 
-    public void assignPatternID() {
-        this.patternID = patternCount++;
-    }
+	public static void resetPatternCount() {
+		patternCount = 1;
+	}
 
-    public int getPatternID() {
-        return patternID;
-    }
+	public void assignPatternID() {
+		this.patternID = patternCount++;
+	}
 
-    public void addSequence(Sequence seq) {
-        sequenceMap.put(seq.getId(), seq);
-    }
+	public int getPatternID() {
+		return patternID;
+	}
 
-    public PatternType getPatternType() {
-        return patternType;
-    }
+	public void addSequence(Sequence seq) {
+		sequenceMap.put(seq.getId(), seq);
+	}
 
-    public int getCount() {
-        return sequenceMap.size();
-    }
+	public PatternType getPatternType() {
+		return patternType;
+	}
 
-    public String getPatternString() {
-        return patternString;
-    }
+	public int getCount() {
+		return sequenceMap.size();
+	}
 
-    public void setPatternString(String patternString) {
-        this.patternString = patternString;
-    }
+	public String getPatternString() {
+		return patternString;
+	}
 
-    public Map<String, Sequence> getSequenceMap() {
-        return sequenceMap;
-    }
+	public void setPatternString(String patternString) {
+		this.patternString = patternString;
+	}
 
-    public int getMethylationParentID() {
-        return methylationParentID;
-    }
+	public Map<String, Sequence> getSequenceMap() {
+		return sequenceMap;
+	}
 
-    public void setMethylationParentID(int methylationParentID) {
-        this.methylationParentID = methylationParentID;
-    }
+	public int getMethylationParentID() {
+		return methylationParentID;
+	}
 
-    public enum PatternType {
-        METHYLATION, MEMU, ALLELE, NONALLELE
-    }
+	public void setMethylationParentID(int methylationParentID) {
+		this.methylationParentID = methylationParentID;
+	}
+
+	public enum PatternType {
+		METHYLATION, MEMU, ALLELE, NONALLELE
+	}
 }

@@ -30,10 +30,11 @@
                 <br/>If you have any questions or suggestions, feel free to send an email to:
                 <img src="images/emailadd.png" alt=""/>
 
-                <p class="phead"> Source code hosted in <a href="https://github.com/lancelothk/BSPAT">GitHub</a></p>
-                <p class="phead">License:</p>
-                Copyright 2014 © Computational Biology lab @ Case Western Reserve University.
-                <br/>Under GPL v3.
+            <p class="phead"> Source code hosted in <a href="https://github.com/lancelothk/BSPAT">GitHub</a></p>
+
+            <p class="phead">License:</p>
+            Copyright 2014 © Computational Biology lab @ Case Western Reserve University.
+            <br/>Under GPL v3.
             </p>
         </div>
         <div id="content_bottom"></div>

@@ -24,7 +24,7 @@ function containIllegal(id) {
         createErrorMsg(experimentName, id + " has blank in its name! Please remove the blank");
         return true;
     }
-    if (experimentName.value.search("'") != -1){
+    if (experimentName.value.search("'") != -1) {
         // contain single quote in name
         createErrorMsg(experimentName, id + " has single quote in its name! Please remove the quote");
         return true;
