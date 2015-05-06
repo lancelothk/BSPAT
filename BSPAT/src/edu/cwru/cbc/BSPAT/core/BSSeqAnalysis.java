@@ -118,19 +118,22 @@ public class BSSeqAnalysis {
 			Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
 
 			Report report = new Report(region, outputFolder, targetRefSeq, constant, reportSummary);
+
+			reportSummary.addPatternLink(PatternLink.METHYLATION);
+			if (meMuPatternList.size() != 0) {
+				reportSummary.addPatternLink(PatternLink.METHYLATIONWITHMUTATION);
+			}
 			report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList,
 					meMuPatternList, mismatchStat);
 
 			if (constant.coorReady) {
 				DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
 						constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, targetRefSeq);
-				reportSummary.addPatternLink(PatternLink.METHYLATION);
+
 				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
 				if (meMuPatternList.size() != 0) {
-					reportSummary.addPatternLink(PatternLink.METHYLATIONWITHMUTATION);
 					drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
 				}
-
 
 				if (allelePattern != null && allelePattern.getSequenceMap().size() != 0 &&
 						nonAllelePattern.getSequenceMap().size() != 0) {
@@ -551,37 +554,45 @@ public class BSSeqAnalysis {
 	                                      List<Sequence> targetSequencesList) {
 		int[][] mismatchStat;
 		mismatchStat = new int[targetRefSeq.length()][5]; // 5 possible values.
+		// TODO double check and refactor
 		for (Sequence seq : targetSequencesList) {
 			char[] seqArray = seq.getOriginalSeq().toCharArray();
+			Arrays.fill(seqArray, '-');
 			for (int i = 0; i < seqArray.length; i++) {
 				if (seq.getStartPos() + i >= targetStart && seq.getStartPos() + i <= targetEnd) {
-					if (isFirstBPCpGSite(i, seq.getCpGSites())) {
-						// TODO fix mismatch
-						if (seqArray[i] == targetRefSeq.charAt(seq.getStartPos() - targetStart + i)) {
-							seqArray[i] = '-';
+					int offset = seq.getStartPos() + i - targetStart;
+					if (isFirstBPCpGSite(i + seq.getStartPos(), seq.getCpGSites())) {
+						if (seq.getOriginalSeq().charAt(i) != 'T' && seq.getOriginalSeq().charAt(i) != 'C') {
+							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
-						switch (seqArray[i]) {
-							case 'A':
-								mismatchStat[seq.getStartPos() + i - targetStart][0]++;
-								break;
-							case 'C':
-								mismatchStat[seq.getStartPos() + i - targetStart][1]++;
-								break;
-							case 'G':
-								mismatchStat[seq.getStartPos() + i - targetStart][2]++;
-								break;
-							case 'T':
-								mismatchStat[seq.getStartPos() + i - targetStart][3]++;
-								break;
-							case 'N':
-								mismatchStat[seq.getStartPos() + i - targetStart][4]++;
-								break;
-							case '-':
-								// do nothing
-								break;
-							default:
-								throw new RuntimeException("unknown nucleotide:" + seqArray[i]);
+					} else if (targetRefSeq.charAt(offset) == 'C') {
+						if (seq.getOriginalSeq().charAt(i) != 'C' & seq.getOriginalSeq().charAt(i) != 'T') {
+							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
+					} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
+						seqArray[i] = seq.getOriginalSeq().charAt(i);
+					}
+					switch (seqArray[i]) {
+						case 'A':
+							mismatchStat[offset][0]++;
+							break;
+						case 'C':
+							mismatchStat[offset][1]++;
+							break;
+						case 'G':
+							mismatchStat[offset][2]++;
+							break;
+						case 'T':
+							mismatchStat[offset][3]++;
+							break;
+						case 'N':
+							mismatchStat[offset][4]++;
+							break;
+						case '-':
+							// do nothing
+							break;
+						default:
+							throw new RuntimeException("unknown nucleotide:" + seqArray[i]);
 					}
 				}
 			}

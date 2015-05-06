@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
+
 public class Report {
 	private String referenceSeq;
 	private String outputFolder;
@@ -124,13 +126,17 @@ public class Report {
 	private void writePatterns(List<Pattern> patternList, String patternType,
 	                           List<Sequence> sequencesList) throws IOException {
 		String patternFileName = String.format("%s%s_bismark.analysis_%s.txt", outputFolder, region, patternType);
-		reportSummary.getPatternLink(patternType).setTextResultLink(patternFileName);
+		PatternLink patternLink = reportSummary.getPatternLink(patternType);
+		if (patternLink == null) {
+			return;
+		}
+		patternLink.setTextResultLink(patternFileName);
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(patternFileName))) {
 			switch (patternType) {
 				case PatternLink.METHYLATION:
 					bufferedWriter.write(String.format("%s\tcount\tpercentage\tPatternID\n", patternType));
 					bufferedWriter.write(
-							String.format("%s\tref\n", referenceSeq));//getBoundedSeq("CG", referenceSeq)));
+							String.format("%s\tref\n", getBoundedSeq("CG", referenceSeq)));
 					for (Pattern pattern : patternList) {
 						bufferedWriter.write(
 								String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),

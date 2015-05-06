@@ -4,9 +4,10 @@ import edu.cwru.cbc.BSPAT.DataType.PatternLink;
 import edu.cwru.cbc.BSPAT.DataType.SNP;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class ReportSummary implements Serializable {
     public static final String targetBoundedText = "A. Sequences cover whole target region:";
@@ -61,20 +62,14 @@ public class ReportSummary implements Serializable {
     }
 
     public Collection<PatternLink> getPatternLinks() {
-        PatternLink[] patternLinks = new PatternLink[2];
-        for (PatternLink patternLink : patternHash.values()) {
-            switch (patternLink.getPatternType()) {
-                case PatternLink.METHYLATION:
-                    patternLinks[0] = patternLink;
-                    break;
-                case PatternLink.METHYLATIONWITHMUTATION:
-                    patternLinks[1] = patternLink;
-                    break;
-                default:
-                    throw new RuntimeException("Unknown PatternLink type!");
-            }
-        }
-        return Arrays.asList(patternLinks);
+	    List<PatternLink> patternLinkList = new ArrayList<>();
+	    if (patternHash.containsKey(PatternLink.METHYLATION)) {
+		    patternLinkList.add(patternHash.get(PatternLink.METHYLATION));
+	    }
+	    if (patternHash.containsKey(PatternLink.METHYLATIONWITHMUTATION)) {
+		    patternLinkList.add(patternHash.get(PatternLink.METHYLATIONWITHMUTATION));
+	    }
+	    return patternLinkList;
     }
 
     public int getSeqCpGBounded() {
