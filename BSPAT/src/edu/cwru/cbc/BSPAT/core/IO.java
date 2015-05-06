@@ -28,10 +28,14 @@ public class IO {
          * <0:region ID - String> <1:chrom - String> <2:strand - String> <3:start position - long> <4:end position - long>
          * E.g: 19	2	+	38155208	38155307
          */
-        HashMap<String, Coordinate> coordinateHash = new HashMap<>();
         File coorFolder = new File(coorPath);
+        File coorFile = new File(coorFolder.getAbsolutePath() + "/" + coorFileName);
+        if (!coorFile.exists()) {
+            return new HashMap<>();
+        }
+        HashMap<String, Coordinate> coordinateHash = new HashMap<>();
         try (BufferedReader coordinatesBuffReader = new BufferedReader(
-                new FileReader(coorFolder.getAbsolutePath() + "/" + coorFileName))) {
+                new FileReader(coorFile))) {
             String line = coordinatesBuffReader.readLine();
             String[] items;
             while (line != null) {
@@ -115,7 +119,7 @@ public class IO {
             if (folder.isDirectory()) {
                 File[] files = folder.listFiles(new ExtensionFilter(new String[]{"_SE_report.txt"}));
                 for (File file : files) {
-                    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file));) {
+                    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
                         String line;
                         while ((line = bufferedReader.readLine()) != null) {
                             if (line.startsWith("Sequences analysed in total")) {

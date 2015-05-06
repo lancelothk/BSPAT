@@ -236,7 +236,7 @@
                 threshold will be shown in result.</p>
         </td>
     </tr>
-    <tr id="mutationPatternThreshold">
+    <tr id="SNPThreshold">
         <td>
             <h4>Mutation threshold</h4>
         </td>

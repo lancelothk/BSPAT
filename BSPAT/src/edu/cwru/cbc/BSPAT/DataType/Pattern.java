@@ -9,7 +9,6 @@ public class Pattern {
     private Map<String, Sequence> sequenceMap;
     private int patternID;
     private int methylationParentID;
-    private int mutationParentID;
     private PatternType patternType;
     public Pattern(String patternString, PatternType patternType) {
         this.patternString = patternString;
@@ -61,15 +60,7 @@ public class Pattern {
         this.methylationParentID = methylationParentID;
     }
 
-    public int getMutationParentID() {
-        return mutationParentID;
-    }
-
-    public void setMutationParentID(int mutationParentID) {
-        this.mutationParentID = mutationParentID;
-    }
-
     public enum PatternType {
-        METHYLATION, MUTATION, MEMU, ALLELE, NONALLELE
+        METHYLATION, MEMU, ALLELE, NONALLELE
     }
 }

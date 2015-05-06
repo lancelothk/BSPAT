@@ -138,7 +138,7 @@
                 %>
                 <tr>
                     <td>Mutation threshold:</td>
-                    <td><%=constant.mutationPatternThreshold%>
+                    <td><%=constant.SNPThreshold%>
                     </td>
                 </tr>
             </table>

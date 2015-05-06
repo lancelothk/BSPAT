@@ -33,8 +33,10 @@ public class ReportSummary implements Serializable {
 
     public ReportSummary(String id) {
         this.id = id;
-        patternHash.put(PatternLink.METHYLATION, new PatternLink(PatternLink.METHYLATION));
-        patternHash.put(PatternLink.METHYLATIONWITHMUTATION, new PatternLink(PatternLink.METHYLATIONWITHMUTATION));
+    }
+
+    public void addPatternLink(String patternType) {
+        patternHash.put(patternType, new PatternLink(patternType));
     }
 
     public void replacePath(String diskPath, String webPath, boolean hasFigure, String host) {

@@ -139,15 +139,15 @@ public class Report {
 					}
 					break;
 				case PatternLink.METHYLATIONWITHMUTATION:
-					bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\tMutationParent\n",
+					bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\n",
 							PatternLink.METHYLATIONWITHMUTATION));
 					bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
 					Collections.sort(patternList, new MeMuPatternComparator());
 					for (Pattern pattern : patternList) {
 						bufferedWriter.write(
-								String.format("%s\t%d\t%f\t%d\t%d\n", pattern.getPatternString(), pattern.getCount(),
+								String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),
 										pattern.getCount() / (double) sequencesList.size(),
-										pattern.getMethylationParentID(), pattern.getMutationParentID()));
+										pattern.getMethylationParentID()));
 					}
 					break;
 				default:

@@ -97,7 +97,7 @@ public class AnalysisServlet extends HttpServlet {
 				constant.criticalValue = -1;
 			}
 
-			constant.mutationPatternThreshold = Double.valueOf(request.getParameter("mutationpatternThreshold"));
+			constant.SNPThreshold = Double.valueOf(request.getParameter("SNPThreshold"));
 			constant.conversionRateThreshold = Double.valueOf(request.getParameter("conversionRateThreshold"));
 			constant.sequenceIdentityThreshold = Double.valueOf(request.getParameter("sequenceIdentityThreshold"));
 

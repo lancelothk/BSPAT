@@ -115,7 +115,7 @@ public class IntegrationTest {
         when(request.getParameter("jobID")).thenReturn(jobID);
         when(request.getParameter("figureFormat")).thenReturn("png");
         when(request.getParameter("criticalValue")).thenReturn("0.05");
-        when(request.getParameter("mutationpatternThreshold")).thenReturn("0.2");
+        when(request.getParameter("SNPThreshold")).thenReturn("0.2");
         when(request.getParameter("conversionRateThreshold")).thenReturn("0.9");
         when(request.getParameter("sequenceIdentityThreshold")).thenReturn("0.9");
         MyAnswer myAnswer = new MyAnswer();

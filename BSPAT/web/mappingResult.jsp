@@ -152,9 +152,9 @@
                     </tr>
                     <tr>
                         <td>Mutation threshold:<sup><a
-                                href="manualAnalysis.jsp#mutationPatternThreshold">?</a></sup></td>
+                                href="manualAnalysis.jsp#SNPThreshold">?</a></sup></td>
                         <td><label>
-                            <input type="text" id="mutationpatternThreshold" name="mutationpatternThreshold"
+                            <input type="text" id="SNPThreshold" name="SNPThreshold"
                                    value=0.2>
                         </label></td>
                     </tr>
@@ -214,8 +214,8 @@
                 || isInvalidValue("minmethyltext", "Methylation pattern threshold is invalid!")) {
             valid = false;
         }
-        if (isEmptyValue("mutationpatternThreshold", "Mutation threshold is empty!")
-                || isInvalidValue("mutationpatternThreshold", "Mutation threshold is invalid!")) {
+        if (isEmptyValue("SNPThreshold", "SNP threshold is empty!")
+                || isInvalidValue("SNPThreshold", "SNP threshold is invalid!")) {
             valid = false;
         }
         if (valid == true) {

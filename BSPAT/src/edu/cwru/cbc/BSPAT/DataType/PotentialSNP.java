@@ -5,7 +5,7 @@ package edu.cwru.cbc.BSPAT.DataType;
  * Potential SNP
  */
 public class PotentialSNP {
-    private int position;
+    private int position; // start from target seq position.
     private char nucleotide;
 
     public PotentialSNP(int position, char nucleotide) {

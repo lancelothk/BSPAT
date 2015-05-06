@@ -33,7 +33,7 @@ public class Constant implements Serializable {
     public String targetFileName;
     public String refVersion;
     public String randomDir;
-    public double mutationPatternThreshold;
+    public double SNPThreshold;
     public double criticalValue;
     public double minMethylThreshold;
     public double conversionRateThreshold;
@@ -198,14 +198,6 @@ public class Constant implements Serializable {
 
     public void setRandomDir(String randomDir) {
         this.randomDir = randomDir;
-    }
-
-    public double getMutationPatternThreshold() {
-        return mutationPatternThreshold;
-    }
-
-    public void setMutationPatternThreshold(double mutationPatternThreshold) {
-        this.mutationPatternThreshold = mutationPatternThreshold;
     }
 
     public double getCriticalValue() {
