@@ -39,7 +39,6 @@ public class Report {
 
 	public void writeReport(Pair<List<Sequence>, List<Sequence>> filteredTargetSequencePair,
 	                        Pair<List<Sequence>, List<Sequence>> filteredCpGSequencePair,
-	                        List<Pattern> methylationPatternList, List<Pattern> meMuPatternList,
 	                        int[][] mutationStat) throws IOException {
 		List<Sequence> combinedSequenceList = new ArrayList<>();
 		combinedSequenceList.addAll(filteredTargetSequencePair.getLeft());
@@ -49,8 +48,6 @@ public class Report {
 		writeAnalysedSequences("_bismark.analysis_CpGBounded.txt", filteredCpGSequencePair.getLeft());
 		writeAnalysedSequences("_bismark.analysis_CpGBounded.filtered.txt", filteredCpGSequencePair.getRight());
 		writeStatistics(combinedSequenceList, mutationStat);
-		writePatterns(methylationPatternList, PatternLink.METHYLATION, combinedSequenceList);
-		writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, filteredTargetSequencePair.getLeft());
 	}
 
 	private void writeAnalysedSequences(String fileName, List<Sequence> sequencesList) throws IOException {
@@ -123,7 +120,7 @@ public class Report {
 		}
 	}
 
-	private void writePatterns(List<Pattern> patternList, String patternType,
+	public void writePatterns(List<Pattern> patternList, String patternType,
 	                           List<Sequence> sequencesList) throws IOException {
 		String patternFileName = String.format("%s%s_bismark.analysis_%s.txt", outputFolder, region, patternType);
 		PatternLink patternLink = reportSummary.getPatternLink(patternType);

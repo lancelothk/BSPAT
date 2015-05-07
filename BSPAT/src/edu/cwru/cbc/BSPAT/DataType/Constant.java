@@ -28,7 +28,6 @@ public class Constant implements Serializable {
 	// parameters
 	public String jobID;
 	public String host;
-	public boolean coorReady = false;
 	public String coorFileName;
 	public String targetFileName;
 	public String refVersion;
@@ -166,14 +165,6 @@ public class Constant implements Serializable {
 
 	public void setHost(String host) {
 		this.host = host;
-	}
-
-	public boolean isCoorReady() {
-		return coorReady;
-	}
-
-	public void setCoorReady(boolean coorReady) {
-		this.coorReady = coorReady;
 	}
 
 	public String getCoorFileName() {

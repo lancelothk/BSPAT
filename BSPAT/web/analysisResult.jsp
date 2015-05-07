@@ -172,9 +172,6 @@
                     </td>
                     <td><a
                             href=<%=patternLink.getTextResultLink()%>>text</a></td>
-                    <%
-                        if (constant.coorReady) {
-                    %>
                     <td><a
                             href="<%=patternLink.getFigureResultLink()%>.<%=constant.figureFormat%>"><%=constant.figureFormat%>
                     </a>
@@ -183,16 +180,13 @@
                             href="
                             http://genome.ucsc.edu/cgi-bin/hgTracks?db=<%=constant.getRefVersion()%>&hgt.customText=http://<%=patternLink.getGBResultLink()%>">GenomeBrowser</a>
                     </td>
-                    <%
-                        }
-                    %>
                 </tr>
                 <%
                     }
                 %>
                 <tr>
                     <%
-                        if (constant.coorReady && reportSummary.hasASM()) {
+                        if (reportSummary.hasASM()) {
                     %>
                     <td>ASM pattern</td>
                     <%

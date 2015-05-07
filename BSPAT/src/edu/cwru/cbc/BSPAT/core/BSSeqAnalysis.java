@@ -19,6 +19,8 @@ import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
  */
 public class BSSeqAnalysis {
 	public static final int DEFAULT_TARGET_LENGTH = 70;
+	public static final double ASM_PATTERN_THRESHOLD = 0.2;
+	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	/**
 	 * Execute analysis.
@@ -39,11 +41,7 @@ public class BSSeqAnalysis {
 
 		// 1. read refCoorMap / targetCoorMap
 		Map<String, Coordinate> refCoorMap;
-		if (constant.coorReady) {
-			refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
-		} else {
-			throw new RuntimeException("refCoorMap file is not ready!");
-		}
+		refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
 		Map<String, Coordinate> targetCoorMap = getStringCoordinateMap(constant, referenceSeqs, refCoorMap);
 
 		// 2. group seqs by region
@@ -101,43 +99,42 @@ public class BSSeqAnalysis {
 			if (seqGroup.size() == 0 && CpGBoundSequenceList.size() == 0) {
 				continue;
 			}
-			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, targetRefSeq);
 
-			System.out.println(experimentName + "\t" + region);
+			// write report
+			Report report = new Report(region, outputFolder, targetRefSeq, constant, reportSummary);
+			report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, mismatchStat);
+
+			DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
+					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, targetRefSeq);
+
+			// generate methyl pattern output
+			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, targetRefSeq);
 			methylationPatternList = filterMethylationPatterns(methylationPatternList,
 					seqGroup.size() + CpGBoundSequenceList.size(), StringUtils.countMatches(targetRefSeq, "CG"),
 					constant);
-
 			Pattern.resetPatternCount();
 			sortAndAssignPatternID(methylationPatternList);
-
-			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP);
-
-			List<Pattern> allelePatternList = getAllelePattern(seqGroup);
-			Pattern allelePattern = filterAllelePatterns(allelePatternList, seqGroup.size(), constant);
-			Pattern nonAllelePattern = generateNonAllelePattern(allelePattern, seqGroup);
-
-			Report report = new Report(region, outputFolder, targetRefSeq, constant, reportSummary);
-
 			reportSummary.addPatternLink(PatternLink.METHYLATION);
+			List<Sequence> allMethylSequences = new ArrayList<>();
+			allMethylSequences.addAll(seqGroup);
+			allMethylSequences.addAll(CpGBoundSequenceList);
+			report.writePatterns(methylationPatternList, PatternLink.METHYLATION, allMethylSequences);
+			drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
+
+			// generate memu pattern output
+			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP);
 			if (meMuPatternList.size() != 0) {
 				reportSummary.addPatternLink(PatternLink.METHYLATIONWITHMUTATION);
+				report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, seqGroup);
+				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
 			}
-			report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, methylationPatternList,
-					meMuPatternList, mismatchStat);
 
-			if (constant.coorReady) {
-				DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-						constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, targetRefSeq);
-
-				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
-				if (meMuPatternList.size() != 0) {
-					drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
-				}
-
-				if (allelePattern != null && allelePattern.getSequenceMap().size() != 0 &&
-						nonAllelePattern.getSequenceMap().size() != 0) {
-
+			// ASM
+			if (potentialSNP != null) {
+				Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(seqGroup, potentialSNP);
+				Pattern allelePattern = allelePatterns.getLeft();
+				Pattern nonAllelePattern = allelePatterns.getRight();
+				if (allelePattern.getSequenceMap().size() != 0 && nonAllelePattern.getSequenceMap().size() != 0) {
 					PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(),
 							seqGroup.size());
 					PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern,
@@ -151,9 +148,9 @@ public class BSSeqAnalysis {
 								constant.logPath);
 					}
 				}
-
 			}
-			reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.coorReady, constant.host);
+
+			reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.host);
 			reportSummaries.add(reportSummary);
 		}
 		return reportSummaries;
@@ -225,7 +222,8 @@ public class BSSeqAnalysis {
 
 	private boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
 		// use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
-		if (patternWithAllele.getPercent() < 0.2 || patternWithoutAllele.getPercent() < 0.2) {
+		if (patternWithAllele.getPercent() < ASM_PATTERN_THRESHOLD ||
+				patternWithoutAllele.getPercent() < ASM_PATTERN_THRESHOLD) {
 			return false;
 		}
 		List<CpGSitePattern> cgListWithAllele = patternWithAllele.getCpGList();
@@ -234,7 +232,7 @@ public class BSSeqAnalysis {
 		for (int i = 0; i < cgListWithAllele.size(); i++) {
 			if (cgListWithAllele.get(i).getMethylType() != cgListWithoutAllele.get(i).getMethylType() &&
 					Math.abs(cgListWithAllele.get(i).getMethylLevel() - cgListWithoutAllele.get(i).getMethylLevel()) >=
-							0.2) {
+							ASM_MIN_METHYL_DIFFERENCE) {
 				return true;
 			}
 		}
@@ -269,40 +267,25 @@ public class BSSeqAnalysis {
 		patternResult.setCount(pattern.getSequenceMap().size());
 		patternResult.setPercent(pattern.getSequenceMap().size() / (double) totalCount);
 		if (pattern.getPatternType() == Pattern.PatternType.ALLELE) {
-			patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split("-")[0]));
+			patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split(":")[0]));
 		} else if (pattern.getPatternType() != Pattern.PatternType.NONALLELE) {
 			throw new RuntimeException("only support convert allele and non-allele Pattern to PatternResult");
 		}
 		return patternResult;
 	}
 
-	private Pattern generateNonAllelePattern(Pattern allelePattern, List<Sequence> seqGroup) {
-		Pattern nonAllelePattern = new Pattern("", Pattern.PatternType.NONALLELE);
-		if (allelePattern != null) {
-			for (Sequence sequence : seqGroup) {
-				nonAllelePattern.getSequenceMap().put(sequence.getId(), sequence);
-			}
-			for (String key : allelePattern.getSequenceMap().keySet()) {
-				nonAllelePattern.getSequenceMap().remove(key);
-			}
-		}
-		return nonAllelePattern;
-	}
-
-	private List<Pattern> getAllelePattern(List<Sequence> seqGroup) {
+	private Pair<Pattern, Pattern> getAllelePatterns(List<Sequence> seqGroup, PotentialSNP potentialSNP) {
 		// generate allele pattern for each unique(position and character) allele
-		Map<String, Pattern> allelePatternMap = new HashMap<>();
+		Pattern allelePattern = new Pattern(potentialSNP.toString(), Pattern.PatternType.ALLELE);
+		Pattern nonAllelePattern = new Pattern(potentialSNP.getPosition() + ":-", Pattern.PatternType.NONALLELE);
 		for (Sequence sequence : seqGroup) {
-			for (String allele : sequence.getAlleleList()) {
-				if (allelePatternMap.containsKey(allele)) {
-					allelePatternMap.get(allele).addSequence(sequence);
-				} else {
-					allelePatternMap.put(allele, new Pattern(allele, Pattern.PatternType.ALLELE));
-					allelePatternMap.get(allele).addSequence(sequence);
-				}
+			if (sequence.getOriginalSeq().charAt(potentialSNP.getPosition()) == potentialSNP.getNucleotide()) {
+				allelePattern.addSequence(sequence);
+			} else {
+				nonAllelePattern.addSequence(sequence);
 			}
 		}
-		return new ArrayList<>(allelePatternMap.values());
+		return new ImmutablePair<>(allelePattern, nonAllelePattern);
 	}
 
 	private void sortAndAssignPatternID(List<Pattern> patternList) {

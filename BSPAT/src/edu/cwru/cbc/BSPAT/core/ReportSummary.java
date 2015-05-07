@@ -40,20 +40,18 @@ public class ReportSummary implements Serializable {
 		patternHash.put(patternType, new PatternLink(patternType));
 	}
 
-	public void replacePath(String diskPath, String webPath, boolean hasFigure, String host) {
+	public void replacePath(String diskPath, String webPath, String host) {
 		statTextLink = statTextLink.replace(diskPath, webPath);
 		for (PatternLink patternLink : patternHash.values()) {
 			patternLink.setTextResultLink(patternLink.getTextResultLink().replace(diskPath, webPath));
 		}
-		if (hasFigure) {
-			for (PatternLink patternLink : patternHash.values()) {
-				patternLink.setFigureResultLink(patternLink.getFigureResultLink().replace(diskPath, webPath));
-				patternLink.setGBResultLink(host + patternLink.getGBResultLink().replace(diskPath, webPath));
-			}
-			if (hasASM) {
-				ASMFigureLink = ASMFigureLink.replace(diskPath, webPath);
-				ASMGBLink = host + ASMGBLink.replace(diskPath, webPath);
-			}
+		for (PatternLink patternLink : patternHash.values()) {
+			patternLink.setFigureResultLink(patternLink.getFigureResultLink().replace(diskPath, webPath));
+			patternLink.setGBResultLink(host + patternLink.getGBResultLink().replace(diskPath, webPath));
+		}
+		if (hasASM) {
+			ASMFigureLink = ASMFigureLink.replace(diskPath, webPath);
+			ASMGBLink = host + ASMGBLink.replace(diskPath, webPath);
 		}
 	}
 

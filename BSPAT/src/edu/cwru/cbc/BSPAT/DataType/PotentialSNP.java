@@ -20,4 +20,9 @@ public class PotentialSNP {
 	public char getNucleotide() {
 		return nucleotide;
 	}
+
+	@Override
+	public String toString() {
+		return position + ":" + nucleotide;
+	}
 }
