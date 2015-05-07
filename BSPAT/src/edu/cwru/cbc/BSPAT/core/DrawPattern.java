@@ -22,10 +22,11 @@ public class DrawPattern {
 	private final static Logger LOGGER = Logger.getLogger(DrawPattern.class.getName());
 	private static final String DEFAULT_FONT = "Arial";
 	private static final int CELLLINE_FONT_SIZE = 32;
+	public static final int CELLLINE_CHAR_LENGTH = CELLLINE_FONT_SIZE;
 	private static final int WIDTH = 20;
-	private static final int FIGURE_STARTX = 185;
-	private static final int FIGURE_STARTY = 20;
 	private static final int REGION_NAME_LEFTSTART = 10;
+	private static final int FIGURE_STARTX = REGION_NAME_LEFTSTART + 10;
+	private static final int FIGURE_STARTY = 20;
 	private static final int BAR_HEIGHT = 28;
 	private static final int HEIGHT_INTERVAL = 26;
 	private static final int RADIUS = 20;
@@ -33,7 +34,6 @@ public class DrawPattern {
 	private static final int STYLE_CHOICE = 0;
 	private static final int COMMON_FONT_SIZE = 28;
 	private static final int SMALL_PERCENT_FONT_SIZE = 18;
-
 	private String figureFormat;
 	private String refVersion;
 	private String toolsPath;
@@ -104,7 +104,7 @@ public class DrawPattern {
 		}
 
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + cellLine.length() * 5;
+		int left = FIGURE_STARTX + cellLine.length() * CELLLINE_CHAR_LENGTH;
 
 		int imageWidth = refLength * WIDTH + left + (beginCoor.length() + endCoor.length() + 3) * 15;
 		int imageHeight = FIGURE_STARTY + 180 + patternResultLists.size() * HEIGHT_INTERVAL;
@@ -144,7 +144,7 @@ public class DrawPattern {
 			for (CpGSitePattern cpg : patternResult.getCpGList()) {
 				int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
 				// genome browser automatically add 1 to start, no change to
-				// end.So we substract 1 from start and add 1 to the end.
+				// end.So we deduct 1 from start and add 1 to the end.
 				methylWriter.getBedWriter().write(
 						String.format("chr%s\t%d\t%d\tCG-Pattern%d\t%d\t+\t%d\t%d\t", chr, cgPos - 1, cgPos + 1, i,
 								cpg.getMethylCount(), cgPos - 1, cgPos + 1));
@@ -190,7 +190,7 @@ public class DrawPattern {
 		List<CpGStatistics> statList = data.getStatList();
 
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + cellLine.length() * 5;
+		int left = FIGURE_STARTX + cellLine.length() * CELLLINE_CHAR_LENGTH;
 		int imageWidth = refLength * WIDTH + left + 240;
 		int imageHeight = FIGURE_STARTY + 180 + 10 * HEIGHT_INTERVAL;
 
@@ -397,7 +397,7 @@ public class DrawPattern {
 		}
 		LOGGER.info("liftOver finished");
 		// read result
-		String[] items = null;
+		String[] items;
 		try (BufferedReader coorReader = new BufferedReader(new FileReader(patternResultPath + targetPosFileName))) {
 			items = coorReader.readLine().split(":");
 		}

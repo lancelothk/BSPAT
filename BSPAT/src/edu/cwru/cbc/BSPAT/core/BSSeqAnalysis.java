@@ -21,6 +21,7 @@ public class BSSeqAnalysis {
 	public static final int DEFAULT_TARGET_LENGTH = 70;
 	public static final double ASM_PATTERN_THRESHOLD = 0.2;
 	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
+	public static final double MEMU_PATTERN_THRESHOLD = 0.1;
 
 	/**
 	 * Execute analysis.
@@ -109,6 +110,7 @@ public class BSSeqAnalysis {
 
 			// generate methyl pattern output
 			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, targetRefSeq);
+			System.out.println(experimentName + "\t" + region);
 			methylationPatternList = filterMethylationPatterns(methylationPatternList,
 					seqGroup.size() + CpGBoundSequenceList.size(), StringUtils.countMatches(targetRefSeq, "CG"),
 					constant);
@@ -123,6 +125,7 @@ public class BSSeqAnalysis {
 
 			// generate memu pattern output
 			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP);
+			meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(), MEMU_PATTERN_THRESHOLD);
 			if (meMuPatternList.size() != 0) {
 				reportSummary.addPatternLink(PatternLink.METHYLATIONWITHMUTATION);
 				report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, seqGroup);
@@ -302,10 +305,6 @@ public class BSSeqAnalysis {
 	 */
 	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
 	                                    PotentialSNP potentialSNP) {
-		// return no memu pattern if there is no snp
-		if (potentialSNP == null) {
-			return new ArrayList<>();
-		}
 		Map<String, Pattern> patternMap = new HashMap<>();
 		for (Sequence sequence : seqGroup) {
 			int meID = -1;
@@ -319,10 +318,14 @@ public class BSSeqAnalysis {
 				continue;
 			}
 			PotentialSNP snp;
-			if (sequence.getOriginalSeq().charAt(potentialSNP.getPosition()) == potentialSNP.getNucleotide()) {
-				snp = potentialSNP;
+			if (potentialSNP != null) {
+				if (sequence.getOriginalSeq().charAt(potentialSNP.getPosition()) == potentialSNP.getNucleotide()) {
+					snp = potentialSNP;
+				} else {
+					snp = new PotentialSNP(potentialSNP.getPosition(), '-');
+				}
 			} else {
-				snp = new PotentialSNP(potentialSNP.getPosition(), '-');
+				snp = new PotentialSNP(1, '-');
 			}
 			String key = String.format("%d:%d:%s", meID, snp.getPosition(), snp.getNucleotide());
 			if (patternMap.containsKey(key)) {
@@ -340,51 +343,33 @@ public class BSSeqAnalysis {
 		return new ArrayList<>(patternMap.values());
 	}
 
-	private Pattern filterAllelePatterns(List<Pattern> allelePatternList, int totalSeqCount, Constant constant) {
-		List<Pattern> qualifiedAllelePatternList = new ArrayList<>();
-		for (Pattern pattern : allelePatternList) {
-			double percentage = (double) pattern.getCount() / totalSeqCount;
-			if (percentage >= constant.SNPThreshold) {
-				qualifiedAllelePatternList.add(pattern);
-			}
-		}
-		Collections.sort(qualifiedAllelePatternList, new PatternByCountComparator());
-		// only keep most significant allele pattern
-		if (qualifiedAllelePatternList.size() > 0) {
-			return qualifiedAllelePatternList.get(0);
-		} else {
-			return null;
-		}
-	}
-
 	private List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
 	                                                int refCpGCount, Constant constant) throws MathException {
 		if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
 			if (constant.criticalValue != -1 && refCpGCount > 3) {
-				return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, constant);
+				return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, refCpGCount, constant);
 			} else {
-				return filterMethylPatternsByMethylThreshold(methylationPatterns, totalSeqCount, constant);
+				return filterPatternsByThreshold(methylationPatterns, totalSeqCount, constant.minMethylThreshold);
 			}
 		}
 		// return empty list.
 		return new ArrayList<>();
 	}
 
-	private List<Pattern> filterMethylPatternsByMethylThreshold(List<Pattern> methylationPatterns, double totalSeqCount,
-	                                                            Constant constant) {
-		List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
+	private List<Pattern> filterPatternsByThreshold(List<Pattern> patterns, double totalSeqCount, double threshold) {
+		List<Pattern> qualifiedPatternList = new ArrayList<>();
 		// use percentage pattern threshold
-		for (Pattern methylationPattern : methylationPatterns) {
-			double percentage = methylationPattern.getCount() / totalSeqCount;
-			if (percentage >= constant.minMethylThreshold) {
-				qualifiedMethylationPatternList.add(methylationPattern);
+		for (Pattern pattern : patterns) {
+			double percentage = pattern.getCount() / totalSeqCount;
+			if (percentage >= threshold) {
+				qualifiedPatternList.add(pattern);
 			}
 		}
-		return qualifiedMethylationPatternList;
+		return qualifiedPatternList;
 	}
 
 	private List<Pattern> filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
-	                                                        Constant constant) throws MathException {
+	                                                        int refCpGCount, Constant constant) throws MathException {
 		List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
 		NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
 
@@ -394,8 +379,7 @@ public class BSSeqAnalysis {
 				nonNoisePatternCount++;
 			}
 		}
-
-		double p0 = 1.0 / nonNoisePatternCount;
+		double p0 = 1.0 / Math.min(nonNoisePatternCount, Math.pow(2, refCpGCount));
 
 		// significant pattern selection
 		for (Pattern methylationPattern : methylationPatterns) {
