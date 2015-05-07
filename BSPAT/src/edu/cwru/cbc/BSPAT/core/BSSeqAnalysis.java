@@ -305,6 +305,10 @@ public class BSSeqAnalysis {
 	 */
 	private List<Pattern> getMeMuPatern(List<Sequence> seqGroup, List<Pattern> methylationPatternList,
 	                                    PotentialSNP potentialSNP) {
+		// return no memu pattern if there is no snp
+		if (potentialSNP == null) {
+			return new ArrayList<>();
+		}
 		Map<String, Pattern> patternMap = new HashMap<>();
 		for (Sequence sequence : seqGroup) {
 			int meID = -1;
@@ -318,14 +322,10 @@ public class BSSeqAnalysis {
 				continue;
 			}
 			PotentialSNP snp;
-			if (potentialSNP != null) {
-				if (sequence.getOriginalSeq().charAt(potentialSNP.getPosition()) == potentialSNP.getNucleotide()) {
-					snp = potentialSNP;
-				} else {
-					snp = new PotentialSNP(potentialSNP.getPosition(), '-');
-				}
+			if (sequence.getOriginalSeq().charAt(potentialSNP.getPosition()) == potentialSNP.getNucleotide()) {
+				snp = potentialSNP;
 			} else {
-				snp = new PotentialSNP(1, '-');
+				snp = new PotentialSNP(potentialSNP.getPosition(), '-');
 			}
 			String key = String.format("%d:%d:%s", meID, snp.getPosition(), snp.getNucleotide());
 			if (patternMap.containsKey(key)) {
