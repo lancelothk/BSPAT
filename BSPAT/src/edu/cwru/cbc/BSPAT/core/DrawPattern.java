@@ -122,7 +122,7 @@ public class DrawPattern {
 		DecimalFormat percent = new DecimalFormat("##.00%");
 		height += HEIGHT_INTERVAL;
 		methylWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + left,
-				height + HEIGHT_INTERVAL);
+				height + HEIGHT_INTERVAL / 2);
 		height += HEIGHT_INTERVAL;
 		methylWriter.getGraphWriter().setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, CELLLINE_FONT_SIZE));
 		methylWriter.getGraphWriter().drawString(cellLine, REGION_NAME_LEFTSTART, height);
@@ -209,8 +209,9 @@ public class DrawPattern {
 
 		ASMWriter.getBedWriter().write(
 				String.format("browser position chr%s-%d\nbrowser hide all\n", beginCoor, Long.parseLong(endCoor)));
-		height += 2.5 * HEIGHT_INTERVAL;
-		ASMWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + left, height);
+		height += 2 * HEIGHT_INTERVAL;
+		ASMWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + left,
+				height - HEIGHT_INTERVAL / 2);
 
 		ASMWriter.getGraphWriter().setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, CELLLINE_FONT_SIZE));
 		ASMWriter.getGraphWriter().drawString(cellLine, REGION_NAME_LEFTSTART, height);
@@ -224,12 +225,11 @@ public class DrawPattern {
 				String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) + 1,
 						endCoor, Integer.valueOf(startPos) + 1,
 						Integer.valueOf(startPos) + 1));
-		height += HEIGHT_INTERVAL;
-		addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
-				height + HEIGHT_INTERVAL, left);
 		addAverage(ASMWriter.getGraphWriter(), DEFAULT_FONT, patternWithoutAllele.getCpGList(), chr, startPos,
 				"PatternA", ASMWriter.getBedWriter(), height, left);
-		height += HEIGHT_INTERVAL;
+		addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
+				height + HEIGHT_INTERVAL, left);
+		height += HEIGHT_INTERVAL * 1.5;
 		ASMWriter.getGraphWriter().drawString(
 				patternWithoutAllele.getCount() + "(" + percent.format(patternWithoutAllele.getPercent()) + ")",
 				(refLength * WIDTH) + WIDTH + left, height);
@@ -257,11 +257,10 @@ public class DrawPattern {
 				reportSummary.setASMsnp(snpList.get(0));
 			}
 		}
-		height += HEIGHT_INTERVAL;
+		height += HEIGHT_INTERVAL * 1.5;
 		ASMWriter.getGraphWriter().drawString(
 				patternWithAllele.getCount() + "(" + percent.format(patternWithAllele.getPercent()) + ")",
 				(refLength * WIDTH) + WIDTH + left, height);
-
 		ASMWriter.close();
 	}
 
