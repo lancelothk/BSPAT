@@ -386,7 +386,7 @@ public class BSSeqAnalysis {
 			double ph = methylationPattern.getCount() / totalSeqCount;
 			double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
 			double pZ = 1 - nd.cumulativeProbability(z);
-			if (pZ <= (constant.criticalValue)) {
+			if (pZ <= (constant.criticalValue / methylationPatterns.size())) {
 				qualifiedMethylationPatternList.add(methylationPattern);
 			}
 		}
