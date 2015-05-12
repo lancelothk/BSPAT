@@ -8,17 +8,15 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="ant" />
-          <element id="library" level="project" name="commons-cli-1.2-javadoc" />
-          <element id="library" level="project" name="commons-io-2.4-javadoc" />
-          <element id="library" level="project" name="commons-lang3-3.3.2-javadoc" />
-          <element id="library" level="project" name="commons-math-2.2" />
           <element id="library" level="project" name="epsgraphics-1.4" />
-          <element id="library" level="project" name="guava-17.0" />
           <element id="library" level="project" name="junit-addons-1.4" />
           <element id="library" level="project" name="mail-1.4.7" />
-          <element id="library" level="project" name="mockito-all-1.9.5-sources" />
-          <element id="library" level="project" name="super-csv-2.2.0-javadoc" />
           <element id="library" level="project" name="eutil" />
+          <element id="library" level="project" name="commons-io-2.4" />
+          <element id="library" level="project" name="commons-lang3-3.3.2" />
+          <element id="library" level="project" name="commons-math-2.2" />
+          <element id="library" level="project" name="guava" />
+          <element id="library" level="project" name="mockito-all-1.9.5" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="BSPAT/web/Web" />

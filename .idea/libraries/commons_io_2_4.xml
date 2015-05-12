@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="commons-io-2.4-javadoc">
+  <library name="commons-io-2.4">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/BSPAT/lib/commons/commons-io-2.4.jar!/" />
     </CLASSES>

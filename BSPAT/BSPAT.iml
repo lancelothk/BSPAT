@@ -21,7 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Tomcat" level="application_server_libraries" />
     <orderEntry type="module-library" scope="TEST">
@@ -35,18 +35,15 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="super-csv-2.2.0-javadoc" level="project" />
     <orderEntry type="library" name="mail-1.4.7" level="project" />
-    <orderEntry type="library" name="guava-17.0" level="project" />
     <orderEntry type="library" name="epsgraphics-1.4" level="project" />
     <orderEntry type="library" name="ant" level="project" />
-    <orderEntry type="library" name="mockito-all-1.9.5-sources" level="project" />
     <orderEntry type="library" name="junit-addons-1.4" level="project" />
-    <orderEntry type="library" name="commons-cli-1.2-javadoc" level="project" />
-    <orderEntry type="library" name="commons-io-2.4-javadoc" level="project" />
-    <orderEntry type="library" name="commons-lang3-3.3.2-javadoc" level="project" />
-    <orderEntry type="library" name="commons-math-2.2" level="project" />
     <orderEntry type="library" name="eutil" level="project" />
+    <orderEntry type="library" name="commons-io-2.4" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
+    <orderEntry type="library" name="commons-math-2.2" level="project" />
+    <orderEntry type="library" name="guava" level="project" />
+    <orderEntry type="library" name="mockito-all-1.9.5" level="project" />
   </component>
 </module>
-
