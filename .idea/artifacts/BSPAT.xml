@@ -17,6 +17,7 @@
           <element id="library" level="project" name="commons-math-2.2" />
           <element id="library" level="project" name="guava" />
           <element id="library" level="project" name="mockito-all-1.9.5" />
+          <element id="library" level="project" name="commons-lang3-3.3.2" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="BSPAT/web/Web" />
