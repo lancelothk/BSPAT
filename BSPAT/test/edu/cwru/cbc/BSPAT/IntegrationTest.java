@@ -1,5 +1,6 @@
 package edu.cwru.cbc.BSPAT; /**
  * Created by kehu on 8/26/14.
+ * Integration test with demo dataset.
  */
 
 import edu.cwru.cbc.BSPAT.DataType.ExtensionFilter;
@@ -87,14 +88,14 @@ public class IntegrationTest {
 
 
 		assertEquals("Sequences analysed in total", 1676, myAnswer.resultConstant.mappingSummary.getSeqAnalysed());
-		assertEquals("Sequences with a unique best hit", 1584,
-				myAnswer.resultConstant.mappingSummary.getUniqueBestHit());
-		assertEquals("Sequences without any alignment", 92, myAnswer.resultConstant.mappingSummary.getNoAlignment());
-		assertEquals("Sequences did not map uniquely", 0, myAnswer.resultConstant.mappingSummary.getNotUnique());
+        assertEquals("Sequences with a unique best hit", 1586,
+                myAnswer.resultConstant.mappingSummary.getUniqueBestHit());
+        assertEquals("Sequences without any alignment", 90, myAnswer.resultConstant.mappingSummary.getNoAlignment());
+        assertEquals("Sequences did not map uniquely", 0, myAnswer.resultConstant.mappingSummary.getNotUnique());
 		assertEquals("Invalid sequences", 0, myAnswer.resultConstant.mappingSummary.getNotExtracted());
-		assertEquals("Mapping efficiency", "0.945",
-				myAnswer.resultConstant.mappingSummary.getMappingEfficiencyString());
-		assertTrue("Mapping phase running time", myAnswer.resultConstant.mappingTime >= 1);
+        assertEquals("Mapping efficiency", "0.946",
+                myAnswer.resultConstant.mappingSummary.getMappingEfficiencyString());
+        assertTrue("Mapping phase running time less than 1 sec", myAnswer.resultConstant.mappingTime >= 1);
 
 		assertNotNull("Reference coordinates", myAnswer.resultConstant.getAbsolutePathCoorFile());
 		assertNotNull("Mapping result", myAnswer.resultConstant.mappingResultLink);
@@ -113,8 +114,8 @@ public class IntegrationTest {
 		when(servletContext.getRealPath("")).thenReturn(testPath);
 		when(request.getParameter("jobID")).thenReturn(jobID);
 		when(request.getParameter("figureFormat")).thenReturn("png");
-		when(request.getParameter("criticalValue")).thenReturn("0.05");
-		when(request.getParameter("SNPThreshold")).thenReturn("0.2");
+        when(request.getParameter("criticalValue")).thenReturn("0.01");
+        when(request.getParameter("SNPThreshold")).thenReturn("0.2");
 		when(request.getParameter("conversionRateThreshold")).thenReturn("0.9");
 		when(request.getParameter("sequenceIdentityThreshold")).thenReturn("0.9");
 		MyAnswer myAnswer = new MyAnswer();
@@ -127,18 +128,24 @@ public class IntegrationTest {
 
 		verify(request, Mockito.times(1)).getRequestDispatcher("analysisResult.jsp");
 
-		assertEquals("Sequence number cover target region", 1584,
-				myAnswer.resultConstant.seqCountSummary.getSeqTargetBounded());
-		assertEquals("Sequence number after filtering", 1540,
-				myAnswer.resultConstant.seqCountSummary.getSeqTargetAfterFilter());
-		assertTrue("Analysis phase running time", myAnswer.resultConstant.analysisTime >= 1);
+        assertEquals("Sequence number cover target region", 1042,
+                myAnswer.resultConstant.seqCountSummary.getSeqTargetBounded());
+        assertEquals("Sequence number after filtering", 1010,
+                myAnswer.resultConstant.seqCountSummary.getSeqTargetAfterFilter());
+        assertEquals("Sequences don't cover whole target but cover all CpGs", 538,
+                myAnswer.resultConstant.seqCountSummary.getSeqCpGBounded());
+        assertEquals("CpG bounded Sequence number after filtering", 530,
+                myAnswer.resultConstant.seqCountSummary.getSeqCpGAfterFilter());
+        assertEquals("Sequences cover neither target nor all CpGs", 6,
+                myAnswer.resultConstant.seqCountSummary.getSeqOthers());
+        assertTrue("Analysis phase running time less than 1 sec", myAnswer.resultConstant.analysisTime >= 1);
 
 		assertNotNull("Anslysis result", myAnswer.resultConstant.analysisResultLink);
 
 		assertEquals("Number of Experiments", 2, myAnswer.resultConstant.experiments.size());
 		assertEquals("Number of Regions", 1, myAnswer.resultConstant.experiments.get(0).getReportSummaries().size());
-		assertTrue("Has ASM pattern", myAnswer.resultConstant.experiments.get(0).getReportSummaries().get(0).hasASM());
-		assertEquals("Number of Regions", 1, myAnswer.resultConstant.experiments.get(1).getReportSummaries().size());
+        assertTrue("Has ASM pattern", myAnswer.resultConstant.experiments.get(0).getReportSummaries().get(0).hasASM());
+        assertEquals("Number of Regions", 1, myAnswer.resultConstant.experiments.get(1).getReportSummaries().size());
 		assertTrue("Has ASM pattern", myAnswer.resultConstant.experiments.get(1).getReportSummaries().get(0).hasASM());
 
 		// check pattern result files
@@ -167,7 +174,6 @@ public class IntegrationTest {
 			Object[] args = invocation.getArguments();
 			String jobID = (String) args[1];
 			edu.cwru.cbc.BSPAT.DataType.Constant constant = edu.cwru.cbc.BSPAT.DataType.Constant.readConstant(jobID);
-			constant.targetFileName = constant.coorFileName;
 			resultConstant = constant;
 			FileUtils.copyFileToDirectory(new File(constant.coorFilePath + constant.coorFileName),
 					new File(constant.targetPath));

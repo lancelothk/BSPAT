@@ -1,5 +1,4 @@
-MethylationWithMutation	count	percentage	MethylParent	MutationParent
-AAACATCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCTCG	ref
---------------------------**---------------------------------------------------**-------*A-------**	161	0.209091	1	5
---------------------------**---------------------------------------------------@@-------@@-------**	110	0.142857	2	4
---------------------------**---------------------------------------------------@@-------@@-------@@	84	0.109091	3	4
+MethylationWithMutation	count	percentage	MethylParent
+CGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCT	ref
+**---------------------------------------------------**-------*A-------	174	0.344554	1
+**---------------------------------------------------@@-------@@-------	189	0.374257	2

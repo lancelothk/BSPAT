@@ -1,111 +1,85 @@
-reference seq length:	99
+target region length:	71
 Bisulfite conversion rate threshold:	0.9
 Sequence identity threshold:	0.9
-Sequences before filter:	792
-Sequences after filter:	770
+A. Sequences cover whole target region:	521
+A. After quality control:	505
+B. Sequences don't cover whole target but cover all CpGs:	269
+B. After quality control:	265
+C. Sequences cover neither target nor all CpGs:	3
 methylation rate for each CpG site:
 pos	rate
-26	0.08723958333333333
-79	0.5682704811443433
-88	0.4233289646133683
-97	0.33506493506493507
+0	0.08984375
+53	0.5682704811443433
+62	0.42463958060288337
 mutation stat:
-1	0
-2	0
-3	0
-4	0
-5	0
-6	0
-7	0
-8	0
-9	0
-10	0
-11	0
-12	0
-13	0
-14	0
-15	0
-16	0
-17	0
-18	0
-19	0
-20	0
-21	0
-22	0
-23	0
-24	0
-25	0
-26	0
-27	2
-28	0
-29	4
-30	0
-31	1
-32	8
-33	3
-34	0
-35	1
-36	2
-37	2
-38	0
-39	0
-40	0
-41	15
-42	3
-43	3
-44	1
-45	3
-46	5
-47	4
-48	1
-49	2
-50	3
-51	0
-52	8
-53	0
-54	2
-55	2
-56	0
-57	11
-58	0
-59	0
-60	8
-61	5
-62	18
-63	6
-64	1
-65	0
-66	20
-67	1
-68	0
-69	2
-70	2
-71	0
-72	9
-73	0
-74	0
-75	0
-76	1
-77	0
-78	3
-79	7
-80	1
-81	0
-82	6
-83	2
-84	0
-85	5
-86	1
-87	0
-88	0
-89	7
-90	365
-91	5
-92	0
-93	3
-94	0
-95	1
-96	2
-97	3
-98	0
-99	1
+1	A:2	C:0	G:0	T:0	N:0	total:2
+2	A:0	C:0	G:0	T:0	N:0	total:0
+3	A:0	C:0	G:5	T:0	N:0	total:5
+4	A:0	C:0	G:0	T:0	N:0	total:0
+5	A:1	C:0	G:0	T:0	N:0	total:1
+6	A:0	C:0	G:6	T:2	N:0	total:8
+7	A:0	C:2	G:1	T:0	N:0	total:3
+8	A:0	C:0	G:0	T:0	N:0	total:0
+9	A:1	C:0	G:0	T:0	N:0	total:1
+10	A:0	C:0	G:2	T:0	N:0	total:2
+11	A:0	C:2	G:0	T:0	N:0	total:2
+12	A:0	C:0	G:0	T:0	N:0	total:0
+13	A:0	C:0	G:0	T:0	N:0	total:0
+14	A:0	C:0	G:0	T:0	N:0	total:0
+15	A:4	C:4	G:8	T:0	N:0	total:16
+16	A:1	C:2	G:0	T:0	N:0	total:3
+17	A:0	C:3	G:0	T:0	N:0	total:3
+18	A:1	C:0	G:0	T:0	N:0	total:1
+19	A:0	C:0	G:2	T:1	N:0	total:3
+20	A:0	C:5	G:0	T:0	N:0	total:5
+21	A:0	C:4	G:0	T:0	N:0	total:4
+22	A:0	C:1	G:0	T:0	N:0	total:1
+23	A:0	C:0	G:2	T:0	N:0	total:2
+24	A:0	C:3	G:0	T:0	N:0	total:3
+25	A:0	C:0	G:0	T:0	N:0	total:0
+26	A:0	C:0	G:5	T:3	N:0	total:8
+27	A:0	C:0	G:0	T:0	N:0	total:0
+28	A:0	C:2	G:0	T:0	N:0	total:2
+29	A:2	C:0	G:0	T:0	N:0	total:2
+30	A:0	C:0	G:0	T:0	N:0	total:0
+31	A:0	C:0	G:9	T:3	N:0	total:12
+32	A:0	C:0	G:0	T:0	N:0	total:0
+33	A:0	C:0	G:0	T:0	N:0	total:0
+34	A:0	C:1	G:5	T:2	N:0	total:8
+35	A:0	C:2	G:0	T:3	N:0	total:5
+36	A:0	C:6	G:10	T:2	N:7	total:25
+37	A:0	C:1	G:1	T:4	N:0	total:6
+38	A:0	C:1	G:0	T:0	N:0	total:1
+39	A:0	C:0	G:0	T:0	N:0	total:0
+40	A:5	C:6	G:10	T:0	N:5	total:26
+41	A:1	C:0	G:0	T:0	N:0	total:1
+42	A:0	C:0	G:0	T:0	N:0	total:0
+43	A:0	C:0	G:2	T:0	N:0	total:2
+44	A:2	C:0	G:0	T:0	N:10	total:12
+45	A:0	C:1	G:0	T:0	N:0	total:1
+46	A:2	C:5	G:3	T:0	N:3	total:13
+47	A:0	C:0	G:0	T:0	N:0	total:0
+48	A:0	C:0	G:0	T:0	N:0	total:0
+49	A:0	C:0	G:0	T:0	N:0	total:0
+50	A:0	C:0	G:0	T:1	N:0	total:1
+51	A:0	C:0	G:0	T:0	N:0	total:0
+52	A:0	C:3	G:0	T:0	N:0	total:3
+53	A:5	C:2	G:0	T:0	N:0	total:7
+54	A:1	C:0	G:0	T:0	N:0	total:1
+55	A:0	C:0	G:0	T:0	N:0	total:0
+56	A:0	C:2	G:5	T:0	N:0	total:7
+57	A:0	C:0	G:2	T:0	N:0	total:2
+58	A:0	C:0	G:0	T:0	N:0	total:0
+59	A:0	C:0	G:5	T:0	N:0	total:5
+60	A:0	C:0	G:1	T:1	N:0	total:2
+61	A:0	C:0	G:0	T:0	N:0	total:0
+62	A:0	C:0	G:0	T:0	N:0	total:0
+63	A:2	C:0	G:5	T:0	N:0	total:7
+64	A:372	C:5	G:0	T:2	N:0	total:379
+65	A:0	C:0	G:5	T:0	N:0	total:5
+66	A:0	C:0	G:0	T:0	N:0	total:0
+67	A:3	C:0	G:0	T:0	N:0	total:3
+68	A:0	C:0	G:0	T:0	N:0	total:0
+69	A:1	C:0	G:0	T:0	N:0	total:1
+70	A:0	C:0	G:2	T:0	N:0	total:2
+71	A:0	C:2	G:0	T:0	N:0	total:2
