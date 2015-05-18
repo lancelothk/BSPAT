@@ -12,15 +12,12 @@ import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.rmi.RemoteException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class DrawPattern {
 	private final static Logger LOGGER = Logger.getLogger(DrawPattern.class.getName());
-	private static final String DEFAULT_FONT = "Arial";
 	private static final int CELLLINE_FONT_SIZE = 32;
 	public static final int CELLLINE_CHAR_LENGTH = CELLLINE_FONT_SIZE;
 	private static final int WIDTH = 20;
@@ -31,9 +28,9 @@ public class DrawPattern {
 	private static final int HEIGHT_INTERVAL = 26;
 	private static final int RADIUS = 20;
 	private static final double RGB_INTERVAL = 255 / 50.0;
-	private static final int STYLE_CHOICE = 0;
 	private static final int COMMON_FONT_SIZE = 28;
 	private static final int SMALL_PERCENT_FONT_SIZE = 18;
+	private String figure_font;
 	private String figureFormat;
 	private String refVersion;
 	private String toolsPath;
@@ -57,6 +54,9 @@ public class DrawPattern {
 		this.coordinateMap = coordinateMap;
 		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region), refSeq);
 		this.cellLine = data.getCellLine();
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
+		figure_font = properties.getProperty("figure_font");
 	}
 
 	private void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height, int left,
@@ -66,7 +66,7 @@ public class DrawPattern {
 		graphWriter.setBackground(Color.WHITE);
 		graphWriter.clearRect(0, 0, imageWidth, imageHeight);
 		graphWriter.setPaint(Color.BLACK);
-		graphWriter.setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, COMMON_FONT_SIZE));
+		graphWriter.setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 		graphWriter.drawString("chr" + beginCoor, left, height);
 		int endCoorLeft = left + (refLength - 1) * WIDTH;
 		int beginCoorRight = left + (beginCoor.length() + 3) * 15 + WIDTH;
@@ -124,9 +124,10 @@ public class DrawPattern {
 		methylWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + left,
 				height + HEIGHT_INTERVAL / 2);
 		height += HEIGHT_INTERVAL;
-		methylWriter.getGraphWriter().setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, CELLLINE_FONT_SIZE));
+		methylWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, CELLLINE_FONT_SIZE));
 		methylWriter.getGraphWriter().drawString(cellLine, REGION_NAME_LEFTSTART, height);
-		methylWriter.getGraphWriter().setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, COMMON_FONT_SIZE));
+		System.out.println("font type:" + figure_font);
+		methylWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 
 		String chr = beginCoor.split(":")[0];
 		String startPos = beginCoor.split(":")[1];
@@ -176,7 +177,7 @@ public class DrawPattern {
 						endCoor, Integer.valueOf(startPos) + 1,
 						Integer.valueOf(startPos) + 1));
 
-		addAverage(methylWriter.getGraphWriter(), DEFAULT_FONT, statList, chr, startPos, "Pattern-Average",
+		addAverage(methylWriter.getGraphWriter(), figure_font, statList, chr, startPos, "Pattern-Average",
 				methylWriter.getBedWriter(), height, left);
 		methylWriter.close();
 	}
@@ -213,9 +214,9 @@ public class DrawPattern {
 		ASMWriter.getGraphWriter().drawString("Read Count(%)", (refLength * WIDTH) + WIDTH + left,
 				height - HEIGHT_INTERVAL / 2);
 
-		ASMWriter.getGraphWriter().setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, CELLLINE_FONT_SIZE));
+		ASMWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, CELLLINE_FONT_SIZE));
 		ASMWriter.getGraphWriter().drawString(cellLine, REGION_NAME_LEFTSTART, height);
-		ASMWriter.getGraphWriter().setFont(new Font(DEFAULT_FONT, STYLE_CHOICE, COMMON_FONT_SIZE));
+		ASMWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 
 		// add average for pattern without allele
 		ASMWriter.getBedWriter().write(
@@ -225,7 +226,7 @@ public class DrawPattern {
 				String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) + 1,
 						endCoor, Integer.valueOf(startPos) + 1,
 						Integer.valueOf(startPos) + 1));
-		addAverage(ASMWriter.getGraphWriter(), DEFAULT_FONT, patternWithoutAllele.getCpGList(), chr, startPos,
+		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithoutAllele.getCpGList(), chr, startPos,
 				"PatternA", ASMWriter.getBedWriter(), height, left);
 		addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
 				height + HEIGHT_INTERVAL, left);
@@ -243,7 +244,7 @@ public class DrawPattern {
 						endCoor, Integer.valueOf(startPos) + 1,
 						Integer.valueOf(startPos) + 1));
 		height += 2 * HEIGHT_INTERVAL;
-		addAverage(ASMWriter.getGraphWriter(), DEFAULT_FONT, patternWithAllele.getCpGList(), chr, startPos, "PatternB",
+		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithAllele.getCpGList(), chr, startPos, "PatternB",
 				ASMWriter.getBedWriter(), height, left);
 		addAllele(patternWithAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
 				height + HEIGHT_INTERVAL, left);
@@ -309,7 +310,7 @@ public class DrawPattern {
 			graphWriter.fill(new Ellipse2D.Double(left + cpg.getPosition() * WIDTH, height, RADIUS, RADIUS));
 			graphWriter.setPaint(Color.BLACK);
 			// move percentage a little left and shink the font size
-			graphWriter.setFont(new Font(fontChoice, STYLE_CHOICE, SMALL_PERCENT_FONT_SIZE));
+			graphWriter.setFont(new Font(fontChoice, Font.PLAIN, SMALL_PERCENT_FONT_SIZE));
 			graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()), left + cpg.getPosition() * WIDTH,
 					height + HEIGHT_INTERVAL * 2);
 
