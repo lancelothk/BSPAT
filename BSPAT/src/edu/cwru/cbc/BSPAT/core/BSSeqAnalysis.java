@@ -317,7 +317,7 @@ public class BSSeqAnalysis {
 					meID = methylPattern.getPatternID();
 				}
 			}
-			// seq not included in either MethylPattern or MutationPattern
+			// seq not included in MethylPattern
 			if (meID == -1) {
 				continue;
 			}

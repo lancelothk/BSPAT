@@ -142,7 +142,7 @@
                     }
                 %>
                 <tr>
-                    <td>Mutation threshold:</td>
+                    <td>SNP threshold:</td>
                     <td><%=constant.SNPThreshold%>
                     </td>
                 </tr>

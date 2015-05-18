@@ -216,23 +216,21 @@
                             than threshold will be filtered.</p>
                     </td>
                 </tr>
-                <tr id="alphaThreshold">
+                <tr id="criticalValue">
                     <td>
                         <h4>Critical Value</h4>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <p class="ptext">These two parameters are used in significance calculation. The
-                            formula is shown in figure below. They are default
-                            pattern filter parameters, which are mutually exclusive with
-                            Methylation pattern threshold. If the CpG site number smaller than 3, the program will use
-                            the below
-                            methylation pattern threshold instead. If there is no result to show
-                            under assigned parameter, please try to use methylation
-                            pattern threshold instead to generate result.</p> <img
-                            src="images/formula.png" border="1" width="500" alt=""/>
-                    </td>
+                        <p class="ptext">This critical value is used in a simple Z-score like statistic to measure the
+                            significance of a pattern. The formula is shown in figure below. p0 here is 1/#observed
+                            patterns. If the p-value corresponding to the Z-score is smaller than given critical value
+                            threshold, the co-occurrence pattern is treated as significant. If the CpG site number
+                            smaller than 3, the program will use the below methylation pattern threshold instead. If
+                            there is no result to show under assigned parameter, please try to use methylation pattern
+                            threshold instead to generate result.</p> <img
+                            src="images/formula.png" border="1" width="300" alt=""/></td>
                 </tr>
                 <tr id="methylPatternThreshold">
                     <td>
@@ -241,10 +239,9 @@
                 </tr>
                 <tr>
                     <td>
-                        <p class="ptext">This threshold is the percentage of reads covered in
-                            methylation pattern comparing to total number of reads. Patterns with a percentage higher
-                            than this
-                            threshold will be shown in result.</p>
+                        <p class="ptext">This threshold is the percentage of reads covered in methylation pattern
+                            comparing to total number of reads. Patterns with a percentage higher than this threshold
+                            will be shown in result.</p>
                     </td>
                 </tr>
                 <tr id="SNPThreshold">
@@ -254,16 +251,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <p class="ptext">This threshold is used in both mutation pattern filtering and allele filtering.<br/>
-                            (a)
-                            For mutation pattern filtering, it is the percentage of reads covered in mutation pattern
-                            comparing to
-                            total number of reads. Patterns with a higher portion than this threshold will be shown in
-                            result.<br/>
-                            (b) For allele filtering, it is the percentage of reads with specific mismatch comparing to
-                            total number
-                            of reads. Mismatches with a percentage higher than this threshold will be treated as an
-                            allele. </p>
+                        <p class="ptext">This threshold is used to declare SNP.<br/>
+                            Mismatches with proportion larger than this threshold will be treated as a SNP.</p>
                     </td>
                 </tr>
                 <tr id="figureFormat">

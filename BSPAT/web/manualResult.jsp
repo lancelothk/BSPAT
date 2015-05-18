@@ -53,8 +53,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <p class="ptext">Number of sequences cover whole target region. Used for generating both
-                            methylation and mutation patterns.</p>
+                        <p class="ptext">Number of sequences cover whole target region. Used only for generating
+                            methylation patterns.</p>
                     </td>
                 </tr>
                 <tr>
@@ -166,7 +166,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h4>&alpha; threshold, critical value, Methylation and Mutation threshold</h4>
+                        <h4>Critical value, Methylation and SNP threshold</h4>
                     </td>
                 </tr>
                 <tr>
@@ -257,15 +257,11 @@
                     <td>
                         <p class="ptext">In the text representation of pattern, "@@" means one methylated CpG site, "**"
                             means unmethylated CpG site. "-" means non-CpG site nucleotide. Mismatch comparing to
-                            reference is
-                            represented by actual character of that position. Read count and percentage of each pattern
-                            is shown
-                            at the end. Here the percentage of pattern is calculated as read count
-                            of the pattern divided by total count of reads. Last one or two columns are pattern IDs.
-                            In Methylation pattern and Mutation pattern files, the ID refers to current pattern.
-                            In combination pattern files, the ID means the parent pattern ID which current pattern
-                            derives from.
-                        </p>
+                            reference is represented by actual character of that position. Read count and percentage of
+                            each pattern is shown at the end. Here the percentage of pattern is calculated as read count
+                            of the pattern divided by total count of reads. Last one or two columns are pattern IDs. In
+                            Methylation pattern files, the ID refers to current pattern. In combination pattern files,
+                            the ID means the parent pattern ID which current pattern derives from.</p>
                     </td>
                 </tr>
                 <tr>
@@ -282,7 +278,7 @@
                         methylated CpG site, white one refers to non-methylated CpG site. The meaning of percentage of
                         pattern is same to text result. The last colorful row is average methylation status of each CpG
                         site. The methylation rate is calculated from all reads in this region. The color scale is from
-                        Red(100%) to Green (0%). Mutation(SNP) here is represented by a blue bar.</p>
+                        Red(100%) to Green (0%). SNP here is represented by a blue bar.</p>
 
                         <p class="ptext">For ASM pattern, there are only two colorful patterns. Each of the pattern
                             represents an allele methylation pattern.</p></td>

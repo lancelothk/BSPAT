@@ -143,7 +143,7 @@
                     <tr>
                         <td><label for="minp0"></label><input type="radio" name="par" id="minp0" value="minp0"
                                                               checked="yes" onclick="check()"/>Critical Value:<sup><a
-                                href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
+                                href="manualAnalysis.jsp#criticalValue">?</a></sup></td>
                         <td><label for="criticalValue"></label><input type="text" id="criticalValue"
                                                                       name="criticalValue" value=0.01></td>
                     </tr>
@@ -158,7 +158,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Mutation threshold:<sup><a
+                        <td>SNP threshold:<sup><a
                                 href="manualAnalysis.jsp#SNPThreshold">?</a></sup></td>
                         <td><label>
                             <input type="text" id="SNPThreshold" name="SNPThreshold"
