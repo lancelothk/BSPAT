@@ -145,7 +145,7 @@
                                                               checked="yes" onclick="check()"/>Critical Value:<sup><a
                                 href="manualAnalysis.jsp#alphaThreshold">?</a></sup></td>
                         <td><label for="criticalValue"></label><input type="text" id="criticalValue"
-                                                                      name="criticalValue" value=0.05></td>
+                                                                      name="criticalValue" value=0.01></td>
                     </tr>
                     <tr>
                         <td><label for="minmethyl"></label><input type="radio" name="par" id="minmethyl"
