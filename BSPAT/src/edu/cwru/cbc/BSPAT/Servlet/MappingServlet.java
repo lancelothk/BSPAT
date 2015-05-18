@@ -223,8 +223,8 @@ public class MappingServlet extends HttpServlet {
 		// DISKROOTPATH is absolute disk path.
 		Constant.DISKROOTPATH = this.getServletContext().getRealPath("");
 		// webPath is relative path to root
-		constant.webRootPath = request.getContextPath().endsWith("\\") ? request.getContextPath() :
-				request.getContextPath() + "\\";
+		constant.webRootPath = request.getContextPath().endsWith("\\") ? request.getContextPath().replace("\\", "/") :
+				request.getContextPath() + "/";
 		constant.randomDir = generateRandomDirectory(Constant.DISKROOTPATH,
 				Constant.JOB_FOLDER_PREFIX).getAbsolutePath();
 		constant.jobID = constant.randomDir.split(Constant.JOB_FOLDER_PREFIX)[1];
