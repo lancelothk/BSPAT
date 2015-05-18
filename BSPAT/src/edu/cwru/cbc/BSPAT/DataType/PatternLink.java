@@ -6,7 +6,7 @@ public class PatternLink implements Serializable {
 	public static final String STAT = "Stat";
 	public static final String ASM = "ASM";
 	public static final String METHYLATION = "Methylation";
-	public static final String METHYLATIONWITHMUTATION = "MethylationWithMutation";
+	public static final String METHYLATIONWITHSNP = "MethylationWithSNP";
 	/**
 	 *
 	 */

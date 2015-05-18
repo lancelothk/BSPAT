@@ -64,8 +64,8 @@ public class ReportSummary implements Serializable {
 		if (patternHash.containsKey(PatternLink.METHYLATION)) {
 			patternLinkList.add(patternHash.get(PatternLink.METHYLATION));
 		}
-		if (patternHash.containsKey(PatternLink.METHYLATIONWITHMUTATION)) {
-			patternLinkList.add(patternHash.get(PatternLink.METHYLATIONWITHMUTATION));
+		if (patternHash.containsKey(PatternLink.METHYLATIONWITHSNP)) {
+			patternLinkList.add(patternHash.get(PatternLink.METHYLATIONWITHSNP));
 		}
 		return patternLinkList;
 	}

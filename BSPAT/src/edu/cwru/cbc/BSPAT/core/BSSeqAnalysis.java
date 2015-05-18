@@ -127,9 +127,9 @@ public class BSSeqAnalysis {
 			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP);
 			meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(), MEMU_PATTERN_THRESHOLD);
 			if (meMuPatternList.size() != 0) {
-				reportSummary.addPatternLink(PatternLink.METHYLATIONWITHMUTATION);
-				report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHMUTATION, seqGroup);
-				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHMUTATION));
+				reportSummary.addPatternLink(PatternLink.METHYLATIONWITHSNP);
+				report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHSNP, seqGroup);
+				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHSNP));
 			}
 
 			// ASM

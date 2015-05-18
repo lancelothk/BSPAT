@@ -206,34 +206,13 @@
                 </tr>
                 <tr>
                     <td>
-                        <h4>MethylationWithMutation pattern</h4>
+                        <h4>MethylationWithSNP pattern</h4>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <p class="ptext">Combination of methylation and mutation patterns. Sorted by
+                        <p class="ptext">Combination pattern of methylation and SNP. Sorted by
                             Methylation status first.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>Mutation Pattern</h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="ptext">Same to methylation pattern, but use mutation status instead.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>MutationWithMethylation pattern</h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="ptext">Combination of methylation and mutation patterns. Sorted by Mutation status
-                            first.</p>
                     </td>
                 </tr>
                 <tr>

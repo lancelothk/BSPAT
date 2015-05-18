@@ -141,9 +141,9 @@ public class Report {
 										pattern.getPatternID()));
 					}
 					break;
-				case PatternLink.METHYLATIONWITHMUTATION:
+				case PatternLink.METHYLATIONWITHSNP:
 					bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\n",
-							PatternLink.METHYLATIONWITHMUTATION));
+							PatternLink.METHYLATIONWITHSNP));
 					bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
 					Collections.sort(patternList, new MeMuPatternComparator());
 					for (Pattern pattern : patternList) {

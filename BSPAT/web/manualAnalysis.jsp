@@ -171,24 +171,19 @@
                 <tr>
                     <td>
                         <p class="ptext">User should upload a file contains the coordinates which define the target
-                            region of
-                            analysis. The file format should be same to reference coordinates file. It will be easier to
-                            create one
-                            from reference coordinates file and upload it here. </p>
+                            region of analysis. The file format should be same to reference coordinates file. It will be
+                            easier to create one from reference coordinates file and upload it here. </p>
 
-                        <p class="ptext">If no target coordinate file uploaded, by default
-                            BSPAT will use a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the first CpG
-                            in the
+                        <p class="ptext">If no target coordinate file uploaded, by default BSPAT will use
+                            a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the first CpG in the
                             reference. If this region exceeds the end of reference, a region from the first CpG to the
-                            end of
-                            reference will be used. If there is no CpG found in the reference, a
-                            <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the beginning of reference will
-                            be used.
-                        </p>
+                            end of reference will be used. If there is no CpG found in the reference,
+                            a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the beginning of reference
+                            will be used.</p>
 
                         <p class="ptext">
                             Notice: In the analysis procedure, only sequences fully covering target region will be
-                            included for mutation
+                            included for MethylationWithSNP pattern
                             pattern analysis. For methylation pattern analysis, all sequences fully covering all CpG
                             sites in target
                             region will be included.
@@ -223,7 +218,7 @@
                 </tr>
                 <tr id="alphaThreshold">
                     <td>
-                        <h4>&alpha; threshold & Critical Value</h4>
+                        <h4>Critical Value</h4>
                     </td>
                 </tr>
                 <tr>
@@ -254,7 +249,7 @@
                 </tr>
                 <tr id="SNPThreshold">
                     <td>
-                        <h4>Mutation threshold</h4>
+                        <h4>SNP threshold</h4>
                     </td>
                 </tr>
                 <tr>
