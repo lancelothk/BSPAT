@@ -19,12 +19,7 @@ E.g. Between bismark_0.10.1 and bismark_0.14.2, default output of bismark change
             
 ## Known Issues:            
 
-Please note that BSPAT use font "Arial" as default when generating text in figures. Without this font, the text in figure may align incorrectly.
-
-How to fix:
-
-1. Install "Arial" font in the deployed system.
-2. Change to another font in DrawPattern.java, but may need to change other parameters to align text in figure correctly.
+Please note that BSPAT use font "Arial" as default when generating text in figures. The font used in figure can be configured in config.properties. Use different font may cause figure components alignment issue.
 
 ## License
 
