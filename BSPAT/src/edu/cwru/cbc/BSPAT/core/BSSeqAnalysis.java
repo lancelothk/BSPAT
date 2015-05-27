@@ -533,7 +533,7 @@ public class BSSeqAnalysis {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
 					} else if (targetRefSeq.charAt(offset) == 'C') {
-						if (seq.getOriginalSeq().charAt(i) != 'C' & seq.getOriginalSeq().charAt(i) != 'T') {
+						if (seq.getOriginalSeq().charAt(i) != 'C' && seq.getOriginalSeq().charAt(i) != 'T') {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
 					} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
