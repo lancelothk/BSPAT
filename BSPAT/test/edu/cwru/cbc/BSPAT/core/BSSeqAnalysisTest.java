@@ -1,6 +1,7 @@
-package edu.cwru.cbc.BSPAT.DataType;
+package edu.cwru.cbc.BSPAT.core;
 
-import org.junit.Test;
+import edu.cwru.cbc.BSPAT.DataType.CpGSite;
+import edu.cwru.cbc.BSPAT.DataType.Sequence;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -8,9 +9,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class SequenceTest {
+public class BSSeqAnalysisTest {
 
-	@Test
+	@org.junit.Test
 	public void testProcessSequence() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		String ref = "AAACATCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCTC";
 		List<Sequence> seqList = new ArrayList<>();
@@ -26,8 +27,7 @@ public class SequenceTest {
 			sequence.addCpG(new CpGSite(79, true));
 			sequence.addCpG(new CpGSite(88, true));
 		}
-		// TODO fix test
-//        BSSeqAnalysis.processSequence(ref, seqList);
+		BSSeqAnalysis.processSequence(ref, seqList);
 
 		assertEquals("sequence identity not equal for seq 1!", 0.989, seqList.get(0).getSequenceIdentity(), 0.001);
 		assertEquals("sequence identity not equal for seq 2!", 0.989, seqList.get(1).getSequenceIdentity(), 0.001);
