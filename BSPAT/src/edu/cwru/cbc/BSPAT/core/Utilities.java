@@ -262,11 +262,10 @@ public class Utilities {
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.port", "587");
 		Session session = Session.getDefaultInstance(props, new SmtpAuthenticator(username, password));
-		/** *************************************************** */
 		MimeMessage mimeMessage = new MimeMessage(session);
 		mimeMessage.setFrom(new InternetAddress(fromMailAddress));
 		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
-		mimeMessage.setSubject("edu/cwru/cbc/DataType/BSPAT");
+		mimeMessage.setSubject("BSPAT notice");
 		mimeMessage.setText(text);
 		Transport.send(mimeMessage);
 		LOGGER.info("Sent message successfully....");
