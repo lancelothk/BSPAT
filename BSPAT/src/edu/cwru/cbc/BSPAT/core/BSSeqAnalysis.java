@@ -199,6 +199,9 @@ public class BSSeqAnalysis {
 			methylationPatternList = filterMethylationPatterns(methylationPatternList,
 					seqGroup.size() + CpGBoundSequenceList.size(), StringUtils.countMatches(targetRefSeq, "CG"),
 					constant);
+			if (methylationPatternList.size() == 0) {
+				continue;
+			}
 			Pattern.resetPatternCount();
 			sortAndAssignPatternID(methylationPatternList);
 			reportSummary.addPatternLink(PatternLink.METHYLATION);
@@ -295,7 +298,8 @@ public class BSSeqAnalysis {
 				count++;
 			}
 			if (count >= 2) {
-				throw new RuntimeException("more than two SNP allele in same position!");
+				//more than two SNP allele in same position!
+				return null;
 			}
 		}
 		switch (potentialSNPList.size()) {
@@ -304,7 +308,8 @@ public class BSSeqAnalysis {
 			case 1:
 				return potentialSNPList.get(0);
 			default:
-				throw new RuntimeException("More than 1 SNP in the region!");
+				// More than 1 SNP in the region!
+				return null;
 		}
 	}
 
