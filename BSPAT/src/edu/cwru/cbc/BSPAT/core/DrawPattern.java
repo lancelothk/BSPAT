@@ -126,7 +126,6 @@ public class DrawPattern {
 		height += HEIGHT_INTERVAL;
 		methylWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, CELLLINE_FONT_SIZE));
 		methylWriter.getGraphWriter().drawString(cellLine, REGION_NAME_LEFTSTART, height);
-		System.out.println("font type:" + figure_font);
 		methylWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 
 		String chr = beginCoor.split(":")[0];
