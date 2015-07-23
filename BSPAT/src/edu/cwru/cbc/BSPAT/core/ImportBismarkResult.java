@@ -52,7 +52,7 @@ public class ImportBismarkResult {
 				String line, name = null;
 				StringBuilder ref = new StringBuilder();
 				while ((line = buffReader.readLine()) != null) {
-					if (line.charAt(0) == '>') {
+					if (line.length() != 0 && line.charAt(0) == '>') {
 						if (ref.length() > 0) {
 							referenceSeqs.put(name, ref.toString().toUpperCase());
 							ref = new StringBuilder();
