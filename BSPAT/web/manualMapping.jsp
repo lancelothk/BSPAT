@@ -39,7 +39,7 @@
                         <h4>Reference Sequence File:</h4>
 
                         <p class="ptext">The file contains reference sequences.
-                            It should be in fasta format with extension ".txt", ".fasta",
+                            It should be in fasta format with extension ".fasta",
                             ".fa". Multiple reference sequences in one file is supported. Identifier
                             of reference sequence should be unique in the file. The Identifier should only be consist of
                             character and digits.</p>
