@@ -28,7 +28,6 @@ public class Sequence {
 	private double methylationRate;
 	private double bisulConversionRate;
 	private double sequenceIdentity;
-	private List<String> allelePosList;
 
 	public Sequence(String id, String strand, String region, int startPos, String originalSeq) {
 		this.id = id;
@@ -37,7 +36,6 @@ public class Sequence {
 		this.startPos = startPos;
 		this.originalSeq = originalSeq;
 		this.CpGSites = new ArrayList<>();
-		this.allelePosList = new ArrayList<>();
 	}
 
 	public int getEndPos() {
@@ -120,14 +118,6 @@ public class Sequence {
 		return originalSeq.length();
 	}
 
-	public List<String> getAlleleList() {
-		return allelePosList;
-	}
-
-	public void addAllele(String allele) {
-		this.allelePosList.add(allele);
-	}
-
 	public String getMeMuString() {
 		return memuString;
 	}
@@ -146,5 +136,9 @@ public class Sequence {
 
 	public void setStrand(String strand) {
 		this.strand = strand;
+	}
+
+	public boolean isInSeq(int pos) {
+		return pos >= this.startPos && pos <= this.getEndPos();
 	}
 }

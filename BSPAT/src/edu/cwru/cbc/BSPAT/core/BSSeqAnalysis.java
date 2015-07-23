@@ -37,14 +37,14 @@ public class BSSeqAnalysis {
 	 */
 	public static void processSequence(String referenceSeq, final List<Sequence> seqList) {
 		// convert reference sequence and count C in non-CpG context.
-		String convertedReferenceSeq = "";
+		StringBuilder convertedReferenceSeq = new StringBuilder();
 		// count C in non-CpG context.  Maybe not efficient enough since scan twice.
 		int countOfNonCpGC = StringUtils.countMatches(referenceSeq, "C") - StringUtils.countMatches(referenceSeq, "CG");
 		for (int i = 0; i < referenceSeq.length(); i++) {
 			if (referenceSeq.charAt(i) == 'C' || referenceSeq.charAt(i) == 'c') {
-				convertedReferenceSeq += 'T';
+				convertedReferenceSeq.append('T');
 			} else {
-				convertedReferenceSeq += referenceSeq.charAt(i);
+				convertedReferenceSeq.append(referenceSeq.charAt(i));
 			}
 		}
 		for (Sequence seq : seqList) {
@@ -54,9 +54,6 @@ public class BSSeqAnalysis {
 			double countOfMethylatedCpG = 0;
 			double unequalNucleotide = 0;
 
-			for (int i = 0; i < convertedReferenceSeq.length(); i++) {
-				methylationString[i] = ' ';
-			}
 			for (int i = 0; i < seq.getOriginalSeq().length(); i++) {
 				methylationString[i] = '-';
 			}
@@ -67,14 +64,12 @@ public class BSSeqAnalysis {
 						if (!(seq.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') &&
 								!(seq.getOriginalSeq().charAt(i) == 'C' && convertedReferenceSeq.charAt(i) == 'T')) {
 							unequalNucleotide++;
-							seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
 						}
 					} else {
 						if (seq.getOriginalSeq().charAt(i) == 'C' && referenceSeq.charAt(i) == 'C') {
 							countOfUnConvertedC++;
 						} else {
 							unequalNucleotide++;
-							seq.addAllele(String.format("%d-%s", i, seq.getOriginalSeq().charAt(i)));
 						}
 					}
 				}
@@ -84,7 +79,7 @@ public class BSSeqAnalysis {
 				if (seq.getStrand().equals("BOTTOM")) {
 					pos--;
 				}
-				if (pos < referenceSeq.length()) {
+				if (seq.isInSeq(pos)) {
 					if (cpg.isMethylated()) {
 						countOfMethylatedCpG++;
 						// methylated CpG site represent by @@
@@ -130,8 +125,7 @@ public class BSSeqAnalysis {
 		}
 
 		// 1. read refCoorMap / targetCoorMap
-		Map<String, Coordinate> refCoorMap;
-		refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
+		Map<String, Coordinate> refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
 		Map<String, Coordinate> targetCoorMap = getStringCoordinateMap(constant, referenceSeqs, refCoorMap);
 
 		// 2. group seqs by region
@@ -142,7 +136,7 @@ public class BSSeqAnalysis {
 			}
 		});
 
-		// 3. generate report for each region
+		// 3. perform analysis for each region
 		for (String region : sequenceGroupMap.keySet()) {
 			ReportSummary reportSummary = new ReportSummary(region);
 			List<Sequence> seqGroup = sequenceGroupMap.get(region);
@@ -155,14 +149,20 @@ public class BSSeqAnalysis {
 
 			// calculate target offset to reference
 			int targetStart, targetEnd;
-			if (refCoor.getStrand().equals("+")) {
-				targetStart = (int) (targetCoor.getStart() - refCoor.getStart()); // 0-based
-				targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart()) - 1; // 0-based
-			} else if (refCoor.getStrand().equals("-")) {
-				targetStart = (int) (refCoor.getEnd() - targetCoor.getEnd()); // 0-based
-				targetEnd = (int) (refCoor.getEnd() - targetCoor.getStart()) - 1; // 0-based
-			} else {
-				throw new RuntimeException("invalid reference strand!");
+			switch (refCoor.getStrand()) {
+				case "+":
+					targetStart = (int) (targetCoor.getStart() - refCoor.getStart()); // 0-based
+					targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart()) - 1; // 0-based
+					break;
+				case "-":
+					targetStart = (int) (refCoor.getEnd() - targetCoor.getEnd()); // 0-based
+					targetEnd = (int) (refCoor.getEnd() - targetCoor.getStart()) - 1; // 0-based
+					break;
+				default:
+					throw new RuntimeException("invalid reference strand!");
+			}
+			if (targetStart < 0 || targetEnd < 0 || targetStart >= targetEnd) {
+				throw new RuntimeException("invalid target coordinates!");
 			}
 			// cut reference seq
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
