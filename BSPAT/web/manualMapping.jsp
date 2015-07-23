@@ -41,8 +41,9 @@
                         <p class="ptext">The file contains reference sequences.
                             It should be in fasta format with extension ".fasta",
                             ".fa". Multiple reference sequences in one file is supported. Identifier
-                            of reference sequence should be unique in the file. The Identifier should only be consist of
-                            character and digits.</p>
+                            of reference sequence should be unique in the file and only be consist of
+                            character and digits. To make the mapping work correctly, the length of reference sequence
+                            should be longer or equal to the length of reads.</p>
                         <label>
                             <textarea readonly rows="5" cols="">Example:&#13;&#10;>region1&#13;&#10;GTCTTCCAGGAGGAGGGTTTGCACACGTCCATCTACAGTTTCGACGAGACCAAAGAC&#13;&#10;>region2&#13;&#10;AGGCAAGACAGCAGGGCTGGGGGCTTCGGACTGCGGGCGGGCGGGCCGCTGTCGCCGCTTGACGCCCCTCCGGGG</textarea>
                         </label>
