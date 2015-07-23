@@ -80,20 +80,24 @@ public class BSSeqAnalysis {
 				}
 			}
 			for (CpGSite cpg : seq.getCpGSites()) {
-				if (cpg.getPosition() < referenceSeq.length()) {
+				int pos = cpg.getPosition();
+				if (seq.getStrand().equals("BOTTOM")) {
+					pos--;
+				}
+				if (pos < referenceSeq.length()) {
 					if (cpg.isMethylated()) {
 						countOfMethylatedCpG++;
 						// methylated CpG site represent by @@
-						methylationString[cpg.getPosition()] = '@';
-						if (cpg.getPosition() + 1 <= methylationString.length) {
-							methylationString[cpg.getPosition() + 1] = '@';
+						methylationString[pos] = '@';
+						if (pos + 1 <= methylationString.length) {
+							methylationString[pos + 1] = '@';
 						}
 					} else {
 						// un-methylated CpG site represent by **. Exclude mutation in CpG site.
-						if (cpg.getPosition() != referenceSeq.length()) {
-							methylationString[cpg.getPosition()] = '*';
-							if (cpg.getPosition() + 1 <= methylationString.length) {
-								methylationString[cpg.getPosition() + 1] = '*';
+						if (pos != referenceSeq.length()) {
+							methylationString[pos] = '*';
+							if (pos + 1 <= methylationString.length) {
+								methylationString[pos + 1] = '*';
 							}
 						}
 					}
@@ -145,10 +149,21 @@ public class BSSeqAnalysis {
 			String refSeq = referenceSeqs.get(region);
 			Coordinate refCoor = refCoorMap.get(region);
 			Coordinate targetCoor = targetCoorMap.get(region);
+			if (!refCoor.getStrand().equals(targetCoor.getStrand())) {
+				throw new RuntimeException("target strand is not same to reference!");
+			}
 
 			// calculate target offset to reference
-			int targetStart = (int) (targetCoor.getStart() - refCoor.getStart());
-			int targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart());
+			int targetStart, targetEnd;
+			if (refCoor.getStrand().equals("+")) {
+				targetStart = (int) (targetCoor.getStart() - refCoor.getStart()); // 0-based
+				targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart()) - 1; // 0-based
+			} else if (refCoor.getStrand().equals("-")) {
+				targetStart = (int) (refCoor.getEnd() - targetCoor.getEnd()); // 0-based
+				targetEnd = (int) (refCoor.getEnd() - targetCoor.getStart()) - 1; // 0-based
+			} else {
+				throw new RuntimeException("invalid reference strand!");
+			}
 			// cut reference seq
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
 
@@ -183,6 +198,7 @@ public class BSSeqAnalysis {
 
 			// if no sequence exist after filtering, return empty reportSummary
 			if (seqGroup.size() == 0 && CpGBoundSequenceList.size() == 0) {
+				reportSummaries.add(reportSummary);
 				continue;
 			}
 
@@ -191,7 +207,7 @@ public class BSSeqAnalysis {
 			report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, mismatchStat);
 
 			DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, targetRefSeq);
+					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, targetRefSeq, targetStart);
 
 			// generate methyl pattern output
 			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, targetRefSeq);
@@ -200,6 +216,7 @@ public class BSSeqAnalysis {
 					seqGroup.size() + CpGBoundSequenceList.size(), StringUtils.countMatches(targetRefSeq, "CG"),
 					constant);
 			if (methylationPatternList.size() == 0) {
+				reportSummaries.add(reportSummary);
 				continue;
 			}
 			Pattern.resetPatternCount();
@@ -514,7 +531,8 @@ public class BSSeqAnalysis {
 					CpGBoundSequenceList.add(sequence);
 					sequence.setOriginalSeq(sequence.getOriginalSeq()
 							.substring(startCpGPos - sequence.getStartPos(), endCpGPos + 2 - sequence.getStartPos()));
-					updateCpGPosition(targetStart, startCpGPos, endCpGPos + 1, sequence);
+					sequence.setStartPos(startCpGPos);
+					updateCpGPosition(sequence.getStartPos(), sequence.getStartPos(), endCpGPos + 1, sequence);
 				} else {
 					// not cover whole target or all CpGs.
 					otherSequenceList.add(sequence);
@@ -592,7 +610,12 @@ public class BSSeqAnalysis {
 		Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, new GetKeyFunction() {
 			@Override
 			public String getKey(Sequence seq) {
-				return seq.getMethylationString().substring(startCpGPos, endCpGPos + 2);
+				// CpGbounded seqs
+				if (seq.getOriginalSeq().length() == (endCpGPos - startCpGPos + 2)) {
+					return seq.getMethylationString();
+				} else {
+					return seq.getMethylationString().substring(startCpGPos, endCpGPos + 2);
+				}
 			}
 		});
 

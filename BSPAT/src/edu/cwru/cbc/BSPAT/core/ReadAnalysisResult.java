@@ -17,14 +17,16 @@ public class ReadAnalysisResult {
 	private String beginCoor;
 	private String endCoor;
 	private String cellLine;
-	private String refSeq;
+	private String targetRefSeq;
+	private int targetStart;
 
 	public ReadAnalysisResult(String inputFolder, String cellLine, String region, Coordinate coordinate,
-	                          String refSeq) throws IOException {
+	                          String targetRefSeq, int targetStart) throws IOException {
 		this.inputFolder = inputFolder;
 		this.coordinate = coordinate;
 		this.cellLine = cellLine;
-		this.refSeq = refSeq;
+		this.targetRefSeq = targetRefSeq;
+		this.targetStart = targetStart;
 		readStatFile(region);
 		setCoordinate();
 	}
@@ -74,8 +76,13 @@ public class ReadAnalysisResult {
 			String line = patternBuffReader.readLine();
 			refLength = line.split("\t")[0].length();
 			if (patternType.equals(PatternLink.METHYLATION)) {
-				beginCoor = String.format("%s:%s", coordinate.getChr(), coordinate.getStart() + refSeq.indexOf("CG"));
-				endCoor = String.valueOf(coordinate.getStart() + refSeq.lastIndexOf("CG") + 1);
+				int startCpGPos = targetRefSeq.indexOf("CG");
+				int endCpGPos = targetRefSeq.lastIndexOf("CG");
+				beginCoor = String.format("%s:%d", coordinate.getChr(),
+						coordinate.getStrand()
+								.equals("-") ? coordinate.getEnd() - endCpGPos - 1 : coordinate.getStart() + endCpGPos + 1);
+				endCoor = String.valueOf(coordinate.getStrand()
+						.equals("-") ? coordinate.getEnd() - startCpGPos : coordinate.getStart() + startCpGPos);
 			} else {
 				setCoordinate();
 			}

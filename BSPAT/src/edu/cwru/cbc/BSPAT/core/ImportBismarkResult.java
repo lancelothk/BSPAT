@@ -88,7 +88,9 @@ public class ImportBismarkResult {
 					items = line.split("\t");
 					// substract two bps from the start position to match original reference
 					// Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-					Sequence seq = new Sequence(items[0], items[2], Integer.valueOf(items[3]) - 3, items[9]);
+					Sequence seq = new Sequence(items[0],
+							(Integer.parseInt(items[1]) & 0x10) == 0x10 ? "BOTTOM" : "TOP", items[2], Integer.parseInt(
+							items[3]) - 3, items[9]);
 					sequencesHashMap.put(seq.getId(), seq);
 					line = buffReader.readLine();
 				}

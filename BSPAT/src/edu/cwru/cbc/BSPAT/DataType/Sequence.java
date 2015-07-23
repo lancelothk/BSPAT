@@ -6,8 +6,10 @@ import java.util.List;
 public class Sequence {
 	private String id; // 1
 	//    private String flag; // 2
+	// 16 is reverse-complementary string(bottom)
+	private String strand; // TOP same to ref, BOTTOM reverse-complementary to ref.
 	private String region; // 3
-	private int startPos; // 4 offset from first bp of reference seq.
+	private int startPos; // 4 offset from first bp of reference seq. 0-based
 	// 5 MAPQ
 	// 6 CIGAR
 	// 7 RNEXT
@@ -28,8 +30,9 @@ public class Sequence {
 	private double sequenceIdentity;
 	private List<String> allelePosList;
 
-	public Sequence(String id, String region, int startPos, String originalSeq) {
+	public Sequence(String id, String strand, String region, int startPos, String originalSeq) {
 		this.id = id;
+		this.strand = strand;
 		this.region = region;
 		this.startPos = startPos;
 		this.originalSeq = originalSeq;
@@ -38,7 +41,7 @@ public class Sequence {
 	}
 
 	public int getEndPos() {
-		return startPos + length() - 1;
+		return startPos + length() - 1; // 0-based
 	}
 
 	public double getSequenceIdentity() {
@@ -135,5 +138,13 @@ public class Sequence {
 			patternArray[snp.getPosition()] = snp.getNucleotide();
 		}
 		this.memuString = new String(patternArray);
+	}
+
+	public String getStrand() {
+		return strand;
+	}
+
+	public void setStrand(String strand) {
+		this.strand = strand;
 	}
 }

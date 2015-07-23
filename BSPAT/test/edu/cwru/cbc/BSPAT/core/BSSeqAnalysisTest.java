@@ -15,11 +15,11 @@ public class BSSeqAnalysisTest {
 	public void testProcessSequence() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		String ref = "AAACATCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCTC";
 		List<Sequence> seqList = new ArrayList<>();
-		seqList.add(new Sequence("1", "test", 0,
+		seqList.add(new Sequence("1", "test", "+", 0,
 				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGCTTATTTTTTATTGCGAAGTAGGCGATTTGTTC"));
-		seqList.add(new Sequence("2", "test", 0,
+		seqList.add(new Sequence("2", "test", "+", 0,
 				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTCTATTTTTTATTGTGAAGTAGGTAATTTGTTT"));
-		seqList.add(new Sequence("3", "test", 0,
+		seqList.add(new Sequence("3", "test", "+", 0,
 				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGCGAAGTAGGGTATTTGTTC"));
 
 		for (Sequence sequence : seqList) {
