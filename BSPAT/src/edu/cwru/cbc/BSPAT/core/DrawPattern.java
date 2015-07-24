@@ -44,7 +44,7 @@ public class DrawPattern {
 
 	public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
 	                   String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap,
-	                   String targetRefSeq, int targetStart) throws IOException {
+	                   int targetStart) throws IOException {
 		super();
 		this.figureFormat = figureFormat;
 		this.refVersion = refVersion;
@@ -53,8 +53,7 @@ public class DrawPattern {
 		this.patternResultPath = patternResultPath;
 		this.sampleName = sampleName;
 		this.coordinateMap = coordinateMap;
-		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region),
-				targetRefSeq, targetStart);
+		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region));
 		this.cellLine = data.getCellLine();
 		this.targetStart = targetStart;
 		Properties properties = new Properties();
@@ -78,7 +77,7 @@ public class DrawPattern {
 		// 2. add reference bar
 		graphWriter.setStroke(new BasicStroke(2.0f));
 		height += HEIGHT_INTERVAL;
-		graphWriter.drawLine(left, height, left + (refLength - 1) * WIDTH, height);
+		graphWriter.drawLine(left, height, left + refLength * WIDTH, height);
 		graphWriter.setStroke(new BasicStroke());
 
 		// 3. add refCpGSites
@@ -98,7 +97,7 @@ public class DrawPattern {
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
 			int firstCpGPos = statList.get(0).getPosition();
-			if (statList.get(0).getPosition() < targetStart) {
+			if (statList.get(0).getPosition() < 0) {
 				firstCpGPos = statList.get(1).getPosition();
 			}
 			for (CpGStatistics cpGStatistics : statList) {
@@ -110,7 +109,7 @@ public class DrawPattern {
 		} else {
 			// shift partial CpG
 			int pos = statList.get(0).getPosition();
-			if (pos < targetStart) {
+			if (pos < 0) {
 				statList.get(0).setPosition(pos + 1);
 			}
 		}

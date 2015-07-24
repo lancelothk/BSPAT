@@ -3,7 +3,7 @@ package edu.cwru.cbc.BSPAT.DataType;
 /**
  * Created by kehu on 8/19/14.
  */
-public interface CpG {
+public interface CpG extends Comparable<CpG> {
 	int getPosition();
 
 	int getMethylCount();

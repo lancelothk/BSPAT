@@ -67,4 +67,9 @@ public class CpGStatistics implements CpG {
 	public int getMethylCount() {
 		return methylCount;
 	}
+
+	@Override
+	public int compareTo(CpG o) {
+		return this.getPosition() - o.getPosition();
+	}
 }

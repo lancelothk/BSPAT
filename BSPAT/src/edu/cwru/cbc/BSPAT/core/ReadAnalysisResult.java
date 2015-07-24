@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ReadAnalysisResult {
@@ -17,16 +16,12 @@ public class ReadAnalysisResult {
 	private String beginCoor;
 	private String endCoor;
 	private String cellLine;
-	private String targetRefSeq;
-	private int targetStart;
 
-	public ReadAnalysisResult(String inputFolder, String cellLine, String region, Coordinate coordinate,
-	                          String targetRefSeq, int targetStart) throws IOException {
+	public ReadAnalysisResult(String inputFolder, String cellLine, String region, Coordinate coordinate) throws
+			IOException {
 		this.inputFolder = inputFolder;
 		this.coordinate = coordinate;
 		this.cellLine = cellLine;
-		this.targetRefSeq = targetRefSeq;
-		this.targetStart = targetStart;
 		readStatFile(region);
 		setCoordinate();
 	}
@@ -64,7 +59,7 @@ public class ReadAnalysisResult {
 
 				line = statBuffReader.readLine();
 			}
-			Collections.sort(statList, new CpGStatComparator());
+			statList.sort(CpG::compareTo);
 		}
 	}
 
@@ -78,8 +73,9 @@ public class ReadAnalysisResult {
 			String line = patternBuffReader.readLine();
 			refLength = line.split("\t")[0].length();
 			if (patternType.equals(PatternLink.METHYLATION)) {
-				int startCpGPos = targetRefSeq.indexOf("CG");
-				int endCpGPos = targetRefSeq.lastIndexOf("CG");
+				statList.sort(CpG::compareTo);
+				int startCpGPos = statList.get(0).getPosition();
+				int endCpGPos = statList.get(statList.size() - 1).getPosition();
 				if (coordinate.getStrand().equals("-")) {
 					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getEnd() - endCpGPos - 1);
 					endCoor = String.valueOf(coordinate.getEnd() - startCpGPos + 1);//1-based

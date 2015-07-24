@@ -61,4 +61,9 @@ public class CpGSitePattern implements CpG {
 			return 'M';
 		}
 	}
+
+	@Override
+	public int compareTo(CpG o) {
+		return this.getPosition() - o.getPosition();
+	}
 }

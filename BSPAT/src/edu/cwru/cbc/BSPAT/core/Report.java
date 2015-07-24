@@ -12,10 +12,9 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
-import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
-
 public class Report {
 	private String targetRefSeq;
+	private String cpgRefSeq;
 	private int targetStart;
 	private String outputFolder;
 	private String region;
@@ -23,7 +22,8 @@ public class Report {
 	private Constant constant;
 	private List<CpGStatistics> cpgStatList;
 
-	public Report(String region, String outputPath, String targetRefSeq, int targetStart, Constant constant,
+	public Report(String region, String outputPath, String targetRefSeq, int targetStart, String cpgRefSeq,
+	              Constant constant,
 	              ReportSummary reportSummary) {
 		this.constant = constant;
 		this.targetStart = targetStart;
@@ -31,6 +31,7 @@ public class Report {
 		this.region = region;
 		this.outputFolder = outputPath;
 		this.targetRefSeq = targetRefSeq;
+		this.cpgRefSeq = cpgRefSeq;
 		File outputFolder = new File(outputPath);
 		if (!outputFolder.exists()) {
 			if (!outputFolder.mkdirs()) {
@@ -99,7 +100,7 @@ public class Report {
 				}
 			}
 
-			Collections.sort(cpgStatList, new CpGStatComparator());
+			cpgStatList.sort(CpG::compareTo);
 			bufferedWriter.write("target region start position:\t" + targetStart + "\n");
 			bufferedWriter.write("target region length:\t" + targetRefSeq.length() + "\n");
 			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
@@ -143,7 +144,7 @@ public class Report {
 				case PatternLink.METHYLATION:
 					bufferedWriter.write(String.format("%s\tcount\tpercentage\tPatternID\n", patternType));
 					bufferedWriter.write(
-							String.format("%s\tref\n", getBoundedSeq("CG", targetRefSeq)));
+							String.format("%s\tref\n", cpgRefSeq));
 					for (Pattern pattern : patternList) {
 						bufferedWriter.write(
 								String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),
