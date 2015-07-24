@@ -161,27 +161,43 @@ public class Sequence {
 				countOfMethylatedCpG++;
 			}
 		}
-
 		double countOfUnConvertedC = 0;
 		double unequalNucleotide = 0;
 		for (int i = 0; i < this.getOriginalSeq().length(); i++) {
-			// meet unequal element
-			if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
-				if (isCpGSite(i)) {
-					if (!(this.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') &&
-							!(this.getOriginalSeq().charAt(i) == 'C' && convertedReferenceSeq.charAt(i) == 'T')) {
-						unequalNucleotide++;
-					}
-				} else {
-					if (this.getOriginalSeq().charAt(i) == 'C' && refSeq.charAt(i) == 'C') {
-						countOfUnConvertedC++;
+			if (strand.equals("TOP")) {
+				// meet unequal element
+				if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
+					if (isCpGSite(i)) {
+						if (!(this.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') &&
+								!(this.getOriginalSeq().charAt(i) == 'C' && convertedReferenceSeq.charAt(i) == 'T')) {
+							unequalNucleotide++;
+						}
 					} else {
-						unequalNucleotide++;
+						if (this.getOriginalSeq().charAt(i) == 'C' && refSeq.charAt(i) == 'C') {
+							countOfUnConvertedC++;
+						} else {
+							unequalNucleotide++;
+						}
+					}
+				}
+			} else {
+				// meet unequal element
+				if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
+					if (isCpGSite(i)) {
+						if (!(this.getOriginalSeq().charAt(i) == 'G' && convertedReferenceSeq.charAt(i) == 'A') &&
+								!(this.getOriginalSeq().charAt(i) == 'A' && convertedReferenceSeq.charAt(i) == 'G')) {
+							unequalNucleotide++;
+						}
+					} else {
+						if (this.getOriginalSeq().charAt(i) == 'G' && refSeq.charAt(i) == 'G') {
+							countOfUnConvertedC++;
+						} else {
+							unequalNucleotide++;
+						}
 					}
 				}
 			}
 		}
-
 		// fill sequence content including calculation fo bisulfite
 		// conversion rate and methylation rate for each sequence.
 		this.setBisulConversionRate(1 - countOfUnConvertedC / countOfNonCpGC);
@@ -195,8 +211,10 @@ public class Sequence {
 		// convert reference sequence and count C in non-CpG context.
 		StringBuilder convertedReferenceSeq = new StringBuilder();
 		for (int i = 0; i < this.length(); i++) {
-			if (refSeq.charAt(i) == 'C') {
+			if (strand.equals("TOP") && refSeq.charAt(i) == 'C') {
 				convertedReferenceSeq.append('T');
+			} else if (strand.equals("BOTTOM") && refSeq.charAt(i) == 'G') {
+				convertedReferenceSeq.append('A');
 			} else {
 				convertedReferenceSeq.append(refSeq.charAt(i));
 			}
