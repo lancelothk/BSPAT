@@ -43,12 +43,7 @@ public class BSSeqAnalysis {
 		Map<String, Coordinate> targetCoorMap = getStringCoordinateMap(constant, referenceSeqs, refCoorMap);
 
 		// 2. group seqs by region
-		Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, new GetKeyFunction() {
-			@Override
-			public String getKey(Sequence seq) {
-				return seq.getRegion();
-			}
-		});
+		Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, Sequence::getRegion);
 
 		// 3. perform analysis for each region
 		for (String region : sequenceGroupMap.keySet()) {
@@ -130,7 +125,7 @@ public class BSSeqAnalysis {
 			report.writeReport(filteredTargetSequencePair, filteredCpGSequencePair, mismatchStat);
 
 			DrawPattern drawFigureLocal = new DrawPattern(constant.figureFormat, constant.refVersion,
-					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap, targetStart);
+					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap);
 
 			// generate methyl pattern output
 			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, startCpGPos,
@@ -215,9 +210,10 @@ public class BSSeqAnalysis {
 		return targetCoorMap;
 	}
 
-	private PotentialSNP declareSNP(Constant constant, int totalSequenceCount, int[][] mismatchStat, int targetStart) {
+	private PotentialSNP declareSNP(Constant constant, int totalTargerSeqenceCount, int[][] mismatchStat,
+	                                int targetStart) {
 		List<PotentialSNP> potentialSNPList = new ArrayList<>();
-		double threshold = totalSequenceCount * constant.SNPThreshold;
+		double threshold = totalTargerSeqenceCount * constant.SNPThreshold;
 		for (int i = 0; i < mismatchStat.length; i++) {
 			int count = 0;
 			if (mismatchStat[i][0] >= threshold) {
@@ -459,22 +455,6 @@ public class BSSeqAnalysis {
 		return new ImmutablePair<>(CpGBoundSequenceList, otherSequenceList);
 	}
 
-	private void updateCpGPosition(int refStart, int leftBound, int rightBound, Sequence sequence) {
-		// leftBound should be bigger than or equal to refStart
-		assert leftBound >= refStart;
-		// update CpG sites
-		Iterator<CpGSite> cpGSiteIterator = sequence.getCpGSites().iterator();
-		while (cpGSiteIterator.hasNext()) {
-			CpGSite cpGSite = cpGSiteIterator.next();
-			// only keep CpG site wholly sit in ref.
-			if (cpGSite.getPosition() >= leftBound && cpGSite.getPosition() + 1 <= rightBound) {
-				cpGSite.setPosition(cpGSite.getPosition() - refStart);
-			} else {
-				cpGSiteIterator.remove();
-			}
-		}
-	}
-
 	/**
 	 * group sequences by given key function
 	 *
@@ -522,14 +502,9 @@ public class BSSeqAnalysis {
 
 		List<Pattern> methylationPatterns = new ArrayList<>();
 		// group sequences by methylationString, distribute each seq into one pattern
-		Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, new GetKeyFunction() {
-			@Override
-			public String getKey(Sequence seq) {
-				return seq.getMethylationString()
-						.substring(startCpGPos - seq.getStartPos(),
-								startCpGPos - seq.getStartPos() + cpgRefSeq.length());
-			}
-		});
+		Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, seq -> seq.getMethylationString()
+				.substring(startCpGPos - seq.getStartPos(),
+						startCpGPos - seq.getStartPos() + cpgRefSeq.length()));
 
 		for (String methylString : patternMap.keySet()) {
 			List<Sequence> patternSeqList = patternMap.get(methylString);

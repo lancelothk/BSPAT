@@ -40,11 +40,10 @@ public class DrawPattern {
 	private Map<String, Coordinate> coordinateMap;
 	private ReadAnalysisResult data;
 	private String cellLine;
-	private int targetStart;
 
 	public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
-	                   String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap,
-	                   int targetStart) throws IOException {
+	                   String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap) throws
+			IOException {
 		super();
 		this.figureFormat = figureFormat;
 		this.refVersion = refVersion;
@@ -55,7 +54,6 @@ public class DrawPattern {
 		this.coordinateMap = coordinateMap;
 		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region));
 		this.cellLine = data.getCellLine();
-		this.targetStart = targetStart;
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
 		figure_font = properties.getProperty("figure_font");
