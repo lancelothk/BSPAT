@@ -166,6 +166,7 @@ public class Sequence {
 		double countOfUnConvertedC = 0;
 		double countOfMethylatedCpG = 0;
 		double unequalNucleotide = 0;
+		double countOfCpGSite = 0;
 
 		for (int i = 0; i < this.getOriginalSeq().length(); i++) {
 			methylationString[i] = '-';
@@ -193,6 +194,7 @@ public class Sequence {
 				pos--;
 			}
 			if (this.isInSeq(pos)) {
+				countOfCpGSite++;
 				if (cpg.isMethylated()) {
 					countOfMethylatedCpG++;
 					// methylated CpG site represent by @@
@@ -211,7 +213,7 @@ public class Sequence {
 		}
 		// fill sequence content including calculation fo bisulfite
 		// conversion rate and methylation rate for each sequence.
-		this.setBisulConversionRate(1 - (countOfUnConvertedC / countOfNonCpGC));
+		this.setBisulConversionRate(1 - (countOfUnConvertedC - countOfCpGSite) / countOfNonCpGC);
 		this.setMethylationRate(countOfMethylatedCpG / this.getCpGSites().size());
 		this.setSequenceIdentity(
 				1 - unequalNucleotide / (this.getOriginalSeq().length() - this.getCpGSites().size()));

@@ -110,7 +110,7 @@ public class Report {
 			bufferedWriter.write("pos\trate" + "\n");
 
 			for (CpGStatistics cpgStat : cpgStatList) {
-				if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length()) {
+				if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
 					cpgStat.calcMethylLevel();
 					bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
 				}
