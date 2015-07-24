@@ -36,7 +36,9 @@ public class ReadAnalysisResult {
 				new FileReader(inputFolder + ID + "_bismark.analysis_report.txt"))) {
 			String line;
 			String[] items;
-			// read ref length
+			// skip target start
+			int targetStart = Integer.parseInt(statBuffReader.readLine().split("\t")[1]);
+			// read target ref length
 			line = statBuffReader.readLine();
 			if (line == null) {
 				throw new RuntimeException("analysis report is empty!");

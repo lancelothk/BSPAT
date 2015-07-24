@@ -9,7 +9,6 @@ public class CpGStatistics implements CpG {
 	private double methylLevel;
 	private int position;
 
-
 	public CpGStatistics(int position) {
 		this.countOfAll = 0;
 		this.methylCount = 0;

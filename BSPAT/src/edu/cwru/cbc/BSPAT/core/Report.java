@@ -92,12 +92,15 @@ public class Report {
 
 			cpgStatList = new ArrayList<>();
 			for (CpGStatistics cpgStat : cpgStatHashTable.values()) {
-				if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
+				if (cpgStat.getPosition() == targetStart - 1) { // display half cpg in the beginning of pattern.
+					cpgStatList.add(cpgStat);
+				} else if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
 					cpgStatList.add(cpgStat);
 				}
 			}
 
 			Collections.sort(cpgStatList, new CpGStatComparator());
+			bufferedWriter.write("target region start position:\t" + targetStart + "\n");
 			bufferedWriter.write("target region length:\t" + targetRefSeq.length() + "\n");
 			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
 			bufferedWriter.write("Sequence identity threshold:\t" + constant.sequenceIdentityThreshold + "\n");

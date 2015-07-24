@@ -40,6 +40,7 @@ public class DrawPattern {
 	private Map<String, Coordinate> coordinateMap;
 	private ReadAnalysisResult data;
 	private String cellLine;
+	private int targetStart;
 
 	public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
 	                   String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap,
@@ -55,6 +56,7 @@ public class DrawPattern {
 		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region),
 				targetRefSeq, targetStart);
 		this.cellLine = data.getCellLine();
+		this.targetStart = targetStart;
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
 		figure_font = properties.getProperty("figure_font");
@@ -96,12 +98,21 @@ public class DrawPattern {
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
 			int firstCpGPos = statList.get(0).getPosition();
+			if (statList.get(0).getPosition() < targetStart) {
+				firstCpGPos = statList.get(1).getPosition();
+			}
 			for (CpGStatistics cpGStatistics : statList) {
 				CpGStatistics updatedCpG = new CpGStatistics(cpGStatistics);
 				updatedCpG.setPosition(cpGStatistics.getPosition() - firstCpGPos);
 				updatedStatList.add(updatedCpG);
 			}
 			statList = updatedStatList;
+		} else {
+			// shift partial CpG
+			int pos = statList.get(0).getPosition();
+			if (pos < targetStart) {
+				statList.get(0).setPosition(pos + 1);
+			}
 		}
 
 		int height = FIGURE_STARTY;

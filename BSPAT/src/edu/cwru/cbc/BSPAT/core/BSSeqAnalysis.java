@@ -83,8 +83,6 @@ public class BSSeqAnalysis {
 
 			// calculate mismatch stat based on all sequences in reference region.
 			int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd, seqGroup);
-			// declare SNP
-			PotentialSNP potentialSNP = declareSNP(constant, seqGroup.size(), mismatchStat, targetStart);
 
 			// processing sequences
 			for (Sequence sequence : seqGroup) {
@@ -97,6 +95,10 @@ public class BSSeqAnalysis {
 			List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
 			List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
 			reportSummary.setSeqOthers(otherSequenceList.size());
+
+			// declare SNP
+			PotentialSNP potentialSNP = declareSNP(constant, seqGroup.size() + CpGBoundSequenceList.size(),
+					mismatchStat, targetStart);
 
 			// sequence quality filter for CpGBoundSequenceList
 			reportSummary.setSeqCpGBounded(CpGBoundSequenceList.size());
@@ -144,18 +146,19 @@ public class BSSeqAnalysis {
 			report.writePatterns(methylationPatternList, PatternLink.METHYLATION, allMethylSequences);
 			drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
 
-			// generate memu pattern output
-			List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP, targetStart,
-					targetEnd);
-			meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(), MEMU_PATTERN_THRESHOLD);
-			if (meMuPatternList.size() != 0) {
-				reportSummary.addPatternLink(PatternLink.METHYLATIONWITHSNP);
-				report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHSNP, seqGroup);
-				drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHSNP));
-			}
-
-			// ASM
 			if (potentialSNP != null) {
+				// generate memu pattern output
+				List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP,
+						targetStart,
+						targetEnd);
+				meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(), MEMU_PATTERN_THRESHOLD);
+				if (meMuPatternList.size() != 0) {
+					reportSummary.addPatternLink(PatternLink.METHYLATIONWITHSNP);
+					report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHSNP, seqGroup);
+					drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATIONWITHSNP));
+				}
+
+				// ASM
 				Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(seqGroup, potentialSNP);
 				Pattern allelePattern = allelePatterns.getLeft();
 				Pattern nonAllelePattern = allelePatterns.getRight();
@@ -547,16 +550,34 @@ public class BSSeqAnalysis {
 			for (int i = 0; i < seqArray.length; i++) {
 				if (seq.getStartPos() + i >= targetStart && seq.getStartPos() + i <= targetEnd) {
 					int offset = seq.getStartPos() + i - targetStart;
-					if (seq.isCpGSite(i)) {
-						if (seq.getOriginalSeq().charAt(i) != 'T' && seq.getOriginalSeq().charAt(i) != 'C') {
+					if (seq.getStrand().equals("TOP")) {
+						if (seq.isCpGSite(i)) {
+							if (seq.getOriginalSeq().charAt(i) != 'T' && seq.getOriginalSeq().charAt(i) != 'C') {
+								seqArray[i] = seq.getOriginalSeq().charAt(i);
+							}
+						} else if (targetRefSeq.charAt(offset) == 'C') {
+							if (seq.getOriginalSeq().charAt(i) != 'C' && seq.getOriginalSeq().charAt(i) != 'T') {
+								seqArray[i] = seq.getOriginalSeq().charAt(i);
+							}
+						} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
-					} else if (targetRefSeq.charAt(offset) == 'C') {
-						if (seq.getOriginalSeq().charAt(i) != 'C' && seq.getOriginalSeq().charAt(i) != 'T') {
+					} else {
+						if (seq.isCpGSite(i)) {
+							i++;// CG or CA.
+							if (seq.isInSeq(i)) {
+								if (seq.getOriginalSeq().charAt(i + 1) != 'G' && seq.getOriginalSeq()
+										.charAt(i) != 'A') {
+									seqArray[i] = seq.getOriginalSeq().charAt(i);
+								}
+							}
+						} else if (targetRefSeq.charAt(offset) == 'G') {
+							if (seq.getOriginalSeq().charAt(i) != 'G' && seq.getOriginalSeq().charAt(i) != 'A') {
+								seqArray[i] = seq.getOriginalSeq().charAt(i);
+							}
+						} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
-					} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
-						seqArray[i] = seq.getOriginalSeq().charAt(i);
 					}
 					switch (seqArray[i]) {
 						case 'A':
