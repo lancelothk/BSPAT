@@ -78,8 +78,11 @@ public class BSSeqAnalysis {
 			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
 			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
-			String cpgRefSeq = refSeq.substring(startCpGPos < targetStart ? startCpGPos - 1 : startCpGPos,
-					endCpGPos <= targetEnd ? endCpGPos + 2 : endCpGPos + 1);
+			boolean isStartCpGPartial = (startCpGPos == targetStart - 1);
+			boolean isEndCpGPartial = (endCpGPos == targetEnd);
+			int cpgBoundedStart = isStartCpGPartial ? startCpGPos + 1 : startCpGPos;
+			int cpgBoundedEnd = isEndCpGPartial ? endCpGPos : endCpGPos + 1;
+			String cpgRefSeq = refSeq.substring(cpgBoundedStart, cpgBoundedEnd + 1);
 
 			// processing sequences
 			for (Sequence sequence : seqGroup) {
@@ -88,7 +91,7 @@ public class BSSeqAnalysis {
 
 			// seqs in seqGroup got changed in updateTargetSequences().
 			Pair<List<Sequence>, List<Sequence>> filteredCuttingResultPair = updateTargetSequences(seqGroup,
-					targetStart, targetEnd, startCpGPos, cpgRefSeq);
+					targetStart, targetEnd, cpgBoundedStart, cpgBoundedEnd);
 			List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
 			List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
 			reportSummary.setSeqOthers(otherSequenceList.size());
@@ -132,8 +135,8 @@ public class BSSeqAnalysis {
 					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap);
 
 			// generate methyl pattern output
-			List<Pattern> methylationPatternList = getMethylPattern(allMethylSequences, startCpGPos,
-					cpgRefSeq);
+			List<Pattern> methylationPatternList = getMethylPattern(allMethylSequences, cpgBoundedStart,
+					cpgBoundedEnd);
 			System.out.println(experimentName + "\t" + region);
 			methylationPatternList = filterMethylationPatterns(methylationPatternList,
 					allMethylSequences.size(), StringUtils.countMatches(targetRefSeq, "CG"),
@@ -432,8 +435,8 @@ public class BSSeqAnalysis {
 	 * cutting mapped sequences to reference region and filter reads without covering whole reference seq
 	 */
 	private Pair<List<Sequence>, List<Sequence>> updateTargetSequences(List<Sequence> sequenceGroup, int targetStart,
-	                                                                   int targetEnd, int startCpGPos,
-	                                                                   String cpgRefSeq) throws
+	                                                                   int targetEnd, int cpgBoundedStart,
+	                                                                   int cpgBoundedEnd) throws
 			IOException {
 		List<Sequence> CpGBoundSequenceList = new ArrayList<>();
 		List<Sequence> otherSequenceList = new ArrayList<>();
@@ -444,7 +447,7 @@ public class BSSeqAnalysis {
 				// filter out
 				sequenceIterator.remove();
 				// recheck if sequence cover all CpGs in ref
-				if (sequence.getStartPos() <= startCpGPos && sequence.getEndPos() >= (startCpGPos + cpgRefSeq.length() - 1)) {
+				if (sequence.getStartPos() <= cpgBoundedStart && sequence.getEndPos() >= cpgBoundedEnd) {
 					CpGBoundSequenceList.add(sequence);
 				} else {
 					// not cover whole target or all CpGs.
@@ -495,13 +498,12 @@ public class BSSeqAnalysis {
 	}
 
 	private List<Pattern> getMethylPattern(List<Sequence> allMethylSequences,
-	                                       final int startCpGPos, final String cpgRefSeq) {
+	                                       final int cpgBoundedStart, final int cpgBoundedEnd) {
 
 		List<Pattern> methylationPatterns = new ArrayList<>();
 		// group sequences by methylationString, distribute each seq into one pattern
 		Map<String, List<Sequence>> patternMap = groupSeqsByKey(allMethylSequences, seq -> seq.getMethylationString()
-				.substring(startCpGPos - seq.getStartPos(),
-						startCpGPos - seq.getStartPos() + cpgRefSeq.length()));
+				.substring(cpgBoundedStart - seq.getStartPos(), cpgBoundedEnd - seq.getStartPos() + 1));
 
 		for (String methylString : patternMap.keySet()) {
 			List<Sequence> patternSeqList = patternMap.get(methylString);
