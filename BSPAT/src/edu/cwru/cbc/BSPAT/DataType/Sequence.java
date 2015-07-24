@@ -30,6 +30,7 @@ public class Sequence {
 	private double methylationRate;
 	private double bisulConversionRate;
 	private double sequenceIdentity;
+	private String refSeq;
 
 	public Sequence(String id, String strand, String region, int startPos, String originalSeq) {
 		this.id = id;
@@ -49,6 +50,7 @@ public class Sequence {
 	}
 
 	public void setSequenceIdentity(double sequenceIdentity) {
+		checkValueRange(sequenceIdentity);
 		this.sequenceIdentity = sequenceIdentity;
 	}
 
@@ -57,6 +59,7 @@ public class Sequence {
 	}
 
 	public void setMethylationRate(double methylationRate) {
+		checkValueRange(methylationRate);
 		this.methylationRate = methylationRate;
 	}
 
@@ -65,6 +68,7 @@ public class Sequence {
 	}
 
 	public void setBisulConversionRate(double bisulConversionRate) {
+		checkValueRange(bisulConversionRate);
 		this.bisulConversionRate = bisulConversionRate;
 	}
 
@@ -148,39 +152,28 @@ public class Sequence {
 	 * generate methylation pattern, calculate conversion rate, methylation rate
 	 */
 	public void processSequence(String referenceSeq) {
-		String currRefSeq = referenceSeq.substring(startPos, this.getEndPos() + 1);
-		// convert reference sequence and count C in non-CpG context.
-		StringBuilder convertedReferenceSeq = new StringBuilder();
-		// count C in non-CpG context.  Maybe not efficient enough since scan twice.
-		int countOfNonCpGC = StringUtils.countMatches(currRefSeq, "C") - StringUtils.countMatches(currRefSeq, "CG");
-		for (int i = 0; i < this.length(); i++) {
-			if (currRefSeq.charAt(i) == 'C' || currRefSeq.charAt(i) == 'c') {
-				convertedReferenceSeq.append('T');
-			} else {
-				convertedReferenceSeq.append(currRefSeq.charAt(i));
+		this.refSeq = referenceSeq.substring(startPos, this.getEndPos() + 1);
+		StringBuilder convertedReferenceSeq = bisulfiteRefSeq();
+		int countOfNonCpGC = StringUtils.countMatches(refSeq, "C") - CpGSites.size();
+		double countOfMethylatedCpG = 0;
+		for (CpGSite cpGSite : CpGSites) {
+			if (cpGSite.isMethylated()) {
+				countOfMethylatedCpG++;
 			}
 		}
-		convertedReferenceSeq.trimToSize();
-		char[] methylationString = new char[this.length()];
-		// fill read to reference length
-		double countOfUnConvertedC = 0;
-		double countOfMethylatedCpG = 0;
-		double unequalNucleotide = 0;
-		double countOfCpGSite = 0;
 
-		for (int i = 0; i < this.getOriginalSeq().length(); i++) {
-			methylationString[i] = '-';
-		}
+		double countOfUnConvertedC = 0;
+		double unequalNucleotide = 0;
 		for (int i = 0; i < this.getOriginalSeq().length(); i++) {
 			// meet unequal element
 			if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
-				if (isFirstBPCpGSite(i)) {
+				if (isCpGSite(i)) {
 					if (!(this.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') &&
 							!(this.getOriginalSeq().charAt(i) == 'C' && convertedReferenceSeq.charAt(i) == 'T')) {
 						unequalNucleotide++;
 					}
 				} else {
-					if (this.getOriginalSeq().charAt(i) == 'C' && currRefSeq.charAt(i) == 'C') {
+					if (this.getOriginalSeq().charAt(i) == 'C' && refSeq.charAt(i) == 'C') {
 						countOfUnConvertedC++;
 					} else {
 						unequalNucleotide++;
@@ -188,41 +181,70 @@ public class Sequence {
 				}
 			}
 		}
-		for (CpGSite cpg : this.getCpGSites()) {
-			int pos = cpg.getPosition();
-			if (this.getStrand().equals("BOTTOM")) {
-				pos--;
+
+		// fill sequence content including calculation fo bisulfite
+		// conversion rate and methylation rate for each sequence.
+		this.setBisulConversionRate(1 - countOfUnConvertedC / countOfNonCpGC);
+		this.setMethylationRate(countOfMethylatedCpG / CpGSites.size());
+		this.setSequenceIdentity(
+				1 - unequalNucleotide / (this.getOriginalSeq().length() - this.getCpGSites().size()));
+		this.setMethylationString(generateMethylString());
+	}
+
+	private StringBuilder bisulfiteRefSeq() {
+		// convert reference sequence and count C in non-CpG context.
+		StringBuilder convertedReferenceSeq = new StringBuilder();
+		for (int i = 0; i < this.length(); i++) {
+			if (refSeq.charAt(i) == 'C') {
+				convertedReferenceSeq.append('T');
+			} else {
+				convertedReferenceSeq.append(refSeq.charAt(i));
 			}
-			if (this.isInSeq(pos)) {
-				countOfCpGSite++;
-				if (cpg.isMethylated()) {
-					countOfMethylatedCpG++;
-					// methylated CpG site represent by @@
-					methylationString[pos - this.getStartPos()] = '@';
-					if (this.isInSeq(pos + 1)) {
-						methylationString[pos - this.getStartPos() + 1] = '@';
-					}
-				} else {
-					// un-methylated CpG site represent by **.
-					methylationString[pos - this.getStartPos()] = '*';
-					if (this.isInSeq(pos + 1)) {
-						methylationString[pos - this.getStartPos() + 1] = '*';
-					}
+		}
+		convertedReferenceSeq.trimToSize();
+		return convertedReferenceSeq;
+	}
+
+	private String generateMethylString() {
+		char[] methylationString = new char[this.length()];
+		for (int i = 0; i < this.getOriginalSeq().length(); i++) {
+			methylationString[i] = '-';
+		}
+		for (CpGSite cpg : this.getCpGSites()) {
+			int cpgPos = cpg.getPosition();
+			if (this.getStrand().equals("BOTTOM")) {
+				cpgPos--;
+			}
+			if (cpg.isMethylated()) {
+				// methylated CpG site represent by @@
+				methylationString[cpgPos - this.getStartPos()] = '@';
+				if (this.isInSeq(cpgPos + 1)) {
+					methylationString[cpgPos - this.getStartPos() + 1] = '@';
+				}
+			} else {
+				// un-methylated CpG site represent by **.
+				methylationString[cpgPos - this.getStartPos()] = '*';
+				if (this.isInSeq(cpgPos + 1)) {
+					methylationString[cpgPos - this.getStartPos() + 1] = '*';
 				}
 			}
 		}
-		// fill sequence content including calculation fo bisulfite
-		// conversion rate and methylation rate for each sequence.
-		this.setBisulConversionRate(1 - (countOfUnConvertedC - countOfCpGSite) / countOfNonCpGC);
-		this.setMethylationRate(countOfMethylatedCpG / this.getCpGSites().size());
-		this.setSequenceIdentity(
-				1 - unequalNucleotide / (this.getOriginalSeq().length() - this.getCpGSites().size()));
-		this.setMethylationString(new String(methylationString));
+		return new String(methylationString);
 	}
 
-	public boolean isFirstBPCpGSite(int pos) {
+	private void checkValueRange(double value) {
+		if (value > 1 || value < 0) {
+			throw new RuntimeException("invalid value out of range [0,1]");
+		}
+	}
+
+	public boolean isCpGSite(int pos) {
 		for (CpGSite cpGSite : this.CpGSites) {
-			if (pos == cpGSite.getPosition()) {
+			int cpgPos = cpGSite.getPosition();
+			if (this.getStrand().equals("BOTTOM")) {
+				cpgPos--;
+			}
+			if ((pos + startPos) == cpgPos) {
 				return true;
 			}
 		}

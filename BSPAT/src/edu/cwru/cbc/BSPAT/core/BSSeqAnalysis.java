@@ -546,7 +546,7 @@ public class BSSeqAnalysis {
 			for (int i = 0; i < seqArray.length; i++) {
 				if (seq.getStartPos() + i >= targetStart && seq.getStartPos() + i <= targetEnd) {
 					int offset = seq.getStartPos() + i - targetStart;
-					if (seq.isFirstBPCpGSite(i + seq.getStartPos())) {
+					if (seq.isCpGSite(i)) {
 						if (seq.getOriginalSeq().charAt(i) != 'T' && seq.getOriginalSeq().charAt(i) != 'C') {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}

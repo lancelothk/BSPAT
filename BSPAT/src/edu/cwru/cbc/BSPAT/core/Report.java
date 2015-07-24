@@ -56,11 +56,6 @@ public class Report {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFolder + region + fileName))) {
 			bufferedWriter.write(
 					"methylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
-			if (fileName.contains("CpGBounded")) {
-				bufferedWriter.write(String.format("%s\tref\n", getBoundedSeq("CG", targetRefSeq)));
-			} else {
-				bufferedWriter.write(String.format("%s\tref\n", targetRefSeq));
-			}
 			for (Sequence seq : sequencesList) {
 				bufferedWriter.write(
 						seq.getMethylationString() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t" +
