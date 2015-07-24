@@ -1,7 +1,4 @@
-package edu.cwru.cbc.BSPAT.core;
-
-import edu.cwru.cbc.BSPAT.DataType.CpGSite;
-import edu.cwru.cbc.BSPAT.DataType.Sequence;
+package edu.cwru.cbc.BSPAT.DataType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -9,7 +6,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class BSSeqAnalysisTest {
+/**
+ * Created by lancelothk on 7/23/15.
+ */
+public class SequenceTest {
 
 	@org.junit.Test
 	public void testProcessSequence() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -23,11 +23,12 @@ public class BSSeqAnalysisTest {
 				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGCGAAGTAGGGTATTTGTTC"));
 
 		for (Sequence sequence : seqList) {
-			sequence.addCpG(new CpGSite(26, true));
+			sequence.addCpG(new CpGSite(26, false));
 			sequence.addCpG(new CpGSite(79, true));
 			sequence.addCpG(new CpGSite(88, true));
+			sequence.processSequence(ref);
 		}
-		BSSeqAnalysis.processSequence(ref, seqList);
+
 
 		assertEquals("sequence identity not equal for seq 1!", 0.989, seqList.get(0).getSequenceIdentity(), 0.001);
 		assertEquals("sequence identity not equal for seq 2!", 0.989, seqList.get(1).getSequenceIdentity(), 0.001);
@@ -39,5 +40,9 @@ public class BSSeqAnalysisTest {
 				0.001);
 		assertEquals("bisulfite conversion rate not equal for seq 3!", 0.947, seqList.get(2).getBisulConversionRate(),
 				0.001);
+
+		assertEquals("bisulfite conversion rate not equal for seq 3!",
+				"--------------------------**---------------------------------------------------@@-------@@--------",
+				seqList.get(0).getMethylationString());
 	}
 }

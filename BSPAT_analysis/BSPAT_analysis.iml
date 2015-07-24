@@ -8,6 +8,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="BSPAT" />
+    <orderEntry type="library" name="super-csv" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
+    <orderEntry type="library" name="guava" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

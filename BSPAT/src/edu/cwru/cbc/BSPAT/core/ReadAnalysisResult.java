@@ -78,11 +78,13 @@ public class ReadAnalysisResult {
 			if (patternType.equals(PatternLink.METHYLATION)) {
 				int startCpGPos = targetRefSeq.indexOf("CG");
 				int endCpGPos = targetRefSeq.lastIndexOf("CG");
-				beginCoor = String.format("%s:%d", coordinate.getChr(),
-						coordinate.getStrand()
-								.equals("-") ? coordinate.getEnd() - endCpGPos - 1 : coordinate.getStart() + endCpGPos + 1);
-				endCoor = String.valueOf(coordinate.getStrand()
-						.equals("-") ? coordinate.getEnd() - startCpGPos : coordinate.getStart() + startCpGPos);
+				if (coordinate.getStrand().equals("-")) {
+					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getEnd() - endCpGPos - 1);
+					endCoor = String.valueOf(coordinate.getEnd() - startCpGPos + 1);//1-based
+				} else {
+					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getStart() + startCpGPos);
+					endCoor = String.valueOf(coordinate.getStart() + endCpGPos + 1);//1-based
+				}
 			} else {
 				setCoordinate();
 			}

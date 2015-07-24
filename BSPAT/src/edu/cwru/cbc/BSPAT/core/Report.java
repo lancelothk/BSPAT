@@ -15,20 +15,22 @@ import java.util.List;
 import static edu.cwru.cbc.BSPAT.core.Utilities.getBoundedSeq;
 
 public class Report {
-	private String referenceSeq;
+	private String targetRefSeq;
+	private int targetStart;
 	private String outputFolder;
 	private String region;
 	private ReportSummary reportSummary;
 	private Constant constant;
 	private List<CpGStatistics> cpgStatList;
 
-	public Report(String region, String outputPath, String referenceSeq, Constant constant,
+	public Report(String region, String outputPath, String targetRefSeq, int targetStart, Constant constant,
 	              ReportSummary reportSummary) {
 		this.constant = constant;
+		this.targetStart = targetStart;
 		this.reportSummary = reportSummary;
 		this.region = region;
 		this.outputFolder = outputPath;
-		this.referenceSeq = referenceSeq;
+		this.targetRefSeq = targetRefSeq;
 		File outputFolder = new File(outputPath);
 		if (!outputFolder.exists()) {
 			if (!outputFolder.mkdirs()) {
@@ -54,9 +56,14 @@ public class Report {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFolder + region + fileName))) {
 			bufferedWriter.write(
 					"methylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
-			bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
+			if (fileName.contains("CpGBounded")) {
+				bufferedWriter.write(String.format("%s\tref\n", getBoundedSeq("CG", targetRefSeq)));
+			} else {
+				bufferedWriter.write(String.format("%s\tref\n", targetRefSeq));
+			}
 			for (Sequence seq : sequencesList) {
-				bufferedWriter.write(seq.getMeMuString() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t" +
+				bufferedWriter.write(
+						seq.getMethylationString() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t" +
 						seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" +
 						seq.getSequenceIdentity() + "\n");
 			}
@@ -68,7 +75,6 @@ public class Report {
 		reportSummary.setStatTextLink(reportFileName);
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
 			Hashtable<Integer, CpGStatistics> cpgStatHashTable = new Hashtable<>();
-
 			// collect information for calculating methylation rate for each CpG site.
 			for (Sequence seq : combinedSequencesList) {
 				for (CpGSite cpg : seq.getCpGSites()) {
@@ -91,7 +97,7 @@ public class Report {
 
 			cpgStatList = new ArrayList<>(cpgStatHashTable.values());
 			Collections.sort(cpgStatList, new CpGStatComparator());
-			bufferedWriter.write("target region length:\t" + referenceSeq.length() + "\n");
+			bufferedWriter.write("target region length:\t" + targetRefSeq.length() + "\n");
 			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
 			bufferedWriter.write("Sequence identity threshold:\t" + constant.sequenceIdentityThreshold + "\n");
 			bufferedWriter.write(ReportSummary.targetBoundedText + "\t" + reportSummary.getSeqTargetBounded() + "\n");
@@ -104,8 +110,10 @@ public class Report {
 			bufferedWriter.write("pos\trate" + "\n");
 
 			for (CpGStatistics cpgStat : cpgStatList) {
-				cpgStat.calcMethylLevel();
-				bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
+				if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length()) {
+					cpgStat.calcMethylLevel();
+					bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
+				}
 			}
 
 			bufferedWriter.write("mutation stat:\n");
@@ -133,7 +141,7 @@ public class Report {
 				case PatternLink.METHYLATION:
 					bufferedWriter.write(String.format("%s\tcount\tpercentage\tPatternID\n", patternType));
 					bufferedWriter.write(
-							String.format("%s\tref\n", getBoundedSeq("CG", referenceSeq)));
+							String.format("%s\tref\n", getBoundedSeq("CG", targetRefSeq)));
 					for (Pattern pattern : patternList) {
 						bufferedWriter.write(
 								String.format("%s\t%d\t%f\t%d\n", pattern.getPatternString(), pattern.getCount(),
@@ -144,7 +152,7 @@ public class Report {
 				case PatternLink.METHYLATIONWITHSNP:
 					bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\n",
 							PatternLink.METHYLATIONWITHSNP));
-					bufferedWriter.write(String.format("%s\tref\n", referenceSeq));
+					bufferedWriter.write(String.format("%s\tref\n", targetRefSeq));
 					Collections.sort(patternList, new MeMuPatternComparator());
 					for (Pattern pattern : patternList) {
 						bufferedWriter.write(
