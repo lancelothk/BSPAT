@@ -161,9 +161,9 @@ public class BSSeqAnalysis {
 				Pattern nonAllelePattern = allelePatterns.getRight();
 				if (allelePattern.getSequenceMap().size() != 0 && nonAllelePattern.getSequenceMap().size() != 0) {
 					PatternResult patternWithAllele = patternToPatternResult(allelePattern, report.getCpgStatList(),
-							seqGroup.size());
+							seqGroup.size(), targetStart);
 					PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern,
-							report.getCpgStatList(), seqGroup.size());
+							report.getCpgStatList(), seqGroup.size(), targetStart);
 
 					if (!hasASM(patternWithAllele, patternWithoutAllele)) {
 						reportSummary.setHasASM(false);
@@ -267,7 +267,7 @@ public class BSSeqAnalysis {
 	}
 
 	private PatternResult patternToPatternResult(Pattern pattern, List<CpGStatistics> cpGStatisticsList,
-	                                             int totalCount) {
+	                                             int totalCount, int targetStart) {
 		PatternResult patternResult = new PatternResult();
 		Map<Integer, CpGSitePattern> cpGSiteMap = new HashMap<>();
 		for (CpGStatistics cpg : cpGStatisticsList) {
@@ -285,16 +285,17 @@ public class BSSeqAnalysis {
 					} else {
 						cpGSiteMap.get(pos).addNonMethylCount(1);
 					}
-				} else {
-					throw new RuntimeException("sequence contains cpgsite not in ref");
 				}
 			}
+		}
+		for (CpGSitePattern cpGSitePattern : cpGSiteMap.values()) {
+			cpGSitePattern.setPosition(cpGSitePattern.getPosition() - targetStart);
 		}
 		patternResult.setCpGList(new ArrayList<>(cpGSiteMap.values()));
 		patternResult.setCount(pattern.getSequenceMap().size());
 		patternResult.setPercent(pattern.getSequenceMap().size() / (double) totalCount);
 		if (pattern.getPatternType() == Pattern.PatternType.ALLELE) {
-			patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split(":")[0]));
+			patternResult.addAllele(Integer.parseInt(pattern.getPatternString().split(":")[0]) - targetStart);
 		} else if (pattern.getPatternType() != Pattern.PatternType.NONALLELE) {
 			throw new RuntimeException("only support convert allele and non-allele Pattern to PatternResult");
 		}

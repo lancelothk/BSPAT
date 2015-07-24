@@ -59,8 +59,8 @@ public class Report {
 			for (Sequence seq : sequencesList) {
 				bufferedWriter.write(
 						seq.getMethylationString() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t" +
-						seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" +
-						seq.getSequenceIdentity() + "\n");
+								seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" +
+								seq.getSequenceIdentity() + "\n");
 			}
 		}
 	}
@@ -90,7 +90,13 @@ public class Report {
 				}
 			}
 
-			cpgStatList = new ArrayList<>(cpgStatHashTable.values());
+			cpgStatList = new ArrayList<>();
+			for (CpGStatistics cpgStat : cpgStatHashTable.values()) {
+				if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
+					cpgStatList.add(cpgStat);
+				}
+			}
+
 			Collections.sort(cpgStatList, new CpGStatComparator());
 			bufferedWriter.write("target region length:\t" + targetRefSeq.length() + "\n");
 			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + constant.conversionRateThreshold + "\n");
@@ -105,10 +111,8 @@ public class Report {
 			bufferedWriter.write("pos\trate" + "\n");
 
 			for (CpGStatistics cpgStat : cpgStatList) {
-				if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
-					cpgStat.calcMethylLevel();
-					bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
-				}
+				cpgStat.calcMethylLevel();
+				bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
 			}
 
 			bufferedWriter.write("mutation stat:\n");
@@ -124,7 +128,7 @@ public class Report {
 	}
 
 	public void writePatterns(List<Pattern> patternList, String patternType,
-	                           List<Sequence> sequencesList) throws IOException {
+	                          List<Sequence> sequencesList) throws IOException {
 		String patternFileName = String.format("%s%s_bismark.analysis_%s.txt", outputFolder, region, patternType);
 		PatternLink patternLink = reportSummary.getPatternLink(patternType);
 		if (patternLink == null) {

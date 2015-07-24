@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReadAnalysisResult {
-	private List<CpGStatistics> statList = new ArrayList<>();
+	private List<CpGStatistics> statList = new ArrayList<>();// start from target region
 	private int refLength = 0;
 	private String inputFolder;
 	private Coordinate coordinate;
@@ -54,9 +54,9 @@ public class ReadAnalysisResult {
 				if (!Character.isDigit(items[0].charAt(0))) {
 					break;
 				}
-				CpGStatistics cpgStat = null;
+				CpGStatistics cpgStat;
 				int pos = Integer.valueOf(items[0]);
-				cpgStat = new CpGStatistics(pos);
+				cpgStat = new CpGStatistics(pos - targetStart);
 				cpgStat.setMethylLevel(Double.valueOf(items[1]));
 				statList.add(cpgStat);
 
