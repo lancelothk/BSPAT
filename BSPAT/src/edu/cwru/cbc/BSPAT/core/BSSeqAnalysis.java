@@ -81,9 +81,6 @@ public class BSSeqAnalysis {
 			String cpgRefSeq = refSeq.substring(startCpGPos,
 					endCpGPos + 1 <= targetEnd + 1 ? endCpGPos + 1 : endCpGPos);
 
-			// calculate mismatch stat based on all sequences in reference region.
-			int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd, seqGroup);
-
 			// processing sequences
 			for (Sequence sequence : seqGroup) {
 				sequence.processSequence(refSeq);
@@ -95,10 +92,6 @@ public class BSSeqAnalysis {
 			List<Sequence> CpGBoundSequenceList = filteredCuttingResultPair.getLeft();
 			List<Sequence> otherSequenceList = filteredCuttingResultPair.getRight();
 			reportSummary.setSeqOthers(otherSequenceList.size());
-
-			// declare SNP
-			PotentialSNP potentialSNP = declareSNP(constant, seqGroup.size() + CpGBoundSequenceList.size(),
-					mismatchStat, targetStart);
 
 			// sequence quality filter for CpGBoundSequenceList
 			reportSummary.setSeqCpGBounded(CpGBoundSequenceList.size());
@@ -113,11 +106,22 @@ public class BSSeqAnalysis {
 			seqGroup = filteredTargetSequencePair.getLeft();
 			reportSummary.setSeqTargetAfterFilter(seqGroup.size());
 
+			List<Sequence> allMethylSequences = new ArrayList<>();
+			allMethylSequences.addAll(seqGroup);
+			allMethylSequences.addAll(CpGBoundSequenceList);
+
 			// if no sequence exist after filtering, return empty reportSummary
-			if (seqGroup.size() == 0 && CpGBoundSequenceList.size() == 0) {
+			if (allMethylSequences.size() == 0) {
 				reportSummaries.add(reportSummary);
 				continue;
 			}
+
+			// calculate mismatch stat based on all sequences in reference region.
+			int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd, allMethylSequences);
+
+			// declare SNP
+			PotentialSNP potentialSNP = declareSNP(constant, allMethylSequences.size(),
+					mismatchStat, targetStart);
 
 			// write report
 			Report report = new Report(region, outputFolder, targetRefSeq, targetStart, cpgRefSeq, constant,
@@ -128,11 +132,11 @@ public class BSSeqAnalysis {
 					constant.toolsPath, region, outputFolder, experimentName, targetCoorMap);
 
 			// generate methyl pattern output
-			List<Pattern> methylationPatternList = getMethylPattern(seqGroup, CpGBoundSequenceList, startCpGPos,
+			List<Pattern> methylationPatternList = getMethylPattern(allMethylSequences, startCpGPos,
 					cpgRefSeq);
 			System.out.println(experimentName + "\t" + region);
 			methylationPatternList = filterMethylationPatterns(methylationPatternList,
-					seqGroup.size() + CpGBoundSequenceList.size(), StringUtils.countMatches(targetRefSeq, "CG"),
+					allMethylSequences.size(), StringUtils.countMatches(targetRefSeq, "CG"),
 					constant);
 			if (methylationPatternList.size() == 0) {
 				reportSummaries.add(reportSummary);
@@ -141,9 +145,6 @@ public class BSSeqAnalysis {
 			Pattern.resetPatternCount();
 			sortAndAssignPatternID(methylationPatternList);
 			reportSummary.addPatternLink(PatternLink.METHYLATION);
-			List<Sequence> allMethylSequences = new ArrayList<>();
-			allMethylSequences.addAll(seqGroup);
-			allMethylSequences.addAll(CpGBoundSequenceList);
 			report.writePatterns(methylationPatternList, PatternLink.METHYLATION, allMethylSequences);
 			drawFigureLocal.drawPattern(reportSummary.getPatternLink(PatternLink.METHYLATION));
 
@@ -210,10 +211,10 @@ public class BSSeqAnalysis {
 		return targetCoorMap;
 	}
 
-	private PotentialSNP declareSNP(Constant constant, int totalTargerSeqenceCount, int[][] mismatchStat,
+	private PotentialSNP declareSNP(Constant constant, int totalTargetSeqenceCount, int[][] mismatchStat,
 	                                int targetStart) {
 		List<PotentialSNP> potentialSNPList = new ArrayList<>();
-		double threshold = totalTargerSeqenceCount * constant.SNPThreshold;
+		double threshold = totalTargetSeqenceCount * constant.SNPThreshold;
 		for (int i = 0; i < mismatchStat.length; i++) {
 			int count = 0;
 			if (mismatchStat[i][0] >= threshold) {
@@ -494,15 +495,12 @@ public class BSSeqAnalysis {
 		return new ImmutablePair<>(qualifiedSeqList, unQualifiedSeqList);
 	}
 
-	private List<Pattern> getMethylPattern(List<Sequence> seqList, List<Sequence> CpGBoundSequenceList,
+	private List<Pattern> getMethylPattern(List<Sequence> allMethylSequences,
 	                                       final int startCpGPos, final String cpgRefSeq) {
-		List<Sequence> combinedSequenceList = new ArrayList<>();
-		combinedSequenceList.addAll(seqList);
-		combinedSequenceList.addAll(CpGBoundSequenceList);
 
 		List<Pattern> methylationPatterns = new ArrayList<>();
 		// group sequences by methylationString, distribute each seq into one pattern
-		Map<String, List<Sequence>> patternMap = groupSeqsByKey(combinedSequenceList, seq -> seq.getMethylationString()
+		Map<String, List<Sequence>> patternMap = groupSeqsByKey(allMethylSequences, seq -> seq.getMethylationString()
 				.substring(startCpGPos - seq.getStartPos(),
 						startCpGPos - seq.getStartPos() + cpgRefSeq.length()));
 
@@ -519,43 +517,34 @@ public class BSSeqAnalysis {
 
 	private int[][] calculateMismatchStat(String targetRefSeq, int targetStart, int targetEnd,
 	                                      List<Sequence> targetSequencesList) {
-		int[][] mismatchStat;
-		mismatchStat = new int[targetRefSeq.length()][5]; // 5 possible values.
+		int[][] mismatchStat = new int[targetRefSeq.length()][6]; // 6 possible values.
 		// TODO double check and refactor
 		for (Sequence seq : targetSequencesList) {
 			char[] seqArray = seq.getOriginalSeq().toCharArray();
 			Arrays.fill(seqArray, '-');
+			char originalC, bisulfiteC;
+			if (seq.getStrand().equals("TOP")) {
+				originalC = 'C';
+				bisulfiteC = 'T';
+			} else {
+				originalC = 'G';
+				bisulfiteC = 'A';
+			}
 			for (int i = 0; i < seqArray.length; i++) {
 				if (seq.getStartPos() + i >= targetStart && seq.getStartPos() + i <= targetEnd) {
 					int offset = seq.getStartPos() + i - targetStart;
-					if (seq.getStrand().equals("TOP")) {
-						if (seq.isCpGSite(i)) {
-							if (seq.getOriginalSeq().charAt(i) != 'T' && seq.getOriginalSeq().charAt(i) != 'C') {
-								seqArray[i] = seq.getOriginalSeq().charAt(i);
-							}
-						} else if (targetRefSeq.charAt(offset) == 'C') {
-							if (seq.getOriginalSeq().charAt(i) != 'C' && seq.getOriginalSeq().charAt(i) != 'T') {
-								seqArray[i] = seq.getOriginalSeq().charAt(i);
-							}
-						} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
+					if (seq.isCpGSite(i)) {
+						if (seq.getOriginalSeq().charAt(i) != bisulfiteC && seq.getOriginalSeq()
+								.charAt(i) != originalC) {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
-					} else {
-						if (seq.isCpGSite(i)) {
-							i++;// CG or CA.
-							if (seq.isInSeq(i)) {
-								if (seq.getOriginalSeq().charAt(i + 1) != 'G' && seq.getOriginalSeq()
-										.charAt(i) != 'A') {
-									seqArray[i] = seq.getOriginalSeq().charAt(i);
-								}
-							}
-						} else if (targetRefSeq.charAt(offset) == 'G') {
-							if (seq.getOriginalSeq().charAt(i) != 'G' && seq.getOriginalSeq().charAt(i) != 'A') {
-								seqArray[i] = seq.getOriginalSeq().charAt(i);
-							}
-						} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
+					} else if (targetRefSeq.charAt(offset) == originalC) {
+						if (seq.getOriginalSeq().charAt(i) != originalC && seq.getOriginalSeq()
+								.charAt(i) != bisulfiteC) {
 							seqArray[i] = seq.getOriginalSeq().charAt(i);
 						}
+					} else if (seq.getOriginalSeq().charAt(i) != targetRefSeq.charAt(offset)) {
+						seqArray[i] = seq.getOriginalSeq().charAt(i);
 					}
 					switch (seqArray[i]) {
 						case 'A':
@@ -574,7 +563,7 @@ public class BSSeqAnalysis {
 							mismatchStat[offset][4]++;
 							break;
 						case '-':
-							// do nothing
+							mismatchStat[offset][5]++;
 							break;
 						default:
 							throw new RuntimeException("unknown nucleotide:" + seqArray[i]);

@@ -154,46 +154,38 @@ public class Sequence {
 	public void processSequence(String referenceSeq) {
 		this.refSeq = referenceSeq.substring(startPos, this.getEndPos() + 1);
 		StringBuilder convertedReferenceSeq = bisulfiteRefSeq();
-		int countOfNonCpGC = StringUtils.countMatches(refSeq, "C") - CpGSites.size();
 		double countOfMethylatedCpG = 0;
 		for (CpGSite cpGSite : CpGSites) {
 			if (cpGSite.isMethylated()) {
 				countOfMethylatedCpG++;
 			}
 		}
+		char originalC, bisulfiteC;
+		if (strand.equals("TOP")) {
+			originalC = 'C';
+			bisulfiteC = 'T';
+		} else {
+			originalC = 'G';
+			bisulfiteC = 'A';
+		}
 		double countOfUnConvertedC = 0;
 		double unequalNucleotide = 0;
+		int countOfNonCpGC = StringUtils.countMatches(refSeq, String.valueOf(originalC)) - CpGSites.size();
 		for (int i = 0; i < this.getOriginalSeq().length(); i++) {
-			if (strand.equals("TOP")) {
-				// meet unequal element
-				if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
-					if (isCpGSite(i)) {
-						if (!(this.getOriginalSeq().charAt(i) == 'T' && convertedReferenceSeq.charAt(i) == 'C') &&
-								!(this.getOriginalSeq().charAt(i) == 'C' && convertedReferenceSeq.charAt(i) == 'T')) {
-							unequalNucleotide++;
-						}
-					} else {
-						if (this.getOriginalSeq().charAt(i) == 'C' && refSeq.charAt(i) == 'C') {
-							countOfUnConvertedC++;
-						} else {
-							unequalNucleotide++;
-						}
+			// meet unequal element
+			if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
+				if (isCpGSite(i)) {
+					if (!(this.getOriginalSeq().charAt(i) == bisulfiteC && convertedReferenceSeq.charAt(
+							i) == originalC) &&
+							!(this.getOriginalSeq().charAt(i) == originalC && convertedReferenceSeq.charAt(
+									i) == bisulfiteC)) {
+						unequalNucleotide++;
 					}
-				}
-			} else {
-				// meet unequal element
-				if (this.getOriginalSeq().charAt(i) != convertedReferenceSeq.charAt(i)) {
-					if (isCpGSite(i)) {
-						if (!(this.getOriginalSeq().charAt(i) == 'G' && convertedReferenceSeq.charAt(i) == 'A') &&
-								!(this.getOriginalSeq().charAt(i) == 'A' && convertedReferenceSeq.charAt(i) == 'G')) {
-							unequalNucleotide++;
-						}
+				} else {
+					if (this.getOriginalSeq().charAt(i) == originalC && refSeq.charAt(i) == originalC) {
+						countOfUnConvertedC++;
 					} else {
-						if (this.getOriginalSeq().charAt(i) == 'G' && refSeq.charAt(i) == 'G') {
-							countOfUnConvertedC++;
-						} else {
-							unequalNucleotide++;
-						}
+						unequalNucleotide++;
 					}
 				}
 			}
@@ -205,6 +197,10 @@ public class Sequence {
 		this.setSequenceIdentity(
 				1 - unequalNucleotide / (this.getOriginalSeq().length() - this.getCpGSites().size()));
 		this.setMethylationString(generateMethylString());
+		if (originalSeq.equals(
+				"CAATCTCTTTTGATTATTTAAACATCCCTATAAAATAAACGTCACGTAACACAAACCACTATCCCCATTTTAAAAATAAAAAAATCGAAATTCAAAAATAAAAAAAAATTTCCCCAAAATCACTA")) {
+			System.out.println();
+		}
 	}
 
 	private StringBuilder bisulfiteRefSeq() {
@@ -263,9 +259,6 @@ public class Sequence {
 	public boolean isCpGSite(int pos) {
 		for (CpGSite cpGSite : this.CpGSites) {
 			int cpgPos = cpGSite.getPosition();
-			if (this.getStrand().equals("BOTTOM")) {
-				cpgPos--;
-			}
 			if ((pos + startPos) == cpgPos) {
 				return true;
 			}
