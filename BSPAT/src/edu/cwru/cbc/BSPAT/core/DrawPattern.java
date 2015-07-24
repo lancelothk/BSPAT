@@ -92,24 +92,21 @@ public class DrawPattern {
 		String beginCoor = data.getBeginCoor();
 		String endCoor = data.getEndCoor();
 
+		// shift beginning partial CpG
+		int pos = statList.get(0).getPosition();
+		if (pos < 0) {
+			statList.get(0).setPosition(pos + 1);
+		}
+
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
 			int firstCpGPos = statList.get(0).getPosition();
-			if (statList.get(0).getPosition() < 0) {
-				firstCpGPos = statList.get(1).getPosition();
-			}
 			for (CpGStatistics cpGStatistics : statList) {
 				CpGStatistics updatedCpG = new CpGStatistics(cpGStatistics);
 				updatedCpG.setPosition(cpGStatistics.getPosition() - firstCpGPos);
 				updatedStatList.add(updatedCpG);
 			}
 			statList = updatedStatList;
-		} else {
-			// shift partial CpG
-			int pos = statList.get(0).getPosition();
-			if (pos < 0) {
-				statList.get(0).setPosition(pos + 1);
-			}
 		}
 
 		int height = FIGURE_STARTY;

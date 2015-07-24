@@ -61,11 +61,11 @@ public class BSSeqAnalysis {
 			switch (refCoor.getStrand()) {
 				case "+":
 					targetStart = (int) (targetCoor.getStart() - refCoor.getStart()); // 0-based
-					targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart()) - 1; // 0-based
+					targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart()); // 0-based
 					break;
 				case "-":
 					targetStart = (int) (refCoor.getEnd() - targetCoor.getEnd()); // 0-based
-					targetEnd = (int) (refCoor.getEnd() - targetCoor.getStart()) - 1; // 0-based
+					targetEnd = (int) (refCoor.getEnd() - targetCoor.getStart()); // 0-based
 					break;
 				default:
 					throw new RuntimeException("invalid reference strand!");
@@ -73,13 +73,13 @@ public class BSSeqAnalysis {
 			if (targetStart < 0 || targetEnd < 0 || targetStart >= targetEnd) {
 				throw new RuntimeException("invalid target coordinates!");
 			}
-			String tmpTargetRefSeq = refSeq.substring(targetStart,
-					targetEnd + 2); // used to include one more bp to detect CpG sites.
-			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart;
-			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart;
+			String tmpTargetRefSeq = refSeq.substring(targetStart - 1,
+					targetEnd + 2); // used to include one more bp on both ends to detect CpG sites.
+			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
+			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
-			String cpgRefSeq = refSeq.substring(startCpGPos,
-					endCpGPos + 1 <= targetEnd + 1 ? endCpGPos + 1 : endCpGPos);
+			String cpgRefSeq = refSeq.substring(startCpGPos < targetStart ? startCpGPos - 1 : startCpGPos,
+					endCpGPos <= targetEnd ? endCpGPos + 2 : endCpGPos + 1);
 
 			// processing sequences
 			for (Sequence sequence : seqGroup) {
@@ -151,8 +151,7 @@ public class BSSeqAnalysis {
 			if (potentialSNP != null) {
 				// generate memu pattern output
 				List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP,
-						targetStart,
-						targetEnd);
+						targetStart, targetEnd);
 				meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(), MEMU_PATTERN_THRESHOLD);
 				if (meMuPatternList.size() != 0) {
 					reportSummary.addPatternLink(PatternLink.METHYLATIONWITHSNP);
