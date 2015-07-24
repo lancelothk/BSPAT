@@ -210,9 +210,15 @@
                     %>
                 </tr>
                 <tr>
+                    <%
+                        if (reportSummary.getStatTextLink() != null) {
+                    %>
                     <td>Other Info</td>
                     <td><a
                             href=<%=reportSummary.getStatTextLink()%>>text</a></td>
+                    <%
+                        }
+                    %>
                 </tr>
                 <%
                     }
