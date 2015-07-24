@@ -119,14 +119,18 @@ public class Report {
 				bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
 			}
 
-			bufferedWriter.write("mutation stat:\n");
+			bufferedWriter.write("mismatch stat:\n");
 			for (int i = 0; i < mutationStat.length; i++) {
 				// 1 based position
 				int total = mutationStat[i][0] + mutationStat[i][1] + mutationStat[i][2] + mutationStat[i][3] +
 						mutationStat[i][4];
-				bufferedWriter.write(String.format("%d\tA:%d\tC:%d\tG:%d\tT:%d\tN:%d\ttotal:%d\n", i + 1,
-						mutationStat[i][0], mutationStat[i][1], mutationStat[i][2], mutationStat[i][3],
-						mutationStat[i][4], total));
+				int coverage = mutationStat[i][0] + mutationStat[i][1] + mutationStat[i][2] + mutationStat[i][3] +
+						mutationStat[i][4] + mutationStat[i][5];
+				bufferedWriter.write(
+						String.format("%d\tref:%c\tA:%d\tC:%d\tG:%d\tT:%d\tN:%d\ttotal:%6d\tcoverage:%d\n", i + 1,
+								targetRefSeq.charAt(i),
+								mutationStat[i][0], mutationStat[i][1], mutationStat[i][2], mutationStat[i][3],
+								mutationStat[i][4], total, coverage));
 			}
 		}
 	}
