@@ -235,13 +235,17 @@ public class Sequence {
 			}
 			if (cpg.isMethylated()) {
 				// methylated CpG site represent by @@
-				methylationString[cpgPos - this.getStartPos()] = '@';
+				if (isInSeq(cpgPos)) {
+					methylationString[cpgPos - this.getStartPos()] = '@';
+				}
 				if (this.isInSeq(cpgPos + 1)) {
 					methylationString[cpgPos - this.getStartPos() + 1] = '@';
 				}
 			} else {
 				// un-methylated CpG site represent by **.
-				methylationString[cpgPos - this.getStartPos()] = '*';
+				if (isInSeq(cpgPos)) {
+					methylationString[cpgPos - this.getStartPos()] = '*';
+				}
 				if (this.isInSeq(cpgPos + 1)) {
 					methylationString[cpgPos - this.getStartPos() + 1] = '*';
 				}
