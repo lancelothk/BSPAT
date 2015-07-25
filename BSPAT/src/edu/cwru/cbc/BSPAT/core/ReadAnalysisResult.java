@@ -78,7 +78,7 @@ public class ReadAnalysisResult {
 				int endCpGPos = statList.get(statList.size() - 1).getPosition();
 				if (coordinate.getStrand().equals("-")) {
 					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getEnd() - endCpGPos - 1);
-					endCoor = String.valueOf(coordinate.getEnd() - startCpGPos + 1);//1-based
+					endCoor = String.valueOf(coordinate.getEnd() - startCpGPos - 1);//1-based
 				} else {
 					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getStart() + startCpGPos);
 					endCoor = String.valueOf(coordinate.getStart() + endCpGPos + 1);//1-based
