@@ -101,21 +101,23 @@ public class DrawPattern {
 		int endCoor = data.getCoordinate().getEnd();
 
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
-//			int startCpGPos = statList.get(0).getPosition();
-//			int endCpGPos = statList.get(statList.size() - 1).getPosition();
-//			if (coordinate.getStrand().equals("-")) {
-//				beginCoor = coordinate.getEnd() - endCpGPos;
-//				endCoor = coordinate.getEnd() - startCpGPos - 1;//1-based
-//			} else {
-//				beginCoor = coordinate.getStart() + startCpGPos;
-//				endCoor = coordinate.getStart() + endCpGPos + 1;//1-based
-//			}
+			int startPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
+			int endPos = statList.get(statList.size() - 1)
+					.getPosition() == targetLength - 1 ? targetLength - 1 : statList.get(statList.size() - 1)
+					.getPosition() + 1;
+			if (strand.equals("-")) {
+				endCoor = endCoor - startPos;
+				beginCoor = endCoor - targetLength + 1;
+			} else {
+				beginCoor = beginCoor + startPos;
+				endCoor = beginCoor + targetLength - 1;
+			}
 
 			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
 			int firstCpGPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
-			for (int i = 0; i < statList.size(); i++) {
-				CpGStatistics updatedCpG = new CpGStatistics(statList.get(i));
-				updatedCpG.setPosition(statList.get(i).getPosition() - firstCpGPos);
+			for (CpGStatistics aStatList : statList) {
+				CpGStatistics updatedCpG = new CpGStatistics(aStatList);
+				updatedCpG.setPosition(aStatList.getPosition() - firstCpGPos);
 				updatedStatList.add(updatedCpG);
 			}
 			statList = updatedStatList;
