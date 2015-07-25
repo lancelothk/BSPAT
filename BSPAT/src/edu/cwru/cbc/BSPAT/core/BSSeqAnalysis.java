@@ -70,11 +70,18 @@ public class BSSeqAnalysis {
 				default:
 					throw new RuntimeException("invalid reference strand!");
 			}
-			if (targetStart < 0 || targetEnd < 0 || targetStart >= targetEnd) {
-				throw new RuntimeException("invalid target coordinates!");
+			if (targetStart < 0 || targetEnd < 0 || targetStart >= targetEnd || targetStart >= refSeq.length() || targetEnd >= refSeq
+					.length()) {
+				throw new RuntimeException("invalid target coordinates! out of reference!");
 			}
-			String tmpTargetRefSeq = refSeq.substring(targetStart - 1,
-					targetEnd + 2); // used to include one more bp on both ends to detect CpG sites.
+			String tmpTargetRefSeq;
+			if (targetStart != 0 && targetEnd != refSeq.length() - 1) {
+				tmpTargetRefSeq = refSeq.substring(targetStart - 1,
+						targetEnd + 2); // used to include one more bp on both ends to detect CpG sites.
+			} else {
+				tmpTargetRefSeq = refSeq.substring(targetStart,
+						targetEnd + 1);
+			}
 			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
 			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
@@ -155,7 +162,8 @@ public class BSSeqAnalysis {
 				// generate memu pattern output
 				List<Pattern> meMuPatternList = getMeMuPatern(seqGroup, methylationPatternList, potentialSNP,
 						targetStart, targetEnd);
-				meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(), MEMU_PATTERN_THRESHOLD);
+				meMuPatternList = filterPatternsByThreshold(meMuPatternList, seqGroup.size(),
+						MEMU_PATTERN_THRESHOLD);
 				if (meMuPatternList.size() != 0) {
 					reportSummary.addPatternLink(PatternLink.METHYLATIONWITHSNP);
 					report.writePatterns(meMuPatternList, PatternLink.METHYLATIONWITHSNP, seqGroup);

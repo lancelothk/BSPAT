@@ -40,6 +40,7 @@ public class DrawPattern {
 	private Map<String, Coordinate> coordinateMap;
 	private ReadAnalysisResult data;
 	private String cellLine;
+	private String strand;
 
 	public DrawPattern(String figureFormat, String refVersion, String toolsPath, String region,
 	                   String patternResultPath, String sampleName, Map<String, Coordinate> coordinateMap) throws
@@ -54,6 +55,7 @@ public class DrawPattern {
 		this.coordinateMap = coordinateMap;
 		this.data = new ReadAnalysisResult(patternResultPath, sampleName, region, coordinateMap.get(region));
 		this.cellLine = data.getCellLine();
+		this.strand = coordinateMap.get(region).getStrand();
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
 		figure_font = properties.getProperty("figure_font");
@@ -144,16 +146,16 @@ public class DrawPattern {
 					String.format("track name=\"Pattern%d\" description=\"%s-%s\" visibility=1 itemRgb=\"On\"\n", i,
 							sampleName, region));
 			methylWriter.getBedWriter().write(
-					String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) + 1,
-							endCoor, Integer.valueOf(startPos) + 1,
-							Integer.valueOf(startPos) + 1));
+					String.format("chr%s\t%d\t%s\trefbar\t0\t%s\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) - 1,
+							endCoor, strand, Integer.valueOf(startPos) - 1,
+							Integer.valueOf(startPos) - 1));
 			for (CpGSitePattern cpg : patternResult.getCpGList()) {
 				int cgPos = Integer.parseInt(startPos) + cpg.getPosition();
 				// genome browser automatically add 1 to start, no change to
 				// end.So we deduct 1 from start and add 1 to the end.
 				methylWriter.getBedWriter().write(
-						String.format("chr%s\t%d\t%d\tCG-Pattern%d\t%d\t+\t%d\t%d\t", chr, cgPos - 1, cgPos + 1, i,
-								cpg.getMethylCount(), cgPos - 1, cgPos + 1));
+						String.format("chr%s\t%d\t%d\tCG-Pattern%d\t%d\t%s\t%d\t%d\t", chr, cgPos - 1, cgPos + 1, i,
+								cpg.getMethylCount(), strand, cgPos - 1, cgPos + 1));
 				if (cpg.isMethylated()) {
 					// fill black circle
 					methylWriter.getGraphWriter().fill(
@@ -178,9 +180,9 @@ public class DrawPattern {
 				"browser position chr%s-%d\nbrowser hide all\ntrack name=\"Average\" description=\"%s-%s\" visibility=1 itemRgb=\"On\"\n",
 				beginCoor, Long.parseLong(endCoor), sampleName, region));
 		methylWriter.getBedWriter().write(
-				String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) + 1,
-						endCoor, Integer.valueOf(startPos) + 1,
-						Integer.valueOf(startPos) + 1));
+				String.format("chr%s\t%d\t%s\trefbar\t0\t%s\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) - 1,
+						endCoor, strand, Integer.valueOf(startPos) - 1,
+						Integer.valueOf(startPos) - 1));
 
 		addAverage(methylWriter.getGraphWriter(), figure_font, statList, chr, startPos, "Pattern-Average",
 				methylWriter.getBedWriter(), height, left);
@@ -228,9 +230,9 @@ public class DrawPattern {
 				String.format("track name=\"PatternA\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
 						sampleName, region));
 		ASMWriter.getBedWriter().write(
-				String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) + 1,
-						endCoor, Integer.valueOf(startPos) + 1,
-						Integer.valueOf(startPos) + 1));
+				String.format("chr%s\t%d\t%s\trefbar\t0\t%s\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) - 1,
+						endCoor, strand, Integer.valueOf(startPos) - 1,
+						Integer.valueOf(startPos) - 1));
 		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithoutAllele.getCpGList(), chr, startPos,
 				"PatternA", ASMWriter.getBedWriter(), height, left);
 		addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, startPos,
@@ -245,9 +247,9 @@ public class DrawPattern {
 				String.format("track name=\"PatternB\" description=\"%s-%s-ASM\" visibility=1 itemRgb=\"On\"\n",
 						sampleName, region));
 		ASMWriter.getBedWriter().write(
-				String.format("chr%s\t%d\t%s\trefbar\t0\t+\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) + 1,
-						endCoor, Integer.valueOf(startPos) + 1,
-						Integer.valueOf(startPos) + 1));
+				String.format("chr%s\t%d\t%s\trefbar\t0\t%s\t%d\t%d\t0,0,0\n", chr, Integer.valueOf(startPos) - 1,
+						endCoor, strand, Integer.valueOf(startPos) - 1,
+						Integer.valueOf(startPos) - 1));
 		height += 2 * HEIGHT_INTERVAL;
 		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithAllele.getCpGList(), chr, startPos, "PatternB",
 				ASMWriter.getBedWriter(), height, left);
@@ -282,7 +284,7 @@ public class DrawPattern {
 				int allelePos = Integer.parseInt(startPos) + patternResult.getAlleleList().get(0);
 				bedWriter.write(
 						"chr" + chr + "\t" + (allelePos - 1) + "\t" + allelePos + "\tSNP-Pattern" + j + "\t" + 1000 +
-								"\t+\t" + (allelePos - 1) + "\t"
+								"\t" + strand + "\t" + (allelePos - 1) + "\t"
 
 								+ allelePos + "\t0,0,255\n");
 			}
@@ -323,7 +325,7 @@ public class DrawPattern {
 			// genome browser automatically add 1 to start, no change to end.So
 			// we substract 1 from start and add 1 to the end.
 			bedWriter.write("chr" + chr + "\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\tCG-" + patternName + "\t" +
-					cpg.getMethylCount() + "\t+\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\t" + R + "," +
+					cpg.getMethylCount() + "\t" + strand + "\t" + (cgPos - 1) + "\t" + (cgPos + 1) + "\t" + R + "," +
 					G + "," + B + "\n");
 
 		}
