@@ -79,24 +79,20 @@ public class ReadAnalysisResult {
 					CpGSitePattern cpg;
 					if (items[0].charAt(i) == '*') {
 						cpg = new CpGSitePattern(i, false);
-						patternResult.addCpG(cpg);
-						if (i + 1 < regionLength) {
-							if (items[0].charAt(i + 1) == '*') {
-								i++;
-							} else {
-								cpg.setPosition(cpg.getPosition() - 1);
-							}
+						if (i + 1 < regionLength && items[0].charAt(i + 1) == '*') {
+							i++;
+						} else if (i == 0) {
+							cpg = new CpGSitePattern(i - 1, false);
 						}
+						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == '@') {
-						cpg = new CpGSitePattern(i, true);
-						patternResult.addCpG(cpg);
-						if (i + 1 < regionLength) {
-							if (items[0].charAt(i + 1) == '@') {
-								i++;
-							} else {
-								cpg.setPosition(cpg.getPosition() - 1);
-							}
+						cpg = new CpGSitePattern(i, false);
+						if (i + 1 < regionLength && items[0].charAt(i + 1) == '@') {
+							i++;
+						} else if (i == 0) {
+							cpg = new CpGSitePattern(i - 1, false);
 						}
+						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
 							items[0].charAt(i) == 'T') {
 						patternResult.addAllele(i);
