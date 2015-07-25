@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ReadAnalysisResult {
 	private List<CpGStatistics> statList = new ArrayList<>();// start from target region
-	private int targetLength;
+	private int regionLength;
 	private String inputFolder;
 	private Coordinate coordinate;
 	private String cellLine;
@@ -35,8 +35,6 @@ public class ReadAnalysisResult {
 			if (line == null) {
 				throw new RuntimeException("analysis report is empty!");
 			}
-			items = line.split("\t");
-			targetLength = Integer.valueOf(items[1]);
 			// skip 6 lines
 			for (int i = 0; i < 9; i++) {
 				statBuffReader.readLine();
@@ -67,6 +65,7 @@ public class ReadAnalysisResult {
 			// reference line
 			String line = patternBuffReader.readLine();
 			int regionLength = line.split("\t")[0].length();
+			this.regionLength = regionLength;
 
 			// start to read content
 			line = patternBuffReader.readLine();
@@ -81,14 +80,22 @@ public class ReadAnalysisResult {
 					if (items[0].charAt(i) == '*') {
 						cpg = new CpGSitePattern(i, false);
 						patternResult.addCpG(cpg);
-						if (i + 1 < regionLength && items[0].charAt(i + 1) == '*') {
-							i++;
+						if (i + 1 < regionLength) {
+							if (items[0].charAt(i + 1) == '*') {
+								i++;
+							} else {
+								cpg.setPosition(cpg.getPosition() - 1);
+							}
 						}
 					} else if (items[0].charAt(i) == '@') {
 						cpg = new CpGSitePattern(i, true);
 						patternResult.addCpG(cpg);
-						if (i + 1 < regionLength && items[0].charAt(i + 1) == '@') {
-							i++;
+						if (i + 1 < regionLength) {
+							if (items[0].charAt(i + 1) == '@') {
+								i++;
+							} else {
+								cpg.setPosition(cpg.getPosition() - 1);
+							}
 						}
 					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
 							items[0].charAt(i) == 'T') {
@@ -108,8 +115,8 @@ public class ReadAnalysisResult {
 		return coordinate;
 	}
 
-	public int getTargetLength() {
-		return targetLength;
+	public int getRegionLength() {
+		return regionLength;
 	}
 
 	public List<CpGStatistics> getStatList() {
