@@ -2,12 +2,12 @@ package edu.cwru.cbc.BSPAT.DataType;
 
 public class Coordinate {
 	private String id;
-	private long start;
-	private long end;
+	private int start;
+	private int end;
 	private String chr;
 	private String strand;
 
-	public Coordinate(String id, String chr, String strand, long start, long end) {
+	public Coordinate(String id, String chr, String strand, int start, int end) {
 		super();
 		this.id = id;
 		this.start = start;
@@ -16,11 +16,11 @@ public class Coordinate {
 		this.strand = strand;
 	}
 
-	public long getStart() {
+	public int getStart() {
 		return start;
 	}
 
-	public long getEnd() {
+	public int getEnd() {
 		return end;
 	}
 

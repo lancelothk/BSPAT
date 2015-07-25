@@ -60,12 +60,12 @@ public class BSSeqAnalysis {
 			int targetStart, targetEnd;
 			switch (refCoor.getStrand()) {
 				case "+":
-					targetStart = (int) (targetCoor.getStart() - refCoor.getStart()); // 0-based
-					targetEnd = (int) (targetCoor.getEnd() - refCoor.getStart()); // 0-based
+					targetStart = targetCoor.getStart() - refCoor.getStart(); // 0-based
+					targetEnd = targetCoor.getEnd() - refCoor.getStart(); // 0-based
 					break;
 				case "-":
-					targetStart = (int) (refCoor.getEnd() - targetCoor.getEnd()); // 0-based
-					targetEnd = (int) (refCoor.getEnd() - targetCoor.getStart()); // 0-based
+					targetStart = refCoor.getEnd() - targetCoor.getEnd(); // 0-based
+					targetEnd = refCoor.getEnd() - targetCoor.getStart(); // 0-based
 					break;
 				default:
 					throw new RuntimeException("invalid reference strand!");
@@ -203,7 +203,7 @@ public class BSSeqAnalysis {
 			// if no given targetCoor, get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
 			if (!targetCoorMap.containsKey(key)) {
 				String refString = referenceSeqs.get(key);
-				long firstPos = refString.indexOf("CG");
+				int firstPos = refString.indexOf("CG");
 				// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
 				if (firstPos == -1) {
 					targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
@@ -211,7 +211,7 @@ public class BSSeqAnalysis {
 							refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
 				} else {
 					// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
-					long endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
+					int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
 					targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
 							refCoorMap.get(key).getStrand(), refCoorMap.get(key).getStart() + firstPos,
 							endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));

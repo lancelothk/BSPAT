@@ -45,8 +45,8 @@ public class IO {
 						throw new RuntimeException(
 								"invalid coordinate file! Please double check your uploaded coordinate file");
 					}
-					coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Long.valueOf(items[3]),
-							Long.valueOf(items[4])));
+					coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Integer.valueOf(items[3]),
+							Integer.valueOf(items[4])));
 				}
 				line = coordinatesBuffReader.readLine();
 			}

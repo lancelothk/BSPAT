@@ -71,8 +71,9 @@ public class Utilities {
 					// filter blat result by checking if score equals to qsize
 					if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
 						// first query match, score equals query size
-						coorHashMap.put(items[0], new Coordinate(items[0], items[6], items[7], Long.valueOf(items[8]),
-								Long.valueOf(items[9])));
+						coorHashMap.put(items[0],
+								new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
+										Integer.valueOf(items[9])));
 					}
 				}
 			}

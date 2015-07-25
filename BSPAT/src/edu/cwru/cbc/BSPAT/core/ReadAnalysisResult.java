@@ -10,11 +10,9 @@ import java.util.List;
 
 public class ReadAnalysisResult {
 	private List<CpGStatistics> statList = new ArrayList<>();// start from target region
-	private int refLength = 0;
+	private int targetLength;
 	private String inputFolder;
 	private Coordinate coordinate;
-	private String beginCoor;
-	private String endCoor;
 	private String cellLine;
 
 	public ReadAnalysisResult(String inputFolder, String cellLine, String region, Coordinate coordinate) throws
@@ -23,7 +21,6 @@ public class ReadAnalysisResult {
 		this.coordinate = coordinate;
 		this.cellLine = cellLine;
 		readStatFile(region);
-		setCoordinate();
 	}
 
 	private void readStatFile(String ID) throws IOException {
@@ -39,7 +36,7 @@ public class ReadAnalysisResult {
 				throw new RuntimeException("analysis report is empty!");
 			}
 			items = line.split("\t");
-			refLength = Integer.valueOf(items[1]);
+			targetLength = Integer.valueOf(items[1]);
 			// skip 6 lines
 			for (int i = 0; i < 9; i++) {
 				statBuffReader.readLine();
@@ -51,12 +48,10 @@ public class ReadAnalysisResult {
 				if (!Character.isDigit(items[0].charAt(0))) {
 					break;
 				}
-				CpGStatistics cpgStat;
-				int pos = Integer.valueOf(items[0]);
-				cpgStat = new CpGStatistics(pos - targetStart);
+				// start from target start. 0-based.
+				CpGStatistics cpgStat = new CpGStatistics(Integer.valueOf(items[0]) - targetStart);
 				cpgStat.setMethylLevel(Double.valueOf(items[1]));
 				statList.add(cpgStat);
-
 				line = statBuffReader.readLine();
 			}
 			statList.sort(CpG::compareTo);
@@ -71,21 +66,7 @@ public class ReadAnalysisResult {
 			patternBuffReader.readLine();
 			// reference line
 			String line = patternBuffReader.readLine();
-			refLength = line.split("\t")[0].length();
-			if (patternType.equals(PatternLink.METHYLATION)) {
-				statList.sort(CpG::compareTo);
-				int startCpGPos = statList.get(0).getPosition();
-				int endCpGPos = statList.get(statList.size() - 1).getPosition();
-				if (coordinate.getStrand().equals("-")) {
-					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getEnd() - endCpGPos);
-					endCoor = String.valueOf(coordinate.getEnd() - startCpGPos);//1-based
-				} else {
-					beginCoor = String.format("%s:%d", coordinate.getChr(), coordinate.getStart() + startCpGPos);
-					endCoor = String.valueOf(coordinate.getStart() + endCpGPos + 1);//1-based
-				}
-			} else {
-				setCoordinate();
-			}
+			int regionLength = line.split("\t")[0].length();
 
 			// start to read content
 			line = patternBuffReader.readLine();
@@ -95,18 +76,18 @@ public class ReadAnalysisResult {
 			while (line != null) {
 				items = line.split("\t");
 				patternResult = new PatternResult();
-				for (int i = 0; i < refLength; i++) {
+				for (int i = 0; i < regionLength; i++) {
 					CpGSitePattern cpg;
 					if (items[0].charAt(i) == '*') {
 						cpg = new CpGSitePattern(i, false);
 						patternResult.addCpG(cpg);
-						if (i + 1 < refLength && items[0].charAt(i + 1) == '*') {
+						if (i + 1 < regionLength && items[0].charAt(i + 1) == '*') {
 							i++;
 						}
 					} else if (items[0].charAt(i) == '@') {
 						cpg = new CpGSitePattern(i, true);
 						patternResult.addCpG(cpg);
-						if (i + 1 < refLength && items[0].charAt(i + 1) == '@') {
+						if (i + 1 < regionLength && items[0].charAt(i + 1) == '@') {
 							i++;
 						}
 					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
@@ -123,21 +104,12 @@ public class ReadAnalysisResult {
 		return patternResultLists;
 	}
 
-	private void setCoordinate() {
-		beginCoor = coordinate.getChr() + ":" + coordinate.getStart();
-		endCoor = String.valueOf(coordinate.getStart() + refLength - 1);
+	public Coordinate getCoordinate() {
+		return coordinate;
 	}
 
-	public String getBeginCoor() {
-		return beginCoor;
-	}
-
-	public String getEndCoor() {
-		return endCoor;
-	}
-
-	public int getRefLength() {
-		return refLength;
+	public int getTargetLength() {
+		return targetLength;
 	}
 
 	public List<CpGStatistics> getStatList() {
