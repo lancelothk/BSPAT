@@ -84,10 +84,6 @@ public class Sequence {
 		return originalSeq;
 	}
 
-	public void setOriginalSeq(String originalSeq) {
-		this.originalSeq = originalSeq;
-	}
-
 	public String getRegion() {
 		return region;
 	}
@@ -98,10 +94,6 @@ public class Sequence {
 
 	public int getStartPos() {
 		return startPos;
-	}
-
-	public void setStartPos(int startPos) {
-		this.startPos = startPos;
 	}
 
 	public void addCpG(CpGSite cpg) {
@@ -140,10 +132,6 @@ public class Sequence {
 		return strand;
 	}
 
-	public void setStrand(String strand) {
-		this.strand = strand;
-	}
-
 	public boolean isInSeq(int pos) {
 		return pos >= this.startPos && pos <= this.getEndPos();
 	}
@@ -161,12 +149,17 @@ public class Sequence {
 			}
 		}
 		char originalC, bisulfiteC;
-		if (strand.equals("TOP")) {
-			originalC = 'C';
-			bisulfiteC = 'T';
-		} else {
-			originalC = 'G';
-			bisulfiteC = 'A';
+		switch (strand) {
+			case "TOP":
+				originalC = 'C';
+				bisulfiteC = 'T';
+				break;
+			case "BOTTOM":
+				originalC = 'G';
+				bisulfiteC = 'A';
+				break;
+			default:
+				throw new RuntimeException("invalid sequence strand!");
 		}
 		double countOfUnConvertedC = 0;
 		double unequalNucleotide = 0;
@@ -197,10 +190,6 @@ public class Sequence {
 		this.setSequenceIdentity(
 				1 - unequalNucleotide / (this.getOriginalSeq().length() - this.getCpGSites().size()));
 		this.setMethylationString(generateMethylString());
-		if (originalSeq.equals(
-				"CAATCTCTTTTGATTATTTAAACATCCCTATAAAATAAACGTCACGTAACACAAACCACTATCCCCATTTTAAAAATAAAAAAATCGAAATTCAAAAATAAAAAAAAATTTCCCCAAAATCACTA")) {
-			System.out.println();
-		}
 	}
 
 	private StringBuilder bisulfiteRefSeq() {

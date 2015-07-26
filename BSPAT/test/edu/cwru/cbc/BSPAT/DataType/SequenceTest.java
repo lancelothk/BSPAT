@@ -1,48 +1,77 @@
 package edu.cwru.cbc.BSPAT.DataType;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
-/**
- * Created by lancelothk on 7/23/15.
- */
 public class SequenceTest {
 
 	@org.junit.Test
 	public void testProcessSequence() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 		String ref = "AAACATCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCTC";
-		List<Sequence> seqList = new ArrayList<>();
-		seqList.add(new Sequence("1", "test", "+", 0,
-				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGCTTATTTTTTATTGCGAAGTAGGCGATTTGTTC"));
-		seqList.add(new Sequence("2", "test", "+", 0,
-				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTCTATTTTTTATTGTGAAGTAGGTAATTTGTTT"));
-		seqList.add(new Sequence("3", "test", "+", 0,
-				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGCGAAGTAGGGTATTTGTTC"));
+		Sequence seq1 = new Sequence("1", "TOP", "test", 0,
+				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGCTTATTTTTTATTGAGAAGTAGGCGATTTGTTC");
+		Sequence seq2 = new Sequence("2", "TOP", "test", 0,
+				"AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTCTATTTTTTATTGTGAAGTAGGTAATTTGTTT");
+		Sequence seq3 = new Sequence("3", "BOTTOM", "test", 0,
+				"AAACATCTCTAATAAAAAAAAAAACCCGAAAATAACTAAATTTAATTTATAACTAAAAAAACAAATCCACTTCCCACTACGAAACAAACGACCTGCTC");
 
-		for (Sequence sequence : seqList) {
-			sequence.addCpG(new CpGSite(26, false));
-			sequence.addCpG(new CpGSite(79, true));
-			sequence.addCpG(new CpGSite(88, true));
-			sequence.processSequence(ref);
-		}
+		seq1.addCpG(new CpGSite(26, false));
+		seq1.addCpG(new CpGSite(79, true));
+		seq1.addCpG(new CpGSite(88, false));
+		seq1.processSequence(ref);
+
+		seq2.addCpG(new CpGSite(26, false));
+		seq2.addCpG(new CpGSite(79, true));
+		seq2.addCpG(new CpGSite(88, true));
+		seq2.processSequence(ref);
+
+		seq3.addCpG(new CpGSite(27, true));
+		seq3.addCpG(new CpGSite(80, false));
+		seq3.addCpG(new CpGSite(89, true));
+		seq3.processSequence(ref);
 
 
-		assertEquals("sequence identity not equal for seq 1!", 0.989, seqList.get(0).getSequenceIdentity(), 0.001);
-		assertEquals("sequence identity not equal for seq 2!", 0.989, seqList.get(1).getSequenceIdentity(), 0.001);
-		assertEquals("sequence identity not equal for seq 3!", 0.979, seqList.get(2).getSequenceIdentity(), 0.001);
+		assertEquals("sequence identity not equal for seq 1!", 0.978, seq1.getSequenceIdentity(), 0.001);
+		assertEquals("sequence identity not equal for seq 2!", 0.989, seq2.getSequenceIdentity(), 0.001);
+		assertEquals("sequence identity not equal for seq 3!", 0.989, seq3.getSequenceIdentity(), 0.001);
 
-		assertEquals("bisulfite conversion rate not equal for seq 1!", 0.947, seqList.get(0).getBisulConversionRate(),
+		assertEquals("bisulfite conversion rate not equal for seq 1!", 0.947, seq1.getBisulConversionRate(),
 				0.001);
-		assertEquals("bisulfite conversion rate not equal for seq 2!", 0.947, seqList.get(1).getBisulConversionRate(),
+		assertEquals("bisulfite conversion rate not equal for seq 2!", 0.947, seq2.getBisulConversionRate(),
 				0.001);
-		assertEquals("bisulfite conversion rate not equal for seq 3!", 0.947, seqList.get(2).getBisulConversionRate(),
+		assertEquals("bisulfite conversion rate not equal for seq 3!", 0.965, seq3.getBisulConversionRate(),
 				0.001);
 
-		assertEquals("bisulfite conversion rate not equal for seq 3!",
+		assertEquals(
+				"--------------------------**---------------------------------------------------@@-------**--------",
+				seq1.getMethylationString());
+		assertEquals(
 				"--------------------------**---------------------------------------------------@@-------@@--------",
-				seqList.get(0).getMethylationString());
+				seq2.getMethylationString());
+		assertEquals(
+				"--------------------------@@---------------------------------------------------**-------@@--------",
+				seq3.getMethylationString());
+
+
+		String beginningPartialCpGRef = "CGAAG";
+		Sequence seqBPTop = new Sequence("1", "TOP", "test", 1, "GAAG");
+		Sequence seqBPBottom = new Sequence("1", "BOTTOM", "test", 1, "GAAG");
+		seqBPTop.addCpG(new CpGSite(0, true));
+		seqBPBottom.addCpG(new CpGSite(1, false));
+		seqBPTop.processSequence(beginningPartialCpGRef);
+		seqBPBottom.processSequence(beginningPartialCpGRef);
+		assertEquals("@---", seqBPTop.getMethylationString());
+		assertEquals("*---", seqBPBottom.getMethylationString());
+
+		String endPartialCpGRef = "GGAACG";
+		Sequence seqEPTop = new Sequence("1", "TOP", "test", 0, "GGAAC");
+		Sequence seqEPBottom = new Sequence("1", "BOTTOM", "test", 0, "AAAAC");
+		seqEPTop.addCpG(new CpGSite(4, true));
+		seqEPBottom.addCpG(new CpGSite(5, false));
+		seqEPTop.processSequence(endPartialCpGRef);
+		seqEPBottom.processSequence(endPartialCpGRef);
+		assertEquals("----@", seqEPTop.getMethylationString());
+		assertEquals("----*", seqEPBottom.getMethylationString());
 	}
 }
