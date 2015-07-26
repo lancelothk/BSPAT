@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Pattern {
-	private static int patternCount = 1;
+	private int patternCount;
 	private String patternString;
 	private Map<String, Sequence> sequenceMap;
 	private int patternID;
@@ -17,12 +17,8 @@ public class Pattern {
 		sequenceMap = new HashMap<>();
 	}
 
-	public static void resetPatternCount() {
-		patternCount = 1;
-	}
-
-	public void assignPatternID() {
-		this.patternID = patternCount++;
+	public void assignPatternID(int i) {
+		this.patternID = i;
 	}
 
 	public int getPatternID() {

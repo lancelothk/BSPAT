@@ -152,7 +152,6 @@ public class BSSeqAnalysis {
 				reportSummaries.add(reportSummary);
 				continue;
 			}
-			Pattern.resetPatternCount();
 			sortAndAssignPatternID(methylationPatternList);
 			reportSummary.addPatternLink(PatternLink.METHYLATION);
 			report.writePatterns(methylationPatternList, PatternLink.METHYLATION, allMethylSequences);
@@ -337,8 +336,8 @@ public class BSSeqAnalysis {
 		// sort methylation pattern.
 		Collections.sort(patternList, new PatternByCountComparator());
 		// assign pattern id after sorting. So id is associated with order. Smaller id has large count.
-		for (Pattern pattern : patternList) {
-			pattern.assignPatternID();
+		for (int i = 0; i < patternList.size(); i++) {
+			patternList.get(i).assignPatternID(i);
 		}
 	}
 

@@ -1,85 +1,86 @@
+target region start position:	31
 target region length:	71
 Bisulfite conversion rate threshold:	0.9
 Sequence identity threshold:	0.9
 A. Sequences cover whole target region:	521
 A. After quality control:	505
 B. Sequences don't cover whole target but cover all CpGs:	269
-B. After quality control:	265
+B. After quality control:	263
 C. Sequences cover neither target nor all CpGs:	3
 methylation rate for each CpG site:
 pos	rate
-0	0.08984375
-53	0.5682704811443433
-62	0.42463958060288337
-mutation stat:
-1	A:2	C:0	G:0	T:0	N:0	total:2
-2	A:0	C:0	G:0	T:0	N:0	total:0
-3	A:0	C:0	G:5	T:0	N:0	total:5
-4	A:0	C:0	G:0	T:0	N:0	total:0
-5	A:1	C:0	G:0	T:0	N:0	total:1
-6	A:0	C:0	G:6	T:2	N:0	total:8
-7	A:0	C:2	G:1	T:0	N:0	total:3
-8	A:0	C:0	G:0	T:0	N:0	total:0
-9	A:1	C:0	G:0	T:0	N:0	total:1
-10	A:0	C:0	G:2	T:0	N:0	total:2
-11	A:0	C:2	G:0	T:0	N:0	total:2
-12	A:0	C:0	G:0	T:0	N:0	total:0
-13	A:0	C:0	G:0	T:0	N:0	total:0
-14	A:0	C:0	G:0	T:0	N:0	total:0
-15	A:4	C:4	G:8	T:0	N:0	total:16
-16	A:1	C:2	G:0	T:0	N:0	total:3
-17	A:0	C:3	G:0	T:0	N:0	total:3
-18	A:1	C:0	G:0	T:0	N:0	total:1
-19	A:0	C:0	G:2	T:1	N:0	total:3
-20	A:0	C:5	G:0	T:0	N:0	total:5
-21	A:0	C:4	G:0	T:0	N:0	total:4
-22	A:0	C:1	G:0	T:0	N:0	total:1
-23	A:0	C:0	G:2	T:0	N:0	total:2
-24	A:0	C:3	G:0	T:0	N:0	total:3
-25	A:0	C:0	G:0	T:0	N:0	total:0
-26	A:0	C:0	G:5	T:3	N:0	total:8
-27	A:0	C:0	G:0	T:0	N:0	total:0
-28	A:0	C:2	G:0	T:0	N:0	total:2
-29	A:2	C:0	G:0	T:0	N:0	total:2
-30	A:0	C:0	G:0	T:0	N:0	total:0
-31	A:0	C:0	G:9	T:3	N:0	total:12
-32	A:0	C:0	G:0	T:0	N:0	total:0
-33	A:0	C:0	G:0	T:0	N:0	total:0
-34	A:0	C:1	G:5	T:2	N:0	total:8
-35	A:0	C:2	G:0	T:3	N:0	total:5
-36	A:0	C:6	G:10	T:2	N:7	total:25
-37	A:0	C:1	G:1	T:4	N:0	total:6
-38	A:0	C:1	G:0	T:0	N:0	total:1
-39	A:0	C:0	G:0	T:0	N:0	total:0
-40	A:5	C:6	G:10	T:0	N:5	total:26
-41	A:1	C:0	G:0	T:0	N:0	total:1
-42	A:0	C:0	G:0	T:0	N:0	total:0
-43	A:0	C:0	G:2	T:0	N:0	total:2
-44	A:2	C:0	G:0	T:0	N:10	total:12
-45	A:0	C:1	G:0	T:0	N:0	total:1
-46	A:2	C:5	G:3	T:0	N:3	total:13
-47	A:0	C:0	G:0	T:0	N:0	total:0
-48	A:0	C:0	G:0	T:0	N:0	total:0
-49	A:0	C:0	G:0	T:0	N:0	total:0
-50	A:0	C:0	G:0	T:1	N:0	total:1
-51	A:0	C:0	G:0	T:0	N:0	total:0
-52	A:0	C:3	G:0	T:0	N:0	total:3
-53	A:5	C:2	G:0	T:0	N:0	total:7
-54	A:1	C:0	G:0	T:0	N:0	total:1
-55	A:0	C:0	G:0	T:0	N:0	total:0
-56	A:0	C:2	G:5	T:0	N:0	total:7
-57	A:0	C:0	G:2	T:0	N:0	total:2
-58	A:0	C:0	G:0	T:0	N:0	total:0
-59	A:0	C:0	G:5	T:0	N:0	total:5
-60	A:0	C:0	G:1	T:1	N:0	total:2
-61	A:0	C:0	G:0	T:0	N:0	total:0
-62	A:0	C:0	G:0	T:0	N:0	total:0
-63	A:2	C:0	G:5	T:0	N:0	total:7
-64	A:372	C:5	G:0	T:2	N:0	total:379
-65	A:0	C:0	G:5	T:0	N:0	total:5
-66	A:0	C:0	G:0	T:0	N:0	total:0
-67	A:3	C:0	G:0	T:0	N:0	total:3
-68	A:0	C:0	G:0	T:0	N:0	total:0
-69	A:1	C:0	G:0	T:0	N:0	total:1
-70	A:0	C:0	G:2	T:0	N:0	total:2
-71	A:0	C:2	G:0	T:0	N:0	total:2
+31	0.08877284595300261
+84	0.5684485006518905
+93	0.4244415243101183
+mismatch stat:
+1	ref:C	A:2	C:0	G:0	T:0	N:0	total:     2	coverage:768
+2	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+3	ref:A	A:0	C:0	G:4	T:0	N:0	total:     4	coverage:768
+4	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+5	ref:G	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
+6	ref:A	A:0	C:0	G:6	T:2	N:0	total:     8	coverage:768
+7	ref:T	A:0	C:2	G:1	T:0	N:0	total:     3	coverage:768
+8	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+9	ref:G	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
+10	ref:C	A:0	C:0	G:2	T:0	N:0	total:     2	coverage:768
+11	ref:T	A:0	C:2	G:0	T:0	N:0	total:     2	coverage:768
+12	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+13	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+14	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+15	ref:T	A:4	C:4	G:7	T:0	N:0	total:    15	coverage:768
+16	ref:T	A:1	C:2	G:0	T:0	N:0	total:     3	coverage:768
+17	ref:T	A:0	C:3	G:0	T:0	N:0	total:     3	coverage:768
+18	ref:G	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
+19	ref:A	A:0	C:0	G:2	T:1	N:0	total:     3	coverage:768
+20	ref:T	A:0	C:5	G:0	T:0	N:0	total:     5	coverage:768
+21	ref:T	A:0	C:4	G:0	T:0	N:0	total:     4	coverage:768
+22	ref:T	A:0	C:1	G:0	T:0	N:0	total:     1	coverage:768
+23	ref:A	A:0	C:0	G:2	T:0	N:0	total:     2	coverage:768
+24	ref:T	A:0	C:3	G:0	T:0	N:0	total:     3	coverage:768
+25	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+26	ref:A	A:0	C:0	G:5	T:3	N:0	total:     8	coverage:768
+27	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+28	ref:T	A:0	C:2	G:0	T:0	N:0	total:     2	coverage:768
+29	ref:G	A:2	C:0	G:0	T:0	N:0	total:     2	coverage:768
+30	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+31	ref:A	A:0	C:0	G:8	T:3	N:0	total:    11	coverage:768
+32	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+33	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+34	ref:A	A:0	C:1	G:5	T:2	N:0	total:     8	coverage:768
+35	ref:G	A:0	C:2	G:0	T:3	N:0	total:     5	coverage:768
+36	ref:A	A:0	C:6	G:10	T:2	N:7	total:    25	coverage:768
+37	ref:A	A:0	C:1	G:1	T:4	N:0	total:     6	coverage:768
+38	ref:G	A:0	C:1	G:0	T:0	N:0	total:     1	coverage:768
+39	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+40	ref:T	A:5	C:6	G:9	T:0	N:5	total:    25	coverage:768
+41	ref:C	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
+42	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+43	ref:A	A:0	C:0	G:2	T:0	N:0	total:     2	coverage:768
+44	ref:C	A:2	C:0	G:0	T:0	N:9	total:    11	coverage:768
+45	ref:T	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+46	ref:T	A:1	C:5	G:3	T:0	N:3	total:    12	coverage:768
+47	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+48	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+49	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+50	ref:A	A:0	C:0	G:0	T:1	N:0	total:     1	coverage:768
+51	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+52	ref:T	A:0	C:3	G:0	T:0	N:0	total:     3	coverage:768
+53	ref:G	A:5	C:2	G:0	T:0	N:0	total:     7	coverage:768
+54	ref:C	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
+55	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+56	ref:A	A:0	C:1	G:5	T:0	N:0	total:     6	coverage:768
+57	ref:A	A:0	C:0	G:2	T:0	N:0	total:     2	coverage:768
+58	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+59	ref:C	A:0	C:0	G:5	T:0	N:0	total:     5	coverage:768
+60	ref:A	A:0	C:0	G:0	T:1	N:0	total:     1	coverage:768
+61	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+62	ref:G	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+63	ref:C	A:2	C:0	G:5	T:0	N:0	total:     7	coverage:768
+64	ref:G	A:356	C:5	G:0	T:2	N:0	total:   363	coverage:768
+65	ref:A	A:0	C:0	G:5	T:0	N:0	total:     5	coverage:768
+66	ref:C	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+67	ref:C	A:3	C:0	G:0	T:0	N:0	total:     3	coverage:768
+68	ref:T	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
+69	ref:G	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
+70	ref:C	A:0	C:0	G:2	T:0	N:0	total:     2	coverage:640
+71	ref:T	A:0	C:2	G:0	T:0	N:0	total:     2	coverage:505
