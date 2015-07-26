@@ -86,11 +86,11 @@ public class ReadAnalysisResult {
 						}
 						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == '@') {
-						cpg = new CpGSitePattern(i, false);
+						cpg = new CpGSitePattern(i, true);
 						if (i + 1 < regionLength && items[0].charAt(i + 1) == '@') {
 							i++;
 						} else if (i == 0) {
-							cpg = new CpGSitePattern(i - 1, false);
+							cpg = new CpGSitePattern(i - 1, true);
 						}
 						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||

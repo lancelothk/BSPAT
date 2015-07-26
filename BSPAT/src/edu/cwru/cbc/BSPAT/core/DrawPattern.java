@@ -102,9 +102,6 @@ public class DrawPattern {
 
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			int startPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
-			int endPos = statList.get(statList.size() - 1)
-					.getPosition() == targetLength - 1 ? targetLength - 1 : statList.get(statList.size() - 1)
-					.getPosition() + 1;
 			if (strand.equals("-")) {
 				endCoor = endCoor - startPos;
 				beginCoor = endCoor - targetLength + 1;
