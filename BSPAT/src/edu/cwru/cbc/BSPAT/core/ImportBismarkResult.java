@@ -133,7 +133,11 @@ public class ImportBismarkResult {
 						if (seq != null) {
 							// substract two bps from the start position to match original reference
 							// Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-							CpGSite cpg = new CpGSite(Integer.parseInt(items[3]) - 3, items[1].equals("+"));
+							int cpgPos = Integer.parseInt(items[3]) - 3;
+							if (seq.getStrand().equals("BOTTOM")) {
+								cpgPos--;
+							}
+							CpGSite cpg = new CpGSite(cpgPos, items[1].equals("+"));
 							seq.addCpG(cpg);
 						}
 						line = buffReader.readLine();

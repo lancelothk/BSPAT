@@ -215,9 +215,6 @@ public class Sequence {
 		}
 		for (CpGSite cpg : this.getCpGSites()) {
 			int cpgPos = cpg.getPosition();
-			if (this.getStrand().equals("BOTTOM")) {
-				cpgPos--;
-			}
 			if (cpg.isMethylated()) {
 				// methylated CpG site represent by @@
 				if (isInSeq(cpgPos)) {
