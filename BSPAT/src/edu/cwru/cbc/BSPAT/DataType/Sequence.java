@@ -245,6 +245,9 @@ public class Sequence {
 	public boolean isCpGSite(int pos) {
 		for (CpGSite cpGSite : this.CpGSites) {
 			int cpgPos = cpGSite.getPosition();
+			if (strand.equals("BOTTOM")) {
+				cpgPos++;
+			}
 			if ((pos + startPos) == cpgPos) {
 				return true;
 			}

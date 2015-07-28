@@ -26,9 +26,9 @@ public class SequenceTest {
 		seq2.addCpG(new CpGSite(88, true));
 		seq2.processSequence(ref);
 
-		seq3.addCpG(new CpGSite(27, true));
-		seq3.addCpG(new CpGSite(80, false));
-		seq3.addCpG(new CpGSite(89, true));
+		seq3.addCpG(new CpGSite(26, true));
+		seq3.addCpG(new CpGSite(79, false));
+		seq3.addCpG(new CpGSite(88, true));
 		seq3.processSequence(ref);
 
 
@@ -58,7 +58,7 @@ public class SequenceTest {
 		Sequence seqBPTop = new Sequence("1", "TOP", "test", 1, "GAAG");
 		Sequence seqBPBottom = new Sequence("1", "BOTTOM", "test", 1, "GAAG");
 		seqBPTop.addCpG(new CpGSite(0, true));
-		seqBPBottom.addCpG(new CpGSite(1, false));
+		seqBPBottom.addCpG(new CpGSite(0, false));
 		seqBPTop.processSequence(beginningPartialCpGRef);
 		seqBPBottom.processSequence(beginningPartialCpGRef);
 		assertEquals("@---", seqBPTop.getMethylationString());
@@ -68,7 +68,7 @@ public class SequenceTest {
 		Sequence seqEPTop = new Sequence("1", "TOP", "test", 0, "GGAAC");
 		Sequence seqEPBottom = new Sequence("1", "BOTTOM", "test", 0, "AAAAC");
 		seqEPTop.addCpG(new CpGSite(4, true));
-		seqEPBottom.addCpG(new CpGSite(5, false));
+		seqEPBottom.addCpG(new CpGSite(4, false));
 		seqEPTop.processSequence(endPartialCpGRef);
 		seqEPBottom.processSequence(endPartialCpGRef);
 		assertEquals("----@", seqEPTop.getMethylationString());
