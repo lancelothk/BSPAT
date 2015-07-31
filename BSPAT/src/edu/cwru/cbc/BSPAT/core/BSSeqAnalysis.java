@@ -82,13 +82,13 @@ public class BSSeqAnalysis {
 				tmpTargetRefSeq = refSeq.substring(targetStart,
 						targetEnd + 1);
 			}
-			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart;
-			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart;
+			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
+			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
 			boolean isStartCpGPartial = (startCpGPos == targetStart - 1);
 			boolean isEndCpGPartial = (endCpGPos == targetEnd);
-			int cpgBoundedStart = isStartCpGPartial ? startCpGPos + 1 : startCpGPos;
-			int cpgBoundedEnd = isEndCpGPartial ? endCpGPos : endCpGPos + 1;
+			int cpgBoundedStart = isStartCpGPartial ? startCpGPos + 2 : startCpGPos + 1;
+			int cpgBoundedEnd = isEndCpGPartial ? endCpGPos + 1 : endCpGPos + 2;
 			String cpgRefSeq = refSeq.substring(cpgBoundedStart, cpgBoundedEnd + 1);
 
 			// processing sequences

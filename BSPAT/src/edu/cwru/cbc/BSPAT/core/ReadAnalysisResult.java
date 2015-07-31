@@ -83,6 +83,8 @@ public class ReadAnalysisResult {
 							i++;
 						} else if (i == 0) {
 							cpg = new CpGSitePattern(i - 1, false);
+						} else if (items[0].charAt(i - 1) != '-') {
+							cpg = new CpGSitePattern(i - 1, false);
 						}
 						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == '@') {
@@ -91,6 +93,8 @@ public class ReadAnalysisResult {
 							i++;
 						} else if (i == 0) {
 							cpg = new CpGSitePattern(i - 1, true);
+						} else if (items[0].charAt(i - 1) != '-') {
+							cpg = new CpGSitePattern(i - 1, false);
 						}
 						patternResult.addCpG(cpg);
 					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
