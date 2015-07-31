@@ -128,13 +128,13 @@ public class IntegrationTest {
 
 		verify(request, Mockito.times(1)).getRequestDispatcher("analysisResult.jsp");
 
-		assertEquals("Sequence number cover target region", 1042,
+		assertEquals("Sequence number cover target region", 1316,
 				myAnswer.resultConstant.seqCountSummary.getSeqTargetBounded());
-		assertEquals("Sequence number after filtering", 1010,
+		assertEquals("Sequence number after filtering", 1280,
 				myAnswer.resultConstant.seqCountSummary.getSeqTargetAfterFilter());
-		assertEquals("Sequences don't cover whole target but cover all CpGs", 538,
+		assertEquals("Sequences don't cover whole target but cover all CpGs", 264,
 				myAnswer.resultConstant.seqCountSummary.getSeqCpGBounded());
-		assertEquals("CpG bounded Sequence number after filtering", 526,
+		assertEquals("CpG bounded Sequence number after filtering", 256,
 				myAnswer.resultConstant.seqCountSummary.getSeqCpGAfterFilter());
 		assertEquals("Sequences cover neither target nor all CpGs", 6,
 				myAnswer.resultConstant.seqCountSummary.getSeqOthers());
