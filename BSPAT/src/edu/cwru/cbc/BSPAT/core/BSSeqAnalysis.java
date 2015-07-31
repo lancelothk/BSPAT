@@ -202,33 +202,35 @@ public class BSSeqAnalysis {
 			// if no given targetCoor, get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
 			if (!targetCoorMap.containsKey(key)) {
 				String refString = referenceSeqs.get(key);
-				int firstPos = refString.indexOf("CG");
-				// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
-				if (firstPos == -1) {
-					if (refCoorMap.get(key).getStrand().equals("+")) {
+				String strand = refCoorMap.get(key).getStrand();
+				if (strand.equals("+")) {
+					int firstPos = refString.indexOf("CG");
+					if (firstPos == -1) {
+						// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
 						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								refCoorMap.get(key).getStrand(), refCoorMap.get(key).getStart(),
+								strand, refCoorMap.get(key).getStart(),
 								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
-					} else if (refCoorMap.get(key).getStrand().equals("-")) {
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								refCoorMap.get(key).getStrand(), refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH,
-								refCoorMap.get(key).getEnd()));
-					}
-				} else {
-					// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
-					if (refCoorMap.get(key).getStrand().equals("+")) {
+					} else {
+						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
 						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								refCoorMap.get(key).getStrand(), refCoorMap.get(key).getStart() + firstPos,
-								endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
-					} else if (refCoorMap.get(key).getStrand().equals("-")) {
-						int endPos = refCoorMap.get(key).getEnd();
-						int startPos = +firstPos + DEFAULT_TARGET_LENGTH;
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								refCoorMap.get(key).getStrand(), refCoorMap.get(key).getStart() + firstPos,
-								endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
+						targetCoorMap.put(key,
+								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
+										refCoorMap.get(key).getStart() + firstPos,
+										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
 					}
-
+				} else if (strand.equals("-")) {
+					int firstPos = refString.lastIndexOf("CG") + 1;
+					if (firstPos == -1) {
+						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
+								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH,
+								refCoorMap.get(key).getEnd()));
+					} else {
+						int startPos = refCoorMap.get(key).getEnd() - firstPos - DEFAULT_TARGET_LENGTH;
+						targetCoorMap.put(key,
+								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
+										startPos > refCoorMap.get(key).getStart() ? startPos : refCoorMap.get(key)
+												.getStart(), refCoorMap.get(key).getEnd()));
+					}
 				}
 			}
 		}
