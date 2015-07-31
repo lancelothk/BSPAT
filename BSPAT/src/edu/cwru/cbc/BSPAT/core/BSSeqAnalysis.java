@@ -82,8 +82,8 @@ public class BSSeqAnalysis {
 				tmpTargetRefSeq = refSeq.substring(targetStart,
 						targetEnd + 1);
 			}
-			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
-			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
+			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart;
+			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
 			boolean isStartCpGPartial = (startCpGPos == targetStart - 1);
 			boolean isEndCpGPartial = (endCpGPos == targetEnd);
@@ -212,24 +212,26 @@ public class BSSeqAnalysis {
 								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
 					} else {
 						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
+						int startPos = refCoorMap.get(key).getStart() + firstPos;
 						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
-										refCoorMap.get(key).getStart() + firstPos,
+										startPos,
 										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
 					}
 				} else if (strand.equals("-")) {
-					int firstPos = refString.lastIndexOf("CG") + 1;
+					int firstPos = refString.lastIndexOf("CG") + 2;
 					if (firstPos == -1) {
 						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
 								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH,
 								refCoorMap.get(key).getEnd()));
 					} else {
-						int startPos = refCoorMap.get(key).getEnd() - firstPos - DEFAULT_TARGET_LENGTH;
+						int startPos = refCoorMap.get(key).getEnd() - firstPos;
+						int endPos = startPos + DEFAULT_TARGET_LENGTH;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
-										startPos > refCoorMap.get(key).getStart() ? startPos : refCoorMap.get(key)
-												.getStart(), refCoorMap.get(key).getEnd()));
+										startPos,
+										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
 					}
 				}
 			}
@@ -543,7 +545,6 @@ public class BSSeqAnalysis {
 	private int[][] calculateMismatchStat(String targetRefSeq, int targetStart, int targetEnd,
 	                                      List<Sequence> targetSequencesList) {
 		int[][] mismatchStat = new int[targetRefSeq.length()][6]; // 6 possible values.
-		// TODO double check and refactor
 		for (Sequence seq : targetSequencesList) {
 			char[] seqArray = seq.getOriginalSeq().toCharArray();
 			Arrays.fill(seqArray, '-');
