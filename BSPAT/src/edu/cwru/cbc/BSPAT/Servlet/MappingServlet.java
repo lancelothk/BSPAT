@@ -86,7 +86,7 @@ public class MappingServlet extends HttpServlet {
 			constant.refVersion = request.getParameter("refVersion");
 			constant.coorFileName = "coordinates.coor";
 			constant.qualsType = request.getParameter("qualsType");
-			constant.maxmis = Integer.valueOf(request.getParameter("maxmis"));
+			constant.maxmis = Integer.parseInt(request.getParameter("maxmis"));
 			constant.experiments = experiments;
 			constant.email = request.getParameter("email");
 			// execute BLAT query
@@ -105,7 +105,7 @@ public class MappingServlet extends HttpServlet {
 
 			// multiple threads to execute bismark mapping
 			ExecutorService executor;
-			if (Boolean.valueOf(properties.getProperty("useSingleThread"))) {
+			if (Boolean.parseBoolean(properties.getProperty("useSingleThread"))) {
 				executor = Executors.newSingleThreadExecutor(); // single thread
 			} else {
 				executor = Executors.newCachedThreadPool(); // multiple threads
@@ -184,7 +184,7 @@ public class MappingServlet extends HttpServlet {
 				// save ref file in ref folder
 				IO.saveFileToDisk(part, constant.originalRefPath, fileName);
 			} else if (fieldName.startsWith("seqFile")) { // deal with uploaded seq file
-				int seqFileIndex = Integer.valueOf(part.getName().replace("seqFile", ""));
+				int seqFileIndex = Integer.parseInt(part.getName().replace("seqFile", ""));
 				for (Experiment experiment : experiments) { // match file index and seq file index
 					if (experiment.getIndex() == seqFileIndex) {
 						experiment.setSeqFile(fileName);

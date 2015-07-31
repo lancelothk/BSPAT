@@ -262,9 +262,17 @@ public class DrawPattern {
 		// set snp info
 		if (patternWithAllele.hasAllele()) {
 			List<SNP> snpList;
-			snpList = retreiveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
-					patternResultPath, logPath) +
-					patternWithAllele.getAlleleList().get(0), "1");
+			int snpQueryPos;
+			if (strand.equals("+")) {
+				snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
+						patternResultPath, logPath) + patternWithAllele.getAlleleList().get(0);
+			} else if (strand.equals("-")) {
+				snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getEnd(), "hg38",
+						patternResultPath, logPath) - patternWithAllele.getAlleleList().get(0);
+			} else {
+				throw new RuntimeException("invalid strand:" + strand);
+			}
+			snpList = retreiveSNP(chr, snpQueryPos, "1");
 			if (snpList != null && snpList.size() > 0) {
 				reportSummary.setASMsnp(snpList.get(0));
 			}
@@ -383,7 +391,7 @@ public class DrawPattern {
 		return snps;
 	}
 
-	private long convertCoordinates(String chr, long pos, String targetRefVersion, String patternResultPath,
+	private int convertCoordinates(String chr, int pos, String targetRefVersion, String patternResultPath,
 	                                String logPath) throws IOException, InterruptedException {
 		if (refVersion.equals(targetRefVersion)) {
 			return pos;
@@ -421,7 +429,7 @@ public class DrawPattern {
 			throw new RuntimeException("Failed to delete: " + originPosFile.getAbsolutePath());
 		}
 		IO.deleteFiles(patternResultPath, new String[]{".bed", ".bedmapped", ".bedunmapped"});
-		return Long.valueOf(items[1].split("-")[0]);
+		return Integer.parseInt(items[1].split("-")[0]);
 	}
 
 }

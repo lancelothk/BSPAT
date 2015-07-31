@@ -47,8 +47,8 @@ public class ReadAnalysisResult {
 					break;
 				}
 				// start from target start. 0-based.
-				CpGStatistics cpgStat = new CpGStatistics(Integer.valueOf(items[0]) - targetStart);
-				cpgStat.setMethylLevel(Double.valueOf(items[1]));
+				CpGStatistics cpgStat = new CpGStatistics(Integer.parseInt(items[0]) - targetStart);
+				cpgStat.setMethylLevel(Double.parseDouble(items[1]));
 				statList.add(cpgStat);
 				line = statBuffReader.readLine();
 			}
@@ -103,8 +103,8 @@ public class ReadAnalysisResult {
 					}
 				}
 				patternResultLists.add(patternResult);
-				patternResult.setCount(Integer.valueOf(items[1]));
-				patternResult.setPercent(Double.valueOf(items[2]));
+				patternResult.setCount(Integer.parseInt(items[1]));
+				patternResult.setPercent(Double.parseDouble(items[2]));
 				line = patternBuffReader.readLine();
 			}
 		}

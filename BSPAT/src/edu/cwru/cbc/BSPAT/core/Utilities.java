@@ -72,8 +72,8 @@ public class Utilities {
 					if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
 						// first query match, score equals query size
 						coorHashMap.put(items[0],
-								new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
-										Integer.valueOf(items[9])));
+								new Coordinate(items[0], items[6], items[7], Integer.parseInt(items[8]),
+										Integer.parseInt(items[9])));
 					}
 				}
 			}
