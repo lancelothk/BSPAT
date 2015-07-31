@@ -209,10 +209,10 @@ public class BSSeqAnalysis {
 						// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
 						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
 								strand, refCoorMap.get(key).getStart(),
-								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
+								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH - 1));
 					} else {
 						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
-						int startPos = refCoorMap.get(key).getStart() + firstPos;
+						int startPos = refCoorMap.get(key).getStart() + firstPos - 1;
 						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
@@ -224,9 +224,9 @@ public class BSSeqAnalysis {
 					if (firstPos == -1) {
 						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
 								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH,
-								refCoorMap.get(key).getEnd()));
+								refCoorMap.get(key).getEnd() - 1));
 					} else {
-						int startPos = refCoorMap.get(key).getEnd() - firstPos;
+						int startPos = refCoorMap.get(key).getEnd() - firstPos - 1;
 						int endPos = startPos + DEFAULT_TARGET_LENGTH;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
