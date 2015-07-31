@@ -74,21 +74,22 @@ public class BSSeqAnalysis {
 					.length()) {
 				throw new RuntimeException("invalid target coordinates! out of reference!");
 			}
-			String tmpTargetRefSeq;
-			if (targetStart != 0 && targetEnd != refSeq.length() - 1) {
-				tmpTargetRefSeq = refSeq.substring(targetStart - 1,
-						targetEnd + 2); // used to include one more bp on both ends to detect CpG sites.
-			} else {
-				tmpTargetRefSeq = refSeq.substring(targetStart,
-						targetEnd + 1);
+			int tmpStart = 0, tmpEnd = 0;
+			// used to include one more bp on both ends to detect CpG sites.
+			if (targetStart != 0) {
+				tmpStart--;
 			}
-			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
-			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
+			if (targetEnd != refSeq.length() - 1) {
+				tmpEnd++;
+			}
+			String tmpTargetRefSeq = refSeq.substring(targetStart + tmpStart, targetEnd + tmpEnd + 1);
+			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart + tmpStart;
+			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart + tmpStart;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
 			boolean isStartCpGPartial = (startCpGPos == targetStart - 1);
 			boolean isEndCpGPartial = (endCpGPos == targetEnd);
-			int cpgBoundedStart = isStartCpGPartial ? startCpGPos + 2 : startCpGPos + 1;
-			int cpgBoundedEnd = isEndCpGPartial ? endCpGPos + 1 : endCpGPos + 2;
+			int cpgBoundedStart = isStartCpGPartial ? startCpGPos + 1 : startCpGPos;
+			int cpgBoundedEnd = isEndCpGPartial ? endCpGPos : endCpGPos + 1;
 			String cpgRefSeq = refSeq.substring(cpgBoundedStart, cpgBoundedEnd + 1);
 
 			// processing sequences
@@ -212,8 +213,8 @@ public class BSSeqAnalysis {
 								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH - 1));
 					} else {
 						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
-						int startPos = refCoorMap.get(key).getStart() + firstPos - 1;
-						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
+						int startPos = refCoorMap.get(key).getStart() + firstPos;
+						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH - 1;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
 										startPos,
@@ -223,10 +224,10 @@ public class BSSeqAnalysis {
 					int firstPos = refString.lastIndexOf("CG") + 2;
 					if (firstPos == -1) {
 						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH,
-								refCoorMap.get(key).getEnd() - 1));
+								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH + 1,
+								refCoorMap.get(key).getEnd()));
 					} else {
-						int startPos = refCoorMap.get(key).getEnd() - firstPos - 1;
+						int startPos = refCoorMap.get(key).getEnd() - firstPos + 1;
 						int endPos = startPos + DEFAULT_TARGET_LENGTH;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
