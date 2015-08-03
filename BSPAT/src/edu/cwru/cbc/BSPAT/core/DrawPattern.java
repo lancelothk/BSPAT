@@ -62,17 +62,14 @@ public class DrawPattern {
 	}
 
 	private void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height, int left,
-	                              String chr, String beginCoor, String endCoor, int refLength,
+	                              String coordinate, int refLength,
 	                              List<CpGStatistics> cpGStatisticsList) {
 		// 1. add coordinates
 		graphWriter.setBackground(Color.WHITE);
 		graphWriter.clearRect(0, 0, imageWidth, imageHeight);
 		graphWriter.setPaint(Color.BLACK);
 		graphWriter.setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
-		graphWriter.drawString(String.format("chr%s:(%s)%s", chr, strand, beginCoor), left, height);
-		int endCoorLeft = left + (refLength - 1) * BPWIDTH;
-		int beginCoorRight = left + (beginCoor.length() + chr.length()) * 15 + BPWIDTH;
-		graphWriter.drawString(endCoor, endCoorLeft > beginCoorRight ? endCoorLeft : beginCoorRight, height);
+		graphWriter.drawString(coordinate, left, height);
 
 		// 2. add reference bar
 		graphWriter.setStroke(new BasicStroke(2.0f));
@@ -99,6 +96,7 @@ public class DrawPattern {
 		String strand = data.getCoordinate().getStrand();
 		int beginCoor = data.getCoordinate().getStart();
 		int endCoor = data.getCoordinate().getEnd();
+		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			int startPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
@@ -121,11 +119,10 @@ public class DrawPattern {
 		}
 
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.1);
+		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
 
-		int imageWidth = targetLength * BPWIDTH + left + (Integer.toString(beginCoor).length() + Integer.toString(
-				endCoor)
-				.length() + chr.length()) * 15;
+		int imageWidth = left + ((targetLength * BPWIDTH + 13 * 20) > coordinate.length() * COMMON_FONT_SIZE / 2 ? targetLength * BPWIDTH + 13 * 20 : coordinate
+				.length() * COMMON_FONT_SIZE / 2);
 		int imageHeight = FIGURE_STARTY + 180 + patternResultLists.size() * HEIGHT_INTERVAL;
 
 		FigureWriter methylWriter = new FigureWriter(patternResultPath, figureFormat, region,
@@ -134,8 +131,8 @@ public class DrawPattern {
 		patternLink.setGBResultLink(methylWriter.getGBLinkFileName());
 		patternLink.setFigureResultLink(methylWriter.getFigureName());
 
-		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left, chr,
-				String.valueOf(beginCoor), String.valueOf(endCoor), targetLength, statList);
+		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left, coordinate, targetLength,
+				statList);
 
 		// 4. add CpG sites
 		DecimalFormat percent = new DecimalFormat("##.00%");
@@ -204,11 +201,13 @@ public class DrawPattern {
 		String strand = data.getCoordinate().getStrand();
 		int beginCoor = data.getCoordinate().getStart();
 		int endCoor = data.getCoordinate().getEnd();
+		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 		List<CpGStatistics> statList = data.getStatList();
 
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.1);
-		int imageWidth = refLength * BPWIDTH + left + 240;
+		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
+		int imageWidth = left + ((refLength * BPWIDTH + 13 * 20) > coordinate.length() * COMMON_FONT_SIZE / 2 ? refLength * BPWIDTH + 13 * 20 : coordinate
+				.length() * COMMON_FONT_SIZE / 2);
 		int imageHeight = FIGURE_STARTY + 180 + 10 * HEIGHT_INTERVAL;
 
 		FigureWriter ASMWriter = new FigureWriter(patternResultPath, figureFormat, region, "ASM", imageWidth,
@@ -216,8 +215,8 @@ public class DrawPattern {
 		reportSummary.setASMGBLink(ASMWriter.getGBLinkFileName());
 		reportSummary.setASMFigureLink(ASMWriter.getFigureName());
 
-		buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left, chr,
-				String.valueOf(beginCoor), String.valueOf(endCoor), refLength, statList);
+		buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left, coordinate, refLength,
+				statList);
 
 		DecimalFormat percent = new DecimalFormat("##.00%");
 
@@ -240,6 +239,7 @@ public class DrawPattern {
 						endCoor, strand, beginCoor - 1, beginCoor - 1));
 		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithoutAllele.getCpGList(), chr, beginCoor,
 				"PatternA", ASMWriter.getBedWriter(), height, left);
+		ASMWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 		addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, beginCoor,
 				height + HEIGHT_INTERVAL, left);
 		height += HEIGHT_INTERVAL * 1.5;
@@ -257,6 +257,7 @@ public class DrawPattern {
 		height += 2 * HEIGHT_INTERVAL;
 		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithAllele.getCpGList(), chr, beginCoor, "PatternB",
 				ASMWriter.getBedWriter(), height, left);
+		ASMWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 		addAllele(patternWithAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, beginCoor,
 				height + HEIGHT_INTERVAL, left);
 		// set snp info
@@ -395,7 +396,7 @@ public class DrawPattern {
 	}
 
 	private int convertCoordinates(String chr, int pos, String targetRefVersion, String patternResultPath,
-	                                String logPath) throws IOException, InterruptedException {
+	                               String logPath) throws IOException, InterruptedException {
 		if (refVersion.equals(targetRefVersion)) {
 			return pos;
 		}
