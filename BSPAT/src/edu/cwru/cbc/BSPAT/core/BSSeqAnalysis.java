@@ -16,7 +16,6 @@ import java.util.*;
  * @author Ke
  */
 public class BSSeqAnalysis {
-	public static final int DEFAULT_TARGET_LENGTH = 70;
 	public static final double ASM_PATTERN_THRESHOLD = 0.2;
 	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 	public static final double MEMU_PATTERN_THRESHOLD = 0.1;
@@ -38,12 +37,12 @@ public class BSSeqAnalysis {
 			throw new RuntimeException("mapping result is empty, please double check input!");
 		}
 
-		// 1. read refCoorMap / targetCoorMap
-		Map<String, Coordinate> refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
-		Map<String, Coordinate> targetCoorMap = getStringCoordinateMap(constant, referenceSeqs, refCoorMap);
-
-		// 2. group seqs by region
+		// 1. group seqs by region
 		Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, Sequence::getRegion);
+
+		// 2. read refCoorMap / targetCoorMap
+		Map<String, Coordinate> refCoorMap = IO.readCoordinates(constant.coorFilePath, constant.coorFileName);
+		Map<String, Coordinate> targetCoorMap = getStringCoordinateMap(constant, refCoorMap, sequenceGroupMap);
 
 		// 3. perform analysis for each region
 		for (String region : sequenceGroupMap.keySet()) {
@@ -196,44 +195,29 @@ public class BSSeqAnalysis {
 		return reportSummaries;
 	}
 
-	private Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, String> referenceSeqs,
-	                                                       Map<String, Coordinate> refCoorMap) {
+	private Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, Coordinate> refCoorMap,
+	                                                       Map<String, List<Sequence>> sequenceGroupMap) {
 		Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
-		for (String key : refCoorMap.keySet()) {
+		for (Map.Entry<String, Coordinate> entry : refCoorMap.entrySet()) {
 			// if no given targetCoor, get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
-			if (!targetCoorMap.containsKey(key)) {
-				String refString = referenceSeqs.get(key);
-				String strand = refCoorMap.get(key).getStrand();
+			if (!targetCoorMap.containsKey(entry.getKey())) {
+				String strand = entry.getValue().getStrand();
 				if (strand.equals("+")) {
-					int firstPos = refString.indexOf("CG");
-					if (firstPos == -1) {
-						// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								strand, refCoorMap.get(key).getStart(),
-								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH - 1));
-					} else {
-						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
-						int startPos = refCoorMap.get(key).getStart() + firstPos;
-						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH - 1;
-						targetCoorMap.put(key,
-								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
-										startPos,
-										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
-					}
+					List<Sequence> sequenceList = sequenceGroupMap.get(entry.getKey());
+					sequenceList.sort((s1, s2) -> s1.getStartPos() - s2.getStartPos());
+					targetCoorMap.put(entry.getKey(),
+							new Coordinate(entry.getValue().getId(), entry.getValue().getChr(), strand,
+									entry.getValue().getStart() + sequenceList.get(0).getStartPos(),
+									entry.getValue().getStart() + sequenceList.get(0).getEndPos()));
 				} else if (strand.equals("-")) {
-					int firstPos = refString.lastIndexOf("CG") + 2;
-					if (firstPos == -1) {
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH + 1,
-								refCoorMap.get(key).getEnd()));
-					} else {
-						int startPos = refCoorMap.get(key).getEnd() - firstPos + 1;
-						int endPos = startPos + DEFAULT_TARGET_LENGTH;
-						targetCoorMap.put(key,
-								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
-										startPos,
-										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
-					}
+					List<Sequence> sequenceList = sequenceGroupMap.get(entry.getKey());
+					sequenceList.sort((s1, s2) -> s1.getEndPos() - s2.getEndPos());
+					targetCoorMap.put(entry.getKey(),
+							new Coordinate(entry.getValue().getId(), entry.getValue().getChr(), strand,
+									entry.getValue().getStart() + sequenceList.get(sequenceList.size() - 1)
+											.getStartPos(),
+									entry.getValue().getStart() + sequenceList.get(sequenceList.size() - 1)
+											.getEndPos()));
 				}
 			}
 		}
