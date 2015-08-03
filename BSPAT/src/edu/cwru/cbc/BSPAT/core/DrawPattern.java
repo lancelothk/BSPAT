@@ -121,7 +121,7 @@ public class DrawPattern {
 		}
 
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + cellLine.length() * CELLLINE_CHAR_LENGTH;
+		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.1);
 
 		int imageWidth = targetLength * BPWIDTH + left + (Integer.toString(beginCoor).length() + Integer.toString(
 				endCoor)
@@ -207,7 +207,7 @@ public class DrawPattern {
 		List<CpGStatistics> statList = data.getStatList();
 
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + cellLine.length() * CELLLINE_CHAR_LENGTH;
+		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.1);
 		int imageWidth = refLength * BPWIDTH + left + 240;
 		int imageHeight = FIGURE_STARTY + 180 + 10 * HEIGHT_INTERVAL;
 
@@ -263,14 +263,17 @@ public class DrawPattern {
 		if (patternWithAllele.hasAllele()) {
 			List<SNP> snpList;
 			int snpQueryPos;
-			if (strand.equals("+")) {
-				snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
-						patternResultPath, logPath) + patternWithAllele.getAlleleList().get(0);
-			} else if (strand.equals("-")) {
-				snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getEnd(), "hg38",
-						patternResultPath, logPath) - patternWithAllele.getAlleleList().get(0);
-			} else {
-				throw new RuntimeException("invalid strand:" + strand);
+			switch (strand) {
+				case "+":
+					snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
+							patternResultPath, logPath) + patternWithAllele.getAlleleList().get(0);
+					break;
+				case "-":
+					snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getEnd(), "hg38",
+							patternResultPath, logPath) - patternWithAllele.getAlleleList().get(0);
+					break;
+				default:
+					throw new RuntimeException("invalid strand:" + strand);
 			}
 			snpList = retreiveSNP(chr, snpQueryPos, "1");
 			if (snpList != null && snpList.size() > 0) {
