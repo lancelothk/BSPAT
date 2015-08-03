@@ -10,6 +10,7 @@
 </head>
 <%@ page import="edu.cwru.cbc.BSPAT.DataType.Constant, edu.cwru.cbc.BSPAT.DataType.Experiment" %>
 <%@ page import="edu.cwru.cbc.BSPAT.DataType.PatternLink" %>
+<%@ page import="edu.cwru.cbc.BSPAT.core.BSSeqAnalysis" %>
 <%@ page import="edu.cwru.cbc.BSPAT.core.ReportSummary" %>
 <%@ page import="edu.cwru.cbc.BSPAT.core.Utilities" %>
 <body>
@@ -145,6 +146,22 @@
                     <td>SNP threshold:</td>
                     <td><%=constant.SNPThreshold%>
                     </td>
+                </tr>
+                <tr>
+                    <td>Target coordinates used:</td>
+                    <%
+                        if (constant.targetFileName == null) {
+                    %>
+                    <td>Use default first <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp as target region</td>
+                    <%
+                    } else {
+                    %>
+                    <td><a href=<%=constant.getAbsolutePathTargetCoorFile()%>><%=constant.targetFileName%>
+                    </a>
+                    </td>
+                    <%
+                        }
+                    %>
                 </tr>
             </table>
             <p class="dottedline"></p>
