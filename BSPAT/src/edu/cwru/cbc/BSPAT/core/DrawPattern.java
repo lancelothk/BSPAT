@@ -69,7 +69,7 @@ public class DrawPattern {
 		graphWriter.clearRect(0, 0, imageWidth, imageHeight);
 		graphWriter.setPaint(Color.BLACK);
 		graphWriter.setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
-		graphWriter.drawString("chr" + chr + ":" + beginCoor, left, height);
+		graphWriter.drawString(String.format("chr%s:(%s)%s", chr, strand, beginCoor), left, height);
 		int endCoorLeft = left + (refLength - 1) * BPWIDTH;
 		int beginCoorRight = left + (beginCoor.length() + chr.length()) * 15 + BPWIDTH;
 		graphWriter.drawString(endCoor, endCoorLeft > beginCoorRight ? endCoorLeft : beginCoorRight, height);
