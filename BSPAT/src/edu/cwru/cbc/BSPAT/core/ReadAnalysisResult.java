@@ -35,6 +35,7 @@ public class ReadAnalysisResult {
 			if (line == null) {
 				throw new RuntimeException("analysis report is empty!");
 			}
+			int targetLength = Integer.parseInt(line.split("\t")[1]);
 			// skip 6 lines
 			for (int i = 0; i < 9; i++) {
 				statBuffReader.readLine();
@@ -47,7 +48,11 @@ public class ReadAnalysisResult {
 					break;
 				}
 				// start from target start. 0-based.
-				CpGStatistics cpgStat = new CpGStatistics(Integer.parseInt(items[0]) - targetStart);
+				int pos = Integer.parseInt(items[0]) - targetStart;
+				if (coordinate.getStrand().equals("-")) {
+					pos = targetLength - pos - 1;
+				}
+				CpGStatistics cpgStat = new CpGStatistics(pos);
 				cpgStat.setMethylLevel(Double.parseDouble(items[1]));
 				statList.add(cpgStat);
 				line = statBuffReader.readLine();
