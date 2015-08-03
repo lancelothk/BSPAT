@@ -151,7 +151,7 @@
                     <%
                         if (constant.targetFileName == null) {
                     %>
-                    <td>Use first mapped read as target region</td>
+                    <td>Use first mapped read as target region:</td>
                     <%
                     } else {
                     %>

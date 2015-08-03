@@ -96,16 +96,14 @@ public class DrawPattern {
 		String strand = data.getCoordinate().getStrand();
 		int beginCoor = data.getCoordinate().getStart();
 		int endCoor = data.getCoordinate().getEnd();
-		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			int startPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
+			beginCoor = beginCoor + startPos;
+			endCoor = beginCoor + targetLength - 1;
 			if (strand.equals("-")) {
-				endCoor = endCoor - startPos;
-				beginCoor = endCoor - targetLength + 1;
-			} else {
-				beginCoor = beginCoor + startPos;
-				endCoor = beginCoor + targetLength - 1;
+				endCoor--;
+				beginCoor--;
 			}
 
 			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
@@ -118,6 +116,7 @@ public class DrawPattern {
 			statList = updatedStatList;
 		}
 
+		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 		int height = FIGURE_STARTY;
 		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
 

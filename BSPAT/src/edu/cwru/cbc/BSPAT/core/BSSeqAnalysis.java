@@ -224,10 +224,10 @@ public class BSSeqAnalysis {
 		return targetCoorMap;
 	}
 
-	private PotentialSNP declareSNP(Constant constant, int totalTargetSeqenceCount, int[][] mismatchStat,
+	private PotentialSNP declareSNP(Constant constant, int totalTargetSequenceCount, int[][] mismatchStat,
 	                                int targetStart) {
 		List<PotentialSNP> potentialSNPList = new ArrayList<>();
-		double threshold = totalTargetSeqenceCount * constant.SNPThreshold;
+		double threshold = totalTargetSequenceCount * constant.SNPThreshold;
 		for (int i = 0; i < mismatchStat.length; i++) {
 			int count = 0;
 			if (mismatchStat[i][0] >= threshold) {
