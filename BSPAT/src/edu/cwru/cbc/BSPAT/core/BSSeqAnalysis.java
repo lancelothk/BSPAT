@@ -195,11 +195,11 @@ public class BSSeqAnalysis {
 		return reportSummaries;
 	}
 
-	private Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, Coordinate> refCoorMap,
-	                                                       Map<String, List<Sequence>> sequenceGroupMap) {
+	private synchronized Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, Coordinate> refCoorMap,
+	                                                                    Map<String, List<Sequence>> sequenceGroupMap) throws
+			IOException {
 		Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
 		for (Map.Entry<String, Coordinate> entry : refCoorMap.entrySet()) {
-			// if no given targetCoor, get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
 			if (!targetCoorMap.containsKey(entry.getKey())) {
 				String strand = entry.getValue().getStrand();
 				if (strand.equals("+")) {
@@ -221,6 +221,8 @@ public class BSSeqAnalysis {
 				}
 			}
 		}
+		constant.targetFileName = "defaultTarget.coor";
+		IO.writeCoodinates(constant.targetPath + constant.targetFileName, targetCoorMap);
 		return targetCoorMap;
 	}
 
@@ -519,9 +521,7 @@ public class BSSeqAnalysis {
 		for (String methylString : patternMap.keySet()) {
 			List<Sequence> patternSeqList = patternMap.get(methylString);
 			Pattern methylationPattern = new Pattern(methylString, Pattern.PatternType.METHYLATION);
-			for (Sequence seq : patternSeqList) {
-				methylationPattern.addSequence(seq);
-			}
+			patternSeqList.forEach(methylationPattern::addSequence);
 			methylationPatterns.add(methylationPattern);
 		}
 		return methylationPatterns;

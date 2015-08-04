@@ -13,10 +13,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -50,7 +47,7 @@ public class Utilities {
 	public static void convertPSLtoCoorPair(String path, String outFileName) throws IOException {
 		File folder = new File(path);
 		String[] files = folder.list(new ExtensionFilter(".psl"));
-		HashMap<String, Coordinate> coorHashMap = new HashMap<>();
+		Map<String, Coordinate> coorHashMap = new HashMap<>();
 
 		for (String name : files) {
 			try (BufferedReader reader = new BufferedReader(new FileReader(path + name))) {
@@ -78,18 +75,11 @@ public class Utilities {
 				}
 			}
 		}
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + outFileName))) {
-			for (String key : coorHashMap.keySet()) {
-				Coordinate coor = coorHashMap.get(key);
-				writer.write(
-						String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(),
-								coor.getEnd()));
-			}
-		}
 		if (coorHashMap.size() == 0) {
 			throw new RuntimeException(
 					"No correct coordinate found for given reference file. Please double check your reference file");
 		}
+		IO.writeCoodinates(path + outFileName, coorHashMap);
 	}
 
 	// delete folder content recursively
