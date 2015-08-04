@@ -78,18 +78,11 @@ public class Utilities {
 				}
 			}
 		}
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + outFileName))) {
-			for (String key : coorHashMap.keySet()) {
-				Coordinate coor = coorHashMap.get(key);
-				writer.write(
-						String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(),
-								coor.getEnd()));
-			}
-		}
 		if (coorHashMap.size() == 0) {
 			throw new RuntimeException(
 					"No correct coordinate found for given reference file. Please double check your reference file");
 		}
+		IO.writeCoordinates(path + outFileName, coorHashMap);
 	}
 
 	// delete folder content recursively

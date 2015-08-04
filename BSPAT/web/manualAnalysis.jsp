@@ -177,9 +177,7 @@
                         <p class="ptext">If no target coordinate file uploaded, by default BSPAT will use
                             a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the first CpG in the
                             reference. If this region exceeds the end of reference, a region from the first CpG to the
-                            end of reference will be used. If there is no CpG found in the reference,
-                            a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the beginning of reference
-                            will be used.</p>
+                            end of reference will be used.</p>
 
                         <p class="ptext">
                             Notice: In the analysis procedure, only sequences fully covering target region will be

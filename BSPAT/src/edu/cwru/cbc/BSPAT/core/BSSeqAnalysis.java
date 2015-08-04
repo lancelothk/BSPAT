@@ -196,8 +196,9 @@ public class BSSeqAnalysis {
 		return reportSummaries;
 	}
 
-	private Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, String> referenceSeqs,
-	                                                       Map<String, Coordinate> refCoorMap) {
+	private synchronized Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, String> referenceSeqs,
+	                                                                    Map<String, Coordinate> refCoorMap) throws
+			IOException {
 		Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
 		for (String key : refCoorMap.keySet()) {
 			// if no given targetCoor, get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
@@ -207,10 +208,7 @@ public class BSSeqAnalysis {
 				if (strand.equals("+")) {
 					int firstPos = refString.indexOf("CG");
 					if (firstPos == -1) {
-						// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								strand, refCoorMap.get(key).getStart(),
-								refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH - 1));
+						throw new RuntimeException("no CG found in reference!");
 					} else {
 						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
 						int startPos = refCoorMap.get(key).getStart() + firstPos;
@@ -223,12 +221,10 @@ public class BSSeqAnalysis {
 				} else if (strand.equals("-")) {
 					int firstPos = refString.lastIndexOf("CG") + 2;
 					if (firstPos == -1) {
-						targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-								strand, refCoorMap.get(key).getEnd() - DEFAULT_TARGET_LENGTH + 1,
-								refCoorMap.get(key).getEnd()));
+						throw new RuntimeException("no CG found in reference!");
 					} else {
 						int startPos = refCoorMap.get(key).getEnd() - firstPos + 1;
-						int endPos = startPos + DEFAULT_TARGET_LENGTH;
+						int endPos = startPos + DEFAULT_TARGET_LENGTH - 1;
 						targetCoorMap.put(key,
 								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
 										startPos,
@@ -236,6 +232,10 @@ public class BSSeqAnalysis {
 					}
 				}
 			}
+		}
+		if (constant.getTargetFileName() == null) {
+			constant.targetFileName = "defaultTarget.coor";
+			IO.writeCoordinates(constant.targetPath + constant.targetFileName, targetCoorMap);
 		}
 		return targetCoorMap;
 	}

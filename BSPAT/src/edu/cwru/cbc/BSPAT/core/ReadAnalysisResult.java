@@ -35,6 +35,7 @@ public class ReadAnalysisResult {
 			if (line == null) {
 				throw new RuntimeException("analysis report is empty!");
 			}
+			int targetLength = Integer.parseInt(line.split("\t")[1]);
 			// skip 6 lines
 			for (int i = 0; i < 9; i++) {
 				statBuffReader.readLine();
@@ -47,7 +48,11 @@ public class ReadAnalysisResult {
 					break;
 				}
 				// start from target start. 0-based.
-				CpGStatistics cpgStat = new CpGStatistics(Integer.parseInt(items[0]) - targetStart);
+				int pos = Integer.parseInt(items[0]) - targetStart;
+				if (coordinate.getStrand().equals("-")) {
+					pos = targetLength - pos - 2;
+				}
+				CpGStatistics cpgStat = new CpGStatistics(pos);
 				cpgStat.setMethylLevel(Double.parseDouble(items[1]));
 				statList.add(cpgStat);
 				line = statBuffReader.readLine();
@@ -74,31 +79,36 @@ public class ReadAnalysisResult {
 
 			while (line != null) {
 				items = line.split("\t");
+				String patternString = items[0];
+				if (coordinate.getStrand().equals("-")) {
+					patternString = new StringBuilder(items[0]).reverse().toString();
+				}
 				patternResult = new PatternResult();
 				for (int i = 0; i < regionLength; i++) {
 					CpGSitePattern cpg;
-					if (items[0].charAt(i) == '*') {
+					if (patternString.charAt(i) == '*') {
 						cpg = new CpGSitePattern(i, false);
-						if (i + 1 < regionLength && items[0].charAt(i + 1) == '*') {
+						if (i + 1 < regionLength && patternString.charAt(i + 1) == '*') {
 							i++;
 						} else if (i == 0) {
 							cpg = new CpGSitePattern(i - 1, false);
-						} else if (items[0].charAt(i - 1) != '-') {
+						} else if (patternString.charAt(i - 1) != '-') {
 							cpg = new CpGSitePattern(i - 1, false);
 						}
 						patternResult.addCpG(cpg);
-					} else if (items[0].charAt(i) == '@') {
+					} else if (patternString.charAt(i) == '@') {
 						cpg = new CpGSitePattern(i, true);
-						if (i + 1 < regionLength && items[0].charAt(i + 1) == '@') {
+						if (i + 1 < regionLength && patternString.charAt(i + 1) == '@') {
 							i++;
 						} else if (i == 0) {
 							cpg = new CpGSitePattern(i - 1, true);
-						} else if (items[0].charAt(i - 1) != '-') {
+						} else if (patternString.charAt(i - 1) != '-') {
 							cpg = new CpGSitePattern(i - 1, false);
 						}
 						patternResult.addCpG(cpg);
-					} else if (items[0].charAt(i) == 'A' || items[0].charAt(i) == 'C' || items[0].charAt(i) == 'G' ||
-							items[0].charAt(i) == 'T') {
+					} else if (patternString.charAt(i) == 'A' || patternString.charAt(i) == 'C' || patternString.charAt(
+							i) == 'G' ||
+							patternString.charAt(i) == 'T') {
 						patternResult.addAllele(i);
 					}
 				}

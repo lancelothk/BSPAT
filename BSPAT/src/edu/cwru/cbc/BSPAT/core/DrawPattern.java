@@ -96,18 +96,11 @@ public class DrawPattern {
 		String strand = data.getCoordinate().getStrand();
 		int beginCoor = data.getCoordinate().getStart();
 		int endCoor = data.getCoordinate().getEnd();
-		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 
 		if (patternLink.getPatternType().equals(PatternLink.METHYLATION)) {
 			int startPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
-			if (strand.equals("-")) {
-				endCoor = endCoor - startPos;
-				beginCoor = endCoor - targetLength + 1;
-			} else {
-				beginCoor = beginCoor + startPos;
-				endCoor = beginCoor + targetLength - 1;
-			}
-
+			beginCoor = beginCoor + startPos;
+			endCoor = beginCoor + targetLength - 1;
 			List<CpGStatistics> updatedStatList = new ArrayList<>(statList.size());
 			int firstCpGPos = statList.get(0).getPosition() < 0 ? 0 : statList.get(0).getPosition();
 			for (CpGStatistics aStatList : statList) {
@@ -118,6 +111,7 @@ public class DrawPattern {
 			statList = updatedStatList;
 		}
 
+		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 		int height = FIGURE_STARTY;
 		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
 
@@ -203,6 +197,16 @@ public class DrawPattern {
 		int endCoor = data.getCoordinate().getEnd();
 		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 		List<CpGStatistics> statList = data.getStatList();
+
+		if (strand.equals("-")) {
+			patternWithAllele.getCpGList()
+					.forEach(cpgPattern -> cpgPattern.setPosition(refLength - cpgPattern.getPosition() - 2));
+			patternWithoutAllele.getCpGList()
+					.forEach(cpgPattern -> cpgPattern.setPosition(refLength - cpgPattern.getPosition() - 2));
+			for (int i = 0; i < patternWithAllele.getAlleleList().size(); i++) {
+				patternWithAllele.getAlleleList().set(i, refLength - patternWithAllele.getAlleleList().get(i) - 2);
+			}
+		}
 
 		int height = FIGURE_STARTY;
 		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
