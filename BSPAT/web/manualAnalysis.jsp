@@ -1,4 +1,3 @@
-<%@ page import="edu.cwru.cbc.BSPAT.core.BSSeqAnalysis" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -174,12 +173,8 @@
                             region of analysis. The file format should be same to reference coordinates file. It will be
                             easier to create one from reference coordinates file and upload it here. </p>
 
-                        <p class="ptext">If no target coordinate file uploaded, by default BSPAT will use
-                            a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the first CpG in the
-                            reference. If this region exceeds the end of reference, a region from the first CpG to the
-                            end of reference will be used. If there is no CpG found in the reference,
-                            a <%=BSSeqAnalysis.DEFAULT_TARGET_LENGTH%>bp region start from the beginning of reference
-                            will be used.</p>
+                        <p class="ptext">If no target coordinate file uploaded, by default BSPAT will use first mapped
+                            reads as target region.</p>
 
                         <p class="ptext">
                             Notice: In the analysis procedure, only sequences fully covering target region will be
