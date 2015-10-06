@@ -190,10 +190,10 @@
                     %>
                     <td>ASM pattern</td>
                     <%
-                        if (reportSummary.getASMsnp() != null) {
+                        if (reportSummary.getASMSNPrsId() != null) {
                     %>
                     <td><a
-                            href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs=<%=reportSummary.getASMsnp().getrsID()%>">SNP</a>
+                            href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs=<%=reportSummary.getASMSNPrsId()%>">SNP</a>
                     </td>
                     <%
                         }

@@ -2,15 +2,21 @@ package edu.cwru.cbc.BSPAT.core;
 
 import com.google.common.io.Files;
 import edu.cwru.cbc.BSPAT.DataType.*;
-import gov.nih.nlm.ncbi.www.soap.eutils.EFetchSnpServiceStub;
-import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceStub;
 import org.apache.commons.io.Charsets;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
-import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
@@ -59,6 +65,40 @@ public class DrawPattern {
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(Constant.DISKROOTPATH + Constant.propertiesFileName));
 		figure_font = properties.getProperty("figure_font");
+	}
+
+	public static String retrieveSNP(String chr, long pos) {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		String eSearchQuery = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=snp&retmax=2&term=" + chr + "[CHR]+AND+%22Homo%20sapiens%22[Organism]+AND+" + pos + "[CHRPOS]";
+		HttpGet httpGet = new HttpGet(eSearchQuery);
+		CloseableHttpResponse response;
+		String rsId;
+		try {
+			response = httpclient.execute(httpGet);
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document eSearchResult = builder.parse(response.getEntity().getContent());
+
+			String eFetchQuery = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=snp&id=" + eSearchResult.getElementsByTagName(
+					"Id").item(0).getTextContent() + "&retmode=xml";
+			httpGet = new HttpGet(eFetchQuery);
+			response = httpclient.execute(httpGet);
+			Document eFetchResult = builder.parse(response.getEntity().getContent());
+			rsId = eFetchResult.getElementsByTagName("Rs")
+					.item(0)
+					.getAttributes()
+					.getNamedItem("rsId")
+					.getTextContent();
+			System.out.println("rsId:\t" + rsId);
+
+		} catch (IOException | ParserConfigurationException | SAXException e) {
+			throw new RuntimeException("Unable to fetch SNP from dbSNP!");
+		}
+		return rsId;
+	}
+
+	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
+		retrieveSNP("11", 31816580);
 	}
 
 	private void buildFigureFrame(Graphics2D graphWriter, int imageHeight, int imageWidth, int height, int left,
@@ -261,12 +301,11 @@ public class DrawPattern {
 				height + HEIGHT_INTERVAL, left);
 		// set snp info
 		if (patternWithAllele.hasAllele()) {
-			List<SNP> snpList;
-			snpList = retreiveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
+			String ASMSNPrsId = retrieveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
 					patternResultPath, logPath) +
-					patternWithAllele.getAlleleList().get(0), "1");
-			if (snpList != null && snpList.size() > 0) {
-				reportSummary.setASMsnp(snpList.get(0));
+					patternWithAllele.getAlleleList().get(0));
+			if (ASMSNPrsId != null) {
+				reportSummary.setASMSNPrsId(ASMSNPrsId);
 			}
 		}
 		height += HEIGHT_INTERVAL * 1.5;
@@ -332,55 +371,6 @@ public class DrawPattern {
 							G + "," + B + "\n");
 
 		}
-	}
-
-	private List<SNP> retreiveSNP(String chr, long pos, String maxRet) throws RemoteException {
-		List<SNP> snps = new ArrayList<>();
-		String fetchIds = "";
-		// 1. search region
-		EUtilsServiceStub service = new EUtilsServiceStub();
-		// call NCBI ESearch utility
-		// NOTE: search term should be URL encoded
-		EUtilsServiceStub.ESearchRequest req = new EUtilsServiceStub.ESearchRequest();
-		req.setDb("snp");
-		String term = chr + "[CHR]+AND+\"Homo sapiens\"[Organism]+AND+" + pos + "[CHRPOS]";
-		LOGGER.info(term);
-		req.setTerm(term);
-		req.setRetMax(maxRet);
-		EUtilsServiceStub.ESearchResult res = service.run_eSearch(req);
-		// results output
-		LOGGER.info("SNP range:");
-		LOGGER.info("Found ids: " + res.getCount());
-		LOGGER.info("First " + res.getRetMax() + " ids: ");
-
-		if (res.getCount().equals("0")) {
-			return snps;
-		}
-
-		int N = res.getIdList().getId().length;
-		for (int i = 0; i < N; i++) {
-			if (i > 0) fetchIds += ",";
-			fetchIds += res.getIdList().getId()[i];
-		}
-
-		// 3. fetch SNP
-		EFetchSnpServiceStub serviceF = new EFetchSnpServiceStub();
-		// call NCBI EFetch utility
-		EFetchSnpServiceStub.EFetchRequest reqF = new EFetchSnpServiceStub.EFetchRequest();
-		reqF.setId(fetchIds);
-		EFetchSnpServiceStub.EFetchResult resF = serviceF.run_eFetch(reqF);
-		if (resF.getExchangeSet() == null || resF.getExchangeSet().getRs() == null) {
-			return null;
-		}
-		// results output
-		for (int i = 0; i < resF.getExchangeSet().getRs().length; i++) {
-			EFetchSnpServiceStub.Rs_type0 obj = resF.getExchangeSet().getRs()[i];
-			SNP snp = new SNP(obj.getRsId(), obj.getSnpType(), obj.getMolType(), obj.getPhenotype(), obj.getAssembly(),
-					obj.getFrequency());
-			snp.print();
-			snps.add(snp);
-		}
-		return snps;
 	}
 
 	private long convertCoordinates(String chr, long pos, String targetRefVersion, String patternResultPath,

@@ -38,17 +38,13 @@
     <orderEntry type="library" name="mail-1.4.7" level="project" />
     <orderEntry type="library" name="epsgraphics-1.4" level="project" />
     <orderEntry type="library" name="ant" level="project" />
-    <orderEntry type="library" name="junit-addons-1.4" level="project" />
-    <orderEntry type="library" name="eutil" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit-addons-1.4" level="project" />
     <orderEntry type="library" name="commons-io-2.4" level="project" />
     <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
     <orderEntry type="library" name="commons-math-2.2" level="project" />
     <orderEntry type="library" name="guava" level="project" />
-    <orderEntry type="library" name="mockito-all-1.9.5" level="project" />
-    <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
-    <orderEntry type="library" name="guava" level="project" />
-    <orderEntry type="library" name="mockito-all-1.9.5" level="project" />
-    <orderEntry type="module-library">
+    <orderEntry type="library" scope="TEST" name="mockito-all-1.9.5" level="project" />
+    <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
           <root url="jar://$APPLICATION_HOME_DIR$/plugins/testng/lib/testng.jar!/" />
@@ -57,6 +53,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="apache http" level="project" />
+    <orderEntry type="library" name="jstl-1.2.1" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

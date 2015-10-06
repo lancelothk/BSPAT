@@ -1,7 +1,6 @@
 package edu.cwru.cbc.BSPAT.core;
 
 import edu.cwru.cbc.BSPAT.DataType.PatternLink;
-import edu.cwru.cbc.BSPAT.DataType.SNP;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class ReportSummary implements Serializable {
 	private String ASMFigureLink;
 	private String ASMGBLink;
 	private boolean hasASM;
-	private SNP ASMsnp;
+	private String ASMSNPrsId;
 	private String id;
 	private int seqTargetBounded;
 	private int seqTargetAfterFilter;
@@ -142,12 +141,12 @@ public class ReportSummary implements Serializable {
 		this.hasASM = hasASM;
 	}
 
-	public SNP getASMsnp() {
-		return ASMsnp;
+	public String getASMSNPrsId() {
+		return ASMSNPrsId;
 	}
 
-	public void setASMsnp(SNP aSMsnp) {
-		ASMsnp = aSMsnp;
+	public void setASMSNPrsId(String ASMSNPrsId) {
+		this.ASMSNPrsId = ASMSNPrsId;
 	}
 
 	public String getId() {

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jstl-1.2.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/BSPAT/lib/javax.servlet.jsp.jstl-1.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
