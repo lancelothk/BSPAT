@@ -8,6 +8,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -68,29 +70,33 @@ public class DrawPattern {
 	}
 
 	public static String retrieveSNP(String chr, long pos) {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpClient = HttpClients.createDefault();
 		String eSearchQuery = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=snp&retmax=2&term=" + chr + "[CHR]+AND+%22Homo%20sapiens%22[Organism]+AND+" + pos + "[CHRPOS]";
 		HttpGet httpGet = new HttpGet(eSearchQuery);
 		CloseableHttpResponse response;
-		String rsId;
+		String rsId = null;
 		try {
-			response = httpclient.execute(httpGet);
+			response = httpClient.execute(httpGet);
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document eSearchResult = builder.parse(response.getEntity().getContent());
-
-			String eFetchQuery = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=snp&id=" + eSearchResult.getElementsByTagName(
-					"Id").item(0).getTextContent() + "&retmode=xml";
-			httpGet = new HttpGet(eFetchQuery);
-			response = httpclient.execute(httpGet);
-			Document eFetchResult = builder.parse(response.getEntity().getContent());
-			rsId = eFetchResult.getElementsByTagName("Rs")
-					.item(0)
-					.getAttributes()
-					.getNamedItem("rsId")
-					.getTextContent();
-			System.out.println("rsId:\t" + rsId);
-
+			// the higher rs number was merged into a lower rs number (this is the dbSNP merge rule for rs numbers
+			// http://www.ncbi.nlm.nih.gov/books/NBK44455/#Build.some_refsnp_rs_numbers_in_dbsnp_ar_1
+			int minId = Integer.MAX_VALUE;
+			NodeList resultList = eSearchResult.getElementsByTagName("Id");
+			for (int i = 0; i < resultList.getLength(); i++) {
+				Node idNode = resultList.item(i);
+				if (idNode != null) {
+					int id = Integer.parseInt(idNode.getTextContent());
+					if (minId > id) {
+						minId = id;
+					}
+				}
+			}
+			if (minId != Integer.MAX_VALUE) {
+				rsId = String.valueOf(minId);
+			}
+			System.out.println("queryId:\t" + minId);
 		} catch (IOException | ParserConfigurationException | SAXException e) {
 			throw new RuntimeException("Unable to fetch SNP from dbSNP!");
 		}

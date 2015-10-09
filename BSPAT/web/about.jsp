@@ -15,7 +15,7 @@
         <div id="content_top"></div>
         <div id="content_main">
             <p class="phead">
-                Version: 2.3.1-beta<br/>
+                Version: 2.3.2-beta<br/>
             </p>
 
             <p class="phead">
