@@ -56,24 +56,28 @@ public class Utilities {
 			try (BufferedReader reader = new BufferedReader(new FileReader(path + name))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("-") ||
-							line.startsWith("BLAT") || line.startsWith("<H2>")) {
+					if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("BLAT") || line.startsWith(
+							"<H2>")) {
 						continue;
 					}
-					String[] items = line.split("\\s+");
-					if (items.length != 11) {
-						throw new RuntimeException(
-								"Incorrect Blat query result. Please double check your reference file");
-					}
-					// items[0] -- query id, items[1] -- score, items[4] -- qsize,
-					// items[6] -- chrom, items[7] -- strand, items[8] -- start,
-					// items[9] -- end
-					// filter blat result by checking if score equals to qsize
-					if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
-						// first query match, score equals query size
-						coorHashMap.put(items[0],
-								new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
-										Integer.valueOf(items[9])));
+					if (line.startsWith("-")) {
+						while ((line = reader.readLine()) != null) {
+							String[] items = line.split("\\s+");
+							if (items.length != 11) {
+								throw new RuntimeException(
+										"Incorrect Blat query result. Please double check your reference file");
+							}
+							// items[0] -- query id, items[1] -- score, items[4] -- qsize,
+							// items[6] -- chrom, items[7] -- strand, items[8] -- start,
+							// items[9] -- end
+							// filter blat result by checking if score equals to qsize
+							if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
+								// first query match, score equals query size
+								coorHashMap.put(items[0],
+										new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
+												Integer.valueOf(items[9])));
+							}
+						}
 					}
 				}
 			}
