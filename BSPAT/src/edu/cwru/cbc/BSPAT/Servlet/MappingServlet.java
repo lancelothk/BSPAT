@@ -90,7 +90,7 @@ public class MappingServlet extends HttpServlet {
 			constant.experiments = experiments;
 			constant.email = request.getParameter("email");
 			// execute BLAT query
-			blatQuery(constant);
+			List<String> blatWarnings = blatQuery(constant);
 			// append xx to both end of reference
 			modifyRef(constant.originalRefPath, constant.modifiedRefPath);
 
@@ -135,6 +135,7 @@ public class MappingServlet extends HttpServlet {
 			constant.mappingTime = constant.mappingTime < 1 ? 1 : constant.mappingTime;
 			constant.mappingResultLink = zipFileName.replace(Constant.DISKROOTPATH, constant.webRootPath);
 			constant.finishedMapping = true;
+			constant.blatWarnings = blatWarnings;
 			// save constant object to file
 			constant.writeConstant();
 			// send email to inform user
@@ -326,7 +327,7 @@ public class MappingServlet extends HttpServlet {
 	/**
 	 * execute blat query
 	 */
-	private void blatQuery(Constant constant) throws IOException, InterruptedException {
+	private List<String> blatQuery(Constant constant) throws IOException, InterruptedException {
 		File refFolder = new File(constant.originalRefPath);
 		String[] files = refFolder.list();
 		String blatQueryPath = constant.toolsPath + "BlatQuery/";
@@ -342,8 +343,10 @@ public class MappingServlet extends HttpServlet {
 			}
 			LOGGER.info(constant.getJobID() + "\tblat query is finished for " + name);
 		}
-		Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName);
+		List<String> warnings = Utilities.convertPSLtoCoorPair(constant.coorFilePath, constant.coorFileName);
 		LOGGER.info(constant.getJobID() + "\tblat result converted");
+		warnings.forEach(LOGGER::info);
+		return warnings;
 	}
 
 }

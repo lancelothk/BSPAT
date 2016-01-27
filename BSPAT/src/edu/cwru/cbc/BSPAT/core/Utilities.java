@@ -13,10 +13,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -47,10 +44,11 @@ public class Utilities {
 		return throwable;
 	}
 
-	public static void convertPSLtoCoorPair(String path, String outFileName) throws IOException {
+	public static List<String> convertPSLtoCoorPair(String path, String outFileName) throws IOException {
 		File folder = new File(path);
 		String[] files = folder.list(new ExtensionFilter(".psl"));
 		HashMap<String, Coordinate> coorHashMap = new HashMap<>();
+		List<String> warnings = new ArrayList<>();
 
 		for (String name : files) {
 			try (BufferedReader reader = new BufferedReader(new FileReader(path + name))) {
@@ -71,11 +69,21 @@ public class Utilities {
 							// items[6] -- chrom, items[7] -- strand, items[8] -- start,
 							// items[9] -- end
 							// filter blat result by checking if score equals to qsize
-							if (!coorHashMap.containsKey(items[0]) && items[1].equals(items[4])) {
+							if (!coorHashMap.containsKey(items[0])) {
 								// first query match, score equals query size
-								coorHashMap.put(items[0],
-										new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
-												Integer.valueOf(items[9])));
+								if (items[1].equals(items[4])) {
+									coorHashMap.put(items[0],
+											new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
+													Integer.valueOf(items[9])));
+								} else {
+									// no perfect match, give warnings
+									coorHashMap.put(items[0],
+											new Coordinate(items[0], items[6], items[7], Integer.valueOf(items[8]),
+													Integer.valueOf(items[9])));
+									warnings.add(String.format(
+											"%s has no perfect match with Blat query. Perfect Blat score should be %s. Observed score is %s\n",
+											items[0], items[4], items[1]));
+								}
 							}
 						}
 					}
@@ -92,8 +100,9 @@ public class Utilities {
 		}
 		if (coorHashMap.size() == 0) {
 			throw new RuntimeException(
-					"No correct coordinate found for given reference file. Please double check your reference file");
+					"No matched coordinate found by Blat for given reference file. Please double check your reference file");
 		}
+		return warnings;
 	}
 
 	// delete folder content recursively

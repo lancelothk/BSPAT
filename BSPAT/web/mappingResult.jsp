@@ -58,6 +58,21 @@
                         <td><%=constant.jobID%>
                         </td>
                     </tr>
+                    <% if (constant.blatWarnings != null && constant.blatWarnings.size() != 0) { %>
+                    <tr>
+                        <td><p style="color:red">Warnings: </p></td>
+                    </tr>
+                    <%
+                        for (String warning : constant.blatWarnings) {
+                    %>
+                    <tr>
+                        <td><p style="color:red"><%=warning%>
+                        </p></td>
+                    </tr>
+                    <%
+                        }
+                    %>
+                    <% } %>
                     <tr>
                         <td>Experiment(<%=constant.experiments.size()%>):
                         </td>

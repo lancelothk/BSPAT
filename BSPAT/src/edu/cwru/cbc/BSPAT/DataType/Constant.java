@@ -44,6 +44,7 @@ public class Constant implements Serializable {
 	public String figureFormat;
 
 	// stage result
+	public List<String> blatWarnings;
 	public boolean finishedMapping;
 	public boolean finishedAnalysis;
 	public String mappingResultLink;
