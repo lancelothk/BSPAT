@@ -150,6 +150,7 @@ public class BSSeqAnalysis {
 					constant);
 			if (methylationPatternList.size() == 0) {
 				reportSummaries.add(reportSummary);
+				reportSummary.replacePath(Constant.DISKROOTPATH, constant.webRootPath, constant.host);
 				continue;
 			}
 			sortAndAssignPatternID(methylationPatternList);

@@ -165,6 +165,12 @@
                     <td><%=reportSummary.getId()%>
                     </td>
                 </tr>
+                <% if (reportSummary.getPatternLinks().size() == 0) { %>
+                <tr>
+                    <td></td>
+                    <td><p style="color:red">No significant pattern found.</p></td>
+                </tr>
+                <% } %>
                 <% for (PatternLink patternLink : reportSummary.getPatternLinks()) {
                 %>
                 <tr>
