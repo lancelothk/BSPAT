@@ -15,7 +15,7 @@
         <div id="content_top"></div>
         <div id="content_main">
             <p class="phead">
-                Version: 2.3.2-beta<br/>
+                Version: 2.4.2-beta<br/>
             </p>
 
             <p class="phead">
@@ -24,7 +24,7 @@
 
             <p class="ptext">
                 Ke Hu &nbsp&nbsp Ph.D student
-                <br/>Advisor: &nbsp&nbsp <a href="http://engr.case.edu/li_jing/index.html">Dr. Jing Li </a>
+                <br/>Advisor: &nbsp&nbsp <a href="http://cbc.case.edu">Prof. Jing Li </a>
                 <br/>Computational Biology Lab @ EECS department
                 <br/>Case Western Reserve University
                 <br/>If you have any questions or suggestions, feel free to send an email to:
@@ -32,10 +32,14 @@
 
             <p class="phead"> Source code hosted in <a href="https://github.com/lancelothk/BSPAT">GitHub</a></p>
 
+            <p class="phead"> Citation:</p>
+            <a href="http://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0649-2"> Hu, K., Ting, A.H.
+                and Li, J., 2015. BSPAT: a fast online tool for DNA methylation co-occurrence pattern analysis based on
+                high-throughput bisulfite sequencing data. BMC bioinformatics, 16(1), p.1.</a>
+
             <p class="phead">License:</p>
             Copyright 2014 © Computational Biology lab @ Case Western Reserve University.
             <br/>Under GPL v3.
-            </p>
         </div>
         <div id="content_bottom"></div>
     </div>
