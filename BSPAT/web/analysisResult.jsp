@@ -146,6 +146,12 @@
                     <td><%=constant.SNPThreshold%>
                     </td>
                 </tr>
+                <tr>
+                    <td>Target coordinates used:</td>
+                    <td><a href=<%=constant.getAbsolutePathTargetCoorFile()%>><%=constant.targetFileName%>
+                    </a>
+                    </td>
+                </tr>
             </table>
             <p class="dottedline"></p>
             <%
