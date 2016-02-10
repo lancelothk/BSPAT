@@ -180,8 +180,8 @@ public class DrawPattern {
 		patternLink.setGBResultLink(methylWriter.getGBLinkFileName());
 		patternLink.setFigureResultLink(methylWriter.getFigureName());
 
-		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left, coordinate, targetLength,
-				statList);
+		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left, chr,
+				String.valueOf(beginCoor), String.valueOf(endCoor), targetLength, statList);
 
 		// 4. add CpG sites
 		DecimalFormat percent = new DecimalFormat("##.00%");
@@ -274,8 +274,8 @@ public class DrawPattern {
 		reportSummary.setASMGBLink(ASMWriter.getGBLinkFileName());
 		reportSummary.setASMFigureLink(ASMWriter.getFigureName());
 
-		buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left, coordinate, refLength,
-				statList);
+		buildFigureFrame(ASMWriter.getGraphWriter(), imageHeight, imageWidth, height, left, chr,
+				String.valueOf(beginCoor), String.valueOf(endCoor), refLength, statList);
 
 		DecimalFormat percent = new DecimalFormat("##.00%");
 
@@ -321,7 +321,7 @@ public class DrawPattern {
 				height + HEIGHT_INTERVAL, left);
 		// set snp info
 		if (patternWithAllele.hasAllele()) {
-			int snpQueryPos;
+			long snpQueryPos;
 			switch (strand) {
 				case "+":
 					snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
