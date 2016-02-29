@@ -42,11 +42,29 @@ public class BSPAT_pgm {
 		return sequenceGroupMap;
 	}
 
-	public static void main(String[] args) throws IOException {
-		String referencePath = "/home/lancelothk/IdeaProjects/BSPAT/out/artifacts/BSPAT_war_exploded/demo/ref/";
-		String bismarkResultPath = "/home/lancelothk/IdeaProjects/BSPAT/out/artifacts/BSPAT_war_exploded/demo/bismark/";
-		String outputPath = "/home/lancelothk/IdeaProjects/BSPAT/out/artifacts/BSPAT_war_exploded/demo/";
+	public static void main(String[] args) throws IOException, InterruptedException {
+		String inputPath = "/home/kehu/experiments/BSPAT/standAlone/seq/";
+		String referencePath = "/home/kehu/experiments/BSPAT/standAlone/ref/";
+		String bismarkResultPath = "/home/kehu/experiments/BSPAT/standAlone/output/bismark/";
+		String outputPath = "/home/kehu/experiments/BSPAT/standAlone/output/";
+		String bismarkPath = "/home/kehu/software/bismark_v0.14.2_noSleep/";
+		String bowtiePath = "/home/kehu/software/bowtie-1.1.1/";
+		String qualType = "phred33";
+		String logPath = outputPath;
 		double conversionRateThreshold = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01, minMethylThreshold = 0.01;
+		int maxmis = 2;
+		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
+				maxmis);
+		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
+
+
+		generatePatterns(referencePath, bismarkResultPath, outputPath, conversionRateThreshold,
+				sequenceIdentityThreshold, criticalValue, minMethylThreshold);
+	}
+
+	private static void generatePatterns(String referencePath, String bismarkResultPath, String outputPath,
+	                                     double conversionRateThreshold, double sequenceIdentityThreshold,
+	                                     double criticalValue, double minMethylThreshold) throws IOException {
 		ImportBismarkResult importBismarkResult = new ImportBismarkResult(referencePath, bismarkResultPath);
 		Map<String, String> referenceSeqs = importBismarkResult.getReferenceSeqs();
 		List<Sequence> sequencesList = importBismarkResult.getSequencesList();
@@ -55,47 +73,57 @@ public class BSPAT_pgm {
 		for (String region : sequenceGroupMap.keySet()) {
 			List<Sequence> seqGroup = sequenceGroupMap.get(region);
 			String refSeq = referenceSeqs.get(region);
-			int targetStart = 31, targetEnd = 102;
-			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
-
-			// processing sequences
-			for (Sequence sequence : seqGroup) {
-				sequence.processSequence(refSeq);
-			}
-
-			// seqs in seqGroup got changed in updateTargetSequences().
-			Pair<List<Sequence>, List<Sequence>> coverTargetSequencePair = updateTargetSequences(seqGroup, targetStart,
-					targetEnd);
-
-			// quality filtering
-			Pair<List<Sequence>, List<Sequence>> qualityFilterSequencePair = filterSequences(
-					coverTargetSequencePair.getLeft(), conversionRateThreshold, sequenceIdentityThreshold);
-
-			// calculate mismatch stat based on all sequences in reference region.
-			int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd,
-					qualityFilterSequencePair.getLeft());
-
-			// generate methyl pattern output
-			List<Pattern> methylationPatternList = getMethylPattern(qualityFilterSequencePair.getLeft(), targetStart,
-					targetEnd);
-
-			methylationPatternList = filterMethylationPatterns(methylationPatternList,
-					qualityFilterSequencePair.getLeft().size(), StringUtils.countMatches(targetRefSeq, "CG"),
-					criticalValue, minMethylThreshold);
-
-			// sort pattern and assign id index
-			methylationPatternList.sort((p1, p2) -> Integer.compare(p2.getCount(), p1.getCount()));
-			for (int i = 0; i < methylationPatternList.size(); i++) {
-				methylationPatternList.get(i).assignPatternID(i);
-			}
-
-			writeAnalysedSequences(outputPath + region + "_bismark.analysis.txt", qualityFilterSequencePair.getLeft());
-			writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, region, METHYLATION), targetRefSeq,
-					methylationPatternList, METHYLATION, qualityFilterSequencePair.getLeft().size());
+			generatePatternsSingleGroup(outputPath, conversionRateThreshold, sequenceIdentityThreshold, criticalValue,
+					minMethylThreshold, region, seqGroup, refSeq);
 		}
 	}
 
-	public static void writePatterns(String patternFileName, String refSeq, List<Pattern> patternList, String patternType, double sequenceCount) throws
+	private static void generatePatternsSingleGroup(String outputPath, double conversionRateThreshold,
+	                                                double sequenceIdentityThreshold, double criticalValue,
+	                                                double minMethylThreshold, String region, List<Sequence> seqGroup,
+	                                                String refSeq) throws IOException {
+
+		int targetStart = 40, targetEnd = 80;
+		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
+
+		// processing sequences
+		for (Sequence sequence : seqGroup) {
+			sequence.processSequence(refSeq);
+		}
+
+		// seqs in seqGroup got changed in updateTargetSequences().
+		Pair<List<Sequence>, List<Sequence>> coverTargetSequencePair = updateTargetSequences(seqGroup, targetStart,
+				targetEnd);
+
+		// quality filtering
+		Pair<List<Sequence>, List<Sequence>> qualityFilterSequencePair = filterSequences(
+				coverTargetSequencePair.getLeft(), conversionRateThreshold, sequenceIdentityThreshold);
+
+		// calculate mismatch stat based on all sequences in reference region.
+		int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd,
+				qualityFilterSequencePair.getLeft());
+
+		// generate methyl pattern output
+		List<Pattern> methylationPatternList = getMethylPattern(qualityFilterSequencePair.getLeft(), targetStart,
+				targetEnd);
+
+		methylationPatternList = filterMethylationPatterns(methylationPatternList,
+				qualityFilterSequencePair.getLeft().size(), StringUtils.countMatches(targetRefSeq, "CG"),
+				criticalValue, minMethylThreshold);
+
+		// sort pattern and assign id index
+		methylationPatternList.sort((p1, p2) -> Integer.compare(p2.getCount(), p1.getCount()));
+		for (int i = 0; i < methylationPatternList.size(); i++) {
+			methylationPatternList.get(i).assignPatternID(i);
+		}
+
+		writeAnalysedSequences(outputPath + region + "_bismark.analysis.txt", qualityFilterSequencePair.getLeft());
+		writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, region, METHYLATION), targetRefSeq,
+				methylationPatternList, METHYLATION, qualityFilterSequencePair.getLeft().size());
+	}
+
+	public static void writePatterns(String patternFileName, String refSeq, List<Pattern> patternList,
+	                                 String patternType, double sequenceCount) throws
 			IOException {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(patternFileName))) {
 			switch (patternType) {
@@ -141,7 +169,8 @@ public class BSPAT_pgm {
 	}
 
 	private static List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
-	                                                       int refCpGCount, double criticalValue, double minMethylThreshold) {
+	                                                       int refCpGCount, double criticalValue,
+	                                                       double minMethylThreshold) {
 		if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
 			if (criticalValue != -1 && refCpGCount > 3) {
 				return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, refCpGCount,
@@ -154,7 +183,8 @@ public class BSPAT_pgm {
 		return new ArrayList<>();
 	}
 
-	private static List<Pattern> filterPatternsByThreshold(List<Pattern> patterns, double totalSeqCount, double threshold) {
+	private static List<Pattern> filterPatternsByThreshold(List<Pattern> patterns, double totalSeqCount,
+	                                                       double threshold) {
 		List<Pattern> qualifiedPatternList = new ArrayList<>();
 		// use percentage pattern threshold
 		for (Pattern pattern : patterns) {
@@ -166,7 +196,8 @@ public class BSPAT_pgm {
 		return qualifiedPatternList;
 	}
 
-	private static List<Pattern> filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns, double totalSeqCount,
+	private static List<Pattern> filterMethylPatternsByP0Threshold(List<Pattern> methylationPatterns,
+	                                                               double totalSeqCount,
 	                                                               int refCpGCount, double criticalValue) {
 		List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
 		NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
@@ -217,7 +248,8 @@ public class BSPAT_pgm {
 	/**
 	 * cutting mapped sequences to reference region and filter reads without covering whole reference seq
 	 */
-	private static Pair<List<Sequence>, List<Sequence>> updateTargetSequences(List<Sequence> sequenceGroup, int targetStart,
+	private static Pair<List<Sequence>, List<Sequence>> updateTargetSequences(List<Sequence> sequenceGroup,
+	                                                                          int targetStart,
 	                                                                          int targetEnd) throws
 			IOException {
 		List<Sequence> fullyCoverTargetSeqList = new ArrayList<>();
@@ -235,7 +267,9 @@ public class BSPAT_pgm {
 	/**
 	 * fill sequence list filtered by threshold.
 	 */
-	private static Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList, double conversionRateThreshold, double sequenceIdentityThreshold) throws
+	private static Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
+	                                                                    double conversionRateThreshold,
+	                                                                    double sequenceIdentityThreshold) throws
 			IOException {
 		List<Sequence> qualifiedSeqList = new ArrayList<>();
 		List<Sequence> unQualifiedSeqList = new ArrayList<>();

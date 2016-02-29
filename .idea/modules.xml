@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BSPAT/BSPAT.iml" filepath="$PROJECT_DIR$/BSPAT/BSPAT.iml" />
       <module fileurl="file://$PROJECT_DIR$/BSPAT_analysis/BSPAT_analysis.iml" filepath="$PROJECT_DIR$/BSPAT_analysis/BSPAT_analysis.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BSPAT_standAlone/BSPAT_standAlone.iml" filepath="$PROJECT_DIR$/BSPAT_standAlone/BSPAT_standAlone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BSPAT_standAlone/src/BSPAT_standAlone.iml" filepath="$PROJECT_DIR$/BSPAT_standAlone/src/BSPAT_standAlone.iml" />
     </modules>
   </component>
 </project>
