@@ -1,6 +1,10 @@
 package edu.cwru.cbc.BSPAT;
 
 
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -59,22 +63,29 @@ public class ImportBismarkResult {
 	}
 
 	private void readBismarkAlignmentResult(String inputFolder) throws IOException {
-		File inputFile = new File(inputFolder);
-		String[] names = inputFile.list(new ExtensionFilter(new String[]{"_bismark.sam"}));
-		Arrays.sort(names);
 
-		for (String name : names) {
-			try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
+
+		File inputFile = new File(inputFolder);
+		File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
+
+		for (File file : inputFiles) {
+			final SamReader reader = SamReaderFactory.makeDefault().open(file);
+			for (final SAMRecord samRecord : reader) {
+				Sequence seq = new Sequence(samRecord.getReadName(),
+						(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP", samRecord.getReferenceName(),
+						samRecord.getStart() - 3, samRecord.getReadString());
+				sequencesHashMap.put(seq.getId(), seq);
+			}
+
+
+			try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + file.getName()))) {
 				String line = buffReader.readLine();
 				String[] items;
 				while (line != null && !line.startsWith("@")) {
 					items = line.split("\t");
 					// substract two bps from the start position to match original reference
 					// Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-					Sequence seq = new Sequence(items[0],
-							(Integer.parseInt(items[1]) & 0x10) == 0x10 ? "BOTTOM" : "TOP", items[2], Integer.parseInt(
-							items[3]) - 3, items[9]);
-					sequencesHashMap.put(seq.getId(), seq);
+
 					line = buffReader.readLine();
 				}
 			}

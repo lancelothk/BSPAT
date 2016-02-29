@@ -17,16 +17,6 @@ public class CallBismark {
 	private File refPathFile;
 	private String qualsTypeParameter;
 
-
-	//	public static void main(String[] args) throws IOException {
-	//		String cellLine = "DU145";
-	//		String seqPath = "/home/ke/bismark_result/reads/" + cellLine + "_withoutBarcode/";
-	//		String bismarkResultPath = "/home/ke/bismark_result/out-B1/" + cellLine + "-SAM/";
-	//		String seqFile = null;
-	//		String refPath = "/home/ke/bismark_result/ref-B1/";
-	//		CallBismark callBismark = new CallBismark(seqPath + seqFile, bismarkResultPath, refPath);
-	//	}
-
 	public CallBismark(String refPath, String bismarkPath, String bowtiePath, String logPath, String qualsType,
 	                   int maxmis) throws IOException, InterruptedException {
 		this.maxmis = maxmis;
@@ -107,14 +97,14 @@ public class CallBismark {
 							Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq, "--path_to_bowtie",
 									bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis), "-o",
 									outputFile.getAbsolutePath(), "--non_directional", "--quiet", "--un", "--ambiguous",
-									"--sam", "--temp_dir", tempDir.getAbsolutePath(),
+									"--bam", "--temp_dir", tempDir.getAbsolutePath(),
 									refPathFile.getAbsolutePath()));
 				} else {
 					cmdList = new ArrayList<>(
 							Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq, qualsTypeParameter,
 									"--path_to_bowtie", bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis),
 									"-o", outputFile.getAbsolutePath(), "--non_directional", "--quiet", "--un",
-									"--ambiguous", "--sam", "--temp_dir", tempDir.getAbsolutePath(),
+									"--ambiguous", "--bam", "--temp_dir", tempDir.getAbsolutePath(),
 									refPathFile.getAbsolutePath()));
 				}
 				for (File file : fileList) {
@@ -134,7 +124,7 @@ public class CallBismark {
 				Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark_methylation_extractor", "-s", "-o",
 						outputPath, "--comprehensive", "--no_header", "--merge_non_CpG"));
 		for (File f : fileList) {
-			cmdList.add(outputFile.getAbsolutePath() + "/" + f.getName() + "_bismark.sam");
+			cmdList.add(outputFile.getAbsolutePath() + "/" + f.getName() + "_bismark.bam");
 		}
 		if (Utils.callCMD(cmdList, new File(outputPath), logPath + "/bismark_methylExtractor.log") > 0) {
 			throw new RuntimeException(

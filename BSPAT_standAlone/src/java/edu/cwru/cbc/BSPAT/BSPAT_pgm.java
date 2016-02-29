@@ -53,9 +53,9 @@ public class BSPAT_pgm {
 		String logPath = outputPath;
 		double conversionRateThreshold = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01, minMethylThreshold = 0.01;
 		int maxmis = 2;
-//		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
-//				maxmis);
-//		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
+		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
+				maxmis);
+		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
 
 		generatePatterns(referencePath, bismarkResultPath, outputPath, conversionRateThreshold,
 				sequenceIdentityThreshold, criticalValue, minMethylThreshold);
