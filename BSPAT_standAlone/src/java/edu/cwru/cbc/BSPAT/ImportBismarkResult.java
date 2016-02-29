@@ -67,7 +67,7 @@ public class ImportBismarkResult {
 			try (BufferedReader buffReader = new BufferedReader(new FileReader(inputFolder + name))) {
 				String line = buffReader.readLine();
 				String[] items;
-				while (line != null) {
+				while (line != null && !line.startsWith("@")) {
 					items = line.split("\t");
 					// substract two bps from the start position to match original reference
 					// Since bismark use 1-based position, substract one more bp to convert to 0-based position.

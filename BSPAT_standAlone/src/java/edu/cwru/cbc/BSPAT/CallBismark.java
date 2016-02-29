@@ -107,14 +107,14 @@ public class CallBismark {
 							Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq, "--path_to_bowtie",
 									bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis), "-o",
 									outputFile.getAbsolutePath(), "--non_directional", "--quiet", "--un", "--ambiguous",
-									"--sam", "--sam-no-hd", "--temp_dir", tempDir.getAbsolutePath(),
+									"--sam", "--temp_dir", tempDir.getAbsolutePath(),
 									refPathFile.getAbsolutePath()));
 				} else {
 					cmdList = new ArrayList<>(
 							Arrays.asList(bismarkPathFile.getAbsolutePath() + "/bismark", fastaq, qualsTypeParameter,
 									"--path_to_bowtie", bowtiePathFile.getAbsolutePath(), "-n", String.valueOf(maxmis),
 									"-o", outputFile.getAbsolutePath(), "--non_directional", "--quiet", "--un",
-									"--ambiguous", "--sam", "--sam-no-hd", "--temp_dir", tempDir.getAbsolutePath(),
+									"--ambiguous", "--sam", "--temp_dir", tempDir.getAbsolutePath(),
 									refPathFile.getAbsolutePath()));
 				}
 				for (File file : fileList) {
