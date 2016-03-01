@@ -63,8 +63,6 @@ public class ImportBismarkResult {
 	}
 
 	private void readBismarkAlignmentResult(String inputFolder) throws IOException {
-
-
 		File inputFile = new File(inputFolder);
 		File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
 
@@ -73,7 +71,7 @@ public class ImportBismarkResult {
 			for (final SAMRecord samRecord : reader) {
 				Sequence seq = new Sequence(samRecord.getReadName(),
 						(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP", samRecord.getReferenceName(),
-						samRecord.getStart() - 3, samRecord.getReadString());
+						samRecord.getStart() - 1, samRecord.getReadString()); // 0-based start position
 				sequencesHashMap.put(seq.getId(), seq);
 			}
 
@@ -111,7 +109,7 @@ public class ImportBismarkResult {
 						if (seq != null) {
 							// subtract two bps from the start position to match original reference
 							// Since bismark use 1-based position, substract one more bp to convert to 0-based position.
-							int cpgPos = Integer.parseInt(items[3]) - 3;
+							int cpgPos = Integer.parseInt(items[3]) - 1;
 							if (seq.getStrand().equals("BOTTOM")) {
 								cpgPos--;
 							}

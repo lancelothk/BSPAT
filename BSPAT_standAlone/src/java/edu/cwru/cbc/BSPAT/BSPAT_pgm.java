@@ -43,19 +43,20 @@ public class BSPAT_pgm {
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String inputPath = "/home/kehu/experiments/BSPAT/standAlone/seq/";
-		String referencePath = "/home/kehu/experiments/BSPAT/standAlone/ref/";
-		String bismarkResultPath = "/home/kehu/experiments/BSPAT/standAlone/output/bismark/";
-		String outputPath = "/home/kehu/experiments/BSPAT/standAlone/output/";
-		String bismarkPath = "/home/kehu/software/bismark_v0.14.2_noSleep/";
-		String bowtiePath = "/home/kehu/software/bowtie-1.1.1/";
+		String userDir = System.getProperty("user.home");
+		String inputPath = userDir + "/experiments/BSPAT/standAlone/seq/";
+		String referencePath = userDir + "/experiments/BSPAT/standAlone/ref/";
+		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/output/bismark/";
+		String outputPath = userDir + "/experiments/BSPAT/standAlone/output/";
+		String bismarkPath = userDir + "/software/bismark_v0.14.2_noSleep/";
+		String bowtiePath = userDir + "/software/bowtie-1.1.1/";
 		String qualType = "phred33";
 		String logPath = outputPath;
 		double conversionRateThreshold = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01, minMethylThreshold = 0.01;
 		int maxmis = 2;
-		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
-				maxmis);
-		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
+//		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
+//				maxmis);
+//		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
 
 		generatePatterns(referencePath, bismarkResultPath, outputPath, conversionRateThreshold,
 				sequenceIdentityThreshold, criticalValue, minMethylThreshold);
@@ -82,8 +83,10 @@ public class BSPAT_pgm {
 	                                                double minMethylThreshold, String region, List<Sequence> seqGroup,
 	                                                String refSeq) throws IOException {
 
-		int targetStart = 40, targetEnd = 80;
-		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
+		int targetStart = 6, targetEnd = 100; // 1-based
+		targetStart--; // change to 0-based
+		targetEnd--;// change to 0-based
+		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);// 0-based
 
 		// processing sequences
 		for (Sequence sequence : seqGroup) {
