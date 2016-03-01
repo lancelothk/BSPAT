@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class CallBismark {
+
 	private final static Logger LOGGER = Logger.getLogger(CallBismark.class.getName());
 	private int maxmis;
 	private File bismarkPathFile;
 	private File bowtiePathFile;
 	private File refPathFile;
 	private String qualsTypeParameter;
-
 	public CallBismark(String refPath, String bismarkPath, String bowtiePath, String logPath, String qualsType,
 	                   int maxmis) throws IOException, InterruptedException {
 		this.maxmis = maxmis;
@@ -54,6 +54,20 @@ public class CallBismark {
 		}
 	}
 
+	public static void main(String[] args) throws IOException, InterruptedException {
+		String userDir = System.getProperty("user.home");
+		String referencePath = userDir + "/experiments/BSPAT/standAlone/ref/";
+		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/output/bismark/";
+		String inputPath = userDir + "/experiments/BSPAT/standAlone/seq/";
+		String bismarkPath = userDir + "/software/bismark_v0.14.2_noSleep/";
+		String bowtiePath = userDir + "/software/bowtie-1.1.1/";
+		String qualType = "phred33";
+		int maxmis = 2;
+		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
+				maxmis);
+		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
+	}
+
 	public void execute(String inputPath, String outputPath, String logPath) throws IOException, InterruptedException {
 		String fastaq = "-q"; // default is -q/--fastq
 		File inputFile = new File(inputPath);
@@ -71,13 +85,9 @@ public class CallBismark {
 			tempDir.mkdirs();
 		}
 		/** 2. run bismark **/
-		String bismark = "";
-
 		// if input is a folder (should be a folder)
 		if (inputFile.isDirectory()) {
 			File seqfolder = new File(inputPath);
-			File[] seqfiles = seqfolder.listFiles();
-
 			// recursive refresh file list
 			fileList = Utils.visitFiles(seqfolder);
 			if (fileList.size() == 0) {

@@ -1,5 +1,6 @@
 package edu.cwru.cbc.BSPAT;
 
+import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,49 +23,58 @@ public class BSPAT_pgm {
 	public static final String METHYLATION = "Methylation";
 	public static final String METHYLATIONWITHSNP = "MethylationWithSNP";
 
-	/**
-	 * group sequences by given key function
-	 *
-	 * @param getKey function parameter to return String key.
-	 * @return HashMap contains <key function return value, grouped sequence list>
-	 */
-	private static Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
-		Map<String, List<Sequence>> sequenceGroupMap = new HashMap<>();
-		for (Sequence seq : sequencesList) {
-			if (sequenceGroupMap.containsKey(getKey.getKey(seq))) {
-				sequenceGroupMap.get(getKey.getKey(seq)).add(seq);
-			} else {
-				List<Sequence> sequenceGroup = new ArrayList<>();
-				sequenceGroup.add(seq);
-				sequenceGroupMap.put(getKey.getKey(seq), sequenceGroup);
-			}
-		}
-		return sequenceGroupMap;
-	}
-
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
+		double bisulfiteConversionRate = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01, methylPatternThreshold = 0.01;
 		String userDir = System.getProperty("user.home");
-		String inputPath = userDir + "/experiments/BSPAT/standAlone/seq/";
 		String referencePath = userDir + "/experiments/BSPAT/standAlone/ref/";
 		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/output/bismark/";
 		String outputPath = userDir + "/experiments/BSPAT/standAlone/output/";
-		String bismarkPath = userDir + "/software/bismark_v0.14.2_noSleep/";
-		String bowtiePath = userDir + "/software/bowtie-1.1.1/";
-		String qualType = "phred33";
-		String logPath = outputPath;
-		double conversionRateThreshold = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01, minMethylThreshold = 0.01;
-		int maxmis = 2;
-//		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
-//				maxmis);
-//		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
 
-		generatePatterns(referencePath, bismarkResultPath, outputPath, conversionRateThreshold,
-				sequenceIdentityThreshold, criticalValue, minMethylThreshold);
+		Options options = new Options();
+		options.addOption(Option.builder("r").hasArg().desc("Reference Path").required().build());
+		options.addOption(Option.builder("i").hasArg().desc("Input Path").required().build());
+		options.addOption(Option.builder("o").hasArg().desc("Output Path").required().build());
+		options.addOption(Option.builder("b").hasArg().desc("Bisulfite Conversion Rate").build());
+		options.addOption(Option.builder("s").hasArg().desc("Sequence Identity Threshold").build());
+		options.addOption(Option.builder("m").hasArg().desc("Methylation pattern Threshold").build());
+		options.addOption(Option.builder("c").hasArg().desc("Critical Value").build());
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = parser.parse(options, args);
+
+		referencePath = validatePath(cmd.getOptionValue("r"));
+		bismarkResultPath = validatePath(cmd.getOptionValue("i"));
+		outputPath = validatePath(cmd.getOptionValue("o"));
+
+		if (cmd.hasOption("b")) {
+			bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b"));
+		}
+		if (cmd.hasOption("s")) {
+			sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("s"));
+		}
+		if (cmd.hasOption("m")) {
+			methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m"));
+		}
+		if (cmd.hasOption("c")) {
+			criticalValue = Double.parseDouble(cmd.getOptionValue("c"));
+		}
+
+		generatePatterns(referencePath, bismarkResultPath, outputPath, bisulfiteConversionRate,
+				sequenceIdentityThreshold, criticalValue, methylPatternThreshold);
+	}
+
+	public static String validatePath(String path) {
+		// TODO check path is directory,  not a file
+		if (!path.endsWith("/")) {
+			return path + "/";
+		} else {
+			return path;
+		}
 	}
 
 	private static void generatePatterns(String referencePath, String bismarkResultPath, String outputPath,
-	                                     double conversionRateThreshold, double sequenceIdentityThreshold,
-	                                     double criticalValue, double minMethylThreshold) throws IOException {
+	                                     double bisulfiteConversionRate, double sequenceIdentityThreshold,
+	                                     double criticalValue, double methylPatternThreshold) throws IOException {
 		ImportBismarkResult importBismarkResult = new ImportBismarkResult(referencePath, bismarkResultPath);
 		Map<String, String> referenceSeqs = importBismarkResult.getReferenceSeqs();
 		List<Sequence> sequencesList = importBismarkResult.getSequencesList();
@@ -73,14 +83,14 @@ public class BSPAT_pgm {
 		for (String region : sequenceGroupMap.keySet()) {
 			List<Sequence> seqGroup = sequenceGroupMap.get(region);
 			String refSeq = referenceSeqs.get(region);
-			generatePatternsSingleGroup(outputPath, conversionRateThreshold, sequenceIdentityThreshold, criticalValue,
-					minMethylThreshold, region, seqGroup, refSeq);
+			generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue,
+					methylPatternThreshold, region, seqGroup, refSeq);
 		}
 	}
 
-	private static void generatePatternsSingleGroup(String outputPath, double conversionRateThreshold,
+	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
 	                                                double sequenceIdentityThreshold, double criticalValue,
-	                                                double minMethylThreshold, String region, List<Sequence> seqGroup,
+	                                                double methylPatternThreshold, String region, List<Sequence> seqGroup,
 	                                                String refSeq) throws IOException {
 
 		int targetStart = 6, targetEnd = 100; // 1-based
@@ -99,7 +109,7 @@ public class BSPAT_pgm {
 
 		// quality filtering
 		Pair<List<Sequence>, List<Sequence>> qualityFilterSequencePair = filterSequences(
-				coverTargetSequencePair.getLeft(), conversionRateThreshold, sequenceIdentityThreshold);
+				coverTargetSequencePair.getLeft(), bisulfiteConversionRate, sequenceIdentityThreshold);
 
 		// calculate mismatch stat based on all sequences in reference region.
 		int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd,
@@ -111,7 +121,7 @@ public class BSPAT_pgm {
 
 		methylationPatternList = filterMethylationPatterns(methylationPatternList,
 				qualityFilterSequencePair.getLeft().size(), StringUtils.countMatches(targetRefSeq, "CG"),
-				criticalValue, minMethylThreshold);
+				criticalValue, methylPatternThreshold);
 
 		// sort pattern and assign id index
 		methylationPatternList.sort((p1, p2) -> Integer.compare(p2.getCount(), p1.getCount()));
@@ -122,6 +132,26 @@ public class BSPAT_pgm {
 		writeAnalysedSequences(outputPath + region + "_bismark.analysis.txt", qualityFilterSequencePair.getLeft());
 		writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, region, METHYLATION), targetRefSeq,
 				methylationPatternList, METHYLATION, qualityFilterSequencePair.getLeft().size());
+	}
+
+	/**
+	 * group sequences by given key function
+	 *
+	 * @param getKey function parameter to return String key.
+	 * @return HashMap contains <key function return value, grouped sequence list>
+	 */
+	private static Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
+		Map<String, List<Sequence>> sequenceGroupMap = new HashMap<>();
+		for (Sequence seq : sequencesList) {
+			if (sequenceGroupMap.containsKey(getKey.getKey(seq))) {
+				sequenceGroupMap.get(getKey.getKey(seq)).add(seq);
+			} else {
+				List<Sequence> sequenceGroup = new ArrayList<>();
+				sequenceGroup.add(seq);
+				sequenceGroupMap.put(getKey.getKey(seq), sequenceGroup);
+			}
+		}
+		return sequenceGroupMap;
 	}
 
 	public static void writePatterns(String patternFileName, String refSeq, List<Pattern> patternList,
@@ -172,13 +202,13 @@ public class BSPAT_pgm {
 
 	private static List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
 	                                                       int refCpGCount, double criticalValue,
-	                                                       double minMethylThreshold) {
+	                                                       double methylPatternThreshold) {
 		if (methylationPatterns.size() != 0 && totalSeqCount != 0) {
 			if (criticalValue != -1 && refCpGCount > 3) {
 				return filterMethylPatternsByP0Threshold(methylationPatterns, totalSeqCount, refCpGCount,
 						criticalValue);
 			} else {
-				return filterPatternsByThreshold(methylationPatterns, totalSeqCount, minMethylThreshold);
+				return filterPatternsByThreshold(methylationPatterns, totalSeqCount, methylPatternThreshold);
 			}
 		}
 		// return empty list.
@@ -270,14 +300,14 @@ public class BSPAT_pgm {
 	 * fill sequence list filtered by threshold.
 	 */
 	private static Pair<List<Sequence>, List<Sequence>> filterSequences(List<Sequence> seqList,
-	                                                                    double conversionRateThreshold,
+	                                                                    double bisulfiteConversionRate,
 	                                                                    double sequenceIdentityThreshold) throws
 			IOException {
 		List<Sequence> qualifiedSeqList = new ArrayList<>();
 		List<Sequence> unQualifiedSeqList = new ArrayList<>();
 		for (Sequence seq : seqList) {
 			// filter unqualified reads
-			if (seq.getBisulConversionRate() >= conversionRateThreshold && seq.getSequenceIdentity() >= sequenceIdentityThreshold) {
+			if (seq.getBisulConversionRate() >= bisulfiteConversionRate && seq.getSequenceIdentity() >= sequenceIdentityThreshold) {
 				qualifiedSeqList.add(seq);
 			} else {
 				unQualifiedSeqList.add(seq);
