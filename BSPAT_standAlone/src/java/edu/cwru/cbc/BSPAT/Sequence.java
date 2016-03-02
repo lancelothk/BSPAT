@@ -120,6 +120,13 @@ public class Sequence {
 		return memuString;
 	}
 
+	public void setMeMuString(PotentialSNP snp, int targetStart, int targetEnd) {
+		char[] patternArray = methylationString.toCharArray();
+		if (snp.getNucleotide() != '-') {
+			patternArray[snp.getPosition() - startPos] = snp.getNucleotide();
+		}
+		this.memuString = new String(patternArray).substring(targetStart - startPos, targetEnd - startPos + 1);
+	}
 
 	public String getStrand() {
 		return strand;
