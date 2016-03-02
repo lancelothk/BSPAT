@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: gov.nih.nlm.ncbi:ngs-java:1.2.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nih.nlm.ncbi/ngs-java/1.2.2/a3947107c3ad9ed8f590612673032d12457b75e5/ngs-java-1.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/gov.nih.nlm.ncbi/ngs-java/1.2.2/e752507f20a78471425038ce9635344592962f84/ngs-java-1.2.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,7 +1,7 @@
 package edu.cwru.cbc.BSPAT;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import org.apache.commons.io.Charsets;
 
 import java.io.*;
 import java.util.ArrayList;

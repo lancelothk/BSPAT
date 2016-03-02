@@ -4,8 +4,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math.MathException;
-import org.apache.commons.math.distribution.NormalDistributionImpl;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -19,7 +18,6 @@ import java.util.*;
 @SuppressWarnings("Duplicates")
 public class BSPAT_pgm {
 
-	public static final int ERROR_EXIT = 1;
 	public static final String METHYLATION = "Methylation";
 	public static final String METHYLATIONWITHSNP = "MethylationWithSNP";
 
@@ -232,7 +230,7 @@ public class BSPAT_pgm {
 	                                                               double totalSeqCount,
 	                                                               int refCpGCount, double criticalValue) {
 		List<Pattern> qualifiedMethylationPatternList = new ArrayList<>();
-		NormalDistributionImpl nd = new NormalDistributionImpl(0, 1);
+		NormalDistribution nd = new NormalDistribution(0, 1);
 
 		int nonNoisePatternCount = 0;
 		for (Pattern methylationPattern : methylationPatterns) {
@@ -247,12 +245,7 @@ public class BSPAT_pgm {
 			double ph = methylationPattern.getCount() / totalSeqCount;
 			double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
 			double pZ = 0;
-			try {
-				pZ = 1 - nd.cumulativeProbability(z);
-			} catch (MathException e) {
-				e.printStackTrace();
-				System.exit(ERROR_EXIT);
-			}
+			pZ = 1 - nd.cumulativeProbability(z);
 			if (pZ <= (criticalValue / methylationPatterns.size())) {
 				qualifiedMethylationPatternList.add(methylationPattern);
 			}
