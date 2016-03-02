@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+    id 'distribution'
+}
+
+sourceCompatibility = 1.8
+
+version '0.1-beta'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.github.samtools:htsjdk:2.1.0'
+    compile 'com.google.guava:guava:19.0'
+    compile 'commons-cli:commons-cli:1.3.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.commons:commons-math3:3.6'
+    testCompile 'org.testng:testng:6.9.10'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+    }
+}
+
+test.doFirst {
+    useTestNG()
+}
+
+@SuppressWarnings("GroovyAssignabilityCheck")
+CreateStartScripts buildStartScript(String appName, String mainClass) {
+    return buildStartScript(appName, mainClass, []);
+}
+
+@SuppressWarnings("GroovyAssignabilityCheck")
+CreateStartScripts buildStartScript(String appName, String mainClass, Iterable<String> jvmOpts) {
+    task "${appName}StartScript"(type: CreateStartScripts) {
+        mainClassName = mainClass
+        applicationName = appName
+        defaultJvmOpts = jvmOpts
+        outputDir = new File(project.buildDir, 'scripts');
+        classpath = jar.outputs.files + project.configurations.runtime
+        group = "scripts"
+    }
+}
+
+task addAllStartSctipts(dependsOn: jar) {
+    group = "scripts"
+    buildStartScript('callBismark', 'edu.cwru.cbc.BSPAT.CallBismark').execute()
+    buildStartScript('BSPAT', 'edu.cwru.cbc.BSPAT.BSPAT_pgm').execute()
+}
+
+distZip.enabled = false
+distTar.enabled = false
+
+distributions {
+    //noinspection GroovyAssignabilityCheck
+    main {
+        contents {
+            addAllStartSctipts
+            into('bin') {
+                from 'build/scripts'
+            }
+            into('lib') {
+                from 'build/libs/'
+                from configurations.runtime
+            }
+
+            exclude "**/*.bat"
+        }
+    }
+}
+
+tasks.withType(Tar) {
+    compression = Compression.GZIP
+}
