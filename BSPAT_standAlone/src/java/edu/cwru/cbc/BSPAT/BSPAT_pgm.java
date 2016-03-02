@@ -29,6 +29,7 @@ public class BSPAT_pgm {
 		String outputPath = userDir + "/experiments/BSPAT/standAlone/output/";
 
 		Options options = new Options();
+		// Require all input path to be directory. File is not allowed.
 		options.addOption(Option.builder("r").hasArg().desc("Reference Path").required().build());
 		options.addOption(Option.builder("i").hasArg().desc("Input Path").required().build());
 		options.addOption(Option.builder("o").hasArg().desc("Output Path").required().build());
@@ -62,7 +63,6 @@ public class BSPAT_pgm {
 	}
 
 	public static String validatePath(String path) {
-		// TODO check path is directory,  not a file
 		if (!path.endsWith("/")) {
 			return path + "/";
 		} else {
