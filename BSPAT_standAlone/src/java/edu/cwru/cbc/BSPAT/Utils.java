@@ -1,14 +1,56 @@
 package edu.cwru.cbc.BSPAT;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
+import com.google.common.io.Files;
+import com.google.common.io.LineProcessor;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kehu on 2/29/16.
  */
 public class Utils {
+
+	public static Map<String, List<BedInterval>> readBedFile(String bedFile) throws IOException {
+		return Files.asCharSource(new File(bedFile), Charsets.UTF_8)
+				.readLines(new LineProcessor<Map<String, List<BedInterval>>>() {
+					private final Splitter tabSplitter = Splitter.on("\t");
+					private Map<String, List<BedInterval>> bedIntervalMap = new HashMap<>();
+
+					@Override
+					public boolean processLine(String line) throws IOException {
+						List<String> itemList = tabSplitter.splitToList(line);
+						if (itemList.size() >= 4) {
+							//  require bed file position 0-based.
+							BedInterval bedInterval = new BedInterval(itemList.get(0),
+									Integer.parseInt(itemList.get(1)), Integer.parseInt(itemList.get(2)),
+									itemList.get(3));
+							List<BedInterval> bedIntervalList = bedIntervalMap.get(itemList.get(0));
+							if (bedIntervalList == null) {
+								bedIntervalList = new ArrayList<>();
+								bedIntervalList.add(bedInterval);
+								bedIntervalMap.put(itemList.get(0), bedIntervalList);
+							} else {
+								bedIntervalList.add(bedInterval);
+							}
+							return true;
+						} else {
+							return false;
+						}
+					}
+
+					@Override
+					public Map<String, List<BedInterval>> getResult() {
+						return bedIntervalMap;
+					}
+				});
+	}
 
 	// only add allowed files.
 	public static List<File> visitFiles(File f) {

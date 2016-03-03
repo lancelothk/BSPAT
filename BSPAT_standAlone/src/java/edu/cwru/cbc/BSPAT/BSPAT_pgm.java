@@ -28,11 +28,13 @@ public class BSPAT_pgm {
 		String referencePath = userDir + "/experiments/BSPAT/standAlone/ref/";
 		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/output/bismark/";
 		String outputPath = userDir + "/experiments/BSPAT/standAlone/output/";
+		String targetRegionFile = "";
 
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
 		options.addOption(Option.builder("r").hasArg().desc("Reference Path").required().build());
-		options.addOption(Option.builder("i").hasArg().desc("Input Path").required().build());
+		options.addOption(Option.builder("i").hasArg().desc("Bismark result Path").required().build());
+		options.addOption(Option.builder("t").hasArg().desc("Target region file").required().build());
 		options.addOption(Option.builder("o").hasArg().desc("Output Path").required().build());
 		options.addOption(Option.builder("b").hasArg().desc("Bisulfite Conversion Rate").build());
 		options.addOption(Option.builder("s").hasArg().desc("Sequence Identity Threshold").build());
@@ -46,6 +48,7 @@ public class BSPAT_pgm {
 		referencePath = validatePath(cmd.getOptionValue("r"));
 		bismarkResultPath = validatePath(cmd.getOptionValue("i"));
 		outputPath = validatePath(cmd.getOptionValue("o"));
+		targetRegionFile = cmd.getOptionValue("t");
 
 		if (cmd.hasOption("b")) {
 			bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b"));
@@ -63,8 +66,9 @@ public class BSPAT_pgm {
 			criticalValue = Double.parseDouble(cmd.getOptionValue("c"));
 		}
 
-		generatePatterns(referencePath, bismarkResultPath, outputPath, bisulfiteConversionRate,
-				sequenceIdentityThreshold, criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold);
+		generatePatterns(referencePath, bismarkResultPath, outputPath, Utils.readBedFile(targetRegionFile),
+				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, methylPatternThreshold, snpThreshold,
+				memuPatternThreshold);
 	}
 
 	public static String validatePath(String path) {
@@ -76,31 +80,36 @@ public class BSPAT_pgm {
 	}
 
 	private static void generatePatterns(String referencePath, String bismarkResultPath, String outputPath,
-	                                     double bisulfiteConversionRate, double sequenceIdentityThreshold,
-	                                     double criticalValue, double methylPatternThreshold, double snpThreshold, double memuPatternThreshold) throws
+	                                     Map<String, List<BedInterval>> bedIntervalMap, double bisulfiteConversionRate,
+	                                     double sequenceIdentityThreshold, double criticalValue,
+	                                     double methylPatternThreshold, double snpThreshold, double memuPatternThreshold) throws
 			IOException {
 		ImportBismarkResult importBismarkResult = new ImportBismarkResult(referencePath, bismarkResultPath);
 		Map<String, String> referenceSeqs = importBismarkResult.getReferenceSeqs();
 		List<Sequence> sequencesList = importBismarkResult.getSequencesList();
-
-		Map<String, List<Sequence>> sequenceGroupMap = groupSeqsByKey(sequencesList, Sequence::getRegion);
-		for (String region : sequenceGroupMap.keySet()) {
-			List<Sequence> seqGroup = sequenceGroupMap.get(region);
-			String refSeq = referenceSeqs.get(region);
-			generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue,
-					methylPatternThreshold, snpThreshold, memuPatternThreshold, region, seqGroup, refSeq);
+		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : bedIntervalMap.entrySet()) {
+			String refSeq = referenceSeqs.get(chromosomeEntry.getKey());
+			for (BedInterval bedInterval : chromosomeEntry.getValue()) {
+				List<Sequence> seqGroup = new ArrayList<>();
+				for (Sequence sequence : sequencesList) {
+					if (sequence.getStartPos() <= bedInterval.getStart() && sequence.getEndPos() >= bedInterval.getEnd()) {
+						seqGroup.add(sequence);
+					}
+				}
+				generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
+						criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, bedInterval,
+						seqGroup, refSeq);
+			}
 		}
 	}
 
 	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
 	                                                double sequenceIdentityThreshold, double criticalValue,
 	                                                double methylPatternThreshold, double snpThreshold,
-	                                                double memuPatternThreshold, String region, List<Sequence> seqGroup,
+	                                                double memuPatternThreshold, BedInterval bedInterval, List<Sequence> seqGroup,
 	                                                String refSeq) throws IOException {
 
-		int targetStart = 32, targetEnd = 102; // 1-based
-		targetStart--; // change to 0-based
-		targetEnd--;// change to 0-based
+		int targetStart = bedInterval.getStart(), targetEnd = bedInterval.getEnd(); // 0-based
 		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);// 0-based
 
 		// processing sequences
@@ -108,20 +117,16 @@ public class BSPAT_pgm {
 			sequence.processSequence(refSeq);
 		}
 
-		// seqs in seqGroup got changed in updateTargetSequences().
-		Pair<List<Sequence>, List<Sequence>> coverTargetSequencePair = updateTargetSequences(seqGroup, targetStart,
-				targetEnd);
-
 		// quality filtering
 		Pair<List<Sequence>, List<Sequence>> qualityFilterSequencePair = filterSequences(
-				coverTargetSequencePair.getLeft(), bisulfiteConversionRate, sequenceIdentityThreshold);
+				seqGroup, bisulfiteConversionRate, sequenceIdentityThreshold);
 
 		List<Sequence> sequencePassedQualityFilter = qualityFilterSequencePair.getLeft();
-		writeAnalysedSequences(outputPath + region + "_bismark.analysis.txt", sequencePassedQualityFilter);
+		writeAnalysedSequences(outputPath + bedInterval.toString() + "_bismark.analysis.txt",
+				sequencePassedQualityFilter);
 
 		// generate methyl pattern output
-		List<Pattern> methylationPatternList = getMethylPattern(sequencePassedQualityFilter, targetStart,
-				targetEnd);
+		List<Pattern> methylationPatternList = getMethylPattern(sequencePassedQualityFilter, targetStart, targetEnd);
 
 		methylationPatternList = filterMethylationPatterns(methylationPatternList,
 				sequencePassedQualityFilter.size(), StringUtils.countMatches(targetRefSeq, "CG"), criticalValue,
@@ -133,7 +138,8 @@ public class BSPAT_pgm {
 			methylationPatternList.get(i).assignPatternID(i);
 		}
 
-		writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, region, METHYLATION), targetRefSeq,
+		writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, bedInterval.toString(), METHYLATION),
+				targetRefSeq,
 				methylationPatternList, METHYLATION, sequencePassedQualityFilter.size());
 
 		// calculate mismatch stat based on all sequences in reference region.
@@ -150,7 +156,8 @@ public class BSPAT_pgm {
 					potentialSNP, targetStart, targetEnd);
 			meMuPatternList = filterPatternsByThreshold(meMuPatternList, sequencePassedQualityFilter.size(),
 					memuPatternThreshold);
-			writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, region, METHYLATIONWITHSNP),
+			writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, bedInterval.toString(),
+					METHYLATIONWITHSNP),
 					targetRefSeq, meMuPatternList, METHYLATIONWITHSNP, sequencePassedQualityFilter.size());
 		}
 	}
@@ -211,9 +218,9 @@ public class BSPAT_pgm {
 	private static void writeAnalysedSequences(String sequenceFile, List<Sequence> sequencesList) throws IOException {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(sequenceFile))) {
 			bufferedWriter.write(
-					"methylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
+					"start\tend\tmethylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
 			for (Sequence seq : sequencesList) {
-				bufferedWriter.write(
+				bufferedWriter.write(seq.getStartPos() + "\t" + seq.getEndPos() + "\t" +
 						seq.getMethylationString() + "\t" + seq.getId() + "\t" + seq.getOriginalSeq() + "\t" +
 								seq.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" +
 								seq.getSequenceIdentity() + "\n");
@@ -332,25 +339,6 @@ public class BSPAT_pgm {
 			}
 		}
 		return new ArrayList<>(patternMap.values());
-	}
-
-	/**
-	 * cutting mapped sequences to reference region and filter reads without covering whole reference seq
-	 */
-	private static Pair<List<Sequence>, List<Sequence>> updateTargetSequences(List<Sequence> sequenceGroup,
-	                                                                          int targetStart,
-	                                                                          int targetEnd) throws
-			IOException {
-		List<Sequence> fullyCoverTargetSeqList = new ArrayList<>();
-		List<Sequence> notFullyCoverTargetSeqList = new ArrayList<>();
-		for (Sequence sequence : sequenceGroup) {
-			if (sequence.getStartPos() <= targetStart && sequence.getEndPos() >= targetEnd) {
-				fullyCoverTargetSeqList.add(sequence);
-			} else {
-				notFullyCoverTargetSeqList.add(sequence);
-			}
-		}
-		return new ImmutablePair<>(fullyCoverTargetSeqList, notFullyCoverTargetSeqList);
 	}
 
 	/**
