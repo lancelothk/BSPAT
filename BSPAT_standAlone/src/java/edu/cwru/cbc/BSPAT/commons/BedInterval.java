@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.commons;
 
 /**
  * Created by lancelothk on 3/2/16.

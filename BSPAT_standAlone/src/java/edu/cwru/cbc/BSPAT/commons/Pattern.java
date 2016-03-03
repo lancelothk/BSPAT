@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.commons;
 
 import java.util.HashMap;
 import java.util.Map;

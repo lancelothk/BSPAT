@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.commons;
 
 import org.apache.commons.lang3.StringUtils;
 

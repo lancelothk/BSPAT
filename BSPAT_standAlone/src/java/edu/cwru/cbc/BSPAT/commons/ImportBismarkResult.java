@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.commons;
 
 
 import htsjdk.samtools.SAMRecord;

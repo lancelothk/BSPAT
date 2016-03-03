@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.commons;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;

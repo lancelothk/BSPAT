@@ -1,7 +1,8 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.callBismark;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import edu.cwru.cbc.BSPAT.commons.Utils;
 
 import java.io.*;
 import java.util.ArrayList;

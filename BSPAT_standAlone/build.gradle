@@ -51,8 +51,8 @@ CreateStartScripts buildStartScript(String appName, String mainClass, Iterable<S
 
 task addAllStartSctipts(dependsOn: jar) {
     group = "scripts"
-    buildStartScript('callBismark', 'edu.cwru.cbc.BSPAT.CallBismark').execute()
-    buildStartScript('BSPAT', 'edu.cwru.cbc.BSPAT.BSPAT_pgm').execute()
+    buildStartScript('callBismark', 'edu.cwru.cbc.BSPAT.callBismark.CallBismark').execute()
+    buildStartScript('BSPAT', 'edu.cwru.cbc.BSPAT.CLI.BSPAT_pgm').execute()
 }
 
 distZip.enabled = false

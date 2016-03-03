@@ -1,5 +1,6 @@
-package edu.cwru.cbc.BSPAT;
+package edu.cwru.cbc.BSPAT.CLI;
 
+import edu.cwru.cbc.BSPAT.commons.*;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
