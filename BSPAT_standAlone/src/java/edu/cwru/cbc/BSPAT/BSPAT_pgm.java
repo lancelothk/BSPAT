@@ -24,11 +24,7 @@ public class BSPAT_pgm {
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
 		double bisulfiteConversionRate = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01,
 				methylPatternThreshold = 0.01, memuPatternThreshold = 0.1, snpThreshold = 0.2;
-		String userDir = System.getProperty("user.home");
-		String referencePath = userDir + "/experiments/BSPAT/standAlone/ref/";
-		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/output/bismark/";
-		String outputPath = userDir + "/experiments/BSPAT/standAlone/output/";
-		String targetRegionFile = "";
+		String referencePath, bismarkResultPath, outputPath, targetRegionFile;
 
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
@@ -91,6 +87,7 @@ public class BSPAT_pgm {
 			String refSeq = referenceSeqs.get(chromosomeEntry.getKey());
 			for (BedInterval bedInterval : chromosomeEntry.getValue()) {
 				List<Sequence> seqGroup = new ArrayList<>();
+				// TODO use indexed bam to speed up query
 				for (Sequence sequence : sequencesList) {
 					if (sequence.getStartPos() <= bedInterval.getStart() && sequence.getEndPos() >= bedInterval.getEnd()) {
 						seqGroup.add(sequence);
@@ -108,7 +105,6 @@ public class BSPAT_pgm {
 	                                                double methylPatternThreshold, double snpThreshold,
 	                                                double memuPatternThreshold, BedInterval bedInterval, List<Sequence> seqGroup,
 	                                                String refSeq) throws IOException {
-
 		int targetStart = bedInterval.getStart(), targetEnd = bedInterval.getEnd(); // 0-based
 		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);// 0-based
 
@@ -274,8 +270,7 @@ public class BSPAT_pgm {
 		for (Pattern methylationPattern : methylationPatterns) {
 			double ph = methylationPattern.getCount() / totalSeqCount;
 			double z = (ph - p0) / Math.sqrt(ph * (1 - ph) / totalSeqCount);
-			double pZ = 0;
-			pZ = 1 - nd.cumulativeProbability(z);
+			double pZ = 1 - nd.cumulativeProbability(z);
 			if (pZ <= (criticalValue / methylationPatterns.size())) {
 				qualifiedMethylationPatternList.add(methylationPattern);
 			}
