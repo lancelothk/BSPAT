@@ -88,6 +88,10 @@ public class Constant implements Serializable {
 		return (coorFilePath + coorFileName).replace(Constant.DISKROOTPATH, this.webRootPath);
 	}
 
+	public String getAbsolutePathTargetCoorFile() {
+		return (targetPath + targetFileName).replace(Constant.DISKROOTPATH, this.webRootPath);
+	}
+
 	public String getWebRootPath() {
 		return webRootPath;
 	}
