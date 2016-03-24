@@ -1,11 +1,11 @@
 target region start position:	31
-target region length:	71
+target region length:	70
 Bisulfite conversion rate threshold:	0.9
 Sequence identity threshold:	0.9
-A. Sequences cover whole target region:	521
-A. After quality control:	505
-B. Sequences don't cover whole target but cover all CpGs:	269
-B. After quality control:	263
+A. Sequences cover whole target region:	658
+A. After quality control:	640
+B. Sequences don't cover whole target but cover all CpGs:	132
+B. After quality control:	128
 C. Sequences cover neither target nor all CpGs:	3
 methylation rate for each CpG site:
 pos	rate
@@ -83,4 +83,3 @@ mismatch stat:
 68	ref:T	A:0	C:0	G:0	T:0	N:0	total:     0	coverage:768
 69	ref:G	A:1	C:0	G:0	T:0	N:0	total:     1	coverage:768
 70	ref:C	A:0	C:0	G:2	T:0	N:0	total:     2	coverage:640
-71	ref:T	A:0	C:2	G:0	T:0	N:0	total:     2	coverage:505

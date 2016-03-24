@@ -1,4 +1,4 @@
 MethylationWithSNP	count	percentage	MethylParent
-CGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCT	ref
-**---------------------------------------------------**-------*A-------	174	0.344554	0
-**---------------------------------------------------@@-------@@-------	189	0.374257	1
+CGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGC	ref
+**---------------------------------------------------**-------*A------	221	0.345313	0
+**---------------------------------------------------@@-------@@------	237	0.370313	1

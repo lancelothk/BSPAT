@@ -14,8 +14,8 @@
           <element id="library" level="project" name="commons-lang3-3.3.2" />
           <element id="library" level="project" name="commons-math-2.2" />
           <element id="library" level="project" name="guava" />
-          <element id="library" level="project" name="apache http" />
           <element id="library" level="project" name="jstl-1.2.1" />
+          <element id="library" level="project" name="apache http" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="BSPAT/web/Web" />

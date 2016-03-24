@@ -42,7 +42,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="apache http" level="project" />
     <orderEntry type="library" name="jstl-1.2.1" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
@@ -54,6 +53,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="apache http" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

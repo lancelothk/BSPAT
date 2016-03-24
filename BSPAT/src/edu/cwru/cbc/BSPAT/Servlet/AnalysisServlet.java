@@ -90,16 +90,16 @@ public class AnalysisServlet extends HttpServlet {
 			}
 			constant.figureFormat = request.getParameter("figureFormat"); // set figure format
 			if (request.getParameter("criticalValue") != null) {
-				constant.criticalValue = Double.valueOf(request.getParameter("criticalValue"));
+				constant.criticalValue = Double.parseDouble(request.getParameter("criticalValue"));
 				constant.minMethylThreshold = 0.1;
 			} else if (request.getParameter("minmethyltext") != null) {
-				constant.minMethylThreshold = Double.valueOf(request.getParameter("minmethyltext"));
+				constant.minMethylThreshold = Double.parseDouble(request.getParameter("minmethyltext"));
 				constant.criticalValue = -1;
 			}
 
 			constant.SNPThreshold = Double.valueOf(request.getParameter("SNPThreshold"));
-			constant.conversionRateThreshold = Double.valueOf(request.getParameter("conversionRateThreshold"));
-			constant.sequenceIdentityThreshold = Double.valueOf(request.getParameter("sequenceIdentityThreshold"));
+			constant.conversionRateThreshold = Double.parseDouble(request.getParameter("conversionRateThreshold"));
+			constant.sequenceIdentityThreshold = Double.parseDouble(request.getParameter("sequenceIdentityThreshold"));
 
 			// clean up result directory and result zip file
 			Utilities.deleteFolderContent(constant.patternResultPath);

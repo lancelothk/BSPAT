@@ -11,6 +11,7 @@
     <orderEntry type="library" name="super-csv" level="project" />
     <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
     <orderEntry type="library" name="guava" level="project" />
+    <orderEntry type="library" name="apache http" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

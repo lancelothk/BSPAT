@@ -102,6 +102,7 @@ public class Utilities {
 			throw new RuntimeException(
 					"No matched coordinate found by Blat for given reference file. Please double check your reference file");
 		}
+		IO.writeCoordinates(path + outFileName, coorHashMap);
 		return warnings;
 	}
 

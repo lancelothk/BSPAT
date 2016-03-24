@@ -5,22 +5,15 @@ import edu.cwru.cbc.BSPAT.DataType.ExtensionFilter;
 import edu.cwru.cbc.BSPAT.DataType.MappingSummary;
 
 import javax.servlet.http.Part;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IO {
 	/**
 	 * read coordinates file
-	 *
-	 * @param coorPath
-	 * @param coorFileName
-	 * @return coordinateHash
-	 * @throws IOException
 	 */
 	public static HashMap<String, Coordinate> readCoordinates(String coorPath, String coorFileName) {
 		/**
@@ -45,8 +38,9 @@ public class IO {
 						throw new RuntimeException(
 								"invalid coordinate file! Please double check your uploaded coordinate file");
 					}
-					coordinateHash.put(items[0], new Coordinate(items[0], items[1], items[2], Integer.valueOf(items[3]),
-							Integer.valueOf(items[4])));
+					coordinateHash.put(items[0],
+							new Coordinate(items[0], items[1], items[2], Integer.parseInt(items[3]),
+									Integer.parseInt(items[4])));
 				}
 				line = coordinatesBuffReader.readLine();
 			}
@@ -55,6 +49,18 @@ public class IO {
 					"error in reading coordinate file! Please double check your uploaded coordinate file");
 		}
 		return coordinateHash;
+	}
+
+	public static void writeCoordinates(String outFileName, Map<String, Coordinate> coorHashMap) throws
+			IOException {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName))) {
+			for (String key : coorHashMap.keySet()) {
+				Coordinate coor = coorHashMap.get(key);
+				writer.write(
+						String.format("%s\t%s\t%s\t%s\t%s\n", key, coor.getChr(), coor.getStrand(), coor.getStart(),
+								coor.getEnd()));
+			}
+		}
 	}
 
 	public static void createFolder(String path) {

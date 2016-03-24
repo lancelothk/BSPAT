@@ -166,12 +166,12 @@ public class DrawPattern {
 			statList = updatedStatList;
 		}
 
+		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + cellLine.length() * CELLLINE_CHAR_LENGTH;
+		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
 
-		int imageWidth = targetLength * BPWIDTH + left + (Integer.toString(beginCoor).length() + Integer.toString(
-				endCoor)
-				.length() + chr.length()) * 15;
+		int imageWidth = left + ((targetLength * BPWIDTH + 13 * 20) > coordinate.length() * COMMON_FONT_SIZE / 2 ? targetLength * BPWIDTH + 13 * 20 : coordinate
+				.length() * COMMON_FONT_SIZE / 2);
 		int imageHeight = FIGURE_STARTY + 180 + patternResultLists.size() * HEIGHT_INTERVAL;
 
 		FigureWriter methylWriter = new FigureWriter(patternResultPath, figureFormat, region,
@@ -250,11 +250,23 @@ public class DrawPattern {
 		String strand = data.getCoordinate().getStrand();
 		int beginCoor = data.getCoordinate().getStart();
 		int endCoor = data.getCoordinate().getEnd();
+		String coordinate = String.format("chr%s:%d-%d (%s strand)", chr, beginCoor, endCoor, strand);
 		List<CpGStatistics> statList = data.getStatList();
 
+		if (strand.equals("-")) {
+			patternWithAllele.getCpGList()
+					.forEach(cpgPattern -> cpgPattern.setPosition(refLength - cpgPattern.getPosition() - 2));
+			patternWithoutAllele.getCpGList()
+					.forEach(cpgPattern -> cpgPattern.setPosition(refLength - cpgPattern.getPosition() - 2));
+			for (int i = 0; i < patternWithAllele.getAlleleList().size(); i++) {
+				patternWithAllele.getAlleleList().set(i, refLength - patternWithAllele.getAlleleList().get(i) - 2);
+			}
+		}
+
 		int height = FIGURE_STARTY;
-		int left = FIGURE_STARTX + cellLine.length() * CELLLINE_CHAR_LENGTH;
-		int imageWidth = refLength * BPWIDTH + left + 240;
+		int left = FIGURE_STARTX + (int) (cellLine.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
+		int imageWidth = left + ((refLength * BPWIDTH + 13 * 20) > coordinate.length() * COMMON_FONT_SIZE / 2 ? refLength * BPWIDTH + 13 * 20 : coordinate
+				.length() * COMMON_FONT_SIZE / 2);
 		int imageHeight = FIGURE_STARTY + 180 + 10 * HEIGHT_INTERVAL;
 
 		FigureWriter ASMWriter = new FigureWriter(patternResultPath, figureFormat, region, "ASM", imageWidth,
@@ -286,6 +298,7 @@ public class DrawPattern {
 						endCoor, strand, beginCoor - 1, beginCoor - 1));
 		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithoutAllele.getCpGList(), chr, beginCoor,
 				"PatternA", ASMWriter.getBedWriter(), height, left);
+		ASMWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 		addAllele(patternWithoutAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, beginCoor,
 				height + HEIGHT_INTERVAL, left);
 		height += HEIGHT_INTERVAL * 1.5;
@@ -303,13 +316,25 @@ public class DrawPattern {
 		height += 2 * HEIGHT_INTERVAL;
 		addAverage(ASMWriter.getGraphWriter(), figure_font, patternWithAllele.getCpGList(), chr, beginCoor, "PatternB",
 				ASMWriter.getBedWriter(), height, left);
+		ASMWriter.getGraphWriter().setFont(new Font(figure_font, Font.PLAIN, COMMON_FONT_SIZE));
 		addAllele(patternWithAllele, ASMWriter.getGraphWriter(), ASMWriter.getBedWriter(), chr, beginCoor,
 				height + HEIGHT_INTERVAL, left);
 		// set snp info
 		if (patternWithAllele.hasAllele()) {
-			String ASMSNPrsId = retrieveSNP(chr, convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
-					patternResultPath, logPath) +
-					patternWithAllele.getAlleleList().get(0));
+			long snpQueryPos;
+			switch (strand) {
+				case "+":
+					snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getStart(), "hg38",
+							patternResultPath, logPath) + patternWithAllele.getAlleleList().get(0);
+					break;
+				case "-":
+					snpQueryPos = convertCoordinates(chr, coordinateMap.get(region).getEnd(), "hg38",
+							patternResultPath, logPath) - patternWithAllele.getAlleleList().get(0);
+					break;
+				default:
+					throw new RuntimeException("invalid strand:" + strand);
+			}
+			String ASMSNPrsId = retrieveSNP(chr, snpQueryPos);
 			if (ASMSNPrsId != null) {
 				reportSummary.setASMSNPrsId(ASMSNPrsId);
 			}

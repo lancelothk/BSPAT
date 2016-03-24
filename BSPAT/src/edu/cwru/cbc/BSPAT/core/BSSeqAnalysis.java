@@ -74,16 +74,17 @@ public class BSSeqAnalysis {
 					.length()) {
 				throw new RuntimeException("invalid target coordinates! out of reference!");
 			}
-			String tmpTargetRefSeq;
-			if (targetStart != 0 && targetEnd != refSeq.length() - 1) {
-				tmpTargetRefSeq = refSeq.substring(targetStart - 1,
-						targetEnd + 2); // used to include one more bp on both ends to detect CpG sites.
-			} else {
-				tmpTargetRefSeq = refSeq.substring(targetStart,
-						targetEnd + 1);
+			int tmpStart = 0, tmpEnd = 0;
+			// used to include one more bp on both ends to detect CpG sites.
+			if (targetStart != 0) {
+				tmpStart--;
 			}
-			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart - 1;
-			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart - 1;
+			if (targetEnd != refSeq.length() - 1) {
+				tmpEnd++;
+			}
+			String tmpTargetRefSeq = refSeq.substring(targetStart + tmpStart, targetEnd + tmpEnd + 1);
+			int startCpGPos = tmpTargetRefSeq.indexOf("CG") + targetStart + tmpStart;
+			int endCpGPos = tmpTargetRefSeq.lastIndexOf("CG") + targetStart + tmpStart;
 			String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);
 			boolean isStartCpGPartial = (startCpGPos == targetStart - 1);
 			boolean isEndCpGPartial = (endCpGPos == targetEnd);
@@ -196,27 +197,46 @@ public class BSSeqAnalysis {
 		return reportSummaries;
 	}
 
-	private Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, String> referenceSeqs,
-	                                                       Map<String, Coordinate> refCoorMap) {
+	private synchronized Map<String, Coordinate> getStringCoordinateMap(Constant constant, Map<String, String> referenceSeqs,
+	                                                                    Map<String, Coordinate> refCoorMap) throws
+			IOException {
 		Map<String, Coordinate> targetCoorMap = IO.readCoordinates(constant.targetPath, constant.targetFileName);
 		for (String key : refCoorMap.keySet()) {
 			// if no given targetCoor, get position of first CpG and generate DEFAULT_TARGET_LENGTH bp region.
 			if (!targetCoorMap.containsKey(key)) {
 				String refString = referenceSeqs.get(key);
-				int firstPos = refString.indexOf("CG");
-				// no CpG found in ref seq, use ref start and DEFAULT_TARGET_LENGTH.
-				if (firstPos == -1) {
-					targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-							refCoorMap.get(key).getStrand(), refCoorMap.get(key).getStart(),
-							refCoorMap.get(key).getStart() + DEFAULT_TARGET_LENGTH));
-				} else {
-					// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
-					int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH;
-					targetCoorMap.put(key, new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(),
-							refCoorMap.get(key).getStrand(), refCoorMap.get(key).getStart() + firstPos,
-							endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
+				String strand = refCoorMap.get(key).getStrand();
+				if (strand.equals("+")) {
+					int firstPos = refString.indexOf("CG");
+					if (firstPos == -1) {
+						throw new RuntimeException("no CG found in reference!");
+					} else {
+						// from first CpG to min(ref end, fisrt CpG + DEFAULT_TARGET_LENGTH)
+						int startPos = refCoorMap.get(key).getStart() + firstPos;
+						int endPos = refCoorMap.get(key).getStart() + firstPos + DEFAULT_TARGET_LENGTH - 1;
+						targetCoorMap.put(key,
+								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
+										startPos,
+										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
+					}
+				} else if (strand.equals("-")) {
+					int firstPos = refString.lastIndexOf("CG") + 2;
+					if (firstPos == -1) {
+						throw new RuntimeException("no CG found in reference!");
+					} else {
+						int startPos = refCoorMap.get(key).getEnd() - firstPos + 1;
+						int endPos = startPos + DEFAULT_TARGET_LENGTH - 1;
+						targetCoorMap.put(key,
+								new Coordinate(refCoorMap.get(key).getId(), refCoorMap.get(key).getChr(), strand,
+										startPos,
+										endPos < refCoorMap.get(key).getEnd() ? endPos : refCoorMap.get(key).getEnd()));
+					}
 				}
 			}
+		}
+		if (constant.getTargetFileName() == null) {
+			constant.targetFileName = "defaultTarget.coor";
+			IO.writeCoordinates(constant.targetPath + constant.targetFileName, targetCoorMap);
 		}
 		return targetCoorMap;
 	}
@@ -527,7 +547,6 @@ public class BSSeqAnalysis {
 	private int[][] calculateMismatchStat(String targetRefSeq, int targetStart, int targetEnd,
 	                                      List<Sequence> targetSequencesList) {
 		int[][] mismatchStat = new int[targetRefSeq.length()][6]; // 6 possible values.
-		// TODO double check and refactor
 		for (Sequence seq : targetSequencesList) {
 			char[] seqArray = seq.getOriginalSeq().toCharArray();
 			Arrays.fill(seqArray, '-');
