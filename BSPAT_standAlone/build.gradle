@@ -17,6 +17,7 @@ dependencies {
     compile 'commons-cli:commons-cli:1.3.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.commons:commons-math3:3.6'
+    compile 'net.sf.epsgraphics:epsgraphics:1.2'
     testCompile 'org.testng:testng:6.9.10'
 }
 
@@ -53,6 +54,7 @@ task addAllStartSctipts(dependsOn: jar) {
     group = "scripts"
     buildStartScript('callBismark', 'edu.cwru.cbc.BSPAT.callBismark.CallBismark').execute()
     buildStartScript('BSPAT', 'edu.cwru.cbc.BSPAT.CLI.BSPAT_pgm').execute()
+    buildStartScript('drawFigure', 'edu.cwru.cbc.BSPAT.MethylFigure.MethylFigurePgm').execute()
 }
 
 distZip.enabled = false
