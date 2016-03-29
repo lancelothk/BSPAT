@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: net.sf.epsgraphics:epsgraphics:1.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.epsgraphics/epsgraphics/1.2/7f9763cd6ab5b9f05d4c02afa549688e4b58ffe0/epsgraphics-1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.epsgraphics/epsgraphics/1.2/288aa2da43f2e37ac46e57920be4bae1ec9354ce/epsgraphics-1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
