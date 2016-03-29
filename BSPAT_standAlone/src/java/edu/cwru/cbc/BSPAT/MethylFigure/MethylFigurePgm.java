@@ -61,8 +61,120 @@ public class MethylFigurePgm {
 			System.err.println("pattern file and report file don't have identical region name!");
 			System.exit(1);
 		}
+		if (isASMPattern) {
+			drawASMFigure(regionName, patternFileName, figureFormat, figureFont);
+		} else {
+			drawFigure(regionName, patternFileName, reportFileName, figureFormat, figureFont);
+		}
+	}
 
-		drawFigure(regionName, patternFileName, reportFileName, figureFormat, isASMPattern, figureFont);
+	private static void drawASMFigure(String regionName, String ASMPatternFileName, String figureFormat,
+	                                  String figureFont) throws IOException {
+		List<PatternResult> patternResultList = readASMPatterns(ASMPatternFileName);
+		List<CpGStatistics> cpGStatisticsList = new ArrayList<>();
+		for (PatternResult patternResult : patternResultList) {
+			cpGStatisticsList.addAll(patternResult.getCpGList());
+		}
+		int height = FIGURE_STARTY;
+		int left = FIGURE_STARTX + (int) (regionName.length() * CELLLINE_CHAR_LENGTH / 2 * 1.3);
+		int imageWidth = left + PatternResult.targetRegionLength * BPWIDTH + 13 * 20;
+		int imageHeight = FIGURE_STARTY + 180 + patternResultList.size() * 2 * HEIGHT_INTERVAL;
+
+		FigureWriter methylWriter = new FigureWriter(ASMPatternFileName.replace(".txt", ""), figureFormat, imageWidth,
+				imageHeight);
+		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left,
+				PatternResult.targetRegionLength, cpGStatisticsList, figureFont);
+
+		DecimalFormat percent = new DecimalFormat("##.00%");
+		height += HEIGHT_INTERVAL;
+		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, CELLLINE_FONT_SIZE));
+		methylWriter.getGraphWriter().drawString(regionName, REGION_NAME_LEFTSTART, height);
+		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, COMMON_FONT_SIZE));
+
+		// pattern with allele
+		addAverage(methylWriter.getGraphWriter(), figureFont, patternResultList.get(0).getCpGList(), height, left);
+		addAllele(patternResultList.get(0), methylWriter.getGraphWriter(), height + HEIGHT_INTERVAL, left);
+		height += 2 * HEIGHT_INTERVAL;
+		methylWriter.getGraphWriter().drawString(
+				patternResultList.get(0).getCount() + "(" + percent.format(patternResultList.get(0).getPercent()) + ")",
+				(PatternResult.targetRegionLength + 2) * BPWIDTH + left, height);
+		// pattern without allele
+		addAverage(methylWriter.getGraphWriter(), figureFont, patternResultList.get(1).getCpGList(), height, left);
+		height += 2 * HEIGHT_INTERVAL;
+		methylWriter.getGraphWriter().drawString(
+				patternResultList.get(1).getCount() + "(" + percent.format(patternResultList.get(1).getPercent()) + ")",
+				(PatternResult.targetRegionLength + 2) * BPWIDTH + left, height);
+		methylWriter.close();
+	}
+
+	private static List<PatternResult> readASMPatterns(String ASMPatternFileName) throws IOException {
+		List<PatternResult> patternResultLists = new ArrayList<>();
+		try (BufferedReader patternBuffReader = new BufferedReader(new FileReader(ASMPatternFileName))) {
+			// skip column names
+			patternBuffReader.readLine();
+			// reference line
+			String line = patternBuffReader.readLine();
+			int regionLength = line.split("\t")[0].length() - 2;// ignore two space at two ends of reference string
+			PatternResult.targetRegionLength = regionLength;
+			patternResultLists.add(readASMPattern(patternBuffReader, regionLength));
+			patternResultLists.add(readASMPattern(patternBuffReader, regionLength));
+			patternBuffReader.close();
+		}
+		return patternResultLists;
+	}
+
+	private static PatternResult readASMPattern(BufferedReader patternBuffReader, int regionLength) throws IOException {
+		String line;// start to read content
+		String[] items;
+		line = patternBuffReader.readLine();
+		items = line.split("\t");
+		String patternString = items[0].trim();
+		PatternResult patternResult = parsePatternString(regionLength, items, patternString);
+		line = patternBuffReader.readLine();
+		items = line.split("\t")[0].trim().split(" +");
+		if (items.length != patternResult.getCpGList().size()) {
+			throw new RuntimeException(
+					"number of CpG sites in pattern string and in percentage string don't match!");
+		}
+		for (int i = 0; i < items.length; i++) {
+			patternResult.getCpGList().get(i).setMethylLevel(Integer.parseInt(items[i]) / 100.0);
+		}
+		return patternResult;
+	}
+
+	private static PatternResult parsePatternString(int regionLength, String[] items, String patternString) {
+		PatternResult patternResult = new PatternResult();
+		for (int i = 0; i < regionLength; i++) {
+			CpGStatistics cpg;
+			if (patternString.charAt(i) == '*') {
+				cpg = new CpGStatistics(i, false);
+				if (i + 1 < regionLength && patternString.charAt(i + 1) == '*') {
+					i++;
+				} else if (i == 0) {
+					cpg = new CpGStatistics(i - 1, false);
+				} else if (patternString.charAt(i - 1) != '-') {
+					cpg = new CpGStatistics(i - 1, false);
+				}
+				patternResult.addCpG(cpg);
+			} else if (patternString.charAt(i) == '@') {
+				cpg = new CpGStatistics(i, true);
+				if (i + 1 < regionLength && patternString.charAt(i + 1) == '@') {
+					i++;
+				} else if (i == 0) {
+					cpg = new CpGStatistics(i - 1, true);
+				} else if (patternString.charAt(i - 1) != '-') {
+					cpg = new CpGStatistics(i - 1, false);
+				}
+				patternResult.addCpG(cpg);
+			} else if (patternString.charAt(i) == 'A' || patternString.charAt(i) == 'C' || patternString.charAt(
+					i) == 'G' ||
+					patternString.charAt(i) == 'T') {
+				patternResult.setSnp(new PotentialSNP(i, patternString.charAt(i)));
+			}
+		}
+		patternResult.setCount(Integer.parseInt(items[1]));
+		patternResult.setPercent(Double.parseDouble(items[2]));
+		return patternResult;
 	}
 
 	private static String obtainRegionName(String fileName) {
@@ -70,7 +182,7 @@ public class MethylFigurePgm {
 	}
 
 	public static void drawFigure(String regionName, String patternFileName, String reportFileName, String figureFormat,
-	                              boolean isASMPattern, String figureFont) throws IOException {
+	                              String figureFont) throws IOException {
 		List<PatternResult> patternResultList = readPatternFile(patternFileName);
 		List<CpGStatistics> cpGStatisticsList = readReportFile(reportFileName);
 
@@ -83,21 +195,16 @@ public class MethylFigurePgm {
 				imageHeight);
 		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left,
 				PatternResult.targetRegionLength, cpGStatisticsList, figureFont);
-
-		// 4. add CpG sites
 		DecimalFormat percent = new DecimalFormat("##.00%");
-		height += HEIGHT_INTERVAL;
-		methylWriter.getGraphWriter()
-				.drawString("Read Count(%)", (PatternResult.targetRegionLength + 2) * BPWIDTH + left,
-						height + HEIGHT_INTERVAL / 2);
 		height += HEIGHT_INTERVAL;
 		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, CELLLINE_FONT_SIZE));
 		methylWriter.getGraphWriter().drawString(regionName, REGION_NAME_LEFTSTART, height);
 		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, COMMON_FONT_SIZE));
 
+		// 4. add CpG sites
 		for (int i = 0; i < patternResultList.size(); i++) {
 			PatternResult patternResult = patternResultList.get(i);
-			for (CpGSitePattern cpg : patternResult.getCpGList()) {
+			for (CpGStatistics cpg : patternResult.getCpGList()) {
 				if (cpg.isMethylated()) {
 					// fill black circle
 					methylWriter.getGraphWriter().fill(
@@ -153,9 +260,11 @@ public class MethylFigurePgm {
 			graphWriter.fill(new Ellipse2D.Double(left + cpg.getPosition() * BPWIDTH, height, CG_RADIUS, CG_RADIUS));
 			graphWriter.setPaint(Color.BLACK);
 			// move percentage a little left and shink the font size
+			Font oldFont = graphWriter.getFont();
 			graphWriter.setFont(new Font(fontChoice, Font.PLAIN, SMALL_PERCENT_FONT_SIZE));
 			graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()), left + cpg.getPosition() * BPWIDTH,
 					height + HEIGHT_INTERVAL * 2);
+			graphWriter.setFont(oldFont);
 		}
 	}
 
@@ -185,7 +294,7 @@ public class MethylFigurePgm {
 				}
 				// start from target start. 0-based.
 				int pos = Integer.parseInt(items[0]) - targetStart;
-				CpGStatistics cpgStat = new CpGStatistics(pos);
+				CpGStatistics cpgStat = new CpGStatistics(pos, false);
 				cpgStat.setMethylLevel(Double.parseDouble(items[1]));
 				statList.add(cpgStat);
 				line = statBuffReader.readLine();
@@ -213,38 +322,8 @@ public class MethylFigurePgm {
 			while (line != null) {
 				items = line.split("\t");
 				String patternString = items[0];
-				patternResult = new PatternResult();
-				for (int i = 0; i < regionLength; i++) {
-					CpGSitePattern cpg;
-					if (patternString.charAt(i) == '*') {
-						cpg = new CpGSitePattern(i, false);
-						if (i + 1 < regionLength && patternString.charAt(i + 1) == '*') {
-							i++;
-						} else if (i == 0) {
-							cpg = new CpGSitePattern(i - 1, false);
-						} else if (patternString.charAt(i - 1) != '-') {
-							cpg = new CpGSitePattern(i - 1, false);
-						}
-						patternResult.addCpG(cpg);
-					} else if (patternString.charAt(i) == '@') {
-						cpg = new CpGSitePattern(i, true);
-						if (i + 1 < regionLength && patternString.charAt(i + 1) == '@') {
-							i++;
-						} else if (i == 0) {
-							cpg = new CpGSitePattern(i - 1, true);
-						} else if (patternString.charAt(i - 1) != '-') {
-							cpg = new CpGSitePattern(i - 1, false);
-						}
-						patternResult.addCpG(cpg);
-					} else if (patternString.charAt(i) == 'A' || patternString.charAt(i) == 'C' || patternString.charAt(
-							i) == 'G' ||
-							patternString.charAt(i) == 'T') {
-						patternResult.setSnp(new PotentialSNP(i, patternString.charAt(i)));
-					}
-				}
+				patternResult = parsePatternString(regionLength, items, patternString);
 				patternResultLists.add(patternResult);
-				patternResult.setCount(Integer.parseInt(items[1]));
-				patternResult.setPercent(Double.parseDouble(items[2]));
 				line = patternBuffReader.readLine();
 			}
 		}
@@ -273,5 +352,9 @@ public class MethylFigurePgm {
 							(cpgStat.getPosition() < 0 || cpgStat.getPosition() == refLength - 1) ? BPWIDTH : CG_RADIUS,
 							BAR_HEIGHT / 2));
 		}
+
+		// 3. add "read count" column
+		graphWriter.drawString("Read Count(%)", (PatternResult.targetRegionLength + 2) * BPWIDTH + left,
+				height + HEIGHT_INTERVAL / 2);
 	}
 }

@@ -1,7 +1,6 @@
 package edu.cwru.cbc.BSPAT.CLI;
 
 import edu.cwru.cbc.BSPAT.MethylFigure.CpG;
-import edu.cwru.cbc.BSPAT.MethylFigure.CpGSitePattern;
 import edu.cwru.cbc.BSPAT.MethylFigure.CpGStatistics;
 import edu.cwru.cbc.BSPAT.MethylFigure.PatternResult;
 import edu.cwru.cbc.BSPAT.commons.*;
@@ -202,23 +201,22 @@ public class BSPAT_pgm {
 		withAlleleString.setCharAt(0, ' ');
 		withAlleleString.setCharAt(withAlleleString.length() - 1, ' ');
 		StringBuilder withAllelePercent = new StringBuilder(StringUtils.repeat(" ", targetRefSeq.length()));
-		for (CpGSitePattern cpGSitePattern : patternWithAllele.getCpGList()) {
+		for (CpGStatistics cpGSitePattern : patternWithAllele.getCpGList()) {
 			int cpgPos = cpGSitePattern.getPosition();
 			String percent = String.format("%2.0f", cpGSitePattern.getMethylLevel() * 100);
-			withAlleleString.setCharAt(cpgPos - 1, '*');
-			withAllelePercent.setCharAt(cpgPos - 1, percent.charAt(0));
-			withAlleleString.setCharAt(cpgPos, '*');
-			withAllelePercent.setCharAt(cpgPos, percent.charAt(1));
+			withAlleleString.setCharAt(cpgPos + 1, '*');
+			withAllelePercent.setCharAt(cpgPos + 1, percent.charAt(0));
+			withAlleleString.setCharAt(cpgPos + 2, '*');
+			withAllelePercent.setCharAt(cpgPos + 2, percent.charAt(1));
 		}
 		if (patternWithAllele.getSnp() != null) {
-			withAlleleString.setCharAt(patternWithAllele.getSnp().getPosition() - 1,
+			withAlleleString.setCharAt(patternWithAllele.getSnp().getPosition() + 1,
 					patternWithAllele.getSnp().getNucleotide());
 		}
 		withAlleleString.append("\t")
 				.append(patternWithAllele.getCount())
-				.append('(')
+				.append("\t")
 				.append(patternWithAllele.getPercent())
-				.append(')')
 				.append("\n");
 		withAllelePercent.append("\n");
 		bufferedWriter.write(withAlleleString.toString());
@@ -228,12 +226,12 @@ public class BSPAT_pgm {
 	private static PatternResult patternToPatternResult(Pattern pattern, List<CpGStatistics> cpGStatisticsList,
 	                                                    int totalCount, int targetStart) {
 		PatternResult patternResult = new PatternResult();
-		Map<Integer, CpGSitePattern> cpGSiteMap = new HashMap<>();
+		Map<Integer, CpGStatistics> cpGSiteMap = new HashMap<>();
 		for (CpGStatistics cpg : cpGStatisticsList) {
 			if (cpGSiteMap.containsKey(cpg.getPosition())) {
 				throw new RuntimeException("refCpG has duplicated CpGsites!");
 			}
-			cpGSiteMap.put(cpg.getPosition(), new CpGSitePattern(cpg.getPosition(), false));
+			cpGSiteMap.put(cpg.getPosition(), new CpGStatistics(cpg.getPosition(), false));
 		}
 		for (Sequence sequence : pattern.getSequenceMap().values()) {
 			for (CpGSite cpGSite : sequence.getCpGSites()) {
@@ -247,8 +245,9 @@ public class BSPAT_pgm {
 				}
 			}
 		}
-		for (CpGSitePattern cpGSitePattern : cpGSiteMap.values()) {
+		for (CpGStatistics cpGSitePattern : cpGSiteMap.values()) {
 			cpGSitePattern.setPosition(cpGSitePattern.getPosition() - targetStart);
+			cpGSitePattern.calcMethylLevel();
 		}
 		patternResult.setCpGList(new ArrayList<>(cpGSiteMap.values()));
 		patternResult.setCount(pattern.getSequenceMap().size());
@@ -292,7 +291,7 @@ public class BSPAT_pgm {
 			for (Sequence seq : sequencePassedQualityFilter) {
 				for (CpGSite cpg : seq.getCpGSites()) {
 					if (!cpgStatHashTable.containsKey(cpg.getPosition())) {
-						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition());
+						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition(), false);
 						cpgStat.allSitePlus();
 						if (cpg.isMethylated()) {
 							cpgStat.methylSitePlus();
@@ -337,7 +336,7 @@ public class BSPAT_pgm {
 			}
 
 			bufferedWriter.write("mismatch stat:\n");
-			bufferedWriter.write(String.format("index\tref\tA\tC\tG\tT\tN\ttotal\tcoverage\n"));
+			bufferedWriter.write("index\tref\tA\tC\tG\tT\tN\ttotal\tcoverage\n");
 			for (int i = 0; i < mutationStat.length; i++) {
 				// 1 based position
 				int total = mutationStat[i][0] + mutationStat[i][1] + mutationStat[i][2] + mutationStat[i][3] +

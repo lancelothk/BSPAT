@@ -7,7 +7,7 @@ import java.util.List;
 
 public class PatternResult {
 	public static int targetRegionLength;
-	private List<CpGSitePattern> CpGList;
+	private List<CpGStatistics> CpGList;
 	private int count;
 	private double percent;
 	private PotentialSNP snp = null;
@@ -16,7 +16,7 @@ public class PatternResult {
 		this.CpGList = new ArrayList<>();
 	}
 
-	public void addCpG(CpGSitePattern cpg) {
+	public void addCpG(CpGStatistics cpg) {
 		CpGList.add(cpg);
 	}
 
@@ -36,11 +36,11 @@ public class PatternResult {
 		this.percent = percent;
 	}
 
-	public List<CpGSitePattern> getCpGList() {
+	public List<CpGStatistics> getCpGList() {
 		return CpGList;
 	}
 
-	public void setCpGList(List<CpGSitePattern> cpGSitePatternList) {
+	public void setCpGList(List<CpGStatistics> cpGSitePatternList) {
 		this.CpGList = cpGSitePatternList;
 	}
 
@@ -50,10 +50,6 @@ public class PatternResult {
 
 	public void setSnp(PotentialSNP snp) {
 		this.snp = snp;
-	}
-
-	public void countPlus(int count) {
-		this.count += count;
 	}
 
 }
