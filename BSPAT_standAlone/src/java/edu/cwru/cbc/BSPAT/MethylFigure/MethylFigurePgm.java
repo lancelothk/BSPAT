@@ -1,5 +1,6 @@
 package edu.cwru.cbc.BSPAT.MethylFigure;
 
+import edu.cwru.cbc.BSPAT.commons.PotentialSNP;
 import org.apache.commons.cli.*;
 
 import java.awt.*;
@@ -120,14 +121,10 @@ public class MethylFigurePgm {
 
 	private static void addAllele(PatternResult patternResult, Graphics2D graphWriter, int height, int left) throws
 			IOException {
-		if (patternResult.hasAllele()) {
-			List<Integer> alleleList = patternResult.getAlleleList();
+		if (patternResult.getSnp() != null) {
 			graphWriter.setPaint(Color.BLUE);
-			for (int j = 0; j < alleleList.size(); j++) {
-				graphWriter.fill(
-						new Rectangle2D.Double(left + (alleleList.get(j) * BPWIDTH), height, CG_RADIUS / 2,
-								CG_RADIUS));
-			}
+			graphWriter.fill(new Rectangle2D.Double(left + (patternResult.getSnp().getPosition() * BPWIDTH), height,
+					CG_RADIUS / 2, CG_RADIUS));
 			graphWriter.setPaint(Color.BLACK);
 		}
 	}
@@ -242,7 +239,7 @@ public class MethylFigurePgm {
 					} else if (patternString.charAt(i) == 'A' || patternString.charAt(i) == 'C' || patternString.charAt(
 							i) == 'G' ||
 							patternString.charAt(i) == 'T') {
-						patternResult.addAllele(i);
+						patternResult.setSnp(new PotentialSNP(i, patternString.charAt(i)));
 					}
 				}
 				patternResultLists.add(patternResult);

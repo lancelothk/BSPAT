@@ -1,5 +1,7 @@
 package edu.cwru.cbc.BSPAT.MethylFigure;
 
+import edu.cwru.cbc.BSPAT.commons.PotentialSNP;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +10,10 @@ public class PatternResult {
 	private List<CpGSitePattern> CpGList;
 	private int count;
 	private double percent;
-	private List<Integer> alleleList;
+	private PotentialSNP snp = null;
 
 	public PatternResult() {
 		this.CpGList = new ArrayList<>();
-		this.alleleList = new ArrayList<>();
 	}
 
 	public void addCpG(CpGSitePattern cpg) {
@@ -43,16 +44,12 @@ public class PatternResult {
 		this.CpGList = cpGSitePatternList;
 	}
 
-	public void addAllele(int locus) {
-		this.alleleList.add(locus);
+	public PotentialSNP getSnp() {
+		return snp;
 	}
 
-	public List<Integer> getAlleleList() {
-		return alleleList;
-	}
-
-	public boolean hasAllele() {
-		return alleleList.size() != 0;
+	public void setSnp(PotentialSNP snp) {
+		this.snp = snp;
 	}
 
 	public void countPlus(int count) {
