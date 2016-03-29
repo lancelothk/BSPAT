@@ -6,7 +6,6 @@ import net.sf.epsgraphics.EpsGraphics;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +19,6 @@ public class FigureWriter {
 	public static final String EPS = "eps";
 	private String figureName;
 	private String figureFormat;
-	private BufferedWriter bedWriter;
 	private FileOutputStream epsImage;
 	private BufferedImage pngImage;
 	private Graphics2D graphWriter;
@@ -56,7 +54,6 @@ public class FigureWriter {
 			epsImage.close();
 		}
 		graphWriter.dispose();
-		bedWriter.close();
 	}
 
 	public String getFigureName() {
@@ -67,7 +64,4 @@ public class FigureWriter {
 		return graphWriter;
 	}
 
-	public BufferedWriter getBedWriter() {
-		return bedWriter;
-	}
 }

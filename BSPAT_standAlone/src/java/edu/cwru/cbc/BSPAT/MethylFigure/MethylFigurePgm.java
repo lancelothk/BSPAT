@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -34,7 +35,6 @@ public class MethylFigurePgm {
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
 		options.addOption(Option.builder("t").hasArg().desc("Figure format. Support eps and png.").required().build());
-		options.addOption(Option.builder("o").hasArg().desc("Output figure name").required().build());
 		options.addOption(Option.builder("p").hasArg().desc("BSPAT pattern file").required().build());
 		options.addOption(Option.builder("r").hasArg().desc("BSPAT Report file").required().build());
 		options.addOption(Option.builder("f").hasArg().desc("Text font used in figure.(optional)").build());
@@ -45,7 +45,6 @@ public class MethylFigurePgm {
 
 		String figureFont = "Arial";
 		String figureFormat = cmd.getOptionValue("t");
-		String outputFigureName = cmd.getOptionValue("o");
 		String patternFileName = cmd.getOptionValue("p");
 		String reportFileName = cmd.getOptionValue("r");
 
@@ -62,16 +61,15 @@ public class MethylFigurePgm {
 			System.exit(1);
 		}
 
-		drawFigure(regionName, patternFileName, reportFileName, figureFormat, outputFigureName, isASMPattern,
-				figureFont);
+		drawFigure(regionName, patternFileName, reportFileName, figureFormat, isASMPattern, figureFont);
 	}
 
 	private static String obtainRegionName(String fileName) {
-		return fileName.split("_")[0];
+		return new File(fileName).getName().split("_")[0];
 	}
 
 	public static void drawFigure(String regionName, String patternFileName, String reportFileName, String figureFormat,
-	                              String outputFigureName, boolean isASMPattern, String figureFont) throws IOException {
+	                              boolean isASMPattern, String figureFont) throws IOException {
 		List<PatternResult> patternResultList = readPatternFile(patternFileName);
 		List<CpGStatistics> cpGStatisticsList = readReportFile(reportFileName);
 
@@ -80,7 +78,8 @@ public class MethylFigurePgm {
 		int imageWidth = left + PatternResult.targetRegionLength * BPWIDTH + 13 * 20;
 		int imageHeight = FIGURE_STARTY + 180 + patternResultList.size() * HEIGHT_INTERVAL;
 
-		FigureWriter methylWriter = new FigureWriter(outputFigureName, figureFormat, imageWidth, imageHeight);
+		FigureWriter methylWriter = new FigureWriter(patternFileName.replace(".txt", ""), figureFormat, imageWidth,
+				imageHeight);
 		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left,
 				PatternResult.targetRegionLength, cpGStatisticsList, figureFont);
 
@@ -102,12 +101,10 @@ public class MethylFigurePgm {
 					// fill black circle
 					methylWriter.getGraphWriter().fill(
 							new Ellipse2D.Double(left + cpg.getPosition() * BPWIDTH, height, CG_RADIUS, CG_RADIUS));
-					methylWriter.getBedWriter().write("0,0,0\n");
 				} else {
 					// draw empty circle
 					methylWriter.getGraphWriter().draw(
 							new Ellipse2D.Double(left + cpg.getPosition() * BPWIDTH, height, CG_RADIUS, CG_RADIUS));
-					methylWriter.getBedWriter().write("224,224,224\n");
 				}
 			}
 			methylWriter.getGraphWriter().drawString(
@@ -178,8 +175,8 @@ public class MethylFigurePgm {
 			if (line == null) {
 				throw new RuntimeException("analysis report is empty!");
 			}
-			// skip 6 lines
-			for (int i = 0; i < 9; i++) {
+			// skip lines
+			for (int i = 0; i < 10; i++) {
 				statBuffReader.readLine();
 			}
 			// get start position
