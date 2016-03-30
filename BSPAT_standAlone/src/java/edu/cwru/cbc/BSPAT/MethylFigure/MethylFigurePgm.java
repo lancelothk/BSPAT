@@ -35,26 +35,29 @@ public class MethylFigurePgm {
 	public static void main(String[] args) throws ParseException, IOException {
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
-		options.addOption(Option.builder("t").hasArg().desc("Figure format. Support eps and png.").required().build());
-		options.addOption(Option.builder("p").hasArg().desc("BSPAT pattern file").required().build());
-		options.addOption(Option.builder("r").hasArg().desc("BSPAT Report file").required().build());
-		options.addOption(Option.builder("f").hasArg().desc("Text font used in figure.(optional)").build());
-		options.addOption(Option.builder("a").desc("Draw ASM pattern.(optional)").build());
+		options.addOption(
+				Option.builder("t").hasArg().desc("Figure format. Support eps and png. Default is png").build());
+		options.addOption(Option.builder("f").hasArg().desc("Text font used in figure. Default is Arial").build());
+		options.addOption(Option.builder("r").hasArg().desc("BSPAT Report file").build());
+		options.addOption(Option.builder("a").desc("Draw ASM pattern").build());
+		options.addOption(Option.builder("h").desc("Help").build());
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
 
-		String figureFont = "Arial";
-		String figureFormat = cmd.getOptionValue("t");
-		String patternFileName = cmd.getOptionValue("p");
+		String figureFont = cmd.getOptionValue("f", "Arial");
+		String figureFormat = cmd.getOptionValue("t", "png");
+		String patternFileName = cmd.getArgList().get(0);
 		String reportFileName = cmd.getOptionValue("r");
 
 		boolean isASMPattern = false;
 		if (cmd.hasOption("a")) {
 			isASMPattern = true;
 		}
-		if (cmd.hasOption("f")) {
-			figureFont = cmd.getOptionValue("f");
+		if (cmd.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("MethylFigure [options] [pattern file]", options);
+			System.exit(1);
 		}
 		String regionName = obtainRegionName(patternFileName);
 		if (!regionName.equals(obtainRegionName(reportFileName))) {
@@ -202,8 +205,7 @@ public class MethylFigurePgm {
 		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, COMMON_FONT_SIZE));
 
 		// 4. add CpG sites
-		for (int i = 0; i < patternResultList.size(); i++) {
-			PatternResult patternResult = patternResultList.get(i);
+		for (PatternResult patternResult : patternResultList) {
 			for (CpGStatistics cpg : patternResult.getCpGList()) {
 				if (cpg.isMethylated()) {
 					// fill black circle
