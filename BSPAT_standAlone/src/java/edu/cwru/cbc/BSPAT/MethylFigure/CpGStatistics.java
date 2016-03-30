@@ -87,4 +87,14 @@ public class CpGStatistics implements CpG {
 		this.methylCount += count;
 		this.countOfAll += count;
 	}
+
+	public char getMethylType() {
+		if (getMethylLevel() >= 0.8) {
+			return 'H';
+		} else if (getMethylLevel() <= 0.2) {
+			return 'L';
+		} else {
+			return 'M';
+		}
+	}
 }

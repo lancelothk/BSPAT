@@ -47,8 +47,6 @@ public class MethylFigurePgm {
 
 		String figureFont = cmd.getOptionValue("f", "Arial");
 		String figureFormat = cmd.getOptionValue("t", "png");
-		String patternFileName = cmd.getArgList().get(0);
-		String reportFileName = cmd.getOptionValue("r");
 
 		boolean isASMPattern = false;
 		if (cmd.hasOption("a")) {
@@ -56,17 +54,22 @@ public class MethylFigurePgm {
 		}
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("MethylFigure [options] [pattern file]", options);
+			formatter.printHelp("MethylFigure [options] [pattern file] [report file]", options);
 			System.exit(1);
 		}
-		String regionName = obtainRegionName(patternFileName);
-		if (!regionName.equals(obtainRegionName(reportFileName))) {
-			System.err.println("pattern file and report file don't have identical region name!");
-			System.exit(1);
-		}
+
 		if (isASMPattern) {
+			String patternFileName = cmd.getArgList().get(0);
+			String regionName = obtainRegionName(patternFileName);
 			drawASMFigure(regionName, patternFileName, figureFormat, figureFont);
 		} else {
+			String patternFileName = cmd.getArgList().get(0);
+			String reportFileName = cmd.getArgList().get(1);
+			String regionName = obtainRegionName(patternFileName);
+			if (!regionName.equals(obtainRegionName(reportFileName))) {
+				System.err.println("pattern file and report file don't have identical region name!");
+				System.exit(1);
+			}
 			drawFigure(regionName, patternFileName, reportFileName, figureFormat, figureFont);
 		}
 	}
@@ -119,8 +122,29 @@ public class MethylFigurePgm {
 			String line = patternBuffReader.readLine();
 			int regionLength = line.split("\t")[0].length() - 2;// ignore two space at two ends of reference string
 			PatternResult.targetRegionLength = regionLength;
-			patternResultLists.add(readASMPattern(patternBuffReader, regionLength));
-			patternResultLists.add(readASMPattern(patternBuffReader, regionLength));
+			PatternResult patternWithoutAllele = readASMPattern(patternBuffReader, regionLength);
+			PatternResult patternWithAllele = readASMPattern(patternBuffReader, regionLength);
+
+			// skip 2 lines
+			patternBuffReader.readLine();
+			patternBuffReader.readLine();
+
+			for (CpGStatistics cpg : patternWithAllele.getCpGList()) {
+				double methylLevel = Double.parseDouble(patternBuffReader.readLine().split("\t")[1]);
+				cpg.setMethylLevel(methylLevel);
+			}
+
+			// skip 2 lines
+			patternBuffReader.readLine();
+			patternBuffReader.readLine();
+
+			for (CpGStatistics cpg : patternWithoutAllele.getCpGList()) {
+				double methylLevel = Double.parseDouble(patternBuffReader.readLine().split("\t")[1]);
+				cpg.setMethylLevel(methylLevel);
+			}
+
+			patternResultLists.add(patternWithoutAllele);
+			patternResultLists.add(patternWithAllele);
 			patternBuffReader.close();
 		}
 		return patternResultLists;
@@ -132,17 +156,7 @@ public class MethylFigurePgm {
 		line = patternBuffReader.readLine();
 		items = line.split("\t");
 		String patternString = items[0].trim();
-		PatternResult patternResult = parsePatternString(regionLength, items, patternString);
-		line = patternBuffReader.readLine();
-		items = line.split("\t")[0].trim().split(" +");
-		if (items.length != patternResult.getCpGList().size()) {
-			throw new RuntimeException(
-					"number of CpG sites in pattern string and in percentage string don't match!");
-		}
-		for (int i = 0; i < items.length; i++) {
-			patternResult.getCpGList().get(i).setMethylLevel(Integer.parseInt(items[i]) / 100.0);
-		}
-		return patternResult;
+		return parsePatternString(regionLength, items, patternString);
 	}
 
 	private static PatternResult parsePatternString(int regionLength, String[] items, String patternString) {
@@ -199,7 +213,7 @@ public class MethylFigurePgm {
 		buildFigureFrame(methylWriter.getGraphWriter(), imageHeight, imageWidth, height, left,
 				PatternResult.targetRegionLength, cpGStatisticsList, figureFont);
 		DecimalFormat percent = new DecimalFormat("##.00%");
-		height += HEIGHT_INTERVAL;
+		height += HEIGHT_INTERVAL * 2;
 		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, CELLLINE_FONT_SIZE));
 		methylWriter.getGraphWriter().drawString(regionName, REGION_NAME_LEFTSTART, height);
 		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, COMMON_FONT_SIZE));
@@ -265,7 +279,7 @@ public class MethylFigurePgm {
 			Font oldFont = graphWriter.getFont();
 			graphWriter.setFont(new Font(fontChoice, Font.PLAIN, SMALL_PERCENT_FONT_SIZE));
 			graphWriter.drawString(percentSmall.format(cpg.getMethylLevel()), left + cpg.getPosition() * BPWIDTH,
-					height + HEIGHT_INTERVAL * 2);
+					height + HEIGHT_INTERVAL * 3 / 2);
 			graphWriter.setFont(oldFont);
 		}
 	}

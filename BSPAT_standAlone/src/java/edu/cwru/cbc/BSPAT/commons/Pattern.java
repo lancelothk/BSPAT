@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Pattern {
-	private int patternCount;
 	private String patternString;
 	private Map<String, Sequence> sequenceMap;
 	private int patternID;
