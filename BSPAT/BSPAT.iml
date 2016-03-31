@@ -23,7 +23,6 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Tomcat" level="application_server_libraries" />
     <orderEntry type="library" name="mail-1.4.7" level="project" />
     <orderEntry type="library" name="epsgraphics-1.4" level="project" />
     <orderEntry type="library" name="ant" level="project" />
@@ -54,6 +53,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="apache http" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Tomcat" level="application_server_libraries" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

@@ -4,16 +4,18 @@ import edu.cwru.cbc.BSPAT.MethylFigure.CpG;
 import edu.cwru.cbc.BSPAT.MethylFigure.CpGStatistics;
 import edu.cwru.cbc.BSPAT.MethylFigure.PatternResult;
 import edu.cwru.cbc.BSPAT.commons.*;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lancelothk on 2/9/16.
@@ -83,15 +85,14 @@ public class BSPAT_pgm {
 	}
 
 	private static void generatePatterns(String referencePath, String bismarkResultPath, String outputPath,
-	                                     Map<String, List<BedInterval>> bedIntervalMap, double bisulfiteConversionRate,
+	                                     Map<String, List<BedInterval>> targetRegionMap, double bisulfiteConversionRate,
 	                                     double sequenceIdentityThreshold, double criticalValue,
 	                                     double methylPatternThreshold, double memuPatternThreshold,
 	                                     double snpThreshold) throws
 			IOException {
-		ImportBismarkResult importBismarkResult = new ImportBismarkResult(referencePath, bismarkResultPath);
-		Map<String, String> referenceSeqs = importBismarkResult.getReferenceSeqs();
-		List<Sequence> sequencesList = importBismarkResult.getSequencesList();
-		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : bedIntervalMap.entrySet()) {
+		Map<String, String> referenceSeqs = readReference(referencePath);
+		List<Sequence> sequencesList = readBismarkAlignmentResult(bismarkResultPath);
+		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceSeqs.get(chromosomeEntry.getKey());
 			for (BedInterval bedInterval : chromosomeEntry.getValue()) {
 				List<Sequence> seqGroup = new ArrayList<>();
@@ -182,6 +183,66 @@ public class BSPAT_pgm {
 				sequencePassedQualityFilter, mismatchStat, targetStart, targetRefSeq, bisulfiteConversionRate,
 				sequenceIdentityThreshold, criticalValue, memuPatternThreshold, memuPatternThreshold, snpThreshold,
 				seqGroup.size());
+	}
+
+	private static List<Sequence> readBismarkAlignmentResult(String inputFolder) throws IOException {
+		Map<String, Sequence> sequencesHashMap = new HashMap<>();
+		File inputFile = new File(inputFolder);
+		File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
+
+		for (File file : inputFiles) {
+			final SamReader reader = SamReaderFactory.makeDefault().open(file);
+			for (final SAMRecord samRecord : reader) {
+				String methylString = samRecord.getStringAttribute("XM");
+				Sequence seq = new Sequence(samRecord.getReadName(),
+						(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP", samRecord.getReferenceName(),
+						samRecord.getStart() - 1, samRecord.getReadString()); // 0-based start
+				for (int i=0;i<methylString.length();i++) {
+					switch (methylString.charAt(i)){
+						case 'Z':
+							CpGSite cpg = new CpGSite((seq.getStrand().equals("BOTTOM")?i-1:i)+samRecord.getStart()-1, true);
+							seq.addCpG(cpg);
+							break;
+						case 'z':
+							cpg = new CpGSite((seq.getStrand().equals("BOTTOM")?i-1:i)+samRecord.getStart()-1, false);
+							seq.addCpG(cpg);
+							break;
+						default:
+					}
+				}
+				sequencesHashMap.put(seq.getId(), seq);
+			}
+		}
+		return sequencesHashMap.values().stream().collect(Collectors.toList());
+	}
+
+
+	// TODO replace reference reading code with the one used in ASM project. Or replace with using htsjdk
+	private static Map<String, String> readReference(String refPath) throws IOException {
+		Map<String, String> referenceSeqs = new HashMap<>();
+		File refPathFile = new File(refPath);
+		String[] fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
+		for (String str : fileNames) {
+			try (BufferedReader buffReader = new BufferedReader(new FileReader(refPathFile + "/" + str))) {
+				String line, name = null;
+				StringBuilder ref = new StringBuilder();
+				while ((line = buffReader.readLine()) != null) {
+					if (line.length() != 0 && line.charAt(0) == '>') {
+						if (ref.length() > 0) {
+							referenceSeqs.put(name, ref.toString().toUpperCase());
+							ref = new StringBuilder();
+						}
+						name = line.substring(1, line.length());
+					} else {
+						ref.append(line);
+					}
+				}
+				if (ref.length() > 0) {
+					referenceSeqs.put(name, ref.toString().toUpperCase());
+				}
+			}
+		}
+		return referenceSeqs;
 	}
 
 	private static boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
