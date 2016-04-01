@@ -118,6 +118,12 @@ public class BSPAT_pgm {
 	                                                double snpThreshold, BedInterval targetRegion,
 	                                                String refSeq) throws
 			IOException {
+		if (!targetRegion.isPlusStrand()) {
+			refSeq = StringUtils.reverse(refSeq);
+			for (Sequence sequence : targetRegion.getSequenceList()) {
+				sequence.reverse(refSeq.length());
+			}
+		}
 		String targetRefSeq = refSeq.substring(targetRegion.getStart(), targetRegion.getEnd() + 1);
 
 		List<Sequence> seqGroup = targetRegion.getSequenceList();

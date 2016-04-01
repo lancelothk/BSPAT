@@ -23,4 +23,8 @@ public class CpGSite {
 	public boolean isMethylated() {
 		return methylLabel;
 	}
+
+	public void reverse(int refLength) {
+		this.position = refLength - this.position;
+	}
 }

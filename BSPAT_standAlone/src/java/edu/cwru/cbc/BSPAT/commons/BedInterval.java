@@ -11,14 +11,20 @@ public class BedInterval {
 	private int start;
 	private int end;
 	private String name;
+	private boolean isPlusStrand;
 	private List<Sequence> sequenceList;
 
-	public BedInterval(String chr, int start, int end, String name) {
+	public BedInterval(String chr, int start, int end, String name, boolean isPlusStrand) {
 		this.chr = chr;
 		this.start = start;
 		this.end = end;
 		this.name = name;
+		this.isPlusStrand = isPlusStrand;
 		this.sequenceList = new ArrayList<>();
+	}
+
+	public boolean isPlusStrand() {
+		return isPlusStrand;
 	}
 
 	public String getChr() {
