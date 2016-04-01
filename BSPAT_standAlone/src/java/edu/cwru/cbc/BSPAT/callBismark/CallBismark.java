@@ -18,6 +18,7 @@ public class CallBismark {
 	private File bowtiePathFile;
 	private File refPathFile;
 	private String qualsTypeParameter;
+
 	public CallBismark(String refPath, String bismarkPath, String bowtiePath, String logPath, String qualsType,
 	                   int maxmis) throws IOException, InterruptedException {
 		this.maxmis = maxmis;
@@ -38,7 +39,9 @@ public class CallBismark {
 
 		File logpathFile = new File(logPath);
 		if (!logpathFile.exists()) {
-			logpathFile.mkdir();
+			if (!logpathFile.mkdirs()) {
+				throw new RuntimeException("unable to mkdir for " + logpathFile.getAbsolutePath());
+			}
 		}
 
 		// build index
@@ -57,9 +60,9 @@ public class CallBismark {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String userDir = System.getProperty("user.home");
-		String referencePath = userDir + "/experiments/BSPAT/standAlone/ref/";
-		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/output/bismark/";
-		String inputPath = userDir + "/experiments/BSPAT/standAlone/seq/";
+		String referencePath = userDir + "/experiments/BSPAT/standAlone/minus/ref/";
+		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/minus/output/bismark/";
+		String inputPath = userDir + "/experiments/BSPAT/standAlone/minus/seq/";
 		String bismarkPath = userDir + "/software/bismark_v0.14.2_noSleep/";
 		String bowtiePath = userDir + "/software/bowtie-1.1.1/";
 		String qualType = "phred33";
