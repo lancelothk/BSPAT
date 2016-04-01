@@ -93,25 +93,17 @@ public class BSPAT_pgm {
 		Map<String, String> referenceMap = readReference(referencePath);
 		// reference names of target regions should be subset of reference names in reference file.
 		for (String name : targetRegionMap.keySet()) {
-			if (!referenceMap.keySet().contains(name)){
-				throw new RuntimeException(name + " in target regions is not a valid reference name in reference file!");
+			if (!referenceMap.keySet().contains(name)) {
+				throw new RuntimeException(
+						name + " in target regions is not a valid reference name in reference file!");
 			}
 		}
-
-		List<Sequence> sequencesList = readBismarkAlignmentResult(bismarkResultPath);
+		readBismarkAlignmentResult(bismarkResultPath, targetRegionMap);
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceMap.get(chromosomeEntry.getKey());
 			for (BedInterval bedInterval : chromosomeEntry.getValue()) {
-				List<Sequence> seqGroup = new ArrayList<>();
-				// TODO use indexed bam to speed up query
-				for (Sequence sequence : sequencesList) {
-					if (sequence.getStartPos() <= bedInterval.getStart() && sequence.getEndPos() >= bedInterval.getEnd()) {
-						seqGroup.add(sequence);
-					}
-				}
 				generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
-						criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, bedInterval,
-						seqGroup, refSeq);
+						criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, bedInterval, refSeq);
 			}
 		}
 	}
@@ -119,11 +111,12 @@ public class BSPAT_pgm {
 	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
 	                                                double sequenceIdentityThreshold, double criticalValue,
 	                                                double methylPatternThreshold, double memuPatternThreshold,
-	                                                double snpThreshold, BedInterval bedInterval,
-	                                                List<Sequence> seqGroup, String refSeq) throws IOException {
+	                                                double snpThreshold, BedInterval bedInterval, String refSeq) throws
+			IOException {
 		int targetStart = bedInterval.getStart(), targetEnd = bedInterval.getEnd(); // 0-based
 		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);// 0-based
 
+		List<Sequence> seqGroup = bedInterval.getSequenceList();
 		// processing sequences
 		for (Sequence sequence : seqGroup) {
 			sequence.processSequence(refSeq);
@@ -192,35 +185,49 @@ public class BSPAT_pgm {
 				seqGroup.size());
 	}
 
-	private static List<Sequence> readBismarkAlignmentResult(String inputFolder) throws IOException {
-		Map<String, Sequence> sequencesHashMap = new HashMap<>();
+	private static void readBismarkAlignmentResult(String inputFolder, Map<String, List<BedInterval>> targetRegionMap) throws
+			IOException {
 		File inputFile = new File(inputFolder);
 		File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
-
 		for (File file : inputFiles) {
 			final SamReader reader = SamReaderFactory.makeDefault().open(file);
 			for (final SAMRecord samRecord : reader) {
-				String methylString = samRecord.getStringAttribute("XM");
-				Sequence seq = new Sequence(samRecord.getReadName(),
-						(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP", samRecord.getReferenceName(),
-						samRecord.getStart() - 1, samRecord.getReadString()); // 0-based start
-				for (int i=0;i<methylString.length();i++) {
-					switch (methylString.charAt(i)){
-						case 'Z':
-							CpGSite cpg = new CpGSite((seq.getStrand().equals("BOTTOM")?i-1:i)+samRecord.getStart()-1, true);
-							seq.addCpG(cpg);
-							break;
-						case 'z':
-							cpg = new CpGSite((seq.getStrand().equals("BOTTOM")?i-1:i)+samRecord.getStart()-1, false);
-							seq.addCpG(cpg);
-							break;
-						default:
+				// TODO use indexed bam to speed up query
+				List<BedInterval> targetList = targetRegionMap.get(samRecord.getReferenceName());
+				if (targetList != null) {
+					for (BedInterval bedInterval : targetList) {
+						int startPos = samRecord.getStart() - 1;// 0-based start
+						int endPos = startPos + samRecord.getReadLength() - 1;
+						if (startPos <= bedInterval.getStart() && endPos >= bedInterval.getEnd()) {
+							Sequence seq = new Sequence(samRecord.getReadName(),
+									(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP",
+									samRecord.getReferenceName(),
+									startPos, samRecord.getReadString());
+							String methylString = samRecord.getStringAttribute("XM");
+							for (int i = 0; i < methylString.length(); i++) {
+								switch (methylString.charAt(i)) {
+									case 'Z':
+										CpGSite cpg = new CpGSite(
+												(seq.getStrand()
+														.equals("BOTTOM") ? i - 1 : i) + samRecord.getStart() - 1,
+												true);
+										seq.addCpG(cpg);
+										break;
+									case 'z':
+										cpg = new CpGSite((seq.getStrand()
+												.equals("BOTTOM") ? i - 1 : i) + samRecord.getStart() - 1,
+												false);
+										seq.addCpG(cpg);
+										break;
+									default:
+								}
+							}
+							bedInterval.getSequenceList().add(seq);
+						}
 					}
 				}
-				sequencesHashMap.put(seq.getId(), seq);
 			}
 		}
-		return sequencesHashMap.values().stream().collect(Collectors.toList());
 	}
 
 

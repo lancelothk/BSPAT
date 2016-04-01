@@ -1,5 +1,8 @@
 package edu.cwru.cbc.BSPAT.commons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by lancelothk on 3/2/16.
  */
@@ -8,12 +11,14 @@ public class BedInterval {
 	private int start;
 	private int end;
 	private String name;
+	private List<Sequence> sequenceList;
 
 	public BedInterval(String chr, int start, int end, String name) {
 		this.chr = chr;
 		this.start = start;
 		this.end = end;
 		this.name = name;
+		this.sequenceList = new ArrayList<>();
 	}
 
 	public String getChr() {
@@ -30,6 +35,10 @@ public class BedInterval {
 
 	public String getName() {
 		return name;
+	}
+
+	public List<Sequence> getSequenceList() {
+		return sequenceList;
 	}
 
 	@Override
