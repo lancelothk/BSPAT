@@ -15,7 +15,6 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by lancelothk on 2/9/16.
@@ -37,23 +36,39 @@ public class BSPAT_pgm {
 
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
-		options.addOption(Option.builder("r").hasArg().desc("Reference Path").required().build());
-		options.addOption(Option.builder("i").hasArg().desc("Bismark result Path").required().build());
-		options.addOption(Option.builder("t").hasArg().desc("Target region file").required().build());
-		options.addOption(Option.builder("o").hasArg().desc("Output Path").required().build());
+		options.addOption(Option.builder("o").hasArg().desc("Output Path").build());
 		options.addOption(Option.builder("b").hasArg().desc("Bisulfite Conversion Rate").build());
 		options.addOption(Option.builder("s").hasArg().desc("Sequence Identity Threshold").build());
 		options.addOption(Option.builder("m").hasArg().desc("Methylation pattern Threshold").build());
 		options.addOption(Option.builder("p").hasArg().desc("significant SNP Threshold").build());
 		options.addOption(Option.builder("c").hasArg().desc("Critical Value").build());
+		options.addOption(Option.builder("h").desc("Help").build());
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
 
-		referencePath = validatePath(cmd.getOptionValue("r"));
-		bismarkResultPath = validatePath(cmd.getOptionValue("i"));
-		outputPath = validatePath(cmd.getOptionValue("o"));
-		targetRegionFile = cmd.getOptionValue("t");
+		if (cmd.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp(
+					"BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>",
+					options);
+			System.exit(1);
+		}
+
+		if (cmd.getArgList().size() != 3) {
+			throw new RuntimeException(
+					"Incorrect number of arguments! BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>");
+		} else {
+			referencePath = cmd.getArgList().get(0);
+			bismarkResultPath = cmd.getArgList().get(1);
+			targetRegionFile = cmd.getArgList().get(2);
+		}
+
+		if (cmd.hasOption("o")) {
+			outputPath = cmd.getOptionValue("o");
+		} else {
+			outputPath = getPath(bismarkResultPath);
+		}
 
 		if (cmd.hasOption("b")) {
 			bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b"));
@@ -76,11 +91,12 @@ public class BSPAT_pgm {
 				memuPatternThreshold, snpThreshold);
 	}
 
-	public static String validatePath(String path) {
-		if (!path.endsWith("/")) {
-			return path + "/";
+	private static String getPath(String path) {
+		File file = new File(path);
+		if (file.isDirectory()) {
+			return file.getPath();
 		} else {
-			return path;
+			return file.getParent();
 		}
 	}
 
@@ -98,12 +114,13 @@ public class BSPAT_pgm {
 						name + " in target regions is not a valid reference name in reference file!");
 			}
 		}
-		readBismarkAlignmentResult(bismarkResultPath, targetRegionMap);
+		readBismarkAlignmentResults(bismarkResultPath, targetRegionMap);
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceMap.get(chromosomeEntry.getKey());
-			for (BedInterval bedInterval : chromosomeEntry.getValue()) {
+			for (BedInterval targetRegion : chromosomeEntry.getValue()) {
 				generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
-						criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, bedInterval, refSeq);
+						criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, targetRegion,
+						refSeq);
 			}
 		}
 	}
@@ -111,12 +128,12 @@ public class BSPAT_pgm {
 	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
 	                                                double sequenceIdentityThreshold, double criticalValue,
 	                                                double methylPatternThreshold, double memuPatternThreshold,
-	                                                double snpThreshold, BedInterval bedInterval, String refSeq) throws
+	                                                double snpThreshold, BedInterval targetRegion,
+	                                                String refSeq) throws
 			IOException {
-		int targetStart = bedInterval.getStart(), targetEnd = bedInterval.getEnd(); // 0-based
-		String targetRefSeq = refSeq.substring(targetStart, targetEnd + 1);// 0-based
+		String targetRefSeq = refSeq.substring(targetRegion.getStart(), targetRegion.getEnd() + 1);
 
-		List<Sequence> seqGroup = bedInterval.getSequenceList();
+		List<Sequence> seqGroup = targetRegion.getSequenceList();
 		// processing sequences
 		for (Sequence sequence : seqGroup) {
 			sequence.processSequence(refSeq);
@@ -127,11 +144,12 @@ public class BSPAT_pgm {
 				seqGroup, bisulfiteConversionRate, sequenceIdentityThreshold);
 
 		List<Sequence> sequencePassedQualityFilter = qualityFilterSequencePair.getLeft();
-		writeAnalysedSequences(outputPath + bedInterval.toString() + "_bismark.analysis.txt",
+		writeAnalysedSequences(outputPath + "/" + targetRegion.toString() + "_bismark.analysis.txt",
 				sequencePassedQualityFilter);
 
 		// generate methyl pattern output
-		List<Pattern> methylationPatternList = getMethylPattern(sequencePassedQualityFilter, targetStart, targetEnd);
+		List<Pattern> methylationPatternList = getMethylPattern(sequencePassedQualityFilter, targetRegion.getStart(),
+				targetRegion.getEnd());
 
 		methylationPatternList = filterMethylationPatterns(methylationPatternList,
 				sequencePassedQualityFilter.size(), StringUtils.countMatches(targetRefSeq, "CG"), criticalValue,
@@ -143,24 +161,24 @@ public class BSPAT_pgm {
 			methylationPatternList.get(i).assignPatternID(i);
 		}
 
-		writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, bedInterval.toString(), METHYLATION),
+		writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(), METHYLATION),
 				targetRefSeq,
 				methylationPatternList, METHYLATION, sequencePassedQualityFilter.size());
 
 		// calculate mismatch stat based on all sequences in reference region.
-		int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetStart, targetEnd,
+		int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetRegion.getStart(), targetRegion.getEnd(),
 				sequencePassedQualityFilter);
 
 		// declare SNP
 		PotentialSNP potentialSNP = declareSNP(snpThreshold, sequencePassedQualityFilter.size(),
-				mismatchStat, targetStart);
+				mismatchStat, targetRegion.getStart());
 		if (potentialSNP != null) {
 			// generate memu pattern output
 			List<Pattern> meMuPatternList = getMeMuPatern(sequencePassedQualityFilter, methylationPatternList,
-					potentialSNP, targetStart, targetEnd);
+					potentialSNP, targetRegion.getStart(), targetRegion.getEnd());
 			meMuPatternList = filterPatternsByThreshold(meMuPatternList, sequencePassedQualityFilter.size(),
 					memuPatternThreshold);
-			writePatterns(String.format("%s%s_bismark.analysis_%s.txt", outputPath, bedInterval.toString(),
+			writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
 					METHYLATIONWITHSNP),
 					targetRefSeq, meMuPatternList, METHYLATIONWITHSNP, sequencePassedQualityFilter.size());
 		}
@@ -169,61 +187,73 @@ public class BSPAT_pgm {
 		Pattern allelePattern = allelePatterns.getLeft();
 		Pattern nonAllelePattern = allelePatterns.getRight();
 		if (allelePattern.getCount() != 0 && nonAllelePattern.getCount() != 0) {
-			PatternResult patternWithAllele = patternToPatternResult(allelePattern, seqGroup.size(), targetStart,
-					targetEnd);
-			PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, seqGroup.size(), targetStart,
-					targetEnd);
+			PatternResult patternWithAllele = patternToPatternResult(allelePattern, seqGroup.size(),
+					targetRegion.getStart(),
+					targetRegion.getEnd());
+			PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, seqGroup.size(),
+					targetRegion.getStart(),
+					targetRegion.getEnd());
 			if (hasASM(patternWithAllele, patternWithoutAllele)) {
-				writeASMPattern(String.format("%s%s_bismark.analysis_ASM.txt", outputPath, bedInterval.toString()),
+				writeASMPattern(String.format("%s/%s_bismark.analysis_ASM.txt", outputPath, targetRegion.toString()),
 						targetRefSeq, patternWithAllele, patternWithoutAllele);
 			}
 		}
 
-		writeStatistics(String.format("%s%s_bismark.analysis_report.txt", outputPath, bedInterval.toString()),
-				sequencePassedQualityFilter, mismatchStat, targetStart, targetRefSeq, bisulfiteConversionRate,
+		writeStatistics(String.format("%s/%s_bismark.analysis_report.txt", outputPath, targetRegion.toString()),
+				sequencePassedQualityFilter, mismatchStat, targetRegion.getStart(), targetRefSeq,
+				bisulfiteConversionRate,
 				sequenceIdentityThreshold, criticalValue, memuPatternThreshold, memuPatternThreshold, snpThreshold,
 				seqGroup.size());
 	}
 
-	private static void readBismarkAlignmentResult(String inputFolder, Map<String, List<BedInterval>> targetRegionMap) throws
+	private static void readBismarkAlignmentResults(String inputFolder,
+	                                                Map<String, List<BedInterval>> targetRegionMap) throws
 			IOException {
 		File inputFile = new File(inputFolder);
-		File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
-		for (File file : inputFiles) {
-			final SamReader reader = SamReaderFactory.makeDefault().open(file);
-			for (final SAMRecord samRecord : reader) {
-				// TODO use indexed bam to speed up query
-				List<BedInterval> targetList = targetRegionMap.get(samRecord.getReferenceName());
-				if (targetList != null) {
-					for (BedInterval bedInterval : targetList) {
-						int startPos = samRecord.getStart() - 1;// 0-based start
-						int endPos = startPos + samRecord.getReadLength() - 1;
-						if (startPos <= bedInterval.getStart() && endPos >= bedInterval.getEnd()) {
-							Sequence seq = new Sequence(samRecord.getReadName(),
-									(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP",
-									samRecord.getReferenceName(),
-									startPos, samRecord.getReadString());
-							String methylString = samRecord.getStringAttribute("XM");
-							for (int i = 0; i < methylString.length(); i++) {
-								switch (methylString.charAt(i)) {
-									case 'Z':
-										CpGSite cpg = new CpGSite(
-												(seq.getStrand()
-														.equals("BOTTOM") ? i - 1 : i) + samRecord.getStart() - 1,
-												true);
-										seq.addCpG(cpg);
-										break;
-									case 'z':
-										cpg = new CpGSite((seq.getStrand()
-												.equals("BOTTOM") ? i - 1 : i) + samRecord.getStart() - 1,
-												false);
-										seq.addCpG(cpg);
-										break;
-									default:
-								}
+		if (inputFile.isDirectory()) {
+			File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
+			for (File file : inputFiles) {
+				readBismarkAlignmentResults(targetRegionMap, file);
+			}
+		} else {
+			readBismarkAlignmentResults(targetRegionMap, inputFile);
+		}
+	}
+
+	private static void readBismarkAlignmentResults(Map<String, List<BedInterval>> targetRegionMap, File file) {
+		final SamReader reader = SamReaderFactory.makeDefault().open(file);
+		for (final SAMRecord samRecord : reader) {
+			// TODO use indexed bam to speed up query
+			List<BedInterval> targetList = targetRegionMap.get(samRecord.getReferenceName());
+			if (targetList != null) {
+				for (BedInterval bedInterval : targetList) {
+					int startPos = samRecord.getStart() - 1;// 0-based start
+					int endPos = startPos + samRecord.getReadLength() - 1;
+					if (startPos <= bedInterval.getStart() && endPos >= bedInterval.getEnd()) {
+						Sequence seq = new Sequence(samRecord.getReadName(),
+								(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP",
+								samRecord.getReferenceName(),
+								startPos, samRecord.getReadString());
+						String methylString = samRecord.getStringAttribute("XM");
+						for (int i = 0; i < methylString.length(); i++) {
+							switch (methylString.charAt(i)) {
+								case 'Z':
+									CpGSite cpg = new CpGSite(
+											(seq.getStrand()
+													.equals("BOTTOM") ? i - 1 : i) + samRecord.getStart() - 1,
+											true);
+									seq.addCpG(cpg);
+									break;
+								case 'z':
+									cpg = new CpGSite((seq.getStrand()
+											.equals("BOTTOM") ? i - 1 : i) + samRecord.getStart() - 1,
+											false);
+									seq.addCpG(cpg);
+									break;
+								default:
 							}
-							bedInterval.getSequenceList().add(seq);
 						}
+						bedInterval.getSequenceList().add(seq);
 					}
 				}
 			}
@@ -235,28 +265,36 @@ public class BSPAT_pgm {
 	private static Map<String, String> readReference(String refPath) throws IOException {
 		Map<String, String> referenceSeqs = new HashMap<>();
 		File refPathFile = new File(refPath);
-		String[] fileNames = refPathFile.list(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
-		for (String str : fileNames) {
-			try (BufferedReader buffReader = new BufferedReader(new FileReader(refPathFile + "/" + str))) {
-				String line, name = null;
-				StringBuilder ref = new StringBuilder();
-				while ((line = buffReader.readLine()) != null) {
-					if (line.length() != 0 && line.charAt(0) == '>') {
-						if (ref.length() > 0) {
-							referenceSeqs.put(name, ref.toString().toUpperCase());
-							ref = new StringBuilder();
-						}
-						name = line.substring(1, line.length());
-					} else {
-						ref.append(line);
-					}
-				}
-				if (ref.length() > 0) {
-					referenceSeqs.put(name, ref.toString().toUpperCase());
-				}
+		if (refPathFile.isDirectory()) {
+			File[] files = refPathFile.listFiles(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
+			for (File file : files) {
+				readFastaFile(referenceSeqs, file);
 			}
+		} else {
+			readFastaFile(referenceSeqs, refPathFile);
 		}
 		return referenceSeqs;
+	}
+
+	private static void readFastaFile(Map<String, String> referenceSeqs, File file) throws IOException {
+		try (BufferedReader buffReader = new BufferedReader(new FileReader(file))) {
+			String line, name = null;
+			StringBuilder ref = new StringBuilder();
+			while ((line = buffReader.readLine()) != null) {
+				if (line.length() != 0 && line.charAt(0) == '>') {
+					if (ref.length() > 0) {
+						referenceSeqs.put(name, ref.toString().toUpperCase());
+						ref = new StringBuilder();
+					}
+					name = line.substring(1, line.length());
+				} else {
+					ref.append(line);
+				}
+			}
+			if (ref.length() > 0) {
+				referenceSeqs.put(name, ref.toString().toUpperCase());
+			}
+		}
 	}
 
 	private static boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
