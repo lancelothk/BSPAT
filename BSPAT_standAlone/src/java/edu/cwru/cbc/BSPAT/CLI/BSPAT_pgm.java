@@ -30,17 +30,18 @@ public class BSPAT_pgm {
 	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
-		double bisulfiteConversionRate = 0.9, sequenceIdentityThreshold = 0.9, criticalValue = 0.01,
-				methylPatternThreshold = 0.01, memuPatternThreshold = 0.1, snpThreshold = 0.2;
+		double bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue,
+				methylPatternThreshold, memuPatternThreshold, snpThreshold;
 		String referencePath, bismarkResultPath, outputPath, targetRegionFile;
 
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
 		options.addOption(Option.builder("o").hasArg().desc("Output Path").build());
 		options.addOption(Option.builder("b").hasArg().desc("Bisulfite Conversion Rate").build());
-		options.addOption(Option.builder("s").hasArg().desc("Sequence Identity Threshold").build());
+		options.addOption(Option.builder("i").hasArg().desc("Sequence Identity Threshold").build());
 		options.addOption(Option.builder("m").hasArg().desc("Methylation pattern Threshold").build());
-		options.addOption(Option.builder("p").hasArg().desc("significant SNP Threshold").build());
+		options.addOption(Option.builder("n").hasArg().desc("MethylationWithSNP pattern Threshold").build());
+		options.addOption(Option.builder("s").hasArg().desc("significant SNP Threshold").build());
 		options.addOption(Option.builder("c").hasArg().desc("Critical Value").build());
 		options.addOption(Option.builder("h").desc("Help").build());
 
@@ -64,27 +65,13 @@ public class BSPAT_pgm {
 			targetRegionFile = cmd.getArgList().get(2);
 		}
 
-		if (cmd.hasOption("o")) {
-			outputPath = cmd.getOptionValue("o");
-		} else {
-			outputPath = getPath(bismarkResultPath);
-		}
-
-		if (cmd.hasOption("b")) {
-			bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b"));
-		}
-		if (cmd.hasOption("s")) {
-			sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("s"));
-		}
-		if (cmd.hasOption("m")) {
-			methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m"));
-		}
-		if (cmd.hasOption("p")) {
-			snpThreshold = Double.parseDouble(cmd.getOptionValue("p"));
-		}
-		if (cmd.hasOption("c")) {
-			criticalValue = Double.parseDouble(cmd.getOptionValue("c"));
-		}
+		outputPath = cmd.getOptionValue("o", getPath(bismarkResultPath));
+		bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b", "0.9"));
+		sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("i", "0.9"));
+		methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.01"));
+		memuPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.1"));
+		snpThreshold = Double.parseDouble(cmd.getOptionValue("s", "0.2"));
+		criticalValue = Double.parseDouble(cmd.getOptionValue("c", "0.01"));
 
 		generatePatterns(referencePath, bismarkResultPath, outputPath, Utils.readBedFile(targetRegionFile),
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, methylPatternThreshold,
