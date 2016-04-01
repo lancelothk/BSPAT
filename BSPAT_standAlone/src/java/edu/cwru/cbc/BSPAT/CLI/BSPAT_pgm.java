@@ -30,12 +30,11 @@ public class BSPAT_pgm {
 	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
-		double bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue,
-				methylPatternThreshold, memuPatternThreshold, snpThreshold;
-		String referencePath, bismarkResultPath, outputPath, targetRegionFile;
-
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
+		options.addOption(Option.builder("r")
+				.desc("Reverse result. Display result in complementary strand, when minus strand reference used")
+				.build());
 		options.addOption(Option.builder("o").hasArg().desc("Output Path").build());
 		options.addOption(Option.builder("b").hasArg().desc("Bisulfite Conversion Rate").build());
 		options.addOption(Option.builder("i").hasArg().desc("Sequence Identity Threshold").build());
@@ -56,6 +55,7 @@ public class BSPAT_pgm {
 			System.exit(1);
 		}
 
+		String referencePath, bismarkResultPath, targetRegionFile;
 		if (cmd.getArgList().size() != 3) {
 			throw new RuntimeException(
 					"Incorrect number of arguments! BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>");
@@ -65,13 +65,13 @@ public class BSPAT_pgm {
 			targetRegionFile = cmd.getArgList().get(2);
 		}
 
-		outputPath = cmd.getOptionValue("o", getPath(bismarkResultPath));
-		bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b", "0.9"));
-		sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("i", "0.9"));
-		methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.01"));
-		memuPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.1"));
-		snpThreshold = Double.parseDouble(cmd.getOptionValue("s", "0.2"));
-		criticalValue = Double.parseDouble(cmd.getOptionValue("c", "0.01"));
+		String outputPath = cmd.getOptionValue("o", getPath(bismarkResultPath));
+		double bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b", "0.9"));
+		double sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("i", "0.9"));
+		double methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.01"));
+		double memuPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.1"));
+		double snpThreshold = Double.parseDouble(cmd.getOptionValue("s", "0.2"));
+		double criticalValue = Double.parseDouble(cmd.getOptionValue("c", "0.01"));
 
 		generatePatterns(referencePath, bismarkResultPath, outputPath, Utils.readBedFile(targetRegionFile),
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, methylPatternThreshold,
@@ -121,6 +121,11 @@ public class BSPAT_pgm {
 		String targetRefSeq = refSeq.substring(targetRegion.getStart(), targetRegion.getEnd() + 1);
 
 		List<Sequence> seqGroup = targetRegion.getSequenceList();
+		if (seqGroup.size() == 0) {
+			System.err.printf("target %s-%s-%d-%d isn't fully covered by any sequence.\n", targetRegion.getName(),
+					targetRegion.getChr(), targetRegion.getStart(), targetRegion.getEnd());
+			return;
+		}
 		// processing sequences
 		for (Sequence sequence : seqGroup) {
 			sequence.processSequence(refSeq);
@@ -168,24 +173,24 @@ public class BSPAT_pgm {
 			writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
 					METHYLATIONWITHSNP),
 					targetRefSeq, meMuPatternList, METHYLATIONWITHSNP, sequencePassedQualityFilter.size());
-		}
 
-		Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(seqGroup, potentialSNP);
-		Pattern allelePattern = allelePatterns.getLeft();
-		Pattern nonAllelePattern = allelePatterns.getRight();
-		if (allelePattern.getCount() != 0 && nonAllelePattern.getCount() != 0) {
-			PatternResult patternWithAllele = patternToPatternResult(allelePattern, seqGroup.size(),
-					targetRegion.getStart(),
-					targetRegion.getEnd());
-			PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, seqGroup.size(),
-					targetRegion.getStart(),
-					targetRegion.getEnd());
-			if (hasASM(patternWithAllele, patternWithoutAllele)) {
-				writeASMPattern(String.format("%s/%s_bismark.analysis_ASM.txt", outputPath, targetRegion.toString()),
-						targetRefSeq, patternWithAllele, patternWithoutAllele);
+			Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(seqGroup, potentialSNP);
+			Pattern allelePattern = allelePatterns.getLeft();
+			Pattern nonAllelePattern = allelePatterns.getRight();
+			if (allelePattern.getCount() != 0 && nonAllelePattern.getCount() != 0) {
+				PatternResult patternWithAllele = patternToPatternResult(allelePattern, seqGroup.size(),
+						targetRegion.getStart(),
+						targetRegion.getEnd());
+				PatternResult patternWithoutAllele = patternToPatternResult(nonAllelePattern, seqGroup.size(),
+						targetRegion.getStart(),
+						targetRegion.getEnd());
+				if (hasASM(patternWithAllele, patternWithoutAllele)) {
+					writeASMPattern(
+							String.format("%s/%s_bismark.analysis_ASM.txt", outputPath, targetRegion.toString()),
+							targetRefSeq, patternWithAllele, patternWithoutAllele);
+				}
 			}
 		}
-
 		writeStatistics(String.format("%s/%s_bismark.analysis_report.txt", outputPath, targetRegion.toString()),
 				sequencePassedQualityFilter, mismatchStat, targetRegion.getStart(), targetRefSeq,
 				bisulfiteConversionRate,
@@ -246,7 +251,6 @@ public class BSPAT_pgm {
 			}
 		}
 	}
-
 
 	// TODO replace reference reading code with the one used in ASM project. Or replace with using htsjdk
 	private static Map<String, String> readReference(String refPath) throws IOException {
