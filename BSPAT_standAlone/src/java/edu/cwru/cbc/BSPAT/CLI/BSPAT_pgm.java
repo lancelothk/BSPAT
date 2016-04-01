@@ -90,10 +90,17 @@ public class BSPAT_pgm {
 	                                     double methylPatternThreshold, double memuPatternThreshold,
 	                                     double snpThreshold) throws
 			IOException {
-		Map<String, String> referenceSeqs = readReference(referencePath);
+		Map<String, String> referenceMap = readReference(referencePath);
+		// reference names of target regions should be subset of reference names in reference file.
+		for (String name : targetRegionMap.keySet()) {
+			if (!referenceMap.keySet().contains(name)){
+				throw new RuntimeException(name + " in target regions is not a valid reference name in reference file!");
+			}
+		}
+
 		List<Sequence> sequencesList = readBismarkAlignmentResult(bismarkResultPath);
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
-			String refSeq = referenceSeqs.get(chromosomeEntry.getKey());
+			String refSeq = referenceMap.get(chromosomeEntry.getKey());
 			for (BedInterval bedInterval : chromosomeEntry.getValue()) {
 				List<Sequence> seqGroup = new ArrayList<>();
 				// TODO use indexed bam to speed up query
