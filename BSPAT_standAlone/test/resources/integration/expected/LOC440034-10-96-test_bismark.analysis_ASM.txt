@@ -1,0 +1,14 @@
+ASM	count	percentage
+TCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGAC	ref
+---------------------**---------------------------------------------------**-------**--	417	0.5291878172588832
+---------------------@@---------------------------------------------------@@-------@A--	371	0.47081218274111675
+Methylation level in reads with reference allele:
+CpG_position	Methyl_Level
+21	0.08173076923076923
+74	0.9206730769230769
+83	0.7718446601941747
+Methylation level in reads with alternative allele:
+CpG_position	Methyl_Level
+21	0.0972972972972973
+74	0.16172506738544473
+83	0.02981029810298103
