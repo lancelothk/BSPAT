@@ -38,31 +38,35 @@ public class MethylFigurePgm {
 		options.addOption(
 				Option.builder("t").hasArg().desc("Figure format. Support eps and png. Default is png").build());
 		options.addOption(Option.builder("f").hasArg().desc("Text font used in figure. Default is Arial").build());
-		options.addOption(Option.builder("r").hasArg().desc("BSPAT Report file").build());
-		options.addOption(Option.builder("a").desc("Draw ASM pattern").build());
+		options.addOption(
+				Option.builder("a").desc("Draw ASM pattern. In this case, only pattern result is required.").build());
 		options.addOption(Option.builder("h").desc("Help").build());
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse(options, args);
 
-		String figureFont = cmd.getOptionValue("f", "Arial");
-		String figureFormat = cmd.getOptionValue("t", "png");
-
-		boolean isASMPattern = false;
-		if (cmd.hasOption("a")) {
-			isASMPattern = true;
-		}
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("MethylFigure [options] [pattern file] [report file]", options);
+			formatter.printHelp("MethylFigure [options] <pattern file> {<report file> | -a }", options);
 			System.exit(1);
 		}
 
-		if (isASMPattern) {
+		String figureFont = cmd.getOptionValue("f", "Arial");
+		String figureFormat = cmd.getOptionValue("t", "png");
+
+		if (cmd.hasOption("a")) {
+			if (cmd.getArgList().size() != 1) {
+				throw new RuntimeException(
+						"Incorrect number of arguments! MethylFigure [options] <pattern file> {<report file> | -a }");
+			}
 			String patternFileName = cmd.getArgList().get(0);
 			String regionName = obtainRegionName(patternFileName);
 			drawASMFigure(regionName, patternFileName, figureFormat, figureFont);
 		} else {
+			if (cmd.getArgList().size() != 2) {
+				throw new RuntimeException(
+						"Incorrect number of arguments! MethylFigure [options] <pattern file> {<report file> | -a }");
+			}
 			String patternFileName = cmd.getArgList().get(0);
 			String reportFileName = cmd.getArgList().get(1);
 			String regionName = obtainRegionName(patternFileName);
