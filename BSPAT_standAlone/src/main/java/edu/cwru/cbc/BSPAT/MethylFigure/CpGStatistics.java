@@ -97,4 +97,8 @@ public class CpGStatistics implements CpG {
 			return 'M';
 		}
 	}
+
+	public void reverse(int refLength) {
+		this.position = refLength - this.getPosition();
+	}
 }

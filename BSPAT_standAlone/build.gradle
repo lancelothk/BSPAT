@@ -2,8 +2,26 @@ plugins {
     id 'java'
     id 'distribution'
 }
-
-sourceCompatibility = 1.8
+//noinspection GroovyAssignabilityCheck
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+        resources {
+            srcDir 'src/test/resources'
+            output.resourcesDir = "build/classes/test"
+        }
+    }
+}
 
 version '0.1-beta'
 
@@ -19,22 +37,6 @@ dependencies {
     compile 'org.apache.commons:commons-math3:3.6'
     compile 'net.sf.epsgraphics:epsgraphics:1.2'
     testCompile 'org.testng:testng:6.9.10'
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/java'
-        }
-        test {
-            java {
-                srcDir 'test/java'
-            }
-            resources {
-                srcDir 'test/resources'
-            }
-        }
-    }
 }
 
 test.doFirst {
@@ -65,11 +67,8 @@ task addAllStartSctipts(dependsOn: jar) {
     buildStartScript('drawFigure', 'edu.cwru.cbc.BSPAT.MethylFigure.MethylFigurePgm').execute()
 }
 
-distZip.enabled = false
-distTar.enabled = false
-
+//noinspection GroovyAssignabilityCheck
 distributions {
-    //noinspection GroovyAssignabilityCheck
     main {
         contents {
             addAllStartSctipts
@@ -85,6 +84,10 @@ distributions {
         }
     }
 }
+
+
+distZip.enabled = false
+distTar.enabled = false
 
 tasks.withType(Tar) {
     compression = Compression.GZIP

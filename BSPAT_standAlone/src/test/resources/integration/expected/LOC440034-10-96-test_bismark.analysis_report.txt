@@ -9,7 +9,7 @@ SNP threshold:	0.1
 Sequences covers whole target region:	788
 Sequences passed quality filtering:	766
 Methylation level in target region:
-CpG_position	Methyl_Level
+Absolute_CpG_position	Methyl_Level
 31	0.08900523560209424
 84	0.5673202614379085
 93	0.42292490118577075

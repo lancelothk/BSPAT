@@ -27,13 +27,13 @@ public class Utils {
 					public boolean processLine(String line) throws IOException {
 						List<String> itemList = tabSplitter.splitToList(line);
 						if (itemList.size() == 5) {
-							boolean isPlusStrand;
+							boolean isMinusStrand;
 							switch (itemList.get(4)) {
 								case "+":
-									isPlusStrand = true;
+									isMinusStrand = false;
 									break;
 								case "-":
-									isPlusStrand = false;
+									isMinusStrand = true;
 									break;
 								default:
 									throw new RuntimeException(
@@ -42,7 +42,7 @@ public class Utils {
 							//  require bed file position 0-based.
 							BedInterval bedInterval = new BedInterval(itemList.get(0),
 									Integer.parseInt(itemList.get(1)), Integer.parseInt(itemList.get(2)),
-									itemList.get(3), isPlusStrand);
+									itemList.get(3), isMinusStrand);
 							List<BedInterval> bedIntervalList = bedIntervalMap.get(itemList.get(0));
 							if (bedIntervalList == null) {
 								bedIntervalList = new ArrayList<>();

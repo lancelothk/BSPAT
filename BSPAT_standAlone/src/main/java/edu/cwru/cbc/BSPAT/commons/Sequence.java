@@ -41,14 +41,6 @@ public class Sequence {
 		this.CpGSites = new ArrayList<>();
 	}
 
-	public void reverse(int refLength) {
-		this.startPos = refLength - this.startPos - this.length();
-		this.originalSeq = StringUtils.reverse(this.originalSeq);
-		for (CpGSite cpGSite : this.CpGSites) {
-			cpGSite.reverse(refLength);
-		}
-	}
-
 	public int getEndPos() {
 		return startPos + length() - 1; // 0-based
 	}

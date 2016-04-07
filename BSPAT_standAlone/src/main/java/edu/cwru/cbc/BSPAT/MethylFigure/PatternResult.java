@@ -11,9 +11,14 @@ public class PatternResult {
 	private int count;
 	private double percent;
 	private PotentialSNP snp = null;
+	private boolean reversePattern = false;
 
 	public PatternResult() {
 		this.CpGList = new ArrayList<>();
+	}
+
+	public void setReversePattern(boolean reversePattern) {
+		this.reversePattern = reversePattern;
 	}
 
 	public void addCpG(CpGStatistics cpg) {
@@ -52,4 +57,9 @@ public class PatternResult {
 		this.snp = snp;
 	}
 
+	public void reversePattern(int refLength) {
+		for (CpGStatistics cpg : CpGList) {
+			cpg.reverse(refLength);
+		}
+	}
 }

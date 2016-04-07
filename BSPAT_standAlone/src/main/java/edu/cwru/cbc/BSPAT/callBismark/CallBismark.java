@@ -61,7 +61,7 @@ public class CallBismark {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String userDir = System.getProperty("user.home");
 		String referencePath = userDir + "/experiments/BSPAT/standAlone/minus/ref/";
-		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/minus/output/bismark/";
+		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/minus/bismark/";
 		String inputPath = userDir + "/experiments/BSPAT/standAlone/minus/seq/";
 		String bismarkPath = userDir + "/software/bismark_v0.14.2_noSleep/";
 		String bowtiePath = userDir + "/software/bowtie-1.1.1/";
