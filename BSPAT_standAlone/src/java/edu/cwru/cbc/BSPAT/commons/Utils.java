@@ -26,7 +26,7 @@ public class Utils {
 					@Override
 					public boolean processLine(String line) throws IOException {
 						List<String> itemList = tabSplitter.splitToList(line);
-						if (itemList.size() >= 4) {
+						if (itemList.size() == 5) {
 							boolean isPlusStrand;
 							switch (itemList.get(4)) {
 								case "+":
@@ -53,7 +53,8 @@ public class Utils {
 							}
 							return true;
 						} else {
-							return false;
+							throw new RuntimeException(
+									"in valid target region file! Should contain 5 columns: <Ref_name> <start_position>   <end _position>    <region_name>   <stand(+/-)>");
 						}
 					}
 

@@ -23,11 +23,11 @@ import java.util.*;
 @SuppressWarnings("Duplicates")
 public class BSPAT_pgm {
 
-	public static final String METHYLATION = "Methylation";
-	public static final String METHYLATIONWITHSNP = "MethylationWithSNP";
+	private static final String METHYLATION = "Methylation";
+	private static final String METHYLATIONWITHSNP = "MethylationWithSNP";
 	// use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
-	public static final double ASM_PATTERN_THRESHOLD = 0.2;
-	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
+	private static final double ASM_PATTERN_THRESHOLD = 0.2;
+	private static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
 		Options options = new Options();
