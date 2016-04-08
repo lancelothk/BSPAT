@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Pattern {
+	public static final String METHYLATION = "Methylation";
+	public static final String METHYLATIONWITHSNP = "MethylationWithSNP";
 	private String patternString;
 	private Map<String, Sequence> sequenceMap;
 	private int patternID;

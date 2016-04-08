@@ -2,6 +2,7 @@ package edu.cwru.cbc.BSPAT.commons;
 
 /**
  * Created by kehu on 9/11/14.
+ * CpG site stored in sequence
  */
 public class CpGSite {
 	private int position;
@@ -14,10 +15,6 @@ public class CpGSite {
 
 	public int getPosition() {
 		return position;
-	}
-
-	public void setPosition(int position) {
-		this.position = position;
 	}
 
 	public boolean isMethylated() {

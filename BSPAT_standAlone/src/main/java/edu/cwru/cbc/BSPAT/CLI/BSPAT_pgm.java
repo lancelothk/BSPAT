@@ -1,12 +1,8 @@
 package edu.cwru.cbc.BSPAT.CLI;
 
-import edu.cwru.cbc.BSPAT.MethylFigure.CpG;
 import edu.cwru.cbc.BSPAT.MethylFigure.CpGStatistics;
 import edu.cwru.cbc.BSPAT.MethylFigure.PatternResult;
 import edu.cwru.cbc.BSPAT.commons.*;
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.util.SequenceUtil;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
@@ -14,8 +10,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.distribution.NormalDistribution;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Created by lancelothk on 2/9/16.
@@ -24,11 +22,9 @@ import java.util.*;
 @SuppressWarnings("Duplicates")
 public class BSPAT_pgm {
 
-	private static final String METHYLATION = "Methylation";
-	private static final String METHYLATIONWITHSNP = "MethylationWithSNP";
 	// use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
-	private static final double ASM_PATTERN_THRESHOLD = 0.2;
-	private static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
+	public static final double ASM_PATTERN_THRESHOLD = 0.2;
+	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
 		Options options = new Options();
@@ -104,7 +100,7 @@ public class BSPAT_pgm {
 	                                     double methylPatternThreshold, double memuPatternThreshold,
 	                                     double snpThreshold) throws
 			IOException {
-		Map<String, String> referenceMap = readReference(referencePath);
+		Map<String, String> referenceMap = IOUtils.readReference(referencePath);
 		// reference names of target regions should be subset of reference names in reference file.
 		for (String name : targetRegionMap.keySet()) {
 			if (!referenceMap.keySet().contains(name)) {
@@ -112,7 +108,7 @@ public class BSPAT_pgm {
 						name + " in target regions is not a valid reference name in reference file!");
 			}
 		}
-		readBismarkAlignmentResults(bismarkResultPath, targetRegionMap);
+		IOUtils.readBismarkAlignmentResults(bismarkResultPath, targetRegionMap);
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceMap.get(chromosomeEntry.getKey());
 			for (BedInterval targetRegion : chromosomeEntry.getValue()) {
@@ -153,7 +149,7 @@ public class BSPAT_pgm {
 				seqGroup, bisulfiteConversionRate, sequenceIdentityThreshold);
 
 		List<Sequence> sequencePassedQualityFilter = qualityFilterSequencePair.getLeft();
-		writeAnalysedSequences(outputPath + "/" + targetRegion.toString() + "_bismark.analysis.txt",
+		IOUtils.writeAnalysedSequences(outputPath + "/" + targetRegion.toString() + "_bismark.analysis.txt",
 				sequencePassedQualityFilter, refSeq.length(), targetRegion.isMinusStrand());
 
 		// generate methyl pattern output
@@ -170,8 +166,9 @@ public class BSPAT_pgm {
 			methylationPatternList.get(i).assignPatternID(i);
 		}
 
-		writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(), METHYLATION),
-				targetRefSeq, methylationPatternList, METHYLATION, sequencePassedQualityFilter.size());
+		IOUtils.writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
+				Pattern.METHYLATION),
+				targetRefSeq, methylationPatternList, Pattern.METHYLATION, sequencePassedQualityFilter.size());
 
 		// calculate mismatch stat based on all sequences in reference region.
 		int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetRegion.getStart(), targetRegion.getEnd(),
@@ -186,9 +183,9 @@ public class BSPAT_pgm {
 					potentialSNP, targetRegion.getStart(), targetRegion.getEnd());
 			meMuPatternList = filterPatternsByThreshold(meMuPatternList, sequencePassedQualityFilter.size(),
 					memuPatternThreshold);
-			writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
-					METHYLATIONWITHSNP),
-					targetRefSeq, meMuPatternList, METHYLATIONWITHSNP, sequencePassedQualityFilter.size());
+			IOUtils.writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
+					Pattern.METHYLATIONWITHSNP),
+					targetRefSeq, meMuPatternList, Pattern.METHYLATIONWITHSNP, sequencePassedQualityFilter.size());
 
 			Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(seqGroup, potentialSNP);
 			Pattern allelePattern = allelePatterns.getLeft();
@@ -201,103 +198,16 @@ public class BSPAT_pgm {
 						targetRegion.getStart(),
 						targetRegion.getEnd());
 				if (hasASM(patternWithAllele, patternWithoutAllele)) {
-					writeASMPattern(
+					IOUtils.writeASMPattern(
 							String.format("%s/%s_bismark.analysis_ASM.txt", outputPath, targetRegion.toString()),
 							targetRefSeq, patternWithAllele, patternWithoutAllele);
 				}
 			}
 		}
-		writeStatistics(String.format("%s/%s_bismark.analysis_report.txt", outputPath, targetRegion.toString()),
+		IOUtils.writeStatistics(String.format("%s/%s_bismark.analysis_report.txt", outputPath, targetRegion.toString()),
 				sequencePassedQualityFilter, mismatchStat, targetRegion.getStart(), targetRefSeq,
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, memuPatternThreshold,
 				memuPatternThreshold, snpThreshold, seqGroup.size());
-	}
-
-	private static void readBismarkAlignmentResults(String inputFolder,
-	                                                Map<String, List<BedInterval>> targetRegionMap) throws
-			IOException {
-		File inputFile = new File(inputFolder);
-		if (inputFile.isDirectory()) {
-			File[] inputFiles = inputFile.listFiles(new ExtensionFilter(new String[]{"_bismark.sam", "_bismark.bam"}));
-			for (File file : inputFiles) {
-				readBismarkAlignmentResults(targetRegionMap, file);
-			}
-		} else {
-			readBismarkAlignmentResults(targetRegionMap, inputFile);
-		}
-	}
-
-	private static void readBismarkAlignmentResults(Map<String, List<BedInterval>> targetRegionMap,
-	                                                File bismarkBamFile) {
-		final SamReader reader = SamReaderFactory.makeDefault().open(bismarkBamFile);
-		for (final SAMRecord samRecord : reader) {
-			// TODO use indexed bam to speed up query
-			List<BedInterval> targetList = targetRegionMap.get(samRecord.getReferenceName());
-			if (targetList != null) {
-				for (BedInterval targetRegion : targetList) {
-					int startPos = samRecord.getStart() - 1;// 0-based start. Same to all CpG site positions.
-					int endPos = startPos + samRecord.getReadLength() - 1; // 0-based end
-					if (startPos <= targetRegion.getStart() && endPos >= targetRegion.getEnd()) {
-						Sequence seq = new Sequence(samRecord.getReadName(),
-								(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP",
-								samRecord.getReferenceName(),
-								startPos, samRecord.getReadString());
-						String methylString = samRecord.getStringAttribute("XM");
-						for (int i = 0; i < methylString.length(); i++) {
-							switch (methylString.charAt(i)) {
-								case 'Z':
-									CpGSite cpg = new CpGSite((seq.getStrand().equals("BOTTOM") ? i - 1 : i) + startPos,
-											true);
-									seq.addCpG(cpg);
-									break;
-								case 'z':
-									cpg = new CpGSite((seq.getStrand().equals("BOTTOM") ? i - 1 : i) + startPos, false);
-									seq.addCpG(cpg);
-									break;
-								default:
-							}
-						}
-						targetRegion.getSequenceList().add(seq);
-					}
-				}
-			}
-		}
-	}
-
-	// TODO replace reference reading code with the one used in ASM project. Or replace with using htsjdk
-	private static Map<String, String> readReference(String refPath) throws IOException {
-		Map<String, String> referenceSeqs = new HashMap<>();
-		File refPathFile = new File(refPath);
-		if (refPathFile.isDirectory()) {
-			File[] files = refPathFile.listFiles(new ExtensionFilter(new String[]{".txt", "fasta", "fa", "fna"}));
-			for (File file : files) {
-				readFastaFile(referenceSeqs, file);
-			}
-		} else {
-			readFastaFile(referenceSeqs, refPathFile);
-		}
-		return referenceSeqs;
-	}
-
-	private static void readFastaFile(Map<String, String> referenceSeqs, File file) throws IOException {
-		try (BufferedReader buffReader = new BufferedReader(new FileReader(file))) {
-			String line, name = null;
-			StringBuilder ref = new StringBuilder();
-			while ((line = buffReader.readLine()) != null) {
-				if (line.length() != 0 && line.charAt(0) == '>') {
-					if (ref.length() > 0) {
-						referenceSeqs.put(name, ref.toString().toUpperCase());
-						ref = new StringBuilder();
-					}
-					name = line.substring(1, line.length());
-				} else {
-					ref.append(line);
-				}
-			}
-			if (ref.length() > 0) {
-				referenceSeqs.put(name, ref.toString().toUpperCase());
-			}
-		}
 	}
 
 	private static boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
@@ -316,53 +226,6 @@ public class BSPAT_pgm {
 			}
 		}
 		return false;
-	}
-
-	private static void writeASMPattern(String outputFileName, String targetRefSeq, PatternResult patternWithAllele,
-	                                    PatternResult patternWithoutAllele) throws
-			IOException {
-		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFileName))) {
-			bufferedWriter.write("ASM\tcount\tpercentage\n");
-			bufferedWriter.write(targetRefSeq + "\tref\n");
-			assembleAllelePattern(targetRefSeq, patternWithoutAllele, bufferedWriter, '*');
-			assembleAllelePattern(targetRefSeq, patternWithAllele, bufferedWriter, '@');
-			patternWithoutAllele.getCpGList().sort(CpG::compareTo);
-			patternWithAllele.getCpGList().sort(CpG::compareTo);
-			bufferedWriter.write("Methylation level in reads with reference allele:\n");
-			bufferedWriter.write("Relative_CpG_position\tMethyl_Level" + "\n");
-			for (CpGStatistics cpgStat : patternWithoutAllele.getCpGList()) {
-				cpgStat.calcMethylLevel();
-				bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
-			}
-			bufferedWriter.write("Methylation level in reads with alternative allele:\n");
-			bufferedWriter.write("Relative_CpG_position\tMethyl_Level" + "\n");
-			for (CpGStatistics cpgStat : patternWithAllele.getCpGList()) {
-				cpgStat.calcMethylLevel();
-				bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
-			}
-			bufferedWriter.close();
-		}
-	}
-
-	private static void assembleAllelePattern(String targetRefSeq, PatternResult patternWithAllele,
-	                                          BufferedWriter bufferedWriter, char cpgLabel) throws
-			IOException {
-		StringBuilder withAlleleString = new StringBuilder(StringUtils.repeat("-", targetRefSeq.length()));
-		for (CpGStatistics cpGSitePattern : patternWithAllele.getCpGList()) {
-			int cpgPos = cpGSitePattern.getPosition();
-			withAlleleString.setCharAt(cpgPos, cpgLabel);
-			withAlleleString.setCharAt(cpgPos + 1, cpgLabel);
-		}
-		if (patternWithAllele.getSnp() != null) {
-			withAlleleString.setCharAt(patternWithAllele.getSnp().getPosition(),
-					patternWithAllele.getSnp().getNucleotide());
-		}
-		withAlleleString.append("\t")
-				.append(patternWithAllele.getCount())
-				.append("\t")
-				.append(patternWithAllele.getPercent())
-				.append("\n");
-		bufferedWriter.write(withAlleleString.toString());
 	}
 
 	private static PatternResult patternToPatternResult(Pattern pattern, int totalCount, int targetStart,
@@ -424,158 +287,19 @@ public class BSPAT_pgm {
 		return new ImmutablePair<>(allelePattern, nonAllelePattern);
 	}
 
-	private static void writeStatistics(String reportFileName,
-	                                    List<Sequence> sequencePassedQualityFilter,
-	                                    int[][] mutationStat, int targetStart, String targetRefSeq,
-	                                    double bisulfiteConversionRate,
-	                                    double sequenceIdentityThreshold,
-	                                    double criticalValue, double methylPatternThreshold,
-	                                    double memuPatternThreshold, double snpThreshold,
-	                                    int sequenceNumber) throws
-			IOException {
-		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
-			Hashtable<Integer, CpGStatistics> cpgStatHashTable = new Hashtable<>();
-			// collect information for calculating methylation rate for each CpG site.
-			for (Sequence seq : sequencePassedQualityFilter) {
-				for (CpGSite cpg : seq.getCpGSites()) {
-					if (!cpgStatHashTable.containsKey(cpg.getPosition())) {
-						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition(), false);
-						cpgStat.allSitePlus();
-						if (cpg.isMethylated()) {
-							cpgStat.methylSitePlus();
-						}
-						cpgStatHashTable.put(cpg.getPosition(), cpgStat);
-					} else {
-						CpGStatistics cpgStat = cpgStatHashTable.get(cpg.getPosition());
-						cpgStat.allSitePlus();
-						if (cpg.isMethylated()) {
-							cpgStat.methylSitePlus();
-						}
-					}
-				}
-			}
-
-			List<CpGStatistics> cpgStatList = new ArrayList<>();
-			for (CpGStatistics cpgStat : cpgStatHashTable.values()) {
-				if (cpgStat.getPosition() == targetStart - 1) { // display half cpg in the beginning of pattern.
-					cpgStatList.add(cpgStat);
-				} else if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
-					cpgStatList.add(cpgStat);
-				}
-			}
-
-			cpgStatList.sort(CpG::compareTo);
-			bufferedWriter.write(
-					"target region start position:\t" + targetStart + "\n");
-			bufferedWriter.write("target region length:\t" + targetRefSeq.length() + "\n");
-			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + bisulfiteConversionRate + "\n");
-			bufferedWriter.write("Sequence identity threshold:\t" + sequenceIdentityThreshold + "\n");
-			bufferedWriter.write("Critival value:\t" + criticalValue + "\n");
-			bufferedWriter.write("Methylation pattern threshold:\t" + methylPatternThreshold + "\n");
-			bufferedWriter.write("Memu pattern threshold:\t" + memuPatternThreshold + "\n");
-			bufferedWriter.write("SNP threshold:\t" + snpThreshold + "\n");
-			bufferedWriter.write("Sequences covers whole target region:\t" + sequenceNumber + "\n");
-			bufferedWriter.write("Sequences passed quality filtering:\t" + sequencePassedQualityFilter.size() + "\n");
-			bufferedWriter.write("Methylation level in target region:\n");
-			bufferedWriter.write("Absolute_CpG_position\tMethyl_Level" + "\n");
-
-			for (CpGStatistics cpgStat : cpgStatList) {
-				cpgStat.calcMethylLevel();
-				bufferedWriter.write(cpgStat.getPosition() + "\t" + cpgStat.getMethylLevel() + "\n");
-			}
-
-			bufferedWriter.write("mismatch stat:\n");
-			bufferedWriter.write("index\tref\tA\tC\tG\tT\tN\ttotal\tcoverage\n");
-			for (int i = 0; i < mutationStat.length; i++) {
-				// 1 based position
-				int total = mutationStat[i][0] + mutationStat[i][1] + mutationStat[i][2] + mutationStat[i][3] +
-						mutationStat[i][4];
-				int coverage = mutationStat[i][0] + mutationStat[i][1] + mutationStat[i][2] + mutationStat[i][3] +
-						mutationStat[i][4] + mutationStat[i][5];
-				bufferedWriter.write(
-						String.format("%d\t%c\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i + 1, targetRefSeq.charAt(i),
-								mutationStat[i][0], mutationStat[i][1], mutationStat[i][2], mutationStat[i][3],
-								mutationStat[i][4], total, coverage));
-			}
-		}
-	}
-
-	/**
-	 * group sequences by given key function
-	 *
-	 * @param getKey function parameter to return String key.
-	 * @return HashMap contains <key function return value, grouped sequence list>
-	 */
-	private static Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList, GetKeyFunction getKey) {
+	private static Map<String, List<Sequence>> groupSeqsByKey(List<Sequence> sequencesList,
+	                                                          Function<Sequence, String> getKey) {
 		Map<String, List<Sequence>> sequenceGroupMap = new HashMap<>();
 		for (Sequence seq : sequencesList) {
-			if (sequenceGroupMap.containsKey(getKey.getKey(seq))) {
-				sequenceGroupMap.get(getKey.getKey(seq)).add(seq);
+			if (sequenceGroupMap.containsKey(getKey.apply(seq))) {
+				sequenceGroupMap.get(getKey.apply(seq)).add(seq);
 			} else {
 				List<Sequence> sequenceGroup = new ArrayList<>();
 				sequenceGroup.add(seq);
-				sequenceGroupMap.put(getKey.getKey(seq), sequenceGroup);
+				sequenceGroupMap.put(getKey.apply(seq), sequenceGroup);
 			}
 		}
 		return sequenceGroupMap;
-	}
-
-	private static void writePatterns(String patternFileName, String refSeq, List<Pattern> patternList,
-	                                  String patternType, double sequenceCount) throws
-			IOException {
-		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(patternFileName))) {
-			switch (patternType) {
-				case METHYLATION:
-					bufferedWriter.write(String.format("%s\tcount\tpercentage\tPatternID\n", patternType));
-					bufferedWriter.write(String.format("%s\tref\n", refSeq));
-					for (Pattern pattern : patternList) {
-						String origin = pattern.getPatternString();
-						bufferedWriter.write(String.format("%s\t%d\t%f\t%d\n", origin, pattern.getCount(),
-								pattern.getCount() / sequenceCount, pattern.getPatternID()));
-					}
-					break;
-				case METHYLATIONWITHSNP:
-					bufferedWriter.write(String.format("%s\tcount\tpercentage\tMethylParent\n", METHYLATIONWITHSNP));
-					bufferedWriter.write(String.format("%s\tref\n", refSeq));
-					Collections.sort(patternList,
-							(p1, p2) -> p1.getMethylationParentID() == p2.getMethylationParentID() ? Integer.compare(
-									p1.getCount(), p2.getCount()) : Integer.compare(p1.getMethylationParentID(),
-									p2.getMethylationParentID()));
-					for (Pattern pattern : patternList) {
-						String origin = pattern.getPatternString();
-						bufferedWriter.write(String.format("%s\t%d\t%f\t%d\n", origin, pattern.getCount(),
-								pattern.getCount() / sequenceCount, pattern.getMethylationParentID()));
-					}
-					break;
-				default:
-					throw new RuntimeException("unknown pattern type!");
-			}
-		}
-	}
-
-	private static void writeAnalysedSequences(String sequenceFile, List<Sequence> sequencesList, int refLength,
-	                                           boolean reverse) throws
-			IOException {
-		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(sequenceFile))) {
-			bufferedWriter.write(
-					"start\tend\tmethylationString\tID\toriginalSequence\tBisulfiteConversionRate\tmethylationRate\tsequenceIdentity\n");
-			for (Sequence seq : sequencesList) {
-				int start = seq.getStartPos();
-				int end = seq.getEndPos();
-				String originalString = seq.getOriginalSeq();
-				String methylString = seq.getMethylationString();
-				if (reverse) {
-					start = refLength - seq.getEndPos();
-					end = refLength - seq.getStartPos();
-					methylString = StringUtils.reverse(seq.getMethylationString());
-					originalString = StringUtils.reverse(seq.getOriginalSeq());
-				}
-				bufferedWriter.write(
-						start + "\t" + end + "\t" + methylString + "\t" + seq.getId() + "\t" + originalString + "\t" + seq
-								.getBisulConversionRate() + "\t" + seq.getMethylationRate() + "\t" + seq.getSequenceIdentity() + "\n");
-			}
-		}
-		System.out.println("wrote file " + sequenceFile);
 	}
 
 	private static List<Pattern> filterMethylationPatterns(List<Pattern> methylationPatterns, double totalSeqCount,
