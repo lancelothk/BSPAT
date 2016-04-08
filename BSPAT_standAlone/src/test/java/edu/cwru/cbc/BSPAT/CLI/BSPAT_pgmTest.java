@@ -26,6 +26,30 @@ public class BSPAT_pgmTest {
 	}
 
 	@Test
+	public void integrationTest_halfCpG() throws Exception {
+		String[] resultFilenames = {"10_minus_extend-24-80-10F-minus_bismark.analysis.txt",
+				"10_minus_extend-24-80-10F-minus_bismark.analysis_Methylation.txt",
+				"10_minus_extend-24-80-10F-minus_bismark.analysis_report.txt"};
+		// with default parameter
+		String inputFile = testResourcePath + "/halfCpGInput/ProstateBSF10F.txt_bismark.bam";
+		String referenceFile = testResourcePath + "/halfCpGInput/10_minus_extend.fa";
+		String targetRegionFile = testResourcePath + "/halfCpGInput/10F_minus_target_reverse.bed";
+		String[] args = {referenceFile, inputFile, targetRegionFile, "-o", testResourcePath + "/halfCpGActual"};
+		BSPAT_pgm.main(args);
+		for (String resultFilename : resultFilenames) {
+			String actualResultFilename = testResourcePath + "/halfCpGActual/" + resultFilename;
+			String expectedResultFilename = testResourcePath + "/halfCpGExpected/" + resultFilename;
+			File actualResultFile = new File(actualResultFilename);
+			FileAssert.assertFile(actualResultFile, "Output " + resultFilename + " doesn't exist!");
+			assertEqualFiles(actualResultFile, new File(expectedResultFilename),
+					resultFilename);
+			if (!actualResultFile.delete()) {
+				throw new IOException(actualResultFilename + " doesn't delete successfully!");
+			}
+		}
+	}
+
+	@Test
 	public void integrationTest_minusRef() throws Exception {
 		String[] resultFilenames = {"10_minus_extend-5-103-10F-minus_bismark.analysis.txt",
 				"10_minus_extend-5-103-10F-minus_bismark.analysis_Methylation.txt",

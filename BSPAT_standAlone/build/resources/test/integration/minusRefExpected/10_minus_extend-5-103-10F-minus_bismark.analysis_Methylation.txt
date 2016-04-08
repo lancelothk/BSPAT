@@ -1,3 +1,0 @@
-Methylation	count	percentage	PatternID
-GAACCCAGGCCAGGGGTGCGACACTCAAAGAGTTTGCACCTAACGATTTTAGAATTCGCTGGAAGAAAATGATTCCGCTTGTCTCCCCAAAGCTGCAGC	ref
-------------------@@-----------------------@@-----------@@-----------------@@----------------------	128	0.820513	0

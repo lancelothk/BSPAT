@@ -2,7 +2,6 @@ package edu.cwru.cbc.BSPAT.callBismark;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import edu.cwru.cbc.BSPAT.commons.Utils;
 import org.apache.commons.cli.*;
 
 import java.io.*;

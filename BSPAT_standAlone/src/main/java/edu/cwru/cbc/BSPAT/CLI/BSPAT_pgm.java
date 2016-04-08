@@ -78,7 +78,7 @@ public class BSPAT_pgm {
 		double snpThreshold = Double.parseDouble(cmd.getOptionValue("s", "0.2"));
 		double criticalValue = Double.parseDouble(cmd.getOptionValue("c", "0.01"));
 
-		generatePatterns(referencePath, bismarkResultPath, outputPath, Utils.readBedFile(targetRegionFile),
+		generatePatterns(referencePath, bismarkResultPath, outputPath, IOUtils.readBedFile(targetRegionFile),
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, methylPatternThreshold,
 				memuPatternThreshold, snpThreshold);
 	}
@@ -131,6 +131,8 @@ public class BSPAT_pgm {
 			}
 		}
 		String targetRefSeq = refSeq.substring(targetRegion.getStart(), targetRegion.getEnd() + 1);
+		String targetRefSeqExtend = refSeq.substring(Math.max(0, targetRegion.getStart() - 1),
+				Math.min(refSeq.length() - 1, targetRegion.getEnd() + 2));
 		List<Sequence> seqGroup = targetRegion.getSequenceList();
 		if (seqGroup.size() == 0) {
 			System.err.printf("target %s-%s-%d-%d isn't fully covered by any sequence.\n", targetRegion.getName(),
@@ -155,7 +157,7 @@ public class BSPAT_pgm {
 				targetRegion.getEnd());
 
 		methylationPatternList = filterMethylationPatterns(methylationPatternList,
-				sequencePassedQualityFilter.size(), StringUtils.countMatches(targetRefSeq, "CG"), criticalValue,
+				sequencePassedQualityFilter.size(), StringUtils.countMatches(targetRefSeqExtend, "CG"), criticalValue,
 				methylPatternThreshold);
 
 		// sort pattern and assign id index

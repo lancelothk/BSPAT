@@ -1,5 +1,9 @@
 package edu.cwru.cbc.BSPAT.commons;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
+import com.google.common.io.Files;
+import com.google.common.io.LineProcessor;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
@@ -285,5 +289,53 @@ public class IOUtils {
 				}
 			}
 		}
+	}
+
+	public static Map<String, List<BedInterval>> readBedFile(String bedFile) throws IOException {
+		return Files.asCharSource(new File(bedFile), Charsets.UTF_8)
+				.readLines(new LineProcessor<Map<String, List<BedInterval>>>() {
+					private final Splitter tabSplitter = Splitter.on("\t");
+					private Map<String, List<BedInterval>> bedIntervalMap = new HashMap<>();
+
+					@Override
+					public boolean processLine(String line) throws IOException {
+						List<String> itemList = tabSplitter.splitToList(line);
+						if (itemList.size() == 5) {
+							boolean isMinusStrand;
+							switch (itemList.get(4)) {
+								case "+":
+									isMinusStrand = false;
+									break;
+								case "-":
+									isMinusStrand = true;
+									break;
+								default:
+									throw new RuntimeException(
+											"invalid strand symbol in target region file: " + itemList.get(4));
+							}
+							//  require bed file position 0-based.
+							BedInterval bedInterval = new BedInterval(itemList.get(0),
+									Integer.parseInt(itemList.get(1)), Integer.parseInt(itemList.get(2)),
+									itemList.get(3), isMinusStrand);
+							List<BedInterval> bedIntervalList = bedIntervalMap.get(itemList.get(0));
+							if (bedIntervalList == null) {
+								bedIntervalList = new ArrayList<>();
+								bedIntervalList.add(bedInterval);
+								bedIntervalMap.put(itemList.get(0), bedIntervalList);
+							} else {
+								bedIntervalList.add(bedInterval);
+							}
+							return true;
+						} else {
+							throw new RuntimeException(
+									"in valid target region file! Should contain 5 columns: <Ref_name> <start_position>   <end _position>    <region_name>   <stand(+/-)>");
+						}
+					}
+
+					@Override
+					public Map<String, List<BedInterval>> getResult() {
+						return bedIntervalMap;
+					}
+				});
 	}
 }
