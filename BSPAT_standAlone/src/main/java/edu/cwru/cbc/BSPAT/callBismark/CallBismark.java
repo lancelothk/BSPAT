@@ -28,19 +28,14 @@ public class CallBismark {
 		this.refPath = refPath;
 
 		this.qualsTypeParameter = "";
-		switch (qualsType) {
-			case "phred33":
-				this.qualsTypeParameter = "--phred33-quals";
-				break;
-			case "phred64":
-				this.qualsTypeParameter = "--phred64-quals";
-				break;
-			case "solexa":
-				this.qualsTypeParameter = "--solexa-quals";
-				break;
-			case "solexa1.3":
-				this.qualsTypeParameter = "--solexa1.3-quals";
-				break;
+		if (qualsType.equals("phred33")) {
+			this.qualsTypeParameter = "--phred33-quals";
+		} else if (qualsType.equals("phred64")) {
+			this.qualsTypeParameter = "--phred64-quals";
+		} else if (qualsType.equals("solexa")) {
+			this.qualsTypeParameter = "--solexa-quals";
+		} else if (qualsType.equals("solexa1.3")) {
+			this.qualsTypeParameter = "--solexa1.3-quals";
 		}
 
 		File logpathFile = new File(logPath);

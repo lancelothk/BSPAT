@@ -70,6 +70,11 @@ public class BSPAT_pgm {
 		}
 
 		String outputPath = cmd.getOptionValue("o", getPath(bismarkResultPath));
+		File outputPathFile = new File(outputPath);
+		if (!outputPathFile.exists()) {
+			outputPathFile.mkdirs();
+		}
+		outputPath = outputPathFile.getAbsolutePath();
 		double bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b", "0.9"));
 		double sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("i", "0.9"));
 		double methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.01"));
