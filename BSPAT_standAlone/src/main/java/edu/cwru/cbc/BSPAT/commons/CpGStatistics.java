@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT.MethylFigure;
+package edu.cwru.cbc.BSPAT.commons;
 
 public class CpGStatistics implements CpG {
 

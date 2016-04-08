@@ -1,6 +1,4 @@
-package edu.cwru.cbc.BSPAT.MethylFigure;
-
-import edu.cwru.cbc.BSPAT.commons.PotentialSNP;
+package edu.cwru.cbc.BSPAT.commons;
 
 import java.util.ArrayList;
 import java.util.List;

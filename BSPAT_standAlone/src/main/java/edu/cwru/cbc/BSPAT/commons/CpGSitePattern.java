@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT.MethylFigure;
+package edu.cwru.cbc.BSPAT.commons;
 
 public class CpGSitePattern implements CpG {
 	private int position;

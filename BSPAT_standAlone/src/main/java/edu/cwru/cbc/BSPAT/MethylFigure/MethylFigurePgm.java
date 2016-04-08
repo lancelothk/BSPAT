@@ -1,5 +1,8 @@
 package edu.cwru.cbc.BSPAT.MethylFigure;
 
+import edu.cwru.cbc.BSPAT.commons.CpG;
+import edu.cwru.cbc.BSPAT.commons.CpGStatistics;
+import edu.cwru.cbc.BSPAT.commons.PatternResult;
 import edu.cwru.cbc.BSPAT.commons.PotentialSNP;
 import org.apache.commons.cli.*;
 

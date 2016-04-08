@@ -1,8 +1,5 @@
 package edu.cwru.cbc.BSPAT.commons;
 
-import edu.cwru.cbc.BSPAT.MethylFigure.CpG;
-import edu.cwru.cbc.BSPAT.MethylFigure.CpGStatistics;
-import edu.cwru.cbc.BSPAT.MethylFigure.PatternResult;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
@@ -60,8 +57,8 @@ public class IOUtils {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFileName))) {
 			bufferedWriter.write("ASM\tcount\tpercentage\n");
 			bufferedWriter.write(targetRefSeq + "\tref\n");
-			assembleAllelePattern(targetRefSeq, patternWithoutAllele, bufferedWriter, '*');
-			assembleAllelePattern(targetRefSeq, patternWithAllele, bufferedWriter, '@');
+			bufferedWriter.write(assembleAllelePattern(targetRefSeq, patternWithoutAllele, '*') + "\n");
+			bufferedWriter.write(assembleAllelePattern(targetRefSeq, patternWithAllele, '@') + "\n");
 			patternWithoutAllele.getCpGList().sort(CpG::compareTo);
 			patternWithAllele.getCpGList().sort(CpG::compareTo);
 			bufferedWriter.write("Methylation level in reads with reference allele:\n");
@@ -81,8 +78,8 @@ public class IOUtils {
 	}
 
 
-	private static void assembleAllelePattern(String targetRefSeq, PatternResult patternWithAllele,
-	                                          BufferedWriter bufferedWriter, char cpgLabel) throws
+	private static String assembleAllelePattern(String targetRefSeq, PatternResult patternWithAllele,
+	                                            char cpgLabel) throws
 			IOException {
 		StringBuilder withAlleleString = new StringBuilder(StringUtils.repeat("-", targetRefSeq.length()));
 		for (CpGStatistics cpGSitePattern : patternWithAllele.getCpGList()) {
@@ -97,9 +94,8 @@ public class IOUtils {
 		withAlleleString.append("\t")
 				.append(patternWithAllele.getCount())
 				.append("\t")
-				.append(patternWithAllele.getPercent())
-				.append("\n");
-		bufferedWriter.write(withAlleleString.toString());
+				.append(patternWithAllele.getPercent());
+		return withAlleleString.toString();
 	}
 
 	public static void writeStatistics(String reportFileName,
@@ -112,19 +108,19 @@ public class IOUtils {
 	                                   int sequenceNumber) throws
 			IOException {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
-			Hashtable<Integer, CpGStatistics> cpgStatHashTable = new Hashtable<>();
+			HashMap<Integer, CpGStatistics> cpgStatHashMap = new HashMap<>();
 			// collect information for calculating methylation rate for each CpG site.
 			for (Sequence seq : sequencePassedQualityFilter) {
 				for (CpGSite cpg : seq.getCpGSites()) {
-					if (!cpgStatHashTable.containsKey(cpg.getPosition())) {
+					if (!cpgStatHashMap.containsKey(cpg.getPosition())) {
 						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition(), false);
 						cpgStat.allSitePlus();
 						if (cpg.isMethylated()) {
 							cpgStat.methylSitePlus();
 						}
-						cpgStatHashTable.put(cpg.getPosition(), cpgStat);
+						cpgStatHashMap.put(cpg.getPosition(), cpgStat);
 					} else {
-						CpGStatistics cpgStat = cpgStatHashTable.get(cpg.getPosition());
+						CpGStatistics cpgStat = cpgStatHashMap.get(cpg.getPosition());
 						cpgStat.allSitePlus();
 						if (cpg.isMethylated()) {
 							cpgStat.methylSitePlus();
@@ -134,7 +130,7 @@ public class IOUtils {
 			}
 
 			List<CpGStatistics> cpgStatList = new ArrayList<>();
-			for (CpGStatistics cpgStat : cpgStatHashTable.values()) {
+			for (CpGStatistics cpgStat : cpgStatHashMap.values()) {
 				if (cpgStat.getPosition() == targetStart - 1) { // display half cpg in the beginning of pattern.
 					cpgStatList.add(cpgStat);
 				} else if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
@@ -251,6 +247,9 @@ public class IOUtils {
 		}
 	}
 
+	/**
+	 * read sequences into bed regions they covered.
+	 */
 	private static void readBismarkAlignmentResults(Map<String, List<BedInterval>> targetRegionMap,
 	                                                File bismarkBamFile) {
 		final SamReader reader = SamReaderFactory.makeDefault().open(bismarkBamFile);

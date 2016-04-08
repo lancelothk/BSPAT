@@ -1,4 +1,4 @@
-package edu.cwru.cbc.BSPAT.MethylFigure;
+package edu.cwru.cbc.BSPAT.commons;
 
 /**
  * Created by kehu on 8/19/14.

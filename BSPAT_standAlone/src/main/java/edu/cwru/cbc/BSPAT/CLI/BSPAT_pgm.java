@@ -1,7 +1,5 @@
 package edu.cwru.cbc.BSPAT.CLI;
 
-import edu.cwru.cbc.BSPAT.MethylFigure.CpGStatistics;
-import edu.cwru.cbc.BSPAT.MethylFigure.PatternResult;
 import edu.cwru.cbc.BSPAT.commons.*;
 import htsjdk.samtools.util.SequenceUtil;
 import org.apache.commons.cli.*;

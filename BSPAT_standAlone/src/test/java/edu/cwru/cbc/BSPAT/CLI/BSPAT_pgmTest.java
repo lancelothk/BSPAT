@@ -3,7 +3,6 @@ package edu.cwru.cbc.BSPAT.CLI;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import org.testng.FileAssert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -17,7 +16,6 @@ import static org.testng.Assert.assertNotNull;
  * Created by kehu on 4/1/16.
  */
 public class BSPAT_pgmTest {
-	private String[] resultFiles = {"LOC440034-10-96-test_bismark.analysis.txt", "LOC440034-10-96-test_bismark.analysis_ASM.txt", "LOC440034-10-96-test_bismark.analysis_Methylation.txt", "LOC440034-10-96-test_bismark.analysis_MethylationWithSNP.txt", "LOC440034-10-96-test_bismark.analysis_report.txt"};
 	private String testResourcePath;
 
 	@BeforeMethod
@@ -25,42 +23,62 @@ public class BSPAT_pgmTest {
 		String root = this.getClass().getClassLoader().getResource("").getFile();
 		assertNotNull(root);
 		testResourcePath = root + "integration/";
-
 	}
 
 	@Test
-	public void testIntegration() throws Exception {
+	public void integrationTest_minusRef() throws Exception {
+		String[] resultFilenames = {"10_minus_extend-5-103-10F-minus_bismark.analysis.txt",
+				"10_minus_extend-5-103-10F-minus_bismark.analysis_Methylation.txt",
+				"10_minus_extend-5-103-10F-minus_bismark.analysis_report.txt"};
 		// with default parameter
-		String inputFile = testResourcePath + "demoSequence.fastq_bismark.bam";
-		String referenceFile = testResourcePath + "demoReference.fasta";
-		String targetRegionFile = testResourcePath + "target.bed";
-		String[] args = {referenceFile, inputFile, targetRegionFile};
+		String inputFile = testResourcePath + "/minusRefInput/ProstateBSF10F.txt_bismark.bam";
+		String referenceFile = testResourcePath + "/minusRefInput/10_minus_extend.fa";
+		String targetRegionFile = testResourcePath + "/minusRefInput/10F_minus_target_reverse.bed";
+		String[] args = {referenceFile, inputFile, targetRegionFile, "-o", testResourcePath + "/minusRefActual"};
 		BSPAT_pgm.main(args);
-		for (String resultFile : resultFiles) {
-			FileAssert.assertFile(new File(testResourcePath + resultFile),
-					"Output " + resultFile + " doesn't exist!");
-			assertEqualFiles(testResourcePath + resultFile, testResourcePath + "expected/" + resultFile,
-					resultFile);
+		for (String resultFilename : resultFilenames) {
+			String actualResultFilename = testResourcePath + "/minusRefActual/" + resultFilename;
+			String expectedResultFilename = testResourcePath + "/minusRefExpected/" + resultFilename;
+			File actualResultFile = new File(actualResultFilename);
+			FileAssert.assertFile(actualResultFile, "Output " + resultFilename + " doesn't exist!");
+			assertEqualFiles(actualResultFile, new File(expectedResultFilename),
+					resultFilename);
+			if (!actualResultFile.delete()) {
+				throw new IOException(actualResultFilename + " doesn't delete successfully!");
+			}
 		}
-
 	}
 
-	private void assertEqualFiles(String actualFile, String expectedFile, String fileName) throws IOException {
-		String actualContent = Files.toString(new File(actualFile), Charsets.UTF_8);
-		String expectedContent = Files.toString(new File(expectedFile), Charsets.UTF_8);
+	@Test
+	public void integrationTest_demo() throws Exception {
+		String[] resultFilenames = {"LOC440034-10-96-test_bismark.analysis.txt",
+				"LOC440034-10-96-test_bismark.analysis_ASM.txt",
+				"LOC440034-10-96-test_bismark.analysis_Methylation.txt",
+				"LOC440034-10-96-test_bismark.analysis_MethylationWithSNP.txt",
+				"LOC440034-10-96-test_bismark.analysis_report.txt"};
+		// with default parameter
+		String inputFile = testResourcePath + "/demoInput/demoSequence.fastq_bismark.bam";
+		String referenceFile = testResourcePath + "/demoInput/demoReference.fasta";
+		String targetRegionFile = testResourcePath + "/demoInput/target.bed";
+		String[] args = {referenceFile, inputFile, targetRegionFile, "-o", testResourcePath + "/demoActual"};
+		BSPAT_pgm.main(args);
+		for (String resultFilename : resultFilenames) {
+			String actualResultFilename = testResourcePath + "/demoActual/" + resultFilename;
+			String expectedResultFilename = testResourcePath + "/demoExpected/" + resultFilename;
+			File actualResultFile = new File(actualResultFilename);
+			FileAssert.assertFile(actualResultFile, "Output " + resultFilename + " doesn't exist!");
+			assertEqualFiles(actualResultFile, new File(expectedResultFilename),
+					resultFilename);
+			if (!actualResultFile.delete()) {
+				throw new IOException(actualResultFilename + " doesn't delete successfully!");
+			}
+		}
+	}
+
+	private void assertEqualFiles(File actualFile, File expectedFile, String fileName) throws IOException {
+		String actualContent = Files.toString(actualFile, Charsets.UTF_8);
+		String expectedContent = Files.toString(expectedFile, Charsets.UTF_8);
 		assertEquals(actualContent, expectedContent, fileName + " content doesn't equal to expected content!");
 	}
 
-	@AfterMethod
-	public void tearDown() throws Exception {
-		for (String resultFile : resultFiles) {
-			File toDelete = new File(testResourcePath + "/" + resultFile);
-			if (toDelete.exists()) {
-				if (!toDelete.delete()) {
-					throw new IOException(testResourcePath + resultFile + " doesn't delete successfully!");
-				}
-			}
-		}
-
-	}
 }
