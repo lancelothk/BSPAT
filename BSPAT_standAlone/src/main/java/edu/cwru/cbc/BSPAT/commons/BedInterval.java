@@ -51,4 +51,10 @@ public class BedInterval {
 	public String toString() {
 		return String.format("%s-%d-%d-%s", chr, start, end, name);
 	}
+
+	public void reverse(int refLength) {
+		int tmp = this.start;
+		this.start = refLength - this.end - 1;
+		this.end = refLength - tmp - 1;
+	}
 }

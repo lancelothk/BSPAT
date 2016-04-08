@@ -1,5 +1,6 @@
 package edu.cwru.cbc.BSPAT.commons;
 
+import htsjdk.samtools.util.SequenceUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -253,5 +254,21 @@ public class Sequence {
 			}
 		}
 		return false;
+	}
+
+	public void reverse(int refLegnth) {
+		this.startPos = refLegnth - this.getEndPos() - 1;
+		this.originalSeq = SequenceUtil.reverseComplement(this.originalSeq);
+		if (this.getStrand().equals("TOP")) {
+			this.strand = "BOTTOM";
+			for (CpGSite cpGSite : CpGSites) {
+				cpGSite.reverse(refLegnth - 1); // since when read BOTTOM CpG, i-1 to align TOP CpG position
+			}
+		} else if (this.getStrand().equals("BOTTOM")) {
+			this.strand = "TOP";
+			for (CpGSite cpGSite : CpGSites) {
+				cpGSite.reverse(refLegnth + 1); // since when read BOTTOM CpG, i-1 to align TOP CpG position
+			}
+		}
 	}
 }
