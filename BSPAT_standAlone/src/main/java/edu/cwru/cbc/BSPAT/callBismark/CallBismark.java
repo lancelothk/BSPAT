@@ -3,6 +3,7 @@ package edu.cwru.cbc.BSPAT.callBismark;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import edu.cwru.cbc.BSPAT.commons.Utils;
+import org.apache.commons.cli.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -58,18 +59,46 @@ public class CallBismark {
 		}
 	}
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		String userDir = System.getProperty("user.home");
-		String referencePath = userDir + "/experiments/BSPAT/standAlone/minus/ref/";
-		String bismarkResultPath = userDir + "/experiments/BSPAT/standAlone/minus/bismark/";
-		String inputPath = userDir + "/experiments/BSPAT/standAlone/minus/seq/";
-		String bismarkPath = userDir + "/software/bismark_v0.14.2_noSleep/";
-		String bowtiePath = userDir + "/software/bowtie-1.1.1/";
-		String qualType = "phred33";
-		int maxmis = 2;
+	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
+		Options options = new Options();
+		// Require all input path to be directory. File is not allowed.
+		options.addOption(Option.builder("bismark").hasArg().desc("Bismark install path").build());
+		options.addOption(Option.builder("bowtie").hasArg().desc("Bowtie install path").build());
+		options.addOption(Option.builder("q").hasArg().desc("Quality score type. Default is phred33").build());
+		options.addOption(Option.builder("n").hasArg().desc("Allowed mismatches. Default is 2").build());
+		options.addOption(Option.builder("h").desc("Help").build());
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = parser.parse(options, args);
+
+		if (cmd.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp(
+					"callBismark [options] <reference file Path or file> <sequence path> <bismark result path>",
+					options);
+			System.exit(1);
+		}
+
+		String referencePath, bismarkResultPath, sequencePath;
+		if (cmd.getArgList().size() != 3) {
+			throw new RuntimeException(
+					"Incorrect number of arguments! callBismark [options] <sequence path> <reference file Path or file> <bismark result path>");
+		} else {
+			sequencePath = cmd.getArgList().get(0);
+			referencePath = cmd.getArgList().get(1);
+			bismarkResultPath = cmd.getArgList().get(2) + "/";
+			System.out.println("Sequence path is " + sequencePath);
+			System.out.println("Reference path is " + referencePath);
+			System.out.println("Bismark result path is " + bismarkResultPath);
+		}
+
+		String bismarkPath = cmd.getOptionValue("bismark", "");
+		String bowtiePath = cmd.getOptionValue("bowtie", "");
+		String qualType = cmd.getOptionValue("q", "phred33");
+		int maxmis = Integer.parseInt(cmd.getOptionValue("n", "2"));
 		CallBismark callBismark = new CallBismark(referencePath, bismarkPath, bowtiePath, bismarkResultPath, qualType,
 				maxmis);
-		callBismark.execute(inputPath, bismarkResultPath, bismarkResultPath);
+		callBismark.execute(sequencePath, bismarkResultPath, bismarkResultPath);
 	}
 
 	public void execute(String inputPath, String outputPath, String logPath) throws IOException, InterruptedException {
