@@ -24,4 +24,7 @@ public class CpGSite {
 	public void reverse(int refLength) {
 		this.position = refLength - this.position - 1;
 	}
+	public int compareTo(CpGSite o) {
+		return this.getPosition() - o.getPosition();
+	}
 }

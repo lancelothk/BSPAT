@@ -141,6 +141,7 @@ public class Sequence {
 	 * generate methylation pattern, calculate conversion rate, methylation rate
 	 */
 	public void processSequence(String referenceSeq) {
+		//TODO generate methylString from Bismark result.
 		this.refSeq = referenceSeq.substring(startPos, this.getEndPos() + 1);
 		StringBuilder convertedReferenceSeq = bisulfiteRefSeq();
 		double countOfMethylatedCpG = 0;
@@ -256,19 +257,18 @@ public class Sequence {
 		return false;
 	}
 
+	/**
+	 * reverse sequence. 1. original seq;2. start position;3. CpG site positions.
+	 *
+	 * @param refLegnth length of reference sequence
+	 */
 	public void reverse(int refLegnth) {
 		this.startPos = refLegnth - this.getEndPos() - 1;
 		this.originalSeq = SequenceUtil.reverseComplement(this.originalSeq);
-		if (this.getStrand().equals("TOP")) {
-			this.strand = "BOTTOM";
-			for (CpGSite cpGSite : CpGSites) {
-				cpGSite.reverse(refLegnth - 1); // since when read BOTTOM CpG, i-1 to align TOP CpG position
-			}
-		} else if (this.getStrand().equals("BOTTOM")) {
-			this.strand = "TOP";
-			for (CpGSite cpGSite : CpGSites) {
-				cpGSite.reverse(refLegnth + 1); // since when read BOTTOM CpG, i-1 to align TOP CpG position
-			}
+		this.strand = this.getStrand().equals("TOP") ? "BOTTOM" : "TOP";
+		for (CpGSite cpGSite : CpGSites) {
+			cpGSite.reverse(refLegnth - 1);
 		}
+		this.getCpGSites().sort(CpGSite::compareTo);
 	}
 }
