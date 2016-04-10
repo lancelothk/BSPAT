@@ -4,10 +4,86 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-/**
- * Created by kehu on 4/1/16.
- */
 public class SequenceTest {
+	@Test
+	public void testReverse() throws Exception {
+		int refLength = 100;
+		// length is 10, contains half cpg
+		String seqStringTop = "AACGCTTGAC";
+		String seqStringBottom = "GTCAAGCGTT";
+
+		Sequence seqTop = new Sequence("id", "TOP", "test", 20, seqStringTop);
+		seqTop.addCpG(new CpGSite(22, false));
+		seqTop.addCpG(new CpGSite(29, true));
+
+		Sequence seqBottom = new Sequence("id", "BOTTOM", "test", 70, seqStringBottom);
+		seqBottom.addCpG(new CpGSite(69, true));
+		seqBottom.addCpG(new CpGSite(76, false));
+
+		Sequence seqTopLeftEdge = new Sequence("id", "TOP", "test", 0, seqStringTop);
+		seqTopLeftEdge.addCpG(new CpGSite(2, false));
+		seqTopLeftEdge.addCpG(new CpGSite(9, true));
+
+		Sequence seqBottomLeftEdge = new Sequence("id", "BOTTOM", "test", 90, seqStringBottom);
+		seqBottomLeftEdge.addCpG(new CpGSite(89, true));
+		seqBottomLeftEdge.addCpG(new CpGSite(96, false));
+
+		Sequence seqTopRightEdge = new Sequence("id", "TOP", "test", 90, seqStringTop);
+		seqTopRightEdge.addCpG(new CpGSite(92, false));
+		seqTopRightEdge.addCpG(new CpGSite(99, true));
+
+		Sequence seqBottomRightEdge = new Sequence("id", "BOTTOM", "test", 0, seqStringBottom);
+		seqBottomRightEdge.addCpG(new CpGSite(-1, true));
+		seqBottomRightEdge.addCpG(new CpGSite(6, false));
+
+		// check if double reverses go back to original state
+		testDoubleReverses(refLength, seqTop);
+		testDoubleReverses(refLength, seqTopLeftEdge);
+		testDoubleReverses(refLength, seqTopRightEdge);
+		testDoubleReverses(refLength, seqBottom);
+		testDoubleReverses(refLength, seqBottomLeftEdge);
+		testDoubleReverses(refLength, seqBottomRightEdge);
+
+		// test reverse by comparing same-content TOP/BOTTOM sequence
+		testReverseTOP_Bottom(refLength, seqTop, seqBottom);
+		testReverseTOP_Bottom(refLength, seqBottom, seqTop);
+		testReverseTOP_Bottom(refLength, seqTopLeftEdge, seqBottomLeftEdge);
+		testReverseTOP_Bottom(refLength, seqBottomLeftEdge, seqTopLeftEdge);
+		testReverseTOP_Bottom(refLength, seqTopRightEdge, seqBottomRightEdge);
+		testReverseTOP_Bottom(refLength, seqBottomRightEdge, seqTopRightEdge);
+	}
+
+	private void testReverseTOP_Bottom(int refLength, Sequence seqTop, Sequence seqBottom) {
+		Sequence test = copySequence(seqTop);
+		test.reverse(refLength);
+		assertEqualSequence(test, seqBottom);
+	}
+
+	private void testDoubleReverses(int refLength, Sequence seqTop) {
+		Sequence test = copySequence(seqTop);
+		test.reverse(refLength);
+		test.reverse(refLength);
+		assertEqualSequence(test,seqTop);
+	}
+
+	private void assertEqualSequence(Sequence actual, Sequence expected) {
+		assertEquals(actual.getStartPos(), expected.getStartPos());
+		assertEquals(actual.getStartPos(), expected.getStartPos());
+		assertEquals(actual.getCpGSites().size(), expected.getCpGSites().size(),
+				"CpG sites number don't match between actual and expected sequences");
+		for (int i = 0; i < actual.getCpGSites().size(); i++) {
+			assertEquals(actual.getCpGSites().get(i).getPosition(), expected.getCpGSites().get(i).getPosition());
+			assertEquals(actual.getCpGSites().get(i).isMethylated(), expected.getCpGSites().get(i).isMethylated());
+		}
+	}
+
+	private Sequence copySequence(Sequence oldSeq){
+		Sequence newSeq = new Sequence(oldSeq.getId(), oldSeq.getStrand(), oldSeq.getRegion(), oldSeq.getStartPos(), oldSeq.getOriginalSeq());
+		for (CpGSite cpGSite : oldSeq.getCpGSites()) {
+			newSeq.addCpG(new CpGSite(cpGSite.getPosition(), cpGSite.isMethylated()));
+		}
+		return newSeq;
+	}
 
 	@Test
 	public void testProcessSequence() throws Exception {
@@ -49,7 +125,7 @@ public class SequenceTest {
 		assertEquals(seq3.getMethylationString(),
 				"--------------------------@@---------------------------------------------------**-------@@--------");
 
-
+		// test partial CpG
 		String beginningPartialCpGRef = "CGAAG";
 		Sequence seqBPTop = new Sequence("1", "TOP", "test", 1, "GAAG");
 		Sequence seqBPBottom = new Sequence("1", "BOTTOM", "test", 1, "GAAG");
