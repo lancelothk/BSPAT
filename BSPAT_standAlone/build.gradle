@@ -79,12 +79,15 @@ distributions {
                 from 'build/libs/'
                 from configurations.runtime
             }
+            into('') {
+                from 'demo.zip'
+            }
         }
     }
 }
 
 
-distZip.enabled = false
+distZip.enabled = true
 distTar.enabled = false
 
 tasks.withType(Tar) {
