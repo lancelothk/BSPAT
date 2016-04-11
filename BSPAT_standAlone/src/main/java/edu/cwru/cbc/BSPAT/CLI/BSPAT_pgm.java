@@ -25,6 +25,7 @@ public class BSPAT_pgm {
 	private static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
+		String cmd_interface = "BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>";
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
 		options.addOption(Option.builder("r")
@@ -44,16 +45,14 @@ public class BSPAT_pgm {
 
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp(
-					"BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>",
-					options);
+			formatter.printHelp(cmd_interface, options);
 			System.exit(1);
 		}
 
 		String referencePath, bismarkResultPath, targetRegionFile;
 		if (cmd.getArgList().size() != 3) {
 			throw new RuntimeException(
-					"Incorrect number of arguments! BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>");
+					"Incorrect number of arguments! " + cmd_interface);
 		} else {
 			referencePath = cmd.getArgList().get(0);
 			bismarkResultPath = cmd.getArgList().get(1);
@@ -91,9 +90,9 @@ public class BSPAT_pgm {
 	private static String getPath(String path) {
 		File file = new File(path);
 		if (file.isDirectory()) {
-			return file.getPath();
+			return file.getAbsolutePath();
 		} else {
-			return file.getParent();
+			return file.getAbsoluteFile().getParent();
 		}
 	}
 

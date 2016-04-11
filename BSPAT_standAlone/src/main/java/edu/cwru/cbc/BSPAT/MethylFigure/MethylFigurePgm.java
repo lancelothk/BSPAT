@@ -33,6 +33,7 @@ public class MethylFigurePgm {
 	private static final int SMALL_PERCENT_FONT_SIZE = 10;
 
 	public static void main(String[] args) throws ParseException, IOException {
+		String cmd_interface = "BSPAT_figure [options] <pattern file> {<report file> | -a }";
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
 		options.addOption(
@@ -47,7 +48,7 @@ public class MethylFigurePgm {
 
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("MethylFigure [options] <pattern file> {<report file> | -a }", options);
+			formatter.printHelp(cmd_interface, options);
 			System.exit(1);
 		}
 
@@ -57,7 +58,7 @@ public class MethylFigurePgm {
 		if (cmd.hasOption("a")) {
 			if (cmd.getArgList().size() != 1) {
 				throw new RuntimeException(
-						"Incorrect number of arguments! MethylFigure [options] <pattern file> {<report file> | -a }");
+						"Incorrect number of arguments! " + cmd_interface);
 			}
 			String patternFileName = cmd.getArgList().get(0);
 			String regionName = obtainRegionName(patternFileName);
@@ -65,7 +66,7 @@ public class MethylFigurePgm {
 		} else {
 			if (cmd.getArgList().size() != 2) {
 				throw new RuntimeException(
-						"Incorrect number of arguments! MethylFigure [options] <pattern file> {<report file> | -a }");
+						"Incorrect number of arguments! " + cmd_interface);
 			}
 			String patternFileName = cmd.getArgList().get(0);
 			String reportFileName = cmd.getArgList().get(1);
