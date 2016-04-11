@@ -128,6 +128,8 @@ public class BSPAT_pgm {
 	                                                double snpThreshold, BedInterval targetRegion,
 	                                                String refSeq) throws
 			IOException {
+		System.out.printf("analyse region %s-%d-%d\n", targetRegion.getChr(), targetRegion.getStart(),
+				targetRegion.getEnd());
 		if (targetRegion.isMinusStrand()) {
 			targetRegion.reverse(refSeq.length());
 			refSeq = SequenceUtil.reverseComplement(refSeq);
@@ -171,9 +173,11 @@ public class BSPAT_pgm {
 			methylationPatternList.get(i).assignPatternID(i);
 		}
 
-		IOUtils.writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
-				Pattern.METHYLATION),
-				targetRefSeq, methylationPatternList, Pattern.METHYLATION, sequencePassedQualityFilter.size());
+		if (methylationPatternList.size() != 0) {
+			IOUtils.writePatterns(String.format("%s/%s_bismark.analysis_%s.txt", outputPath, targetRegion.toString(),
+					Pattern.METHYLATION),
+					targetRefSeq, methylationPatternList, Pattern.METHYLATION, sequencePassedQualityFilter.size());
+		}
 
 		// calculate mismatch stat based on all sequences in reference region.
 		int[][] mismatchStat = calculateMismatchStat(targetRefSeq, targetRegion.getStart(), targetRegion.getEnd(),
