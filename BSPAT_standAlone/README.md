@@ -129,6 +129,10 @@ Tab delimited five columns bed file:
 
 `<ref_strand>` is used to specify if the reference sequence come from plus or minus strand of reference genome. If `<ref_strand>` is minus, BSPAT will automatically reverse the result pattern to match plus strand reference.
 
+**Notice**: Only sequences fully covering target region will be included in following analysis. E.g.:
+
+![target_example](target_example.png)
+
 Sequence visualization tools will be helpful to pick correct target regions from sequencing data. For example, use samtools:
  ```
  >samtools sort demoSequence.fastq_bismark.bam > demoSequence.fastq_bismark.sorted.bam
