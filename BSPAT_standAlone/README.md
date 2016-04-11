@@ -131,6 +131,24 @@ Tab delimited five columns bed file:
 
 `<ref_strand>` is used to specify if the reference sequence come from plus or minus strand of reference genome. If `<ref_strand>` is minus, BSPAT will automatically reverse the result pattern to match plus strand reference.
 
+Sequence visualization tools will be helpful to pick correct target regions from sequencing data. For example, use samtools:
+ ```
+ >samtools sort demoSequence.fastq_bismark.bam > demoSequence.fastq_bismark.sorted.bam
+ >samtools index demoSequence.fastq_bismark.sorted.bam
+ >samtools tview demoSequence.fastq_bismark.sorted.bam ref/demoSequence.fastq
+ 1         11        21        31        41        51        61        71        81        91        101       111
+ CCAATAAACATCTCTAATGAGGGAGGAGGCCCGAGGATGGCTGGGTTTGATTTATGACTGGAGGAGAAGGTCCACTTCCCACTGCGAAGCAGGCGACCTGCTCGCCGCCCANN
+      ...T..T.T...............TTT........T................T.............TT.T..TTT.T..Y....T...YR.TT..T.T.
+      AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGCGAAGTAGGTCATTTGTT
+      AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGCGAAGTAGGCAATTTGTT
+      AAATATTTTTAATGAGGGAGGAGGTTCGAGGATGGTTGGGTTTGACTTATGATTGGAGGAGAAGGTTTATTTTTTATTGTGAAGTAGGTAATTTGTTT
+      AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGCGAAGCAGGCGATTTGTT
+      AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGNTTATTTCTTATTGCGAAGTAGGGGATTTG
+      AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTANTTTTTATTGTGAAGTAGGTAATTTGT
+      AAATATTTTTAATGAGGGAGGAGGTTTGAGGATGGTTGGGTTTGATTTATGATTGGAGGAGAAGGTTTATTTTTTATTGTGAAGTAGGTAATTTGTT
+      ....
+ ```
+
 ## 5.2 Output
 ### 5.2.1 Sequences output
 File named "`<ref>-<start>-<end>-<region name>_bismark.analysis.txt`". Each line is a sequence fully cover target region, organized as:
