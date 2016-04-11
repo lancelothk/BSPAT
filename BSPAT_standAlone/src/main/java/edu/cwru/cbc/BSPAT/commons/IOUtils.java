@@ -17,6 +17,8 @@ import java.util.*;
  * IO methods for reading input and writing output
  */
 public class IOUtils {
+	public static final String refExtension = "XX";
+
 	// TODO replace reference reading code with the one used in ASM project. Or replace with using htsjdk
 	public static Map<String, String> readReference(String refPath) throws IOException {
 		Map<String, String> referenceSeqs = new HashMap<>();
@@ -53,6 +55,16 @@ public class IOUtils {
 			}
 		}
 		return referenceSeqs;
+	}
+
+	public static void writeFastaFile(Map<String, String> referenceSeqs, File outputFile) throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+		for (Map.Entry<String, String> entry : referenceSeqs.entrySet()) {
+			bufferedWriter.write(">" + entry.getKey() + "\n");
+			bufferedWriter.write(entry.getValue() + "\n");
+		}
+		bufferedWriter.close();
+
 	}
 
 	public static void writeASMPattern(String outputFileName, String targetRefSeq, PatternResult patternWithAllele,
@@ -262,12 +274,13 @@ public class IOUtils {
 			List<BedInterval> targetList = targetRegionMap.get(samRecord.getReferenceName());
 			if (targetList != null) {
 				for (BedInterval targetRegion : targetList) {
-					int startPos = samRecord.getStart() - 1;// 0-based start. Same to all CpG site positions.
-					int endPos = startPos + samRecord.getReadLength() - 1; // 0-based end
+					// 0-based start. Same to all CpG site positions. Also subtract extended reference length
+					int startPos = samRecord.getStart() - 1 - refExtension.length();
+					// 0-based end. Also subtract extended reference length
+					int endPos = startPos + samRecord.getReadLength() - 1 - refExtension.length();
 					if (startPos <= targetRegion.getStart() && endPos >= targetRegion.getEnd()) {
 						Sequence seq = new Sequence(samRecord.getReadName(),
-								(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP",
-								samRecord.getReferenceName(),
+								(samRecord.getFlags() & 0x10) == 0x10 ? "BOTTOM" : "TOP", samRecord.getReferenceName(),
 								startPos, samRecord.getReadString());
 						String methylString = samRecord.getStringAttribute("XM");
 						for (int i = 0; i < methylString.length(); i++) {
@@ -337,5 +350,13 @@ public class IOUtils {
 						return bedIntervalMap;
 					}
 				});
+	}
+
+	public static void extendReference(String referencePath, File modifiedRefFile) throws IOException {
+		Map<String, String> referenceMap = readReference(referencePath);
+		for (Map.Entry<String, String> entry : referenceMap.entrySet()) {
+			entry.setValue(refExtension + entry.getValue() + refExtension);
+		}
+		writeFastaFile(referenceMap, modifiedRefFile);
 	}
 }
