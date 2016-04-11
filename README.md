@@ -22,7 +22,7 @@ E.g. Between bismark_0.10.1 and bismark_0.14.2, default output of bismark change
 Please note that BSPAT use font "Arial" as default when generating text in figures. The font used in figure can be configured in config.properties. Use different font may cause figure components alignment issue.
 
 ## Citation
-Hu, K., Ting, A.H. and Li, J., 2015. BSPAT: a fast online tool for DNA methylation co-occurrence pattern analysis based on high-throughput bisulfite sequencing data. BMC bioinformatics, 16(1), p.1.
+Hu, K., Ting, A. H., & Li, J. (2015). BSPAT: a fast online tool for DNA methylation co-occurrence pattern analysis based on high-throughput bisulfite sequencing data. BMC Bioinformatics, 16(1), 220.
 
 ## License
 

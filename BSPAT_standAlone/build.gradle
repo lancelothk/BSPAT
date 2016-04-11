@@ -64,7 +64,7 @@ task addAllStartSctipts(dependsOn: jar) {
     group = "scripts"
     buildStartScript('callBismark', 'edu.cwru.cbc.BSPAT.callBismark.CallBismark').execute()
     buildStartScript('BSPAT', 'edu.cwru.cbc.BSPAT.CLI.BSPAT_pgm').execute()
-    buildStartScript('drawFigure', 'edu.cwru.cbc.BSPAT.MethylFigure.MethylFigurePgm').execute()
+    buildStartScript('BSPAT_figure', 'edu.cwru.cbc.BSPAT.MethylFigure.MethylFigurePgm').execute()
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -79,8 +79,6 @@ distributions {
                 from 'build/libs/'
                 from configurations.runtime
             }
-
-            exclude "**/*.bat"
         }
     }
 }
