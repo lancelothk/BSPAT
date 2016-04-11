@@ -2,27 +2,16 @@ package edu.cwru.cbc.BSPAT.commons;
 
 public class CpGStatistics implements CpG {
 
-	// count of all CpG sites
-	private int countOfAll;
-	// count of methylated CpG sites
 	private int methylCount;
+	private int nonMethylCount;
 	private double methylLevel;
 	private int position;
 	private boolean methylLabel;
 
 	public CpGStatistics(int position, boolean methylLabel) {
-		this.countOfAll = 0;
-		this.methylCount = 0;
 		this.methylLevel = 0;
 		this.position = position;
 		this.methylLabel = methylLabel;
-	}
-
-	public CpGStatistics(CpGStatistics cpg) {
-		this.countOfAll = cpg.getCountOfAll();
-		this.methylCount = cpg.getMethylCount();
-		this.methylLevel = cpg.getMethylLevel();
-		this.position = cpg.getPosition();
 	}
 
 	public boolean isMethylated() {
@@ -30,7 +19,7 @@ public class CpGStatistics implements CpG {
 	}
 
 	public void calcMethylLevel() {
-		methylLevel = methylCount / (double) countOfAll;
+		methylLevel = methylCount / (double) (methylCount + nonMethylCount);
 	}
 
 	@Override
@@ -51,22 +40,14 @@ public class CpGStatistics implements CpG {
 		this.position = position;
 	}
 
-	public void allSitePlus() {
-		countOfAll++;
-	}
-
-	public void methylSitePlus() {
-		methylCount++;
-	}
-
 	@Override
 	public int getCountOfAll() {
-		return countOfAll;
+		return methylCount + nonMethylCount;
 	}
 
 	@Override
 	public int getNonMethylCount() {
-		return countOfAll - methylCount;
+		return nonMethylCount;
 	}
 
 	@Override
@@ -80,12 +61,11 @@ public class CpGStatistics implements CpG {
 	}
 
 	public void addNonMethylCount(int count) {
-		this.countOfAll += count;
+		this.nonMethylCount += count;
 	}
 
 	public void addMethylCount(int count) {
 		this.methylCount += count;
-		this.countOfAll += count;
 	}
 
 	public char getMethylType() {

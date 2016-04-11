@@ -3,9 +3,6 @@ package edu.cwru.cbc.BSPAT.commons;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by lancelothk on 3/2/16.
- */
 public class BedInterval {
 	private String chr;
 	private int start;

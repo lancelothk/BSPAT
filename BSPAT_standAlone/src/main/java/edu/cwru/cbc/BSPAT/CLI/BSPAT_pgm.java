@@ -21,8 +21,8 @@ import java.util.function.Function;
 public class BSPAT_pgm {
 
 	// use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
-	public static final double ASM_PATTERN_THRESHOLD = 0.2;
-	public static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
+	private static final double ASM_PATTERN_THRESHOLD = 0.2;
+	private static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
 		Options options = new Options();
@@ -245,21 +245,13 @@ public class BSPAT_pgm {
 			for (CpGSite cpGSite : sequence.getCpGSites()) {
 				int pos = cpGSite.getPosition();
 				if (pos >= targetStart - 1 && pos <= targetEnd + 1) {
-					if (cpGSiteMap.containsKey(pos)) {
-						if (cpGSite.isMethylated()) {
-							cpGSiteMap.get(pos).methylSitePlus();
-							cpGSiteMap.get(pos).allSitePlus();
-						} else {
-							cpGSiteMap.get(pos).allSitePlus();
-						}
-					} else {
+					if (!cpGSiteMap.containsKey(pos)) {
 						cpGSiteMap.put(pos, new CpGStatistics(pos, false));
-						if (cpGSite.isMethylated()) {
-							cpGSiteMap.get(pos).methylSitePlus();
-							cpGSiteMap.get(pos).allSitePlus();
-						} else {
-							cpGSiteMap.get(pos).allSitePlus();
-						}
+					}
+					if (cpGSite.isMethylated()) {
+						cpGSiteMap.get(pos).addMethylCount(1);
+					} else {
+						cpGSiteMap.get(pos).addNonMethylCount(1);
 					}
 				}
 			}

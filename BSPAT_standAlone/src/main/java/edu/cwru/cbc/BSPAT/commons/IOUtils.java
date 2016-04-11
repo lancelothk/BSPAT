@@ -136,16 +136,18 @@ public class IOUtils {
 				for (CpGSite cpg : seq.getCpGSites()) {
 					if (!cpgStatHashMap.containsKey(cpg.getPosition())) {
 						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition(), false);
-						cpgStat.allSitePlus();
 						if (cpg.isMethylated()) {
-							cpgStat.methylSitePlus();
+							cpgStat.addMethylCount(1);
+						} else {
+							cpgStat.addNonMethylCount(1);
 						}
 						cpgStatHashMap.put(cpg.getPosition(), cpgStat);
 					} else {
 						CpGStatistics cpgStat = cpgStatHashMap.get(cpg.getPosition());
-						cpgStat.allSitePlus();
 						if (cpg.isMethylated()) {
-							cpgStat.methylSitePlus();
+							cpgStat.addMethylCount(1);
+						} else {
+							cpgStat.addNonMethylCount(1);
 						}
 					}
 				}
