@@ -49,7 +49,7 @@ public class MethylFigurePgm {
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(cmd_interface, options);
-			System.exit(1);
+			System.exit(0);
 		}
 
 		String figureFont = cmd.getOptionValue("f", "Arial");
