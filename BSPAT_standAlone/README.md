@@ -25,8 +25,6 @@ usage: BSPAT [options] <reference file Path or file> <bismark result path or fil
  -m <arg>   Methylation pattern Threshold
  -n <arg>   MethylationWithSNP pattern Threshold
  -o <arg>   Output Path
- -r         Reverse result. Display result in complementary strand, when
-            minus strand reference used
  -s <arg>   significant SNP Threshold
 
 ```

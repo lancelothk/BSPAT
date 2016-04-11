@@ -28,9 +28,6 @@ public class BSPAT_pgm {
 		String cmd_interface = "BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>";
 		Options options = new Options();
 		// Require all input path to be directory. File is not allowed.
-		options.addOption(Option.builder("r")
-				.desc("Reverse result. Display result in complementary strand, when minus strand reference used")
-				.build());
 		options.addOption(Option.builder("o").hasArg().desc("Output Path").build());
 		options.addOption(Option.builder("b").hasArg().desc("Bisulfite Conversion Rate").build());
 		options.addOption(Option.builder("i").hasArg().desc("Sequence Identity Threshold").build());
