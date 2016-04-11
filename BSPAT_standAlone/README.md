@@ -14,37 +14,7 @@ Reference: [Hu, K., Ting, A. H., & Li, J. (2015). BSPAT: a fast online tool for 
 # 2.Prerequisite
 Java 1.8 or higher
 
-# 3.Interface
-## 3.1 BSPAT:
-```
-usage: BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>
- -b <arg>   Bisulfite Conversion Rate
- -c <arg>   Critical Value
- -h         Help
- -i <arg>   Sequence Identity Threshold
- -m <arg>   Methylation pattern Threshold
- -n <arg>   MethylationWithSNP pattern Threshold
- -o <arg>   Output Path
- -s <arg>   significant SNP Threshold
-
-```
-## 3.2 BSPAT_figure:
-```
-usage: BSPAT_figure [options] <pattern file> {<report file> | -a }
- -a         Draw ASM pattern. In this case, only pattern result is
-            required.
- -f <arg>   Text font used in figure. Default is Arial
- -h         Help
- -t <arg>   Figure format. Support eps and png. Default is png
-```
-
-Examples:
-```
->BSPAT ref demoSequence.fastq_bismark.bam target.bed
->BSPAT_figure demo-31-99-test_bismark.analysis_Methylation.txt demo-31-99-test_bismark.analysis_report.txt
->BSPAT_figure demo-31-99-test_bismark.analysis_ASM.txt -a
-```
-# 4.Demo
+# 3.Demo
 [Download demo data](demo.zip)
 
 Demo folder structure:
@@ -56,7 +26,7 @@ Demo folder structure:
 └── target.bed
 ```
 All following command are executed in demo folder. Bismark and its required softwares are setup properly.
-## 4.1 run bismark
+## 3.1 run bismark
 ```
 >bismark_genome_preparation ref
 >bismark ref demoSequence.fastq
@@ -89,7 +59,7 @@ After execution, demo folder looks like:
 └── target.bed
 ```
 
-## 4.2 BSPAT
+## 3.2 BSPAT
 ```
 >BSPAT ref demoSequence.fastq_bismark.bam target.bed
 ```
@@ -103,7 +73,7 @@ Result files are:
 ├── demo-31-99-test_bismark.analysis.txt
 
 ```
-## 4.3 BSPAT_figure
+## 3.3 BSPAT_figure
 ```
 >BSPAT_figure demo-31-99-test_bismark.analysis_Methylation.txt demo-31-99-test_bismark.analysis_report.txt
 >BSPAT_figure demo-31-99-test_bismark.analysis_ASM.txt -a
@@ -114,6 +84,38 @@ Result files are:
 ├── demo-31-99-test_bismark.analysis_ASM.png
 ├── demo-31-99-test_bismark.analysis_Methylation.png
 ```
+
+# 4.Interface
+## 4.1 BSPAT:
+```
+usage: BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>
+ -b <arg>   Bisulfite Conversion Rate
+ -c <arg>   Critical Value
+ -h         Help
+ -i <arg>   Sequence Identity Threshold
+ -m <arg>   Methylation pattern Threshold
+ -n <arg>   MethylationWithSNP pattern Threshold
+ -o <arg>   Output Path
+ -s <arg>   significant SNP Threshold
+
+```
+## 4.2 BSPAT_figure:
+```
+usage: BSPAT_figure [options] <pattern file> {<report file> | -a }
+ -a         Draw ASM pattern. In this case, only pattern result is
+            required.
+ -f <arg>   Text font used in figure. Default is Arial
+ -h         Help
+ -t <arg>   Figure format. Support eps and png. Default is png
+```
+
+Examples:
+```
+>BSPAT ref demoSequence.fastq_bismark.bam target.bed
+>BSPAT_figure demo-31-99-test_bismark.analysis_Methylation.txt demo-31-99-test_bismark.analysis_report.txt
+>BSPAT_figure demo-31-99-test_bismark.analysis_ASM.txt -a
+```
+
 # 5.Input and output
 ## 5.1 Input
 ### 5.1.1 Reference sequence
