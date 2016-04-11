@@ -78,6 +78,11 @@ public class BSPAT_pgm {
 		double snpThreshold = Double.parseDouble(cmd.getOptionValue("s", "0.2"));
 		double criticalValue = Double.parseDouble(cmd.getOptionValue("c", "0.01"));
 
+		System.out.println(
+				"Caution: Bismark attempts to extract 2 additional bps from end of reference sequence to be able to determine the sequence context (CG, CHG or CHH). " +
+						"So reads align to exact end of reference sequence will be rejected in Bismark result. " +
+						"To avoid exclusion of those reads, it is recommended to add 2 additional bps in both ends of reference sequence.");
+
 		generatePatterns(referencePath, bismarkResultPath, outputPath, IOUtils.readBedFile(targetRegionFile),
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, methylPatternThreshold,
 				memuPatternThreshold, snpThreshold);
