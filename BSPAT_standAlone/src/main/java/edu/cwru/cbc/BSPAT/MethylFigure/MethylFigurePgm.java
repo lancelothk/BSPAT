@@ -205,8 +205,9 @@ public class MethylFigurePgm {
 		return new File(fileName).getName().split("_")[0];
 	}
 
-	public static void drawFigure(String regionName, String patternFileName, String reportFileName, String figureFormat,
-	                              String figureFont) throws IOException {
+	private static void drawFigure(String regionName, String patternFileName, String reportFileName,
+	                               String figureFormat,
+	                               String figureFont) throws IOException {
 		List<PatternResult> patternResultList = readPatternFile(patternFileName);
 		List<CpGStatistics> cpGStatisticsList = readReportFile(reportFileName);
 
