@@ -100,10 +100,16 @@ public class IOUtils {
 		StringBuilder withAlleleString = new StringBuilder(StringUtils.repeat("-", targetRefSeq.length()));
 		for (CpGStatistics cpGSitePattern : patternWithAllele.getCpGList()) {
 			int cpgPos = cpGSitePattern.getPosition();
-			withAlleleString.setCharAt(cpgPos, cpgLabel);
-			withAlleleString.setCharAt(cpgPos + 1, cpgLabel);
+			if (cpgPos >= 0) { // check for half CpG
+				withAlleleString.setCharAt(cpgPos, cpgLabel);
+			}
+			if (cpgPos + 1 < withAlleleString.length()) {
+				withAlleleString.setCharAt(cpgPos + 1, cpgLabel);
+			}
 		}
-		if (patternWithAllele.getSnp() != null) {
+		// check for half CpG
+		if (patternWithAllele.getSnp() != null && patternWithAllele.getSnp()
+				.getPosition() >= 0 && patternWithAllele.getSnp().getPosition() < withAlleleString.length()) {
 			withAlleleString.setCharAt(patternWithAllele.getSnp().getPosition(),
 					patternWithAllele.getSnp().getNucleotide());
 		}
