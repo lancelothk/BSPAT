@@ -17,7 +17,7 @@ import java.util.*;
  * IO methods for reading input and writing output
  */
 public class IOUtils {
-	public static final String refExtension = "XX";
+	public static final String refExtension = "";
 
 	// TODO replace reference reading code with the one used in ASM project. Or replace with using htsjdk
 	public static Map<String, String> readReference(String refPath) throws IOException {
@@ -267,14 +267,14 @@ public class IOUtils {
 	 * read sequences into bed regions they covered.
 	 */
 	private static void readBismarkAlignmentResults(Map<String, List<BedInterval>> targetRegionMap,
-	                                                File bismarkBamFile) {
-		final SamReader reader = SamReaderFactory.makeDefault().open(bismarkBamFile);
+	                                                File bismarkResultFile) {
+		final SamReader reader = SamReaderFactory.makeDefault().open(bismarkResultFile);
 		for (final SAMRecord samRecord : reader) {
 			// TODO use indexed bam to speed up query
 			List<BedInterval> targetList = targetRegionMap.get(samRecord.getReferenceName());
 			if (targetList != null) {
 				for (BedInterval targetRegion : targetList) {
-					// 0-based start. Same to all CpG site positions. Also subtract extended reference length
+					// 0-based start. Same to all CpG site positions.
 					int startPos = samRecord.getStart() - 1 - refExtension.length();
 					// 0-based end. Also subtract extended reference length
 					int endPos = startPos + samRecord.getReadLength() - 1 - refExtension.length();
