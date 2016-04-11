@@ -166,8 +166,8 @@ Followed by methlation level of each CpG site.
 
 ### 5.2.5 Report
 File named "`<ref>-<start>-<end>-<region name>_bismark.analysis_report.txt`". It includes:
-1. summary of target region. line 1-2
-2. parameters used in analysis. line 3-8
-3. sequences report. line 9-10
-4. methylation level of CpG sites in target region. line 11-15
-5. Mismatch report. line 16 to end of file. Format: `<index>    <ref>   <A> <C> <G> <T> <N> <total> <coverage>`
+- summary of target region. line 1-2
+- parameters used in analysis. line 3-8
+- sequences report. line 9-10
+- methylation level of CpG sites in target region. line 11-15
+- Mismatch report. Format: `<index>    <ref>   <A> <C> <G> <T> <N> <total> <coverage>`. line 16 to end of file. 
