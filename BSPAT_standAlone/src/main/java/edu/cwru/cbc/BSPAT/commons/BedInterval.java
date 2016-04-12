@@ -46,7 +46,7 @@ public class BedInterval {
 
 	@Override
 	public String toString() {
-		return String.format("%s-%d-%d-%s", chr, start, end, name);
+		return String.format("%s-%d-%d-%s-%s", chr, start, end, name, isMinusStrand?"minus":"plus");
 	}
 
 	public void reverse(int refLength) {

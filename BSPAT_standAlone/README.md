@@ -125,9 +125,9 @@ BSPAT supports both sam and bam format Bismark results.
 ### 5.1.3 Target regions bed file
 Tab delimited five columns bed file:
 ```
-<ref:string>   <start:int>   <end:int> <region name:string>   <ref_strand:+or->
+<ref name:string>   <start:int>   <end:int> <region name:string>   <ref_strand:+or->
 ```
-`<ref>` should come from the reference names in reference sequence file. One target region file can have multiple regions come from same reference sequence. Also one target region file can have multiple regions share same region name but have different locations.
+`<ref name>` should come from the reference names in reference sequence file. One target region file can have multiple regions come from same reference sequence. Also one target region file can have multiple regions share same region name but have different locations.
 
 `<ref_strand>` is used to specify if the reference sequence come from plus or minus strand of reference genome. If `<ref_strand>` is minus, BSPAT will automatically reverse the result pattern to match plus strand reference.
 
@@ -155,7 +155,7 @@ Sequence visualization tools will be helpful to pick correct target regions from
 
 ## 5.2 Output
 ### 5.2.1 Sequences output
-File named "`<ref>-<start>-<end>-<region name>_bismark.analysis.txt`". Each line is a sequence fully cover target region, organized as:
+File named "`<ref name>-<start>-<end>-<region name>-<strand>_bismark.analysis.txt`". Each line is a sequence fully cover target region, organized as:
 ```
 <start>   <end>   <methylationString> <ID>   <originalSequence> <BisulfiteConversionRate>   <methylationRate>   <sequenceIdentity>
 ```
@@ -163,7 +163,7 @@ File named "`<ref>-<start>-<end>-<region name>_bismark.analysis.txt`". Each line
 In methylation string, "@@" represents methylated CpG site. "**" represents un-methylated CpG site.
 
 ### 5.2.2 Co-occurrence Methylation Pattern
-File named "`<ref>-<start>-<end>-<region name>_bismark.analysis_Methylation.txt`". Each line is a co-occurrence pattern in target region, organized as:
+File named "`<ref name>-<start>-<end>-<region name>-<strand>_bismark.analysis_Methylation.txt`". Each line is a co-occurrence pattern in target region, organized as:
 ```
 <Methylation Pattern>   <count>   <percentage> <PatternID>
 ```
@@ -171,14 +171,14 @@ File named "`<ref>-<start>-<end>-<region name>_bismark.analysis_Methylation.txt`
 
 
 ### 5.2.3 Co-occurrence Methylation Pattern with SNP
-File named "`<ref>-<start>-<end>-<region name>_bismark.analysis_MethylationWithSNP.txt`". Each line is a co-occurrence pattern with SNP in target region, organized as:
+File named "`<ref name>-<start>-<end>-<region name>-<strand>_bismark.analysis_MethylationWithSNP.txt`". Each line is a co-occurrence pattern with SNP in target region, organized as:
 ```
 <MethylationWithSNP Pattern>   <count>   <percentage> <MethylParent>
 ```
 "@@" represents methylated CpG site. "**" represents un-methylated CpG site.
 
 ### 5.2.4 ASM pattern
-File named "`<ref>-<start>-<end>-<region name>_bismark.analysis_ASM.txt`". It includes pattern with reference allele and pattern with alternative allele, organized as:
+File named "`<ref name>-<start>-<end>-<region name>-<strand>_bismark.analysis_ASM.txt`". It includes pattern with reference allele and pattern with alternative allele, organized as:
 ```
 <ASM Pattern>   <count>   <percentage>
 ```
@@ -187,9 +187,9 @@ Followed by methlation level of each CpG site.
 "@@" represents methylated CpG site. "**" represents un-methylated CpG site.
 
 ### 5.2.5 Report
-File named "`<ref>-<start>-<end>-<region name>_bismark.analysis_report.txt`". It includes:
+File named "`<ref name>-<start>-<end>-<region name>-<strand>_bismark.analysis_report.txt`". It includes:
 - summary of target region. line 1-2
 - parameters used in analysis. line 3-8
 - sequences report. line 9-10
 - methylation level of CpG sites in target region. line 11-15
-- Mismatch report. Format: `<index>    <ref>   <A> <C> <G> <T> <N> <total> <coverage>`. line 16 to end of file. 
+- Mismatch report. Format: `<index>    <ref allele>   <A> <C> <G> <T> <N> <total> <coverage>`. line 16 to end of file.

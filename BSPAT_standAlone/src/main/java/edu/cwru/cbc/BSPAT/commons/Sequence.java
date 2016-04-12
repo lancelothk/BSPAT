@@ -11,7 +11,7 @@ public class Sequence {
 	//    private String flag; // 2
 	// 16 is reverse-complementary string(bottom)
 	private String strand; // TOP same to ref, BOTTOM reverse-complementary to ref.
-	private String region; // 3
+	private String referenceName; // 3 reference name
 	private int startPos; // 4 offset from first bp of reference seq. 0-based
 	// 5 MAPQ
 	// 6 CIGAR
@@ -35,7 +35,7 @@ public class Sequence {
 	public Sequence(String id, String strand, String region, int startPos, String originalSeq) {
 		this.id = id;
 		this.strand = strand;
-		this.region = region;
+		this.referenceName = region;
 		this.startPos = startPos;
 		this.originalSeq = originalSeq;
 		this.CpGSites = new ArrayList<>();
@@ -85,11 +85,11 @@ public class Sequence {
 	}
 
 	public String getRegion() {
-		return region;
+		return referenceName;
 	}
 
 	public void setRegion(String region) {
-		this.region = region;
+		this.referenceName = region;
 	}
 
 	public int getStartPos() {

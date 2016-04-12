@@ -13,9 +13,6 @@ import java.io.IOException;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-/**
- * Created by kehu on 4/1/16.
- */
 public class BSPAT_pgmTest {
 	private String testResourcePath;
 
@@ -32,11 +29,11 @@ public class BSPAT_pgmTest {
 	}
 
 	private void demoDataTest(String bismarkInputFileName) throws IOException, InterruptedException, ParseException {
-		String[] resultFilenames = {"LOC440034-10-96-test_bismark.analysis.txt",
-				"LOC440034-10-96-test_bismark.analysis_ASM.txt",
-				"LOC440034-10-96-test_bismark.analysis_Methylation.txt",
-				"LOC440034-10-96-test_bismark.analysis_MethylationWithSNP.txt",
-				"LOC440034-10-96-test_bismark.analysis_report.txt"};
+		String[] resultFilenames = {"LOC440034-10-96-test-plus_bismark.analysis.txt",
+				"LOC440034-10-96-test-plus_bismark.analysis_ASM.txt",
+				"LOC440034-10-96-test-plus_bismark.analysis_Methylation.txt",
+				"LOC440034-10-96-test-plus_bismark.analysis_MethylationWithSNP.txt",
+				"LOC440034-10-96-test-plus_bismark.analysis_report.txt"};
 		// with default parameter
 		String inputFile = testResourcePath + "/demoInput/" + bismarkInputFileName;
 		String referenceFile = testResourcePath + "/demoInput/demoReference.fasta";
@@ -58,9 +55,9 @@ public class BSPAT_pgmTest {
 
 	@Test
 	public void integrationTest_halfCpG() throws InterruptedException, ParseException, IOException {
-		String[] resultFilenames = {"10_minus_extend-24-80-10F-minus_bismark.analysis.txt",
-				"10_minus_extend-24-80-10F-minus_bismark.analysis_Methylation.txt",
-				"10_minus_extend-24-80-10F-minus_bismark.analysis_report.txt"};
+		String[] resultFilenames = {"10_minus_extend-24-80-10F-minus-minus_bismark.analysis.txt",
+				"10_minus_extend-24-80-10F-minus-minus_bismark.analysis_Methylation.txt",
+				"10_minus_extend-24-80-10F-minus-minus_bismark.analysis_report.txt"};
 		// with default parameter
 		String inputFile = testResourcePath + "/halfCpGInput/ProstateBSF10F.txt_bismark.bam";
 		String referenceFile = testResourcePath + "/halfCpGInput/10_minus_extend.fa";
@@ -82,9 +79,9 @@ public class BSPAT_pgmTest {
 
 	@Test
 	public void integrationTest_minusRef() throws IOException, ParseException, InterruptedException {
-		String[] resultFilenames = {"10_minus_extend-5-103-10F-minus_bismark.analysis.txt",
-				"10_minus_extend-5-103-10F-minus_bismark.analysis_Methylation.txt",
-				"10_minus_extend-5-103-10F-minus_bismark.analysis_report.txt"};
+		String[] resultFilenames = {"10_minus_extend-5-103-10F-minus-minus_bismark.analysis.txt",
+				"10_minus_extend-5-103-10F-minus-minus_bismark.analysis_Methylation.txt",
+				"10_minus_extend-5-103-10F-minus-minus_bismark.analysis_report.txt"};
 		// with default parameter
 		String inputFile = testResourcePath + "/minusRefInput/ProstateBSF10F.txt_bismark.bam";
 		String referenceFile = testResourcePath + "/minusRefInput/10_minus_extend.fa";
