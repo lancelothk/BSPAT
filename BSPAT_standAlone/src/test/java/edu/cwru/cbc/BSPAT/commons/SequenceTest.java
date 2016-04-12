@@ -54,13 +54,13 @@ public class SequenceTest {
 	}
 
 	private void testReverseTOP_Bottom(int refLength, Sequence seqTop, Sequence seqBottom) {
-		Sequence test = copySequence(seqTop);
+		Sequence test = Sequence.newInstance(seqTop);
 		test.reverse(refLength);
 		assertEqualSequence(test, seqBottom);
 	}
 
 	private void testDoubleReverses(int refLength, Sequence seqTop) {
-		Sequence test = copySequence(seqTop);
+		Sequence test = Sequence.newInstance(seqTop);
 		test.reverse(refLength);
 		test.reverse(refLength);
 		assertEqualSequence(test,seqTop);
@@ -75,14 +75,6 @@ public class SequenceTest {
 			assertEquals(actual.getCpGSites().get(i).getPosition(), expected.getCpGSites().get(i).getPosition());
 			assertEquals(actual.getCpGSites().get(i).isMethylated(), expected.getCpGSites().get(i).isMethylated());
 		}
-	}
-
-	private Sequence copySequence(Sequence oldSeq){
-		Sequence newSeq = new Sequence(oldSeq.getId(), oldSeq.getStrand(), oldSeq.getRegion(), oldSeq.getStartPos(), oldSeq.getOriginalSeq());
-		for (CpGSite cpGSite : oldSeq.getCpGSites()) {
-			newSeq.addCpG(new CpGSite(cpGSite.getPosition(), cpGSite.isMethylated()));
-		}
-		return newSeq;
 	}
 
 	@Test

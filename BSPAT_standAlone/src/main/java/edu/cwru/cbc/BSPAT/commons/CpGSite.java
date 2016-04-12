@@ -13,6 +13,10 @@ public class CpGSite {
 		this.position = position;
 	}
 
+	public static CpGSite newInstance(CpGSite cpGSite) {
+		return new CpGSite(cpGSite.position, cpGSite.methylLabel);
+	}
+
 	public int getPosition() {
 		return position;
 	}

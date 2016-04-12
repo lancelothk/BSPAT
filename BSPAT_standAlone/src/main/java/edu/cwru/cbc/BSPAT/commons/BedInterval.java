@@ -20,6 +20,14 @@ public class BedInterval {
 		this.sequenceList = new ArrayList<>();
 	}
 
+	public static BedInterval newInstance(BedInterval bedInterval){
+		BedInterval newInstance = new BedInterval(bedInterval.chr, bedInterval.start, bedInterval.end, bedInterval.name, bedInterval.isMinusStrand);
+		for (Sequence sequence : bedInterval.sequenceList) {
+			newInstance.sequenceList.add(Sequence.newInstance(sequence));
+		}
+		return newInstance;
+	}
+
 	public boolean isMinusStrand() {
 		return isMinusStrand;
 	}

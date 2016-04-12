@@ -21,7 +21,7 @@ public class Sequence {
 	private String originalSeq; // 10
 	//    private String qualityScore; // 11
 	//    private String editDist; // 12 edit distance to the reference
-	//    private String mismatchString; // 13 base-by-base mismatches to the reference, not including indels
+	//    private String mismatchString ; // 13 base-by-base mismatches to the reference, not including indels
 	//    private String methylCall; // 14 methylation call string
 	//    private String readConvState; // 15 read conversion state for the alignment
 	//	private String XGtag; // 16 genome conversion state for the alignment
@@ -32,13 +32,21 @@ public class Sequence {
 	private double bisulConversionRate;
 	private double sequenceIdentity;
 
-	public Sequence(String id, String strand, String region, int startPos, String originalSeq) {
+	public Sequence(String id, String strand, String referenceName, int startPos, String originalSeq) {
 		this.id = id;
 		this.strand = strand;
-		this.referenceName = region;
+		this.referenceName = referenceName;
 		this.startPos = startPos;
 		this.originalSeq = originalSeq;
 		this.CpGSites = new ArrayList<>();
+	}
+
+	public static Sequence newInstance(Sequence seq) {
+		Sequence newInstance = new Sequence(seq.id, seq.strand, seq.referenceName,seq.startPos, seq.originalSeq);
+		for (CpGSite cpGSite : seq.CpGSites) {
+			newInstance.CpGSites.add(CpGSite.newInstance(cpGSite));
+		}
+		return newInstance;
 	}
 
 	public int getEndPos() {
