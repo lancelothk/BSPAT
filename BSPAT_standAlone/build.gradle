@@ -23,7 +23,7 @@ sourceSets {
     }
 }
 
-version '0.1-beta'
+version = theVersion
 
 repositories {
     jcenter()
@@ -62,16 +62,15 @@ CreateStartScripts buildStartScript(String appName, String mainClass, Iterable<S
 
 task addAllStartSctipts(dependsOn: jar) {
     group = "scripts"
-    buildStartScript('callBismark', 'edu.cwru.cbc.BSPAT.callBismark.CallBismark').execute()
-    buildStartScript('BSPAT', 'edu.cwru.cbc.BSPAT.CLI.BSPAT_pgm').execute()
-    buildStartScript('BSPAT_figure', 'edu.cwru.cbc.BSPAT.MethylFigure.MethylFigurePgm').execute()
+    buildStartScript(callBismark_appName, 'edu.cwru.cbc.BSPAT.callBismark.CallBismark').execute()
+    buildStartScript(BSPAT_appName, 'edu.cwru.cbc.BSPAT.CLI.BSPAT_pgm').execute()
+    buildStartScript(BSPAT_figure_appName, 'edu.cwru.cbc.BSPAT.MethylFigure.MethylFigurePgm').execute()
 }
 
 //noinspection GroovyAssignabilityCheck
 distributions {
     main {
         contents {
-            addAllStartSctipts
             into('bin') {
                 from 'build/scripts'
             }
@@ -81,17 +80,21 @@ distributions {
             }
             into('') {
                 from 'demo.zip'
+                from 'README.md'
+                from 'target_example.png'
             }
         }
     }
 }
 
-
 distZip.enabled = true
 distTar.enabled = false
+
+distZip.dependsOn addAllStartSctipts
+distZip.dependsOn test
 
 tasks.withType(Tar) {
     compression = Compression.GZIP
 }
 
-installDist.dependsOn build
+installDist.dependsOn distZip

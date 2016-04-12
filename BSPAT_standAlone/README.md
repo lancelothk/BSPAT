@@ -1,5 +1,6 @@
 BSPAT
 =====
+v1.0.0-beta
 
 # 1.Introduction
 BSPAT is a fast tool for analysing co-occurrence methylation patterns in bisulfite sequencing data.
