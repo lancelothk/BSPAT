@@ -143,8 +143,7 @@ public class BSPAT_pgm {
 	                                                double snpThreshold, BedInterval targetRegion,
 	                                                String refSeq) throws
 			IOException {
-		System.out.printf("analyse region %s-%d-%d\n", targetRegion.getChr(), targetRegion.getStart(),
-				targetRegion.getEnd());
+		System.out.printf("analyse region: %s\n", targetRegion.toString());
 		if (targetRegion.isMinusStrand()) {
 			targetRegion.reverse(refSeq.length());
 			refSeq = SequenceUtil.reverseComplement(refSeq);
