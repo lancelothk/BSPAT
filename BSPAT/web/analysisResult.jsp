@@ -148,9 +148,19 @@
                 </tr>
                 <tr>
                     <td>Target coordinates used:</td>
+                    <%
+                        if (constant.targetFileName == null) {
+                    %>
+                    <td><a href="manualAnalysis.jsp#targetCoordinates">default target coordinates</a></td>
+                    <%
+                    } else {
+                    %>
                     <td><a href=<%=constant.getAbsolutePathTargetCoorFile()%>><%=constant.targetFileName%>
                     </a>
                     </td>
+                    <%
+                        }
+                    %>
                 </tr>
             </table>
             <p class="dottedline"></p>
