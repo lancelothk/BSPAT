@@ -97,7 +97,7 @@ usage: BSPAT [options] <reference file Path or file> <bismark result path or fil
  -n <arg>   MethylationWithSNP pattern Threshold
  -o <arg>   Output Path
  -s <arg>   significant SNP Threshold
-
+ -t <arg>   Number of threads
 ```
 ## 4.2 BSPAT_figure:
 ```

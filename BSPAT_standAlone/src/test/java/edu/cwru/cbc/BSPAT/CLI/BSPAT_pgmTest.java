@@ -44,7 +44,7 @@ public class BSPAT_pgmTest {
 			String actualResultFilename = testResourcePath + "/demoActual/" + resultFilename;
 			String expectedResultFilename = testResourcePath + "/demoExpected/" + resultFilename;
 			File actualResultFile = new File(actualResultFilename);
-			FileAssert.assertFile(actualResultFile, "Output " + resultFilename + " doesn't exist!");
+			FileAssert.assertFile(actualResultFile, "Output " + actualResultFile.getAbsolutePath() + " doesn't exist!");
 			assertEqualFiles(actualResultFile, new File(expectedResultFilename),
 					resultFilename);
 			if (!actualResultFile.delete()) {

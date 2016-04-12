@@ -11,6 +11,9 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -35,6 +38,7 @@ public class BSPAT_pgm {
 		options.addOption(Option.builder("n").hasArg().desc("MethylationWithSNP pattern Threshold").build());
 		options.addOption(Option.builder("s").hasArg().desc("significant SNP Threshold").build());
 		options.addOption(Option.builder("c").hasArg().desc("Critical Value").build());
+		options.addOption(Option.builder("t").hasArg().desc("Number of threads").build());
 		options.addOption(Option.builder("h").desc("Help").build());
 
 		CommandLineParser parser = new DefaultParser();
@@ -67,6 +71,7 @@ public class BSPAT_pgm {
 			}
 		}
 		outputPath = outputPathFile.getAbsolutePath();
+		int threadNumber = Integer.parseInt(cmd.getOptionValue("t", "1"));
 		double bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b", "0.9"));
 		double sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("i", "0.9"));
 		double methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.01"));
@@ -81,7 +86,7 @@ public class BSPAT_pgm {
 
 		generatePatterns(referencePath, bismarkResultPath, outputPath, IOUtils.readBedFile(targetRegionFile),
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, methylPatternThreshold,
-				memuPatternThreshold, snpThreshold);
+				memuPatternThreshold, snpThreshold, threadNumber);
 	}
 
 	private static String getPath(String path) {
@@ -97,8 +102,8 @@ public class BSPAT_pgm {
 	                                     Map<String, List<BedInterval>> targetRegionMap, double bisulfiteConversionRate,
 	                                     double sequenceIdentityThreshold, double criticalValue,
 	                                     double methylPatternThreshold, double memuPatternThreshold,
-	                                     double snpThreshold) throws
-			IOException {
+	                                     double snpThreshold, int threadNumber) throws
+			IOException, InterruptedException {
 		Map<String, String> referenceMap = IOUtils.readReference(referencePath);
 		// reference names of target regions should be subset of reference names in reference file.
 		for (String name : targetRegionMap.keySet()) {
@@ -108,14 +113,28 @@ public class BSPAT_pgm {
 			}
 		}
 		IOUtils.readBismarkAlignmentResults(bismarkResultPath, targetRegionMap);
+		ExecutorService executor;
+		if (threadNumber == 1) {
+			executor = Executors.newSingleThreadExecutor(); // single thread
+		} else {
+			executor = Executors.newFixedThreadPool(threadNumber); // multiple threads
+		}
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceMap.get(chromosomeEntry.getKey());
 			for (BedInterval targetRegion : chromosomeEntry.getValue()) {
-				generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
-						criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, targetRegion,
-						refSeq);
+				executor.submit(() -> {
+					try {
+						generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
+								criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, targetRegion,
+								refSeq);
+					} catch (IOException e) {
+						System.err.println(e.getMessage());
+					}
+				});
 			}
 		}
+		executor.shutdown();
+		executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
 	}
 
 	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
