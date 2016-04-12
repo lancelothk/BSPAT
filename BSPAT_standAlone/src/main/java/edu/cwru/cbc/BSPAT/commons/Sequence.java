@@ -31,7 +31,6 @@ public class Sequence {
 	private double methylationRate;
 	private double bisulConversionRate;
 	private double sequenceIdentity;
-	private String refSeq;
 
 	public Sequence(String id, String strand, String region, int startPos, String originalSeq) {
 		this.id = id;
@@ -142,8 +141,8 @@ public class Sequence {
 	 */
 	public void processSequence(String referenceSeq) {
 		//TODO generate methylString from Bismark result.
-		this.refSeq = referenceSeq.substring(startPos, this.getEndPos() + 1);
-		StringBuilder convertedReferenceSeq = bisulfiteRefSeq();
+		String refSeq = referenceSeq.substring(startPos, this.getEndPos() + 1);
+		StringBuilder convertedReferenceSeq = bisulfiteRefSeq(refSeq);
 		double countOfMethylatedCpG = 0;
 		for (CpGSite cpGSite : CpGSites) {
 			if (cpGSite.isMethylated()) {
@@ -194,7 +193,7 @@ public class Sequence {
 		this.setMethylationString(generateMethylString());
 	}
 
-	private StringBuilder bisulfiteRefSeq() {
+	private StringBuilder bisulfiteRefSeq(String refSeq) {
 		// convert reference sequence and count C in non-CpG context.
 		StringBuilder convertedReferenceSeq = new StringBuilder();
 		for (int i = 0; i < this.length(); i++) {
