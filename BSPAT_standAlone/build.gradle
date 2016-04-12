@@ -25,6 +25,10 @@ sourceSets {
 
 version = theVersion
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+}
+
 repositories {
     jcenter()
 }
