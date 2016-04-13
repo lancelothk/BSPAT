@@ -19,8 +19,16 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="BSPAT_analysis_main" target="1.8" />
+      <module name="BSPAT_analysis_test" target="1.8" />
+      <module name="BSPAT_common_main" target="1.8" />
+      <module name="BSPAT_common_test" target="1.8" />
+      <module name="BSPAT_main" target="1.8" />
       <module name="BSPAT_standAlone_main" target="1.8" />
       <module name="BSPAT_standAlone_test" target="1.8" />
+      <module name="BSPAT_test" target="1.8" />
+      <module name="BSPAT_web_main" target="1.8" />
+      <module name="BSPAT_web_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

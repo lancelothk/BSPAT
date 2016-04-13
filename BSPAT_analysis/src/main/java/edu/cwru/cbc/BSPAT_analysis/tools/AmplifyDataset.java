@@ -1,6 +1,5 @@
 package edu.cwru.cbc.BSPAT_analysis.tools;
 
-import edu.cwru.cbc.BSPAT.DataType.ExtensionFilter;
 
 import java.io.*;
 

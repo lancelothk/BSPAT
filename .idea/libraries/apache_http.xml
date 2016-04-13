@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="apache http">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/BSPAT/lib/apache http" />
+      <root url="file://$PROJECT_DIR$/BSPAT_web/lib/apache http" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

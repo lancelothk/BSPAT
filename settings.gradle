@@ -1,0 +1,6 @@
+rootProject.name = 'BSPAT'
+include 'BSPAT_common'
+include 'BSPAT_web'
+include 'BSPAT_standAlone'
+include 'BSPAT_analysis'
+

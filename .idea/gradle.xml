@@ -8,15 +8,14 @@
         <option name="gradleJvm" value="1.8" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/BSPAT_analysis" />
+            <option value="$PROJECT_DIR$/BSPAT_common" />
             <option value="$PROJECT_DIR$/BSPAT_standAlone" />
+            <option value="$PROJECT_DIR$/BSPAT_web" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$/BSPAT_standAlone" />
-          </set>
-        </option>
       </GradleProjectSettings>
     </option>
   </component>

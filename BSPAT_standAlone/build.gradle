@@ -34,6 +34,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':BSPAT_common')
     compile 'com.github.samtools:htsjdk:2.1.0'
     compile 'com.google.guava:guava:19.0'
     compile 'commons-cli:commons-cli:1.3.1'
