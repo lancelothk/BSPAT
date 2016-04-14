@@ -1,3 +1,5 @@
+apply plugin: 'war'
+
 dependencies {
     dependencies {
         compile project(':BSPAT_common')
@@ -11,6 +13,7 @@ dependencies {
         compile 'org.apache.httpcomponents:httpclient:4.5.2'
         compile 'javax.mail:mail:1.5.0-b01'
         compile 'commons-io:commons-io:2.4'
+        compile 'javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1'
         testCompile 'org.mockito:mockito-core:2.0.46-beta'
         testCompile 'junit:junit:4.12'
         testCompile 'junit-addons:junit-addons:1.4'
