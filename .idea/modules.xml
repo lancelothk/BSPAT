@@ -2,21 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1872531109/BSPAT.iml" filepath="$PROJECT_DIR$/.idea/modules/-1872531109/BSPAT.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/66812189/BSPAT_analysis.iml" filepath="$PROJECT_DIR$/.idea/modules/66812189/BSPAT_analysis.iml" group="BSPAT_analysis" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/66812189/BSPAT_analysis_main.iml" filepath="$PROJECT_DIR$/.idea/modules/66812189/BSPAT_analysis_main.iml" group="BSPAT_analysis" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/66812189/BSPAT_analysis_test.iml" filepath="$PROJECT_DIR$/.idea/modules/66812189/BSPAT_analysis_test.iml" group="BSPAT_analysis" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/121179244/BSPAT_common.iml" filepath="$PROJECT_DIR$/.idea/modules/121179244/BSPAT_common.iml" group="BSPAT_common" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/121179244/BSPAT_common_main.iml" filepath="$PROJECT_DIR$/.idea/modules/121179244/BSPAT_common_main.iml" group="BSPAT_common" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/121179244/BSPAT_common_test.iml" filepath="$PROJECT_DIR$/.idea/modules/121179244/BSPAT_common_test.iml" group="BSPAT_common" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-587355610/BSPAT_main.iml" filepath="$PROJECT_DIR$/.idea/modules/-587355610/BSPAT_main.iml" group="BSPAT" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_standAlone.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_standAlone.iml" group="BSPAT_standAlone" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_standAlone_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_standAlone_main.iml" group="BSPAT_standAlone" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_standAlone_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_standAlone_test.iml" group="BSPAT_standAlone" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-587355610/BSPAT_test.iml" filepath="$PROJECT_DIR$/.idea/modules/-587355610/BSPAT_test.iml" group="BSPAT" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1302454387/BSPAT_web.iml" filepath="$PROJECT_DIR$/.idea/modules/1302454387/BSPAT_web.iml" group="BSPAT_web" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1302454387/BSPAT_web_main.iml" filepath="$PROJECT_DIR$/.idea/modules/1302454387/BSPAT_web_main.iml" group="BSPAT_web" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1302454387/BSPAT_web_test.iml" filepath="$PROJECT_DIR$/.idea/modules/1302454387/BSPAT_web_test.iml" group="BSPAT_web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_analysis/BSPAT_analysis.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_analysis/BSPAT_analysis.iml" group="BSPAT_analysis" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_analysis/BSPAT_analysis_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_analysis/BSPAT_analysis_main.iml" group="BSPAT_analysis" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_analysis/BSPAT_analysis_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_analysis/BSPAT_analysis_test.iml" group="BSPAT_analysis" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_common/BSPAT_common.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_common/BSPAT_common.iml" group="BSPAT_common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_common/BSPAT_common_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_common/BSPAT_common_main.iml" group="BSPAT_common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_common/BSPAT_common_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_common/BSPAT_common_test.iml" group="BSPAT_common" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_main.iml" group="BSPAT" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_standAlone/BSPAT_standAlone.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_standAlone/BSPAT_standAlone.iml" group="BSPAT_standAlone" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_standAlone/BSPAT_standAlone_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_standAlone/BSPAT_standAlone_main.iml" group="BSPAT_standAlone" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_standAlone/BSPAT_standAlone_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_standAlone/BSPAT_standAlone_test.iml" group="BSPAT_standAlone" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_test.iml" group="BSPAT" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_web/BSPAT_web.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_web/BSPAT_web.iml" group="BSPAT_web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_web/BSPAT_web_main.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_web/BSPAT_web_main.iml" group="BSPAT_web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/BSPAT_web/BSPAT_web_test.iml" filepath="$PROJECT_DIR$/.idea/modules/BSPAT_web/BSPAT_web_test.iml" group="BSPAT_web" />
     </modules>
   </component>
 </project>
