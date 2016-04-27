@@ -125,7 +125,7 @@ public class BSPAT_pgm {
 				executor.submit(() -> {
 					try {
 						generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
-								criticalValue, methylPatternThreshold, snpThreshold, memuPatternThreshold, targetRegion,
+								criticalValue, methylPatternThreshold, memuPatternThreshold, snpThreshold, targetRegion,
 								refSeq);
 					} catch (IOException e) {
 						System.err.println(e.getMessage());
