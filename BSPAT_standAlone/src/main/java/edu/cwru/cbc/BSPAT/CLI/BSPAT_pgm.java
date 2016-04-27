@@ -75,7 +75,7 @@ public class BSPAT_pgm {
 		double bisulfiteConversionRate = Double.parseDouble(cmd.getOptionValue("b", "0.9"));
 		double sequenceIdentityThreshold = Double.parseDouble(cmd.getOptionValue("i", "0.9"));
 		double methylPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.01"));
-		double memuPatternThreshold = Double.parseDouble(cmd.getOptionValue("m", "0.1"));
+		double memuPatternThreshold = Double.parseDouble(cmd.getOptionValue("n", "0.1"));
 		double snpThreshold = Double.parseDouble(cmd.getOptionValue("s", "0.2"));
 		double criticalValue = Double.parseDouble(cmd.getOptionValue("c", "0.01"));
 
