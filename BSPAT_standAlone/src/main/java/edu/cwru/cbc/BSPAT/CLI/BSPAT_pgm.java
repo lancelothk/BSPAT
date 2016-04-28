@@ -11,9 +11,10 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 /**
@@ -119,10 +120,11 @@ public class BSPAT_pgm {
 		} else {
 			executor = Executors.newFixedThreadPool(threadNumber); // multiple threads
 		}
+		List<Future<?>> futureList = new ArrayList<>();
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceMap.get(chromosomeEntry.getKey());
 			for (BedInterval targetRegion : chromosomeEntry.getValue()) {
-				executor.submit(() -> {
+				futureList.add(executor.submit(() -> {
 					try {
 						generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
 								criticalValue, methylPatternThreshold, memuPatternThreshold, snpThreshold, targetRegion,
@@ -130,11 +132,16 @@ public class BSPAT_pgm {
 					} catch (IOException e) {
 						System.err.println(e.getMessage());
 					}
-				});
+				}));
 			}
 		}
-		executor.shutdown();
-		executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+		for (Future<?> future : futureList) {
+			try {
+				future.get();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
