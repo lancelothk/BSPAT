@@ -3,9 +3,9 @@ target region length:	99
 Bisulfite conversion rate threshold:	0.9
 Sequence identity threshold:	0.9
 Critival value:	0.01
-Methylation pattern threshold:	0.2
-Memu pattern threshold:	0.2
-SNP threshold:	0.1
+Methylation pattern threshold:	0.1
+Memu pattern threshold:	0.1
+SNP threshold:	0.2
 Sequences covers whole target region:	156
 Sequences passed quality filtering:	156
 Methylation level in target region:
