@@ -382,7 +382,9 @@ public class IOUtils {
 					throw new RuntimeException("unknown type of CpGPairStatus");
 			}
 		}
-		return calcRSquare(cpgA.getMethylLevel(), cpgB.getMethylLevel(), mAmB / (mAmB + mAnB + nAmB + nAnB));
+		double total = mAmB + mAnB + nAmB + nAnB;
+		System.out.printf("%f\t%f\t%f\n", (mAmB + mAnB) / total, (mAmB + nAmB) / total, total);
+		return calcRSquare((mAmB + mAnB) / total, (mAmB + nAmB) / total, mAmB / total);
 	}
 
 	private static double calcRSquare(double pa, double pb, double pab) {
