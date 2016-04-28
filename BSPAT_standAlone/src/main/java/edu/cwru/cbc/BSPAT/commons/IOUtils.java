@@ -383,11 +383,21 @@ public class IOUtils {
 			}
 		}
 		double total = mAmB + mAnB + nAmB + nAnB;
-		System.out.printf("%f\t%f\t%f\n", (mAmB + mAnB) / total, (mAmB + nAmB) / total, total);
 		return calcRSquare((mAmB + mAnB) / total, (mAmB + nAmB) / total, mAmB / total);
 	}
 
 	private static double calcRSquare(double pa, double pb, double pab) {
-		return Math.pow((pab - pa * pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
+		double one = 1 - 1e-16;
+		double zero = Double.MIN_VALUE;
+		pa = Double.max(zero, pa);
+		pa = Double.min(one, pa);
+		pb = Double.max(zero, pb);
+		pb = Double.min(one, pb);
+		pab = Double.max(zero, pab);
+		pab = Double.min(one, pab);
+		double d = (pab - pa * pb);
+		double b = (pa * (1 - pa) * pb * (1 - pb));
+		double rsquare = Math.pow((pab - pa * pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
+		return rsquare;
 	}
 }
