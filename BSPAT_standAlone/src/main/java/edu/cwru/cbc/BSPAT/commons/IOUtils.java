@@ -10,6 +10,7 @@ import htsjdk.samtools.SamReaderFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -120,51 +121,17 @@ public class IOUtils {
 		return withAlleleString.toString();
 	}
 
-	public static void writeStatistics(String reportFileName,
-	                                   List<Sequence> sequencePassedQualityFilter,
-	                                   int[][] mutationStat, int targetStart, String targetRefSeq,
-	                                   double bisulfiteConversionRate,
-	                                   double sequenceIdentityThreshold,
-	                                   double criticalValue, double methylPatternThreshold,
-	                                   double memuPatternThreshold, double snpThreshold,
-	                                   int sequenceNumber) throws
+	public static void writeReport(String reportFileName,
+	                               List<Sequence> sequencePassedQualityFilter,
+	                               int[][] mutationStat, int targetStart, String targetRefSeq,
+	                               double bisulfiteConversionRate,
+	                               double sequenceIdentityThreshold,
+	                               double criticalValue, double methylPatternThreshold,
+	                               double memuPatternThreshold, double snpThreshold,
+	                               int sequenceNumber, List<CpGStatistics> cpgStatList) throws
 			IOException {
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(reportFileName))) {
-			HashMap<Integer, CpGStatistics> cpgStatHashMap = new HashMap<>();
-			// collect information for calculating methylation rate for each CpG site.
-			for (Sequence seq : sequencePassedQualityFilter) {
-				for (CpGSite cpg : seq.getCpGSites()) {
-					if (!cpgStatHashMap.containsKey(cpg.getPosition())) {
-						CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition(), false);
-						if (cpg.isMethylated()) {
-							cpgStat.addMethylCount(1);
-						} else {
-							cpgStat.addNonMethylCount(1);
-						}
-						cpgStatHashMap.put(cpg.getPosition(), cpgStat);
-					} else {
-						CpGStatistics cpgStat = cpgStatHashMap.get(cpg.getPosition());
-						if (cpg.isMethylated()) {
-							cpgStat.addMethylCount(1);
-						} else {
-							cpgStat.addNonMethylCount(1);
-						}
-					}
-				}
-			}
-
-			List<CpGStatistics> cpgStatList = new ArrayList<>();
-			for (CpGStatistics cpgStat : cpgStatHashMap.values()) {
-				if (cpgStat.getPosition() == targetStart - 1) { // display half cpg in the beginning of pattern.
-					cpgStatList.add(cpgStat);
-				} else if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
-					cpgStatList.add(cpgStat);
-				}
-			}
-
-			cpgStatList.sort(CpG::compareTo);
-			bufferedWriter.write(
-					"target region start position:\t" + targetStart + "\n");
+			bufferedWriter.write("target region start position:\t" + targetStart + "\n");
 			bufferedWriter.write("target region length:\t" + targetRefSeq.length() + "\n");
 			bufferedWriter.write("Bisulfite conversion rate threshold:\t" + bisulfiteConversionRate + "\n");
 			bufferedWriter.write("Sequence identity threshold:\t" + sequenceIdentityThreshold + "\n");
@@ -366,5 +333,59 @@ public class IOUtils {
 			entry.setValue(refExtension + entry.getValue() + refExtension);
 		}
 		writeFastaFile(referenceMap, modifiedRefFile);
+	}
+
+	public static void writeLDReport(String LDreportFileName, List<CpGStatistics> cpgStatList, List<Sequence> sequencePassedQualityFilter) throws
+			IOException {
+		BufferedWriter LDreportWriter = new BufferedWriter(new FileWriter(LDreportFileName));
+		DecimalFormat formatter = new DecimalFormat("0.000000");
+		// write col names
+		LDreportWriter.write("LDreport\t");
+		for (CpGStatistics cpGStatistics : cpgStatList) {
+			if (cpGStatistics != cpgStatList.get(cpgStatList.size() - 1)) {
+				LDreportWriter.write(String.format("%8d\t", cpGStatistics.getPosition()));
+			} else {
+				LDreportWriter.write(String.format("%8d\n", cpGStatistics.getPosition()));
+			}
+		}
+		for (int i = 0; i < cpgStatList.size(); i++) {
+			LDreportWriter.write(
+					String.format("%8d\t", cpgStatList.get(i).getPosition()) + StringUtils.repeat("        \t", i + 1));
+			for (int j = i + 1; j < cpgStatList.size(); j++) {
+				LDreportWriter.write(formatter.format(
+						calcLDofCpGPair(cpgStatList.get(i), cpgStatList.get(j), sequencePassedQualityFilter)) + "\t");
+			}
+			LDreportWriter.write("\n");
+		}
+		LDreportWriter.close();
+	}
+
+	private static double calcLDofCpGPair(CpGStatistics cpgA, CpGStatistics cpgB, List<Sequence> sequencePassedQualityFilter) {
+		double mAmB = 0, mAnB = 0, nAmB = 0, nAnB = 0;
+		for (Sequence sequence : sequencePassedQualityFilter) {
+			switch (sequence.checkCpGPair(cpgA.getPosition(), cpgB.getPosition())) {
+				case mAmB:
+					mAmB++;
+					break;
+				case mAnB:
+					mAnB++;
+					break;
+				case nAmB:
+					nAmB++;
+					break;
+				case nAnB:
+					nAnB++;
+					break;
+				case notCoverBoth:
+					break;
+				default:
+					throw new RuntimeException("unknown type of CpGPairStatus");
+			}
+		}
+		return calcRSquare(cpgA.getMethylLevel(), cpgB.getMethylLevel(), mAmB / (mAmB + mAnB + nAmB + nAnB));
+	}
+
+	private static double calcRSquare(double pa, double pb, double pab) {
+		return Math.pow((pab - pa * pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
 	}
 }

@@ -11,10 +11,9 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -120,28 +119,22 @@ public class BSPAT_pgm {
 		} else {
 			executor = Executors.newFixedThreadPool(threadNumber); // multiple threads
 		}
-		List<Future<?>> futureList = new ArrayList<>();
 		for (Map.Entry<String, List<BedInterval>> chromosomeEntry : targetRegionMap.entrySet()) {
 			String refSeq = referenceMap.get(chromosomeEntry.getKey());
 			for (BedInterval targetRegion : chromosomeEntry.getValue()) {
-				futureList.add(executor.submit(() -> {
+				executor.submit(() -> {
 					try {
 						generatePatternsSingleGroup(outputPath, bisulfiteConversionRate, sequenceIdentityThreshold,
 								criticalValue, methylPatternThreshold, memuPatternThreshold, snpThreshold, targetRegion,
 								refSeq);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						System.err.println(e.getMessage());
 					}
-				}));
+				});
 			}
 		}
-		for (Future<?> future : futureList) {
-			try {
-				future.get();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-		}
+		executor.shutdown();
+		executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
 	}
 
 	private static void generatePatternsSingleGroup(String outputPath, double bisulfiteConversionRate,
@@ -234,10 +227,14 @@ public class BSPAT_pgm {
 				}
 			}
 		}
-		IOUtils.writeStatistics(String.format("%s/%s_bismark.analysis_report.txt", outputPath, targetRegion.toString()),
+		List<CpGStatistics> cpgStatList = getCpGStatisticses(sequencePassedQualityFilter, targetRegion.getStart(),
+				targetRefSeq);
+		IOUtils.writeReport(String.format("%s/%s_bismark.analysis_report.txt", outputPath, targetRegion.toString()),
 				sequencePassedQualityFilter, mismatchStat, targetRegion.getStart(), targetRefSeq,
 				bisulfiteConversionRate, sequenceIdentityThreshold, criticalValue, memuPatternThreshold,
-				memuPatternThreshold, snpThreshold, seqGroup.size());
+				memuPatternThreshold, snpThreshold, seqGroup.size(), cpgStatList);
+		IOUtils.writeLDReport(String.format("%s/%s_bismark.analysis_LDreport.txt", outputPath, targetRegion.toString()),
+				cpgStatList, sequencePassedQualityFilter);
 	}
 
 	private static boolean hasASM(PatternResult patternWithAllele, PatternResult patternWithoutAllele) {
@@ -555,5 +552,45 @@ public class BSPAT_pgm {
 				// More than 1 SNP in the region!
 				return null;
 		}
+	}
+
+	private static List<CpGStatistics> getCpGStatisticses(List<Sequence> sequencePassedQualityFilter, int targetStart, String targetRefSeq) {
+		HashMap<Integer, CpGStatistics> cpgStatHashMap = new HashMap<>();
+		// collect information for calculating methylation rate for each CpG site.
+		for (Sequence seq : sequencePassedQualityFilter) {
+			for (CpGSite cpg : seq.getCpGSites()) {
+				if (!cpgStatHashMap.containsKey(cpg.getPosition())) {
+					CpGStatistics cpgStat = new CpGStatistics(cpg.getPosition(), false);
+					if (cpg.isMethylated()) {
+						cpgStat.addMethylCount(1);
+					} else {
+						cpgStat.addNonMethylCount(1);
+					}
+					cpgStatHashMap.put(cpg.getPosition(), cpgStat);
+				} else {
+					CpGStatistics cpgStat = cpgStatHashMap.get(cpg.getPosition());
+					if (cpg.isMethylated()) {
+						cpgStat.addMethylCount(1);
+					} else {
+						cpgStat.addNonMethylCount(1);
+					}
+				}
+			}
+		}
+
+		List<CpGStatistics> cpgStatList = new ArrayList<>();
+		for (CpGStatistics cpgStat : cpgStatHashMap.values()) {
+			if (cpgStat.getPosition() == targetStart - 1) { // display half cpg in the beginning of pattern.
+				cpgStatList.add(cpgStat);
+			} else if (cpgStat.getPosition() >= targetStart && cpgStat.getPosition() <= targetStart + targetRefSeq.length() - 1) {
+				cpgStatList.add(cpgStat);
+			}
+		}
+
+		cpgStatList.sort(CpG::compareTo);
+		for (CpGStatistics cpgStat : cpgStatList) {
+			cpgStat.calcMethylLevel();
+		}
+		return cpgStatList;
 	}
 }

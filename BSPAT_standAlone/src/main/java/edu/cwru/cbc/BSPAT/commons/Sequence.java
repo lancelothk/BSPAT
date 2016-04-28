@@ -31,7 +31,6 @@ public class Sequence {
 	private double methylationRate;
 	private double bisulConversionRate;
 	private double sequenceIdentity;
-
 	public Sequence(String id, String strand, String referenceName, int startPos, String originalSeq) {
 		this.id = id;
 		this.strand = strand;
@@ -42,7 +41,7 @@ public class Sequence {
 	}
 
 	public static Sequence newInstance(Sequence seq) {
-		Sequence newInstance = new Sequence(seq.id, seq.strand, seq.referenceName,seq.startPos, seq.originalSeq);
+		Sequence newInstance = new Sequence(seq.id, seq.strand, seq.referenceName, seq.startPos, seq.originalSeq);
 		for (CpGSite cpGSite : seq.CpGSites) {
 			newInstance.CpGSites.add(CpGSite.newInstance(cpGSite));
 		}
@@ -277,5 +276,32 @@ public class Sequence {
 			cpGSite.reverse(refLegnth - 1);
 		}
 		this.getCpGSites().sort(CpGSite::compareTo);
+	}
+
+	public CpGPairStatus checkCpGPair(int posA, int posB) {
+		int A = -1, B = -1;
+		for (CpGSite cpGSite : CpGSites) {
+			if (cpGSite.getPosition() == posA) {
+				A = cpGSite.isMethylated() ? 1 : 0;
+			}
+			if (cpGSite.getPosition() == posB) {
+				B = cpGSite.isMethylated() ? 1 : 0;
+			}
+		}
+		if (A == 1 && B == 1) {
+			return CpGPairStatus.mAmB;
+		} else if (A == 1 && B == 0) {
+			return CpGPairStatus.mAnB;
+		} else if (A == 0 && B == 1) {
+			return CpGPairStatus.nAmB;
+		} else if (A == 0 && B == 0) {
+			return CpGPairStatus.nAnB;
+		} else {
+			return CpGPairStatus.notCoverBoth;
+		}
+	}
+
+	public enum CpGPairStatus {
+		mAmB, mAnB, nAmB, nAnB, notCoverBoth
 	}
 }
