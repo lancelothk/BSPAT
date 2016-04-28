@@ -338,19 +338,22 @@ public class IOUtils {
 	public static void writeLDReport(String LDreportFileName, List<CpGStatistics> cpgStatList, List<Sequence> sequencePassedQualityFilter) throws
 			IOException {
 		BufferedWriter LDreportWriter = new BufferedWriter(new FileWriter(LDreportFileName));
-		DecimalFormat formatter = new DecimalFormat("0.000000");
+		DecimalFormat formatter = new DecimalFormat("0.00000000");
 		// write col names
-		LDreportWriter.write("LDreport\t");
+		LDreportWriter.write("LDreport  \t");
 		for (CpGStatistics cpGStatistics : cpgStatList) {
 			if (cpGStatistics != cpgStatList.get(cpgStatList.size() - 1)) {
-				LDreportWriter.write(String.format("%8d\t", cpGStatistics.getPosition()));
+				LDreportWriter.write(
+						String.format("%4d(%.2f)\t", cpGStatistics.getPosition(), cpGStatistics.getMethylLevel()));
 			} else {
-				LDreportWriter.write(String.format("%8d\n", cpGStatistics.getPosition()));
+				LDreportWriter.write(
+						String.format("%4d(%.2f)\n", cpGStatistics.getPosition(), cpGStatistics.getMethylLevel()));
 			}
 		}
 		for (int i = 0; i < cpgStatList.size(); i++) {
 			LDreportWriter.write(
-					String.format("%8d\t", cpgStatList.get(i).getPosition()) + StringUtils.repeat("        \t", i + 1));
+					String.format("%4d(%.2f)\t", cpgStatList.get(i).getPosition(),
+							cpgStatList.get(i).getMethylLevel()) + StringUtils.repeat("          \t", i + 1));
 			for (int j = i + 1; j < cpgStatList.size(); j++) {
 				LDreportWriter.write(formatter.format(
 						calcLDofCpGPair(cpgStatList.get(i), cpgStatList.get(j), sequencePassedQualityFilter)) + "\t");
@@ -397,7 +400,10 @@ public class IOUtils {
 		pab = Double.min(one, pab);
 		double d = (pab - pa * pb);
 		double b = (pa * (1 - pa) * pb * (1 - pb));
-		double rsquare = Math.pow((pab - pa * pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
-		return rsquare;
+		double rsquare = (pab - pa * pb) * ((1 - pab) * (1 - pa) * (1 - pb)) / (pa * (1 - pa) * pb * (1 - pb));
+		double rs1 = Math.pow(pab - pa * pb, 2) / (pa * (1 - pa) * pb * (1 - pb));
+		double rs2 = Math.pow((1 - pab) * (1 - pa) * (1 - pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
+		double varrs = Math.sqrt(Math.abs(rs1 - rs2));
+		return rs1 * rs2 / varrs;
 	}
 }
