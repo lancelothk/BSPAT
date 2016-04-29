@@ -19,6 +19,7 @@ import java.util.*;
  */
 public class IOUtils {
 	public static final String refExtension = "";
+	static double max = 0;
 
 	// TODO replace reference reading code with the one used in ASM project. Or replace with using htsjdk
 	public static Map<String, String> readReference(String refPath) throws IOException {
@@ -386,7 +387,19 @@ public class IOUtils {
 			}
 		}
 		double total = mAmB + mAnB + nAmB + nAnB;
-		return calcRSquare((mAmB + mAnB) / total, (mAmB + nAmB) / total, mAmB / total);
+		double rsquare = calcRSquare((mAmB + mAnB) / total, (mAmB + nAmB) / total, mAmB / total);
+		double phiCoefficient = calcPhiCoefficient(nAnB, mAmB, mAnB, nAmB);
+		return phiCoefficient;
+	}
+
+	private static double calcPhiCoefficient(double n00, double n11, double n10, double n01) {
+		double upper = n11 * n00 - n10 * n01;
+		double bottom = (n00 + n01) * (n11 + n10) * (n10 + n00) * (n11 + n01);
+		if (upper == 0) {
+			return 0;
+		} else {
+			return upper / Math.sqrt(bottom);
+		}
 	}
 
 	private static double calcRSquare(double pa, double pb, double pab) {
@@ -400,10 +413,11 @@ public class IOUtils {
 		pab = Double.min(one, pab);
 		double d = (pab - pa * pb);
 		double b = (pa * (1 - pa) * pb * (1 - pb));
-		double rsquare = (pab - pa * pb) * ((1 - pab) * (1 - pa) * (1 - pb)) / (pa * (1 - pa) * pb * (1 - pb));
-		double rs1 = Math.pow(pab - pa * pb, 2) / (pa * (1 - pa) * pb * (1 - pb));
-		double rs2 = Math.pow((1 - pab) * (1 - pa) * (1 - pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
-		double varrs = Math.sqrt(Math.abs(rs1 - rs2));
-		return rs1 * rs2 / varrs;
+		double rsquare = Math.pow(pab - pa * pb, 2) / (pa * (1 - pa) * pb * (1 - pb));
+//		double rs1 = Math.pow(pab - pa * pb, 2) / (pa * (1 - pa) * pb * (1 - pb));
+//		double rs2 = Math.pow((1 - pab) * (1 - pa) * (1 - pb), 2) / (pa * (1 - pa) * pb * (1 - pb));
+//		double varrs = Math.sqrt(Math.abs(rs1 - rs2));
+//		return rs1 * rs2 / varrs;
+		return rsquare;
 	}
 }
