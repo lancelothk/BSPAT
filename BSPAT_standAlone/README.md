@@ -1,6 +1,6 @@
 BSPAT
 =====
-v1.0.0-beta
+v1.0.1-beta
 
 # 1.Introduction
 BSPAT is a fast tool for analysing co-occurrence methylation patterns in bisulfite sequencing data.
@@ -13,7 +13,13 @@ Web version of BSPAT can be found at [website](http://cbc.case.edu/BSPAT/) or [g
 Reference: [Hu, K., Ting, A. H., & Li, J. (2015). BSPAT: a fast online tool for DNA methylation co-occurrence pattern analysis based on high-throughput bisulfite sequencing data. BMC Bioinformatics, 16(1), 220.](http://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0649-2#CR10)
 
 # 2.Prerequisite
-Java 1.8 or higher
+* Java 1.8 or higher
+* Bismark and its required softwares
+
+##2.1 install
+Unzip BSPAT_standALone zip file. Executable files are under bin folder.
+
+To add BSPAT to $PATH, [check here](http://askubuntu.com/questions/109381/how-to-add-path-of-a-program-to-path-environment-variable)
 
 # 3.Demo
 [Download demo data](demo.zip)
@@ -26,7 +32,7 @@ Demo folder structure:
 │   └── demoReference.fasta
 └── target.bed
 ```
-All following command are executed in demo folder. Bismark and its required softwares are setup properly.
+All following command are executed in demo folder. Assuming BSPAT, Bismark, and Bismark required softwares are setup properly(added to $PATH).
 ## 3.1 run bismark
 ```
 >bismark_genome_preparation ref
