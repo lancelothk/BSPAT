@@ -26,6 +26,8 @@ public class BSPAT_pgm {
 	// use 0.2 as threshold to filter out unequal patterns. ASM pattern should be roughly equal.
 	private static final double ASM_PATTERN_THRESHOLD = 0.2;
 	private static final double ASM_MIN_METHYL_DIFFERENCE = 0.2;
+	private static final int EXIT_ON_ERROR = 1;
+	private static final int EXIT_ON_SUCCESS = 0;
 
 	public static void main(String[] args) throws IOException, InterruptedException, ParseException {
 		String cmd_interface = "BSPAT [options] <reference file Path or file> <bismark result path or file> <target region file>";
@@ -47,27 +49,27 @@ public class BSPAT_pgm {
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(cmd_interface, options);
-			System.exit(0);
+			System.exit(EXIT_ON_SUCCESS);
 		}
 
 		String referencePath, bismarkResultPath, targetRegionFile;
 		if (cmd.getArgList().size() != 3) {
-			throw new RuntimeException(
-					"Incorrect number of arguments! " + cmd_interface);
-		} else {
-			referencePath = cmd.getArgList().get(0);
-			bismarkResultPath = cmd.getArgList().get(1);
-			targetRegionFile = cmd.getArgList().get(2);
-			System.out.println("Reference path is " + referencePath);
-			System.out.println("Bismark result path is " + bismarkResultPath);
-			System.out.println("Target region file is " + targetRegionFile);
+			System.err.println("Incorrect number of arguments:" + cmd_interface);
+			System.exit(EXIT_ON_ERROR);
 		}
+		referencePath = cmd.getArgList().get(0);
+		bismarkResultPath = cmd.getArgList().get(1);
+		targetRegionFile = cmd.getArgList().get(2);
+		System.out.println("Reference path is " + referencePath);
+		System.out.println("Bismark result path is " + bismarkResultPath);
+		System.out.println("Target region file is " + targetRegionFile);
 
 		String outputPath = cmd.getOptionValue("o", getPath(bismarkResultPath));
 		File outputPathFile = new File(outputPath);
 		if (!outputPathFile.exists()) {
 			if (!outputPathFile.mkdirs()) {
-				throw new RuntimeException("cannot create output path folder!");
+				System.err.println("cannot create output path folder!");
+				System.exit(EXIT_ON_ERROR);
 			}
 		}
 		outputPath = outputPathFile.getAbsolutePath();

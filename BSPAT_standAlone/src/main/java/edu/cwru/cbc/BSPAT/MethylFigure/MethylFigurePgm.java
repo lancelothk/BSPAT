@@ -19,6 +19,8 @@ import java.util.List;
  * Command line interface for MethylFigure.
  */
 public class MethylFigurePgm {
+	private static final int EXIT_ON_ERROR = 1;
+	private static final int EXIT_ON_SUCCESS = 0;
 	private static final int CELLLINE_FONT_SIZE = 32;
 	private static final int CELLLINE_CHAR_LENGTH = CELLLINE_FONT_SIZE;
 	private static final int BPWIDTH = 10;
@@ -49,7 +51,7 @@ public class MethylFigurePgm {
 		if (cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp(cmd_interface, options);
-			System.exit(0);
+			System.exit(EXIT_ON_SUCCESS);
 		}
 
 		String figureFont = cmd.getOptionValue("f", "Arial");
@@ -57,23 +59,23 @@ public class MethylFigurePgm {
 
 		if (cmd.hasOption("a")) {
 			if (cmd.getArgList().size() != 1) {
-				throw new RuntimeException(
-						"Incorrect number of arguments! " + cmd_interface);
+				System.err.println("Incorrect number of arguments:" + cmd_interface);
+				System.exit(EXIT_ON_ERROR);
 			}
 			String patternFileName = cmd.getArgList().get(0);
 			String regionName = obtainRegionName(patternFileName);
 			drawASMFigure(regionName, patternFileName, figureFormat, figureFont);
 		} else {
 			if (cmd.getArgList().size() != 2) {
-				throw new RuntimeException(
-						"Incorrect number of arguments! " + cmd_interface);
+				System.err.println("Incorrect number of arguments:" + cmd_interface);
+				System.exit(EXIT_ON_ERROR);
 			}
 			String patternFileName = cmd.getArgList().get(0);
 			String reportFileName = cmd.getArgList().get(1);
 			String regionName = obtainRegionName(patternFileName);
 			if (!regionName.equals(obtainRegionName(reportFileName))) {
 				System.err.println("pattern file and report file don't have identical region name!");
-				System.exit(1);
+				System.exit(EXIT_ON_ERROR);
 			}
 			drawFigure(regionName, patternFileName, reportFileName, figureFormat, figureFont);
 		}
