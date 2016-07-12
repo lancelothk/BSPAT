@@ -43,6 +43,21 @@
                 <tr>
                     <td><p class="dottedline"></p></td>
                 </tr>
+                <tr>
+                    <td>3. Stand alone version</td>
+                </tr>
+                <tr>
+                    <td>Stand alone version of BSPAT. Source code and more info see: <a
+                            href="https://github.com/lancelothk/BSPAT/tree/master/BSPAT_standAlone">github</a></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://github.com/lancelothk/BSPAT/releases/download/v1.0.1-beta-standAlone/BSPAT_standAlone-1.0.1-beta.zip">
+                            BSPAT_standAlone-1.0.1-beta.zip </a></td>
+                </tr>
+                <tr>
+                    <td><p class="dottedline"></p></td>
+                </tr>
             </table>
         </div>
         <div id="content_bottom"></div>

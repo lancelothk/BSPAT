@@ -14,6 +14,11 @@
     <div id="content">
         <div id="content_top"></div>
         <div id="content_main">
+            <h2>Stand alone version of BSPAT v1.0.1-beta</h2>
+            <a href="https://github.com/lancelothk/BSPAT/tree/master/BSPAT_standAlone">Manual</a>
+            <a href="https://github.com/lancelothk/BSPAT/releases/download/v1.0.1-beta-standAlone/BSPAT_standAlone-1.0.1-beta.zip">Download</a>
+            <p class="dottedline"></p>
+
             <h2>Step 1: Mapping:</h2>
 
             <p class="dottedline"></p>
