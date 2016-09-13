@@ -5,6 +5,8 @@ BSPAT is a fast online service for analysing co-occurrence methylation patterns 
 
 Website: http://cbc.case.edu/BSPAT
 
+StandAlone version: https://github.com/lancelothk/BSPAT/tree/master/BSPAT_standAlone
+
 ## Deployment
 
 Download war file from releases. Then just deploy the war inside Apache Tomcat. 
