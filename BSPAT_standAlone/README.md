@@ -32,7 +32,8 @@ Demo folder structure:
 │   └── demoReference.fasta
 └── target.bed
 ```
-All following command are executed in demo folder. Assuming BSPAT, Bismark, and Bismark required softwares are setup properly(added to $PATH).
+All following command are executed in demo folder. Assuming BSPAT, Bismark, and Bismark required softwares are setup properly(added to $PATH). You can also execute commands through relative path, e.g. ../bin/BSPAT, which assume bin folder is in the same level of demo folder.
+
 ## 3.1 run bismark
 ```
 >bismark_genome_preparation ref
