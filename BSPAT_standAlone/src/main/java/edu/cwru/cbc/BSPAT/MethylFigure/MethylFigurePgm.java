@@ -104,7 +104,8 @@ public class MethylFigurePgm {
 		methylWriter.getGraphWriter().drawString(regionName, REGION_NAME_LEFTSTART, height);
 		methylWriter.getGraphWriter().setFont(new Font(figureFont, Font.PLAIN, COMMON_FONT_SIZE));
 
-		// pattern with allele
+		// order of drawing should be consistent with IOUtils.readASMPatterns.
+		// pattern with allele first
 		addAverage(methylWriter.getGraphWriter(), figureFont, patternResultList.get(0).getCpGList(), height, left);
 		addAllele(patternResultList.get(0), methylWriter.getGraphWriter(), height + HEIGHT_INTERVAL, left);
 		height += 2 * HEIGHT_INTERVAL;
@@ -169,8 +170,7 @@ public class MethylFigurePgm {
 		methylWriter.close();
 	}
 
-	private static void addAllele(PatternResult patternResult, Graphics2D graphWriter, int height, int left) throws
-			IOException {
+	private static void addAllele(PatternResult patternResult, Graphics2D graphWriter, int height, int left) {
 		if (patternResult.getSnp() != null) {
 			graphWriter.setPaint(Color.BLUE);
 			graphWriter.fill(new Rectangle2D.Double(left + (patternResult.getSnp().getPosition() * BPWIDTH), height,
@@ -180,7 +180,7 @@ public class MethylFigurePgm {
 	}
 
 	private static void addAverage(Graphics2D graphWriter, String fontChoice, List<? extends CpG> cpgList, int height,
-	                               int left) throws IOException {
+	                               int left) {
 		// 5. add average
 		DecimalFormat percentSmall = new DecimalFormat("##%");
 		height += HEIGHT_INTERVAL;

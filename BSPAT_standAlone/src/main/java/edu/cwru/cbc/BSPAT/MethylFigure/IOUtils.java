@@ -42,9 +42,10 @@ class IOUtils {
 				cpg.setMethylLevel(methylLevel);
 			}
 
-			patternResultLists.add(patternWithoutAllele);
+			// First result in patternResultLists is the one with allele.
+			// Should be consistent with implementation in MethylFigurePgm.drawASMFigure
 			patternResultLists.add(patternWithAllele);
-			patternBuffReader.close();
+			patternResultLists.add(patternWithoutAllele);
 		}
 		return patternResultLists;
 	}
