@@ -171,7 +171,13 @@ public class BSPAT_pgm {
 		Pair<List<Sequence>, List<Sequence>> qualityFilterSequencePair = filterSequences(
 				seqGroup, bisulfiteConversionRate, sequenceIdentityThreshold);
 
+		List<Sequence> sequenceNotPassedQualityFilter = qualityFilterSequencePair.getRight();
+		System.out.printf("%d unqualified sequences are filtered.\n", sequenceNotPassedQualityFilter.size());
+		IOUtils.writeAnalysedSequences(outputPath + "/" + targetRegion.toString() + "_bismark.analysis.filtered.txt",
+				sequenceNotPassedQualityFilter, refSeq.length(), targetRegion.isMinusStrand());
+
 		List<Sequence> sequencePassedQualityFilter = qualityFilterSequencePair.getLeft();
+		System.out.printf("%d qualified sequences are included in result.\n", sequencePassedQualityFilter.size());
 		IOUtils.writeAnalysedSequences(outputPath + "/" + targetRegion.toString() + "_bismark.analysis.txt",
 				sequencePassedQualityFilter, refSeq.length(), targetRegion.isMinusStrand());
 
@@ -212,7 +218,7 @@ public class BSPAT_pgm {
 					Pattern.METHYLATIONWITHSNP),
 					targetRefSeq, meMuPatternList, Pattern.METHYLATIONWITHSNP, sequencePassedQualityFilter.size());
 
-			Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(seqGroup, potentialSNP);
+			Pair<Pattern, Pattern> allelePatterns = getAllelePatterns(sequencePassedQualityFilter, potentialSNP);
 			Pattern allelePattern = allelePatterns.getLeft();
 			Pattern nonAllelePattern = allelePatterns.getRight();
 			if (allelePattern.getCount() != 0 && nonAllelePattern.getCount() != 0) {

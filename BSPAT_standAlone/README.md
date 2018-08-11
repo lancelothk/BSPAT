@@ -14,7 +14,7 @@ Reference: [Hu, K., Ting, A. H., & Li, J. (2015). BSPAT: a fast online tool for 
 
 # 2.Prerequisite
 * Java 1.8 or higher
-* Bismark and its required softwares
+* Bismark and its required softwares (e.g. python, samtools, bowtie2)
 
 ##2.1 install
 Unzip BSPAT_standALone zip file. Executable files are under bin folder.
@@ -22,6 +22,7 @@ Unzip BSPAT_standALone zip file. Executable files are under bin folder.
 To add BSPAT to $PATH, [check here](http://askubuntu.com/questions/109381/how-to-add-path-of-a-program-to-path-environment-variable)
 
 # 3.Demo
+Following demo is tested with bowtie2-2.3.4.2-linux-x86_64, Bismark_v0.19.1, samtools1.6
 [Download demo data](demo.zip)
 
 Demo folder structure:
@@ -69,28 +70,28 @@ After execution, demo folder looks like:
 
 ## 3.2 BSPAT
 ```
->BSPAT ref demoSequence.fastq_bismark.bam target.bed
+>BSPAT ref demoSequence_bismark_bt2.bam target.bed
 ```
 Result files are:
 ```
 .
-├── demo-31-99-test_bismark.analysis_ASM.txt
-├── demo-31-99-test_bismark.analysis_Methylation.txt
-├── demo-31-99-test_bismark.analysis_MethylationWithSNP.txt
-├── demo-31-99-test_bismark.analysis_report.txt
-├── demo-31-99-test_bismark.analysis.txt
+├── demo-31-99-test-plus_bismark.analysis_ASM.txt
+├── demo-31-99-test-plus_bismark.analysis_Methylation.txt
+├── demo-31-99-test-plus_bismark.analysis_MethylationWithSNP.txt
+├── demo-31-99-test-plus_bismark.analysis_report.txt
+├── demo-31-99-test-plus_bismark.analysis.txt
 
 ```
 ## 3.3 BSPAT_figure
 ```
->BSPAT_figure demo-31-99-test_bismark.analysis_Methylation.txt demo-31-99-test_bismark.analysis_report.txt
->BSPAT_figure demo-31-99-test_bismark.analysis_ASM.txt -a
+>BSPAT_figure demo-31-99-test-plus_bismark.analysis_Methylation.txt demo-31-99-test-plus_bismark.analysis_report.txt
+>BSPAT_figure demo-31-99-test-plus_bismark.analysis_ASM.txt -a
 ```
 Result files are:
 ```
 .
-├── demo-31-99-test_bismark.analysis_ASM.png
-├── demo-31-99-test_bismark.analysis_Methylation.png
+├── demo-31-99-test_bismark-plus.analysis_ASM.png
+├── demo-31-99-test_bismark-plus.analysis_Methylation.png
 ```
 
 # 4.Interface
