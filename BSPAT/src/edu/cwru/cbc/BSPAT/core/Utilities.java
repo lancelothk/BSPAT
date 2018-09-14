@@ -55,11 +55,14 @@ public class Utilities {
 				String line;
 				while ((line = reader.readLine()) != null) {
 					if (line.startsWith(" ") || line.startsWith("QUERY") || line.startsWith("BLAT") || line.startsWith(
-							"<H2>")) {
+							"<")) {
 						continue;
 					}
 					if (line.startsWith("-")) {
 						while ((line = reader.readLine()) != null) {
+							if (line.startsWith("<")){
+								break;
+							}
 							String[] items = line.split("\\s+");
 							if (items.length != 11) {
 								throw new RuntimeException(
